@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Brand colors */
+    --color-brand: #740a2e;
+    --color-brand-dark: #5d0824;
+    --color-navy: #183b4f;
+    --color-navy-dark: #122d3c;
+    --color-cream: #f4efe6;
+}
+
+@layer base {
+    body {
+        @apply font-sans text-navy-dark antialiased;
+    }
+}
+
+@layer components {
+    .nf-container {
+        @apply mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8;
+    }
+
+    /* Donate / CTA button */
+    .btn-brand {
+        @apply inline-flex items-center justify-center gap-2 rounded-md bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark;
+    }
+
+    .btn-navy {
+        @apply inline-flex items-center justify-center gap-2 rounded-md bg-navy px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-dark;
+    }
+
+    .btn-white {
+        @apply inline-flex items-center justify-center gap-2 rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-cream;
+    }
+
+    /* Circle carousel arrow */
+    .nf-arrow {
+        @apply inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand text-brand transition-colors hover:bg-brand hover:text-white;
+    }
+}
+
+/* Track-based carousels */
+.nf-track {
+    transition: transform 0.45s ease;
+}
+
+/* Carousel dots */
+.nf-dot {
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.55);
+    transition: all 0.3s ease;
+}
+.nf-dot.is-active {
+    width: 1.5rem;
+    background-color: #fff;
+}
