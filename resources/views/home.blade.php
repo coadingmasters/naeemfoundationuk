@@ -159,8 +159,8 @@
     </section>
 
     {{-- ===================== CAUSES CAROUSEL ===================== --}}
-    <section class="bg-navy py-12">
-        <div class="nf-container relative" data-carousel="causes">
+    <section class="relative overflow-hidden bg-navy py-12" data-carousel="causes">
+        <div class="nf-container">
             <div class="overflow-hidden">
                 <div class="nf-track flex" data-track>
                     @foreach ($causes as $cause)
@@ -177,16 +177,16 @@
                     @endforeach
                 </div>
             </div>
-
-            <button type="button" data-prev aria-label="Previous"
-                    class="absolute -left-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-white transition hover:text-white/60 lg:-left-6">
-                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <button type="button" data-next aria-label="Next"
-                    class="absolute -right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-white transition hover:text-white/60 lg:-right-6">
-                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
         </div>
+
+        <button type="button" data-prev aria-label="Previous"
+                class="absolute left-1 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-white transition hover:text-white/60 sm:left-3">
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" data-next aria-label="Next"
+                class="absolute right-1 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-white transition hover:text-white/60 sm:right-3">
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
     </section>
 
     {{-- ===================== OUR IMPACT ===================== --}}
@@ -234,24 +234,46 @@
     <section class="pb-14">
         <div class="nf-container">
             <h2 class="mb-5 text-2xl font-bold text-brand">Become a Volunteer</h2>
-            <div class="grid items-center gap-8 overflow-hidden rounded-lg bg-cream lg:grid-cols-2">
-                <div class="relative">
+            <div class="grid items-stretch rounded-lg bg-cream lg:grid-cols-2">
+                {{-- Image with inset padding + icon tiles on the right edge --}}
+                <div class="relative p-4 sm:p-6">
                     <img src="{{ asset('images/voluntear.png') }}" alt="Volunteers"
-                         class="h-72 w-full object-cover lg:h-full">
-                    <div class="absolute right-3 top-3 flex flex-col gap-2">
-                        @foreach (['Community Events', 'Mentorship', 'Environment'] as $tag)
-                            <span class="rounded bg-brand px-2 py-1 text-[11px] font-semibold text-white">{{ $tag }}</span>
-                        @endforeach
+                         class="h-64 w-full rounded-md object-cover sm:h-80 lg:h-full">
+
+                    <div class="absolute right-1 top-1/2 flex -translate-y-1/2 flex-col gap-3 sm:right-2">
+                        {{-- Community Events --}}
+                        <div class="flex w-16 flex-col items-center gap-1 rounded-md bg-brand px-1 py-2 text-center text-white shadow-lg">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-1.5a3.5 3.5 0 0 0-2.7-3.4M9 20H3v-1.5a3.5 3.5 0 0 1 2.7-3.4M16 11a3 3 0 1 0-2.5-1.3M8 11a3 3 0 1 0 2.5-1.3M12 14a3.5 3.5 0 0 1 3.5 3.5V20h-7v-2.5A3.5 3.5 0 0 1 12 14Z"/>
+                            </svg>
+                            <span class="text-[8px] font-semibold leading-tight">Community Events</span>
+                        </div>
+                        {{-- Mentorship --}}
+                        <div class="flex w-16 flex-col items-center gap-1 rounded-md bg-brand px-1 py-2 text-center text-white shadow-lg">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 21V4a1 1 0 0 1 1-1h0M4 5h11l-2 3 2 3H4"/>
+                            </svg>
+                            <span class="text-[8px] font-semibold leading-tight">Mentorship</span>
+                        </div>
+                        {{-- Environment --}}
+                        <div class="flex w-16 flex-col items-center gap-1 rounded-md bg-brand px-1 py-2 text-center text-white shadow-lg">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 21c-4-1-7-4.5-7-9 0-3 5-9 7-9s7 6 7 9c0 4.5-3 8-7 9Zm0 0v-9"/>
+                            </svg>
+                            <span class="text-[8px] font-semibold leading-tight">Environment</span>
+                        </div>
                     </div>
                 </div>
-                <div class="p-6 lg:p-10">
+
+                {{-- Text --}}
+                <div class="flex flex-col justify-center p-6 lg:p-10">
                     <p class="text-sm font-semibold text-gray-500">Make a Difference</p>
-                    <h3 class="mt-1 text-2xl font-bold text-navy-dark">Join Our Volunteer Community</h3>
+                    <h3 class="mt-1 max-w-xs text-2xl font-bold leading-snug text-navy-dark">Join Our Volunteer Community</h3>
                     <p class="mt-3 max-w-md text-sm leading-relaxed text-gray-600">
                         Join our community and create a great profile to make the most of our services. Join our community
                         and create a great profile to make the most of our services.
                     </p>
-                    <a href="#" class="btn-navy mt-5">
+                    <a href="#" class="btn-navy mt-5 self-start">
                         Get Involved
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
@@ -268,9 +290,9 @@
                 <h2 class="text-2xl font-bold">Subscribe</h2>
                 <p class="mt-2 text-sm text-white/80">Sign up with your email address to receive news and updates.</p>
                 <form class="mx-auto mt-6 flex max-w-3xl flex-col gap-3 sm:flex-row">
-                    <input type="text" placeholder="First Name" class="h-11 flex-1 rounded-md border-0 px-3 text-sm text-navy-dark focus:ring-2 focus:ring-brand">
-                    <input type="text" placeholder="Last Name" class="h-11 flex-1 rounded-md border-0 px-3 text-sm text-navy-dark focus:ring-2 focus:ring-brand">
-                    <input type="email" placeholder="Email" class="h-11 flex-1 rounded-md border-0 px-3 text-sm text-navy-dark focus:ring-2 focus:ring-brand">
+                    <input type="text" placeholder="First Name" class="h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
+                    <input type="text" placeholder="Last Name" class="h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
+                    <input type="email" placeholder="Email" class="h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
                     <button type="submit" class="btn-brand h-11">Subscribe</button>
                 </form>
                 <p class="mt-4 text-xs text-white/70">We respect your privacy.</p>

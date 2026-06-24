@@ -82,7 +82,8 @@ function setupTrackCarousel(root) {
 
     const update = () => {
         index = Math.min(index, maxIndex());
-        const offset = (index / cards.length) * 100;
+        // Each step moves exactly one card width (100 / cards-per-view)
+        const offset = index * (100 / perView());
         track.style.transform = `translateX(-${offset}%)`;
     };
 
