@@ -27,9 +27,9 @@
         ['label' => 'Sustainable Development Goals', 'color' => 'navy'],
         ['label' => 'No Poverty', 'color' => 'brand'],
         ['label' => 'Zero Hunger', 'color' => 'navy'],
-        ['label' => 'Good Health & Well-being', 'color' => 'navy'],
+        ['label' => 'Good Health & Well-being', 'color' => 'brand'],
         ['label' => 'Quality Education', 'color' => 'navy'],
-        ['label' => 'Gender Equality', 'color' => 'navy'],
+        ['label' => 'Gender Equality', 'color' => 'brand'],
         ['label' => 'Clean Water and Sanitation', 'color' => 'navy'],
         ['label' => 'Affordable and Sustainable Energy', 'color' => 'brand'],
         ['label' => 'Decent Work & Economic Growth', 'color' => 'navy'],
@@ -38,10 +38,10 @@
         ['label' => 'Industry, Innovation, and Infrastructure', 'color' => 'brand'],
         ['label' => 'Reduced Inequalities', 'color' => 'navy'],
         ['label' => 'Sustainable Cities & Communities', 'color' => 'brand'],
-        ['label' => 'Responsible Consumption & Production', 'color' => 'brand'],
-        ['label' => 'Climate Action', 'color' => 'brand'],
+        ['label' => 'Responsible Consumption & Production', 'color' => 'navy'],
+        ['label' => 'Climate Action', 'color' => 'navy'],
         ['label' => 'Life Below Water', 'color' => 'navy'],
-        ['label' => 'Life on Land', 'color' => 'brand'],
+        ['label' => 'Life on Land', 'color' => 'navy'],
         ['label' => 'Peace, Justice, and Strong Institutions', 'color' => 'navy'],
         ['label' => 'Partnerships for the Goals', 'color' => 'brand'],
     ];
@@ -137,8 +137,8 @@
                 {{-- Left column --}}
                 <div class="space-y-4">
                     @foreach ($valuesLeft as $value)
-                        <div class="rounded-md border-2 px-5 py-3 text-sm font-semibold
-                            {{ $value['color'] === 'brand' ? 'border-brand text-brand' : 'border-navy text-navy' }}">
+                        <div class="rounded-md px-5 py-3 text-sm font-semibold text-white underline underline-offset-2
+                            {{ $value['color'] === 'brand' ? 'bg-brand' : 'bg-navy' }}">
                             {{ $value['label'] }}
                         </div>
                     @endforeach
@@ -146,8 +146,8 @@
                 {{-- Right column --}}
                 <div class="space-y-4">
                     @foreach ($valuesRight as $value)
-                        <div class="rounded-md border-2 px-5 py-3 text-sm font-semibold
-                            {{ $value['color'] === 'brand' ? 'border-brand text-brand' : 'border-navy text-navy' }}">
+                        <div class="rounded-md px-5 py-3 text-sm font-semibold text-white underline underline-offset-2
+                            {{ $value['color'] === 'brand' ? 'bg-brand' : 'bg-navy' }}">
                             {{ $value['label'] }}
                         </div>
                     @endforeach
