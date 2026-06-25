@@ -62,20 +62,83 @@
     }
 }
 
-/* Quick Donate selects — consistent colors + custom chevron */
-.nf-select {
-    color: var(--color-navy-dark);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23740a2e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    padding-right: 2.25rem;
+/* Quick Donate — fully brand-styled custom dropdown */
+.nf-cselect {
+    position: relative;
 }
-.nf-select option {
+.nf-cselect__btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 0.375rem;
+    background: #fff;
+    padding: 0 0.75rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 500;
     color: var(--color-navy-dark);
-    background-color: #fff;
+    cursor: pointer;
+}
+.nf-cselect__btn--placeholder {
+    color: #9ca3af;
+    font-weight: 400;
+}
+.nf-cselect__chev {
+    height: 1rem;
+    width: 1rem;
+    flex: none;
+    color: var(--color-brand);
+    transition: transform 0.25s ease;
+}
+.nf-cselect.is-open .nf-cselect__chev {
+    transform: rotate(180deg);
+}
+.nf-cselect__menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 0.4rem);
+    z-index: 40;
+    margin: 0;
+    list-style: none;
+    border-radius: 0.5rem;
+    background: #fff;
+    padding: 0.35rem;
+    box-shadow: 0 14px 34px rgba(18, 45, 60, 0.2);
+    max-height: 16rem;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+.nf-cselect.is-open .nf-cselect__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.nf-cselect__opt {
+    border-radius: 0.375rem;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-navy-dark);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+.nf-cselect__opt:hover {
+    background: var(--color-brand);
+    color: #fff;
+}
+.nf-cselect__opt.is-selected {
+    background: var(--color-cream);
+    font-weight: 600;
+}
+.nf-cselect__opt.is-selected:hover {
+    background: var(--color-brand);
+    color: #fff;
 }
 
 /* Track-based carousels */

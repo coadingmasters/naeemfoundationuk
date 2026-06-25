@@ -94,17 +94,33 @@
         <div class="nf-container py-5">
             <form class="flex flex-col items-stretch gap-3 lg:flex-row lg:items-center">
                 <span class="text-lg font-semibold text-white lg:mr-2">Quick Donate</span>
-                <select class="nf-select h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm font-medium text-navy-dark focus:ring-2 focus:ring-brand">
-                    <option>One-Off-Donation</option>
-                    <option>Monthly Donation</option>
-                </select>
-                <select class="nf-select h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm font-medium text-navy-dark focus:ring-2 focus:ring-brand">
-                    <option value="" disabled selected class="text-gray-400">Select a Cause</option>
-                    <option>Zakat</option>
-                    <option>Sadaqah</option>
-                    <option>Orphan Support</option>
-                    <option>Water Pump</option>
-                </select>
+                {{-- Frequency (custom dropdown) --}}
+                <div class="nf-cselect h-11 flex-1" data-cselect>
+                    <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
+                        <span data-cselect-label>One-Off-Donation</span>
+                        <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
+                        <li class="nf-cselect__opt is-selected" role="option" data-value="One-Off-Donation">One-Off-Donation</li>
+                        <li class="nf-cselect__opt" role="option" data-value="Monthly Donation">Monthly Donation</li>
+                    </ul>
+                    <input type="hidden" name="frequency" data-cselect-input value="One-Off-Donation">
+                </div>
+
+                {{-- Cause (custom dropdown) --}}
+                <div class="nf-cselect h-11 flex-1" data-cselect>
+                    <button type="button" class="nf-cselect__btn nf-cselect__btn--placeholder" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
+                        <span data-cselect-label>Select a Cause</span>
+                        <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
+                        <li class="nf-cselect__opt" role="option" data-value="Zakat">Zakat</li>
+                        <li class="nf-cselect__opt" role="option" data-value="Sadaqah">Sadaqah</li>
+                        <li class="nf-cselect__opt" role="option" data-value="Orphan Support">Orphan Support</li>
+                        <li class="nf-cselect__opt" role="option" data-value="Water Pump">Water Pump</li>
+                    </ul>
+                    <input type="hidden" name="cause" data-cselect-input value="">
+                </div>
                 <input type="number" placeholder="Value"
                        class="h-11 w-full rounded-md border-0 bg-white px-3 text-sm text-navy-dark focus:ring-2 focus:ring-brand lg:w-32">
                 <button type="submit" class="btn-white h-11">

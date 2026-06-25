@@ -5,11 +5,61 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
     setupReveal();
     setupChoiceGroups();
+    setupCustomSelects();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
     setupTrackCarousel(document.querySelector('[data-carousel="causes"]'));
 });
+
+/* ---------- Custom brand-styled dropdowns (Quick Donate) ---------- */
+function setupCustomSelects() {
+    const roots = [...document.querySelectorAll('[data-cselect]')];
+    if (!roots.length) return;
+
+    const closeAll = (except) => {
+        roots.forEach((el) => {
+            if (el !== except) {
+                el.classList.remove('is-open');
+                const b = el.querySelector('[data-cselect-btn]');
+                if (b) b.setAttribute('aria-expanded', 'false');
+            }
+        });
+    };
+
+    roots.forEach((root) => {
+        const btn = root.querySelector('[data-cselect-btn]');
+        const label = root.querySelector('[data-cselect-label]');
+        const input = root.querySelector('[data-cselect-input]');
+        const opts = [...root.querySelectorAll('.nf-cselect__opt')];
+        if (!btn || !label) return;
+
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = root.classList.contains('is-open');
+            closeAll(root);
+            root.classList.toggle('is-open', !isOpen);
+            btn.setAttribute('aria-expanded', String(!isOpen));
+        });
+
+        opts.forEach((opt) => {
+            opt.addEventListener('click', () => {
+                opts.forEach((o) => o.classList.remove('is-selected'));
+                opt.classList.add('is-selected');
+                label.textContent = opt.textContent.trim();
+                btn.classList.remove('nf-cselect__btn--placeholder');
+                if (input) input.value = opt.getAttribute('data-value') || opt.textContent.trim();
+                root.classList.remove('is-open');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        });
+    });
+
+    document.addEventListener('click', () => closeAll());
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAll();
+    });
+}
 
 /* ---------- Scroll-to-top with circular progress ring ---------- */
 function setupScrollTop() {
