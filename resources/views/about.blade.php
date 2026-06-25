@@ -174,24 +174,27 @@
 
             <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($team as $i => $member)
-                    <div class="nf-reveal group text-center" style="transition-delay: {{ $i * 120 }}ms">
-                        <div class="relative overflow-hidden rounded-xl shadow-sm ring-1 ring-black/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl">
-                            {{-- Photo --}}
-                            <img src="{{ asset($member['image']) }}" alt="{{ $member['name'] }}"
-                                 class="h-72 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+                    <div class="nf-reveal group" style="transition-delay: {{ $i * 120 }}ms">
+                        <div class="overflow-hidden rounded-xl shadow-sm ring-1 ring-black/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl">
+                            {{-- Photo + name band --}}
+                            <div class="relative overflow-hidden">
+                                <img src="{{ asset($member['image']) }}" alt="{{ $member['name'] }}"
+                                     class="h-64 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110">
 
-                            {{-- Darkening overlay on hover --}}
-                            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-dark/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                                {{-- Darkening overlay on hover --}}
+                                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-dark/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
 
-                            {{-- Name bar --}}
-                            <div class="absolute inset-x-0 bottom-0 bg-brand py-2.5 text-center transition-all duration-300 group-hover:py-3.5">
-                                <span class="text-sm font-semibold tracking-wide text-white">{{ $member['name'] }}</span>
+                                {{-- Navy name band overlaying the photo --}}
+                                <div class="absolute inset-x-0 bottom-0 bg-navy/90 py-2 text-center backdrop-blur-sm">
+                                    <span class="text-sm font-semibold tracking-wide text-white">{{ $member['name'] }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Maroon role bar --}}
+                            <div class="bg-brand py-2 text-center transition-colors duration-300 group-hover:bg-brand-dark">
+                                <span class="text-xs font-semibold uppercase tracking-wide text-white">{{ $member['role'] }}</span>
                             </div>
                         </div>
-
-                        <p class="mt-3 text-sm font-semibold text-navy-dark transition-colors duration-300 group-hover:text-brand">
-                            {{ $member['role'] }}
-                        </p>
                     </div>
                 @endforeach
             </div>
