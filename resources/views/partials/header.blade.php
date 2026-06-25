@@ -15,10 +15,10 @@
         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
 
             {{-- Top white bar --}}
-            <div class="flex h-20 items-center justify-between gap-4 px-5 sm:px-7">
+            <div class="flex h-24 items-center justify-between gap-4 px-5 sm:px-7">
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="flex items-center shrink-0">
-                    <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-12 w-auto">
+                    <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-16 w-auto sm:h-[68px]">
                 </a>
 
                 {{-- Desktop nav --}}
