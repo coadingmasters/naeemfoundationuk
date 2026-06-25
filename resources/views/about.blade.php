@@ -173,16 +173,25 @@
             </p>
 
             <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ($team as $member)
-                    <div class="text-center">
-                        <div class="relative overflow-hidden rounded-lg">
+                @foreach ($team as $i => $member)
+                    <div class="nf-reveal group text-center" style="transition-delay: {{ $i * 120 }}ms">
+                        <div class="relative overflow-hidden rounded-xl shadow-sm ring-1 ring-black/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl">
+                            {{-- Photo --}}
                             <img src="{{ asset($member['image']) }}" alt="{{ $member['name'] }}"
-                                 class="h-72 w-full object-cover">
-                            <div class="absolute inset-x-0 bottom-0 bg-brand py-2 text-center">
-                                <span class="text-sm font-semibold text-white">{{ $member['name'] }}</span>
+                                 class="h-72 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+
+                            {{-- Darkening overlay on hover --}}
+                            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-dark/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+
+                            {{-- Name bar --}}
+                            <div class="absolute inset-x-0 bottom-0 bg-brand py-2.5 text-center transition-all duration-300 group-hover:py-3.5">
+                                <span class="text-sm font-semibold tracking-wide text-white">{{ $member['name'] }}</span>
                             </div>
                         </div>
-                        <p class="mt-3 text-sm font-semibold text-navy-dark">{{ $member['role'] }}</p>
+
+                        <p class="mt-3 text-sm font-semibold text-navy-dark transition-colors duration-300 group-hover:text-brand">
+                            {{ $member['role'] }}
+                        </p>
                     </div>
                 @endforeach
             </div>
@@ -202,20 +211,23 @@
             </p>
 
             {{-- Timeline --}}
-            <div class="relative mt-12 pl-12 sm:pl-16">
-                {{-- Vertical line --}}
-                <span class="absolute left-[18px] top-2 bottom-2 w-px bg-brand/40 sm:left-[26px]" aria-hidden="true"></span>
+            <div class="relative mt-12">
+                {{-- Vertical line running through the circle centers --}}
+                <span class="absolute left-6 top-6 bottom-6 w-0.5 -translate-x-1/2 bg-brand" aria-hidden="true"></span>
 
-                <div class="space-y-8">
+                <div class="space-y-6 sm:space-y-8">
                     @foreach ($organogram as $item)
-                        <div class="relative">
-                            {{-- Number circle --}}
-                            <span class="absolute -left-12 top-4 grid h-9 w-9 place-items-center rounded-full bg-brand text-sm font-bold text-white ring-4 ring-white sm:-left-16 sm:h-12 sm:w-12 sm:text-base">
-                                {{ $item['no'] }}
-                            </span>
+                        <div class="relative flex items-center">
+                            {{-- Number circle (vertically centered) + horizontal connector --}}
+                            <div class="z-10 flex shrink-0 items-center">
+                                <span class="grid h-12 w-12 place-items-center rounded-full bg-brand text-base font-bold text-white">
+                                    {{ $item['no'] }}
+                                </span>
+                                <span class="h-0.5 w-4 bg-brand sm:w-8" aria-hidden="true"></span>
+                            </div>
 
                             {{-- Card --}}
-                            <div class="rounded-xl bg-navy p-6 text-white sm:p-8">
+                            <div class="flex-1 rounded-xl bg-navy p-5 text-white sm:p-7">
                                 <h3 class="text-lg font-bold sm:text-xl">{{ $item['title'] }}</h3>
                                 <p class="mt-3 text-sm leading-relaxed text-white/80">{{ $item['text'] }}</p>
                             </div>

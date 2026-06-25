@@ -3,10 +3,36 @@
 document.addEventListener('DOMContentLoaded', () => {
     setupMobileMenu();
     setupTabs();
+    setupReveal();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
     setupTrackCarousel(document.querySelector('[data-carousel="causes"]'));
 });
+
+/* ---------- Scroll-in reveal animation ---------- */
+function setupReveal() {
+    const els = document.querySelectorAll('.nf-reveal');
+    if (!els.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        els.forEach((el) => el.classList.add('is-visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        { threshold: 0.15 }
+    );
+
+    els.forEach((el) => observer.observe(el));
+}
 
 /* ---------- Tabs (About page: About & History / Vision / Mission) ---------- */
 function setupTabs() {
