@@ -13,3 +13,7 @@ Route::get('/about', function () {
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');
 })->name('privacy-policy');
+
+Route::get('/zakat', function () {
+    return view('zakat');
+})->name('zakat');

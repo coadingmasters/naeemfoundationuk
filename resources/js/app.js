@@ -4,10 +4,24 @@ document.addEventListener('DOMContentLoaded', () => {
     setupMobileMenu();
     setupTabs();
     setupReveal();
+    setupChoiceGroups();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
     setupTrackCarousel(document.querySelector('[data-carousel="causes"]'));
 });
+
+/* ---------- Donation widget choice groups (frequency + amount) ---------- */
+function setupChoiceGroups() {
+    document.querySelectorAll('[data-choice-group]').forEach((group) => {
+        const btns = [...group.querySelectorAll('[data-choice]')];
+        btns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                btns.forEach((b) => b.classList.remove('is-selected'));
+                btn.classList.add('is-selected');
+            });
+        });
+    });
+}
 
 /* ---------- Scroll-in reveal animation ---------- */
 function setupReveal() {
