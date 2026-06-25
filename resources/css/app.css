@@ -45,12 +45,12 @@
         @apply inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand text-brand transition-colors hover:bg-brand hover:text-white;
     }
 
-    /* About page tab buttons */
+    /* About page tab buttons — navy segmented bar */
     .nf-tab {
-        @apply cursor-pointer border border-gray-200 text-navy hover:bg-cream;
+        @apply cursor-pointer bg-white text-navy-dark hover:bg-cream;
     }
     .nf-tab.is-active {
-        @apply border-navy bg-navy text-white shadow;
+        @apply bg-transparent text-white hover:bg-transparent;
     }
 }
 

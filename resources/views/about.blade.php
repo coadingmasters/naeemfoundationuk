@@ -84,22 +84,22 @@
     {{-- ===================== HERO ===================== --}}
     <section class="bg-cream">
         <div class="nf-container">
-            <div class="grid items-center gap-8 py-10 lg:grid-cols-2 lg:gap-12 lg:py-0">
+            <div class="grid items-center gap-10 py-12 lg:grid-cols-2 lg:gap-16 lg:py-20">
                 {{-- Text --}}
-                <div class="lg:py-16">
-                    <h1 class="text-3xl font-extrabold leading-tight text-brand sm:text-4xl lg:text-5xl">
+                <div>
+                    <h1 class="text-4xl font-extrabold leading-[1.1] text-brand sm:text-5xl lg:text-6xl">
                         We are a nonprofit<br>Organization
                     </h1>
-                    <p class="mt-4 max-w-md text-sm leading-relaxed text-gray-600">
+                    <p class="mt-6 max-w-md text-base leading-relaxed text-gray-600">
                         Lighting up lives with compassionate aid and community empowerment, striving to tackle
                         pressing social issues for lasting change.
                     </p>
                 </div>
 
                 {{-- Image --}}
-                <div class="lg:py-10">
+                <div>
                     <img src="{{ asset('images/about us hero banner.png') }}" alt="Naeem Foundation team"
-                         class="h-64 w-full rounded-lg object-cover sm:h-80 lg:h-96">
+                         class="h-72 w-full rounded-xl object-cover shadow-md sm:h-96 lg:h-[440px]">
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@
     {{-- ===================== TABS ===================== --}}
     <section class="pt-12" data-tabs>
         <div class="nf-container">
-            <div class="mx-auto grid max-w-3xl grid-cols-1 gap-4 rounded-xl border border-gray-200 p-3 shadow-sm sm:grid-cols-3">
+            <div class="mx-auto grid max-w-3xl grid-cols-1 gap-3 rounded-xl bg-navy p-2 shadow-sm sm:grid-cols-3">
                 @foreach ($tabs as $i => $tab)
                     <button type="button" data-tab-btn="{{ $tab['key'] }}"
                             class="nf-tab rounded-lg px-6 py-3 text-center text-sm font-semibold transition-colors {{ $i === 0 ? 'is-active' : '' }}">
