@@ -18,6 +18,6 @@ Route::get('/zakat', function () {
     return view('zakat');
 })->name('zakat');
 
-Route::get('/careers', function () {
+Route::get('/history', function () {
     return view('careers');
-})->name('careers');
+})->name('history');
