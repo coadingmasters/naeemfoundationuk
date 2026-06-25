@@ -1,6 +1,13 @@
 @php
     $appealLinks = ['Orphan support', 'Sadaqah', 'zakat', 'water pump', 'Foods'];
-    $usefulLinks = ['About', 'Projects', 'Media', 'Career', 'Contact', 'Privacy Policy'];
+    $usefulLinks = [
+        ['label' => 'About', 'url' => route('about')],
+        ['label' => 'Projects', 'url' => '#'],
+        ['label' => 'Media', 'url' => '#'],
+        ['label' => 'Career', 'url' => '#'],
+        ['label' => 'Contact', 'url' => '#'],
+        ['label' => 'Privacy Policy', 'url' => route('privacy-policy')],
+    ];
 
     $bankDetails = [
         'Account Details' => 'Metro Bank',
@@ -65,7 +72,7 @@
             <h4 class="mb-4 text-lg font-bold text-white">Useful Links</h4>
             <ul class="space-y-2 text-sm text-white/85">
                 @foreach ($usefulLinks as $link)
-                    <li><a href="#" class="transition-colors hover:text-white">{{ $link }}</a></li>
+                    <li><a href="{{ $link['url'] }}" class="transition-colors hover:text-white">{{ $link['label'] }}</a></li>
                 @endforeach
             </ul>
         </div>
