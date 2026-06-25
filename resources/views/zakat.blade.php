@@ -41,9 +41,9 @@
                     </button>
 
                     {{-- Payment methods --}}
-                    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-                        <img src="{{ asset('images/firstpaymenticon.png') }}" alt="Registered with Fundraising Regulator" class="h-7 w-auto">
-                        <img src="{{ asset('images/otheralinoneicons.png') }}" alt="Visa, Mastercard, PayPal" class="h-6 w-auto">
+                    <div class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
+                        <img src="{{ asset('images/firstpaymenticon.png') }}" alt="Registered with Fundraising Regulator" class="h-10 w-auto sm:h-11">
+                        <img src="{{ asset('images/otheralinoneicons.png') }}" alt="Visa, Mastercard, PayPal" class="h-9 w-auto sm:h-10">
                     </div>
                 </div>
             </div>
