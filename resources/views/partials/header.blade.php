@@ -1,6 +1,6 @@
 @php
     $navLinks = [
-        ['label' => 'About', 'url' => '#'],
+        ['label' => 'About', 'url' => route('about')],
         ['label' => 'Ramadan 2026', 'url' => '#'],
         ['label' => 'Projects', 'url' => '#'],
         ['label' => 'Appeals', 'url' => '#'],
