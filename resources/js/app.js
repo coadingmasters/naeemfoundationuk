@@ -5,10 +5,48 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
     setupReveal();
     setupChoiceGroups();
+    setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
     setupTrackCarousel(document.querySelector('[data-carousel="causes"]'));
 });
+
+/* ---------- Scroll-to-top with circular progress ring ---------- */
+function setupScrollTop() {
+    const btn = document.getElementById('scrollTop');
+    if (!btn) return;
+
+    const progress = btn.querySelector('.nf-scrolltop__progress');
+    const CIRCUMFERENCE = 131.95; // 2 * π * r (r = 21)
+    let ticking = false;
+
+    const update = () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const scrollable = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const ratio = scrollable > 0 ? Math.min(scrollTop / scrollable, 1) : 0;
+
+        if (progress) {
+            progress.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - ratio));
+        }
+        btn.classList.toggle('is-visible', scrollTop > 250);
+        ticking = false;
+    };
+
+    const onScroll = () => {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    };
+
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+}
 
 /* ---------- Donation widget choice groups (frequency + amount) ---------- */
 function setupChoiceGroups() {

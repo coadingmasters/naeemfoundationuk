@@ -15,6 +15,17 @@
 
     @include('partials.footer')
 
+    {{-- Scroll-to-top with circular scroll-progress ring (appears on every page) --}}
+    <button type="button" id="scrollTop" class="nf-scrolltop" aria-label="Scroll to top">
+        <svg class="nf-scrolltop__ring" viewBox="0 0 48 48" aria-hidden="true">
+            <circle class="nf-scrolltop__track" cx="24" cy="24" r="21"></circle>
+            <circle class="nf-scrolltop__progress" cx="24" cy="24" r="21"></circle>
+        </svg>
+        <svg class="nf-scrolltop__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M6 14l6-6 6 6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </button>
+
     @stack('scripts')
 </body>
 </html>
