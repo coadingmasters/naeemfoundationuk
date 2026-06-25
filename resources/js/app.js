@@ -2,10 +2,28 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     setupMobileMenu();
+    setupTabs();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
     setupTrackCarousel(document.querySelector('[data-carousel="causes"]'));
 });
+
+/* ---------- Tabs (About page: About & History / Vision / Mission) ---------- */
+function setupTabs() {
+    document.querySelectorAll('[data-tabs]').forEach((root) => {
+        const btns = [...root.querySelectorAll('[data-tab-btn]')];
+        const panels = [...root.querySelectorAll('[data-tab-panel]')];
+        if (!btns.length) return;
+
+        btns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const key = btn.getAttribute('data-tab-btn');
+                btns.forEach((b) => b.classList.toggle('is-active', b === btn));
+                panels.forEach((p) => p.classList.toggle('hidden', p.getAttribute('data-tab-panel') !== key));
+            });
+        });
+    });
+}
 
 /* ---------- Mobile menu ---------- */
 function setupMobileMenu() {

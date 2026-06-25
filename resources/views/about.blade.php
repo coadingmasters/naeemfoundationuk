@@ -3,11 +3,23 @@
 @section('title', 'About Us — ' . config('app.name'))
 
 @php
-    // Tabs
+    // Tabs — each has its own content shown on click
     $tabs = [
-        ['label' => 'About & History', 'active' => true],
-        ['label' => 'Vision', 'active' => false],
-        ['label' => 'Mission', 'active' => false],
+        [
+            'key' => 'about',
+            'label' => 'About & History',
+            'text' => 'Naeem Foundation is a dedicated charity committed to empowering individuals and communities. With a strong focus on addressing pressing social challenges, we strive to create a positive and lasting impact. Our mission is to uplift those in need, nurturing a society built on compassion and equality.',
+        ],
+        [
+            'key' => 'vision',
+            'label' => 'Vision',
+            'text' => 'Our vision is a world where every individual has access to the essentials of a dignified life — free from poverty, hunger and injustice. We envision thriving, self-reliant communities empowered to shape their own future, united by compassion, equality and hope for generations to come.',
+        ],
+        [
+            'key' => 'mission',
+            'label' => 'Mission',
+            'text' => 'Our mission is to uplift those in need through compassionate aid, sustainable development and community empowerment. By providing education, healthcare, clean water and emergency relief, we work to break the cycle of poverty and build a society founded on dignity, justice and shared responsibility.',
+        ],
     ];
 
     // Our Value pills — two columns. color: 'navy' | 'brand'
@@ -94,28 +106,26 @@
     </section>
 
     {{-- ===================== TABS ===================== --}}
-    <section class="pt-12">
+    <section class="pt-12" data-tabs>
         <div class="nf-container">
             <div class="mx-auto grid max-w-3xl grid-cols-1 gap-4 rounded-xl border border-gray-200 p-3 shadow-sm sm:grid-cols-3">
-                @foreach ($tabs as $tab)
-                    <button type="button"
-                            class="rounded-lg px-6 py-3 text-center text-sm font-semibold transition-colors
-                                {{ $tab['active'] ? 'bg-navy text-white shadow' : 'border border-gray-200 text-navy hover:bg-cream' }}">
+                @foreach ($tabs as $i => $tab)
+                    <button type="button" data-tab-btn="{{ $tab['key'] }}"
+                            class="nf-tab rounded-lg px-6 py-3 text-center text-sm font-semibold transition-colors {{ $i === 0 ? 'is-active' : '' }}">
                         {{ $tab['label'] }}
                     </button>
                 @endforeach
             </div>
-        </div>
-    </section>
 
-    {{-- ===================== INTRO ===================== --}}
-    <section class="pt-8">
-        <div class="nf-container">
-            <p class="max-w-4xl text-sm leading-relaxed text-gray-600">
-                Naeem Foundation is a dedicated charity committed to empowering individuals and communities. With a
-                strong focus on addressing pressing social challenges, we strive to create a positive and lasting
-                impact. Our mission is to uplift those in need, nurturing a society built on compassion and equality.
-            </p>
+            {{-- Panels (one per tab) --}}
+            <div class="pt-8">
+                @foreach ($tabs as $i => $tab)
+                    <p data-tab-panel="{{ $tab['key'] }}"
+                       class="max-w-4xl text-sm leading-relaxed text-gray-600 {{ $i === 0 ? '' : 'hidden' }}">
+                        {{ $tab['text'] }}
+                    </p>
+                @endforeach
+            </div>
         </div>
     </section>
 
