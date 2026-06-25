@@ -144,6 +144,7 @@ function setupSlideCarousel(root, autoMs = 0) {
         index = (i + slides.length) % slides.length;
         track.style.transform = `translateX(-${index * 100}%)`;
         dots.forEach((d, n) => d.classList.toggle('is-active', n === index));
+        slides.forEach((s, n) => s.classList.toggle('is-active', n === index));
     };
 
     root.querySelector('[data-prev]')?.addEventListener('click', () => go(index - 1));

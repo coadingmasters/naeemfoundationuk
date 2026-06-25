@@ -94,12 +94,12 @@
         <div class="nf-container py-5">
             <form class="flex flex-col items-stretch gap-3 lg:flex-row lg:items-center">
                 <span class="text-lg font-semibold text-white lg:mr-2">Quick Donate</span>
-                <select class="h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark focus:ring-2 focus:ring-brand">
+                <select class="nf-select h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm font-medium text-navy-dark focus:ring-2 focus:ring-brand">
                     <option>One-Off-Donation</option>
                     <option>Monthly Donation</option>
                 </select>
-                <select class="h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark focus:ring-2 focus:ring-brand">
-                    <option>Select a Cause</option>
+                <select class="nf-select h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm font-medium text-navy-dark focus:ring-2 focus:ring-brand">
+                    <option value="" disabled selected class="text-gray-400">Select a Cause</option>
                     <option>Zakat</option>
                     <option>Sadaqah</option>
                     <option>Orphan Support</option>
