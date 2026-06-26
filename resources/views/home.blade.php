@@ -3,12 +3,20 @@
 @section('title', config('app.name') . ' — Changing Lives')
 
 @php
-    // Hero slides (duplicated until real images are supplied)
-    $heroSlides = [
-        ['image' => 'images/homepagehero.png', 'title' => 'YOUR ZAKAT<br>CAN SAVE THEM'],
-        ['image' => 'images/homepagehero.png', 'title' => 'GIVE HOPE<br>THIS RAMADAN'],
-        ['image' => 'images/homepagehero.png', 'title' => 'TOGETHER WE<br>CHANGE LIVES'],
-    ];
+    // Hero slides are managed in the admin dashboard and passed in by HomeController.
+    // Fall back to a single default slide if none have been created yet.
+    $heroSlides = ($heroSlides ?? collect());
+    if ($heroSlides->isEmpty()) {
+        $heroSlides = collect([
+            (object) [
+                'image' => 'images/homepagehero.png',
+                'title' => "CHANGING LIVES\nTOGETHER",
+                'subtitle' => 'Naeem Foundation',
+                'button_text' => 'Donate Now',
+                'button_url' => '#',
+            ],
+        ]);
+    }
 
     // Latest Appeals cards
     $appeals = [
@@ -58,35 +66,52 @@
 @section('content')
 
     {{-- ===================== HERO SLIDER ===================== --}}
-    <section class="relative overflow-hidden" data-carousel="hero">
+    <section class="group relative overflow-hidden" data-carousel="hero">
         <div class="overflow-hidden">
             <div class="nf-track flex" data-track>
                 @foreach ($heroSlides as $slide)
-                    <div class="relative h-[240px] w-full shrink-0 sm:h-[320px] lg:h-[400px]" data-slide>
-                        <img src="{{ asset($slide['image']) }}" alt="" class="h-full w-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent"></div>
+                    <div class="relative h-[400px] w-full shrink-0 sm:h-[480px] lg:h-[560px]" data-slide>
+                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover">
+                        {{-- Brand-tinted gradient for legible, professional contrast --}}
+                        <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent"></div>
+
                         <div class="nf-container absolute inset-0 flex items-center">
-                            <h1 class="ml-auto max-w-md text-right text-3xl font-extrabold leading-tight text-white sm:text-4xl lg:text-5xl">
-                                {!! $slide['title'] !!}
-                            </h1>
+                            <div class="max-w-xl text-white" data-hero-content>
+                                @if (!empty($slide->subtitle))
+                                    <span class="mb-4 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                                        {{ $slide->subtitle }}
+                                    </span>
+                                @endif
+                                <h1 class="text-4xl font-extrabold leading-[1.1] text-white drop-shadow sm:text-5xl lg:text-6xl">
+                                    {!! nl2br(e($slide->title)) !!}
+                                </h1>
+                                @if (!empty($slide->button_text))
+                                    <a href="{{ $slide->button_url ?: '#' }}" class="btn-brand mt-7 px-6 py-3 text-base shadow-xl">
+                                        {{ $slide->button_text }}
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @endforeach
             </div>
         </div>
 
-        {{-- Arrows --}}
-        <button type="button" data-prev aria-label="Previous"
-                class="absolute left-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/30 text-white backdrop-blur transition hover:bg-white/50">
+        {{-- Arrows (fade in on hover) --}}
+        <button type="button" data-prev aria-label="Previous slide"
+                class="absolute left-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur transition hover:bg-brand focus:opacity-100 group-hover:opacity-100 sm:left-6">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button type="button" data-next aria-label="Next"
-                class="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/30 text-white backdrop-blur transition hover:bg-white/50">
+        <button type="button" data-next aria-label="Next slide"
+                class="absolute right-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur transition hover:bg-brand focus:opacity-100 group-hover:opacity-100 sm:right-6">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
 
         {{-- Dots --}}
-        <div class="absolute inset-x-0 bottom-4 flex justify-center gap-2" data-dots></div>
+        <div class="absolute inset-x-0 bottom-5 flex justify-center gap-2" data-dots></div>
     </section>
 
     {{-- ===================== QUICK DONATE BAR ===================== --}}
