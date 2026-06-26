@@ -4,7 +4,7 @@
         ['label' => 'About', 'url' => route('about')],
         ['label' => 'Projects', 'url' => '#'],
         ['label' => 'Media', 'url' => '#'],
-        ['label' => 'Career', 'url' => route('history')],
+        ['label' => 'Career', 'url' => route('careers')],
         ['label' => 'Contact', 'url' => '#'],
         ['label' => 'Privacy Policy', 'url' => route('privacy-policy')],
     ];

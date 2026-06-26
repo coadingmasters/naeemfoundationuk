@@ -2,6 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     setupMobileMenu();
+    setupSubnav();
     setupTabs();
     setupReveal();
     setupChoiceGroups();
@@ -162,6 +163,22 @@ function setupMobileMenu() {
     toggle.addEventListener('click', () => {
         const open = panel.classList.toggle('hidden') === false;
         toggle.setAttribute('aria-expanded', String(open));
+    });
+}
+
+/* ---------- Mobile sub-nav accordions ("Who We Are" etc.) ---------- */
+function setupSubnav() {
+    document.querySelectorAll('[data-subnav-toggle]').forEach((toggle) => {
+        const panel = toggle.parentElement.querySelector('[data-subnav]');
+        const chev = toggle.querySelector('[data-subnav-chev]');
+        if (!panel) return;
+
+        toggle.addEventListener('click', () => {
+            const open = panel.classList.toggle('hidden') === false;
+            panel.classList.toggle('flex', open);
+            toggle.setAttribute('aria-expanded', String(open));
+            if (chev) chev.style.transform = open ? 'rotate(180deg)' : '';
+        });
     });
 }
 

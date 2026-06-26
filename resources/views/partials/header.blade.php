@@ -1,6 +1,22 @@
 @php
-    $navLinks = [
-        ['label' => 'About', 'url' => route('about')],
+    // Icons for the "Who We Are" dropdown (single-path SVGs, brand-coloured).
+    $navGroups = [
+        [
+            'label' => 'Who We Are',
+            'active' => request()->routeIs('about', 'history', 'annual-report', 'careers', 'news'),
+            'children' => [
+                ['label' => 'About Us', 'desc' => 'Our story & mission', 'url' => route('about'),
+                 'icon' => '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-linecap="round" stroke-linejoin="round"/>'],
+                ['label' => 'History', 'desc' => 'Two decades of impact', 'url' => route('history'),
+                 'icon' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/>'],
+                ['label' => 'Annual Report', 'desc' => 'Transparency & accounts', 'url' => route('annual-report'),
+                 'icon' => '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" stroke-linejoin="round"/><path d="M14 3v5h5M9 13l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>'],
+                ['label' => 'Career', 'desc' => 'Join our team', 'url' => route('careers'),
+                 'icon' => '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18" stroke-linecap="round" stroke-linejoin="round"/>'],
+                ['label' => 'News & Press', 'desc' => 'Latest updates', 'url' => route('news'),
+                 'icon' => '<path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" stroke-linejoin="round"/><path d="M17 9h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2M8 9h6M8 13h6M8 17h3" stroke-linecap="round" stroke-linejoin="round"/>'],
+            ],
+        ],
         ['label' => 'Ramadan 2026', 'url' => '#'],
         ['label' => 'Projects', 'url' => '#'],
         ['label' => 'Appeals', 'url' => '#'],
@@ -12,7 +28,7 @@
 <header class="sticky top-0 z-50 bg-white">
     <div class="nf-container pt-4">
         {{-- Floating rounded header card (white nav + maroon verse joined) --}}
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
 
             {{-- Top white bar --}}
             <div class="flex h-24 items-center justify-between gap-4 px-5 sm:px-7">
@@ -23,11 +39,36 @@
 
                 {{-- Desktop nav --}}
                 <nav class="hidden items-center gap-6 xl:gap-8 lg:flex">
-                    @foreach ($navLinks as $link)
-                        <a href="{{ $link['url'] }}"
-                           class="text-sm font-bold text-navy transition-colors hover:text-brand">
-                            {{ $link['label'] }}
-                        </a>
+                    @foreach ($navGroups as $item)
+                        @if (!empty($item['children']))
+                            <div class="nf-dd">
+                                <button type="button"
+                                        class="flex items-center gap-1.5 text-sm font-bold transition-colors hover:text-brand {{ ($item['active'] ?? false) ? 'text-brand' : 'text-navy' }}"
+                                        aria-haspopup="true">
+                                    {{ $item['label'] }}
+                                    <svg class="nf-dd__chev h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+
+                                <div class="nf-dd__menu" role="menu">
+                                    <p class="px-3 pb-2 pt-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400">{{ $item['label'] }}</p>
+                                    @foreach ($item['children'] as $child)
+                                        <a href="{{ $child['url'] }}" class="nf-dd__item" role="menuitem">
+                                            <span class="nf-dd__ico">
+                                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">{!! $child['icon'] !!}</svg>
+                                            </span>
+                                            <span class="min-w-0">
+                                                <span class="block leading-tight">{{ $child['label'] }}</span>
+                                                <span class="block text-xs font-normal leading-tight text-gray-400">{{ $child['desc'] }}</span>
+                                            </span>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <a href="{{ $item['url'] }}" class="text-sm font-bold text-navy transition-colors hover:text-brand">
+                                {{ $item['label'] }}
+                            </a>
+                        @endif
                     @endforeach
                 </nav>
 
@@ -53,17 +94,35 @@
             {{-- Mobile nav panel --}}
             <nav data-menu-panel class="hidden border-t border-gray-100 bg-white lg:hidden">
                 <div class="flex flex-col px-5 py-2 sm:px-7">
-                    @foreach ($navLinks as $link)
-                        <a href="{{ $link['url'] }}"
-                           class="border-b border-gray-100 py-3 text-sm font-semibold text-navy last:border-0 hover:text-brand">
-                            {{ $link['label'] }}
-                        </a>
+                    @foreach ($navGroups as $item)
+                        @if (!empty($item['children']))
+                            <div class="border-b border-gray-100">
+                                <button type="button" data-subnav-toggle aria-expanded="false"
+                                        class="flex w-full items-center justify-between py-3 text-sm font-semibold text-navy">
+                                    {{ $item['label'] }}
+                                    <svg data-subnav-chev class="h-4 w-4 text-brand transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <div data-subnav class="hidden flex-col pb-2">
+                                    @foreach ($item['children'] as $child)
+                                        <a href="{{ $child['url'] }}"
+                                           class="ml-2 border-l-2 border-cream py-2.5 pl-4 text-sm font-medium text-navy transition-colors hover:border-brand hover:text-brand">
+                                            {{ $child['label'] }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <a href="{{ $item['url'] }}"
+                               class="border-b border-gray-100 py-3 text-sm font-semibold text-navy last:border-0 hover:text-brand">
+                                {{ $item['label'] }}
+                            </a>
+                        @endif
                     @endforeach
                 </div>
             </nav>
 
             {{-- Arabic verse bar --}}
-            <div class="bg-brand text-white">
+            <div class="overflow-hidden rounded-b-2xl bg-brand text-white">
                 <div class="px-5 py-2 text-center sm:px-7">
                     <p class="text-sm leading-relaxed" dir="rtl" lang="ar">
                         قُلْ مَنْ يُنَجِّيكُمْ مِنْ ظُلُمَاتِ الْبَرِّ وَالْبَحْرِ تَدْعُونَهُ تَضَرُّعًا وَخُفْيَةً لَئِنْ أَنْجَانَا مِنْ هَٰذِهِ لَنَكُونَنَّ مِنَ الشَّاكِرِينَ ٦٣

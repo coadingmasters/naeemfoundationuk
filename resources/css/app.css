@@ -259,3 +259,127 @@
     width: 1.5rem;
     background-color: #fff;
 }
+
+/* ---------- Header "Who We Are" animated dropdown ---------- */
+.nf-dd {
+    position: relative;
+}
+.nf-dd__menu {
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 1.1rem);
+    width: 18rem;
+    transform: translateX(-50%) translateY(10px);
+    border-radius: 1rem;
+    background: #fff;
+    padding: 0.5rem;
+    box-shadow: 0 22px 50px rgba(18, 45, 60, 0.18);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.28s ease;
+    z-index: 60;
+}
+/* Brand accent strip at the top of the menu */
+.nf-dd__menu::after {
+    content: "";
+    position: absolute;
+    left: 1.25rem;
+    right: 1.25rem;
+    top: 0;
+    height: 3px;
+    border-radius: 0 0 4px 4px;
+    background: linear-gradient(90deg, var(--color-brand), var(--color-navy));
+}
+/* Invisible hover bridge so the menu doesn't close between trigger and panel */
+.nf-dd__menu::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1.1rem;
+    height: 1.1rem;
+}
+/* Little pointer arrow */
+.nf-dd > button::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 0.55rem);
+    width: 0.85rem;
+    height: 0.85rem;
+    background: #fff;
+    transform: translateX(-50%) rotate(45deg);
+    border-radius: 2px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+    z-index: 61;
+}
+.nf-dd:hover .nf-dd__menu,
+.nf-dd:focus-within .nf-dd__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+.nf-dd:hover > button::after,
+.nf-dd:focus-within > button::after {
+    opacity: 1;
+    visibility: visible;
+}
+.nf-dd__chev {
+    transition: transform 0.28s ease;
+}
+.nf-dd:hover .nf-dd__chev,
+.nf-dd:focus-within .nf-dd__chev {
+    transform: rotate(180deg);
+}
+.nf-dd__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    border-radius: 0.65rem;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-navy);
+    /* Staggered entrance */
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: background-color 0.18s ease, color 0.18s ease, opacity 0.3s ease,
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-dd:hover .nf-dd__item,
+.nf-dd:focus-within .nf-dd__item {
+    opacity: 1;
+    transform: translateX(0);
+}
+.nf-dd:hover .nf-dd__item:nth-child(2),
+.nf-dd:focus-within .nf-dd__item:nth-child(2) { transition-delay: 0.04s; }
+.nf-dd:hover .nf-dd__item:nth-child(3),
+.nf-dd:focus-within .nf-dd__item:nth-child(3) { transition-delay: 0.08s; }
+.nf-dd:hover .nf-dd__item:nth-child(4),
+.nf-dd:focus-within .nf-dd__item:nth-child(4) { transition-delay: 0.12s; }
+.nf-dd:hover .nf-dd__item:nth-child(5),
+.nf-dd:focus-within .nf-dd__item:nth-child(5) { transition-delay: 0.16s; }
+.nf-dd:hover .nf-dd__item:nth-child(6),
+.nf-dd:focus-within .nf-dd__item:nth-child(6) { transition-delay: 0.20s; }
+.nf-dd__item:hover {
+    background: var(--color-cream);
+    color: var(--color-brand);
+}
+.nf-dd__ico {
+    display: grid;
+    place-items: center;
+    height: 2.25rem;
+    width: 2.25rem;
+    flex: none;
+    border-radius: 0.6rem;
+    background: var(--color-cream);
+    color: var(--color-brand);
+    transition: background-color 0.18s ease, color 0.18s ease;
+}
+.nf-dd__item:hover .nf-dd__ico {
+    background: var(--color-brand);
+    color: #fff;
+}
