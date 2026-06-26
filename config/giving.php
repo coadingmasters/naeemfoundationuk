@@ -1,0 +1,44 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| "Giving" mega-menu structure
+|--------------------------------------------------------------------------
+|
+| Drives both the header dropdown (resources/views/partials/header.blade.php)
+| and the placeholder routes (routes/web.php), so they never fall out of sync.
+| Each item links to its own 'route' if one exists, otherwise a placeholder
+| page is auto-generated at /give/{slug}.
+|
+*/
+
+return [
+    'appeals' => [
+        'heading' => 'Appeals',
+        'items' => [
+            ['title' => 'Food & Sustenance', 'slug' => 'food-sustenance'],
+            ['title' => 'Sustainable Livelihood', 'slug' => 'sustainable-livelihood'],
+            ['title' => 'Healthcare', 'slug' => 'healthcare'],
+            ['title' => 'Cambodia Education & Welfare', 'slug' => 'cambodia-education-welfare'],
+            ['title' => 'Water Well', 'slug' => 'water-well'],
+            ['title' => 'Prosthetic Limb', 'slug' => 'prosthetic-limb'],
+        ],
+    ],
+
+    'islamic' => [
+        'heading' => 'Islamic Giving',
+        'items' => [
+            ['title' => 'Zakat', 'route' => 'zakat'],
+            ['title' => 'Sadaqah', 'slug' => 'sadaqah'],
+            ['title' => 'Fidya & Kaffarah', 'slug' => 'fidya-kaffarah'],
+            ['title' => 'Sehri & Iftar', 'slug' => 'sehri-iftar'],
+            ['title' => 'Zakat ul Fitr', 'slug' => 'zakat-ul-fitr'],
+            ['title' => 'Eid Gifts for Children', 'slug' => 'eid-gifts-for-children'],
+        ],
+        // Highlighted Ramadan calls-to-action shown at the bottom of the tab.
+        'featured' => [
+            ['title' => 'Schedule Your Ramadan Giving', 'slug' => 'schedule-ramadan-giving'],
+            ['title' => 'Give Ramadan Food Packs', 'slug' => 'ramadan-food-packs'],
+        ],
+    ],
+];

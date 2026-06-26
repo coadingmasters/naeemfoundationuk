@@ -35,6 +35,19 @@ Route::view('/news-and-press', 'placeholder', [
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
 
+// "Giving" group — auto-generate a placeholder page for every slug-based item.
+foreach (config('giving') as $group) {
+    foreach (array_merge($group['items'], $group['featured'] ?? []) as $item) {
+        if (! empty($item['slug'])) {
+            Route::view('/give/'.$item['slug'], 'placeholder', [
+                'pageTag' => 'Giving',
+                'pageTitle' => $item['title'],
+                'pageText' => 'Support our '.$item['title'].' programme — this page is being prepared. Thank you for your generosity.',
+            ])->name('give.'.$item['slug']);
+        }
+    }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Admin authentication

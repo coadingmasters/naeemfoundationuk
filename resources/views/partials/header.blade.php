@@ -17,12 +17,17 @@
                  'icon' => '<path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" stroke-linejoin="round"/><path d="M17 9h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2M8 9h6M8 13h6M8 17h3" stroke-linecap="round" stroke-linejoin="round"/>'],
             ],
         ],
-        ['label' => 'Ramadan 2026', 'url' => '#'],
+        ['label' => 'Giving', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat')],
         ['label' => 'Projects', 'url' => '#'],
         ['label' => 'Appeals', 'url' => '#'],
         ['label' => 'Community Center', 'url' => '#'],
         ['label' => 'Hajj 2026', 'url' => '#'],
     ];
+
+    // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
+    $givingUrl = fn ($item) => ! empty($item['route']) ? route($item['route']) : route('give.'.$item['slug']);
+
+    $arrowSvg = '<svg class="nf-mega__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 @endphp
 
 <header class="sticky top-0 z-50 bg-white">
@@ -40,7 +45,61 @@
                 {{-- Desktop nav --}}
                 <nav class="hidden items-center gap-6 xl:gap-8 lg:flex">
                     @foreach ($navGroups as $item)
-                        @if (!empty($item['children']))
+                        @if (!empty($item['mega']))
+                            {{-- ===== Giving mega-dropdown (tabbed) ===== --}}
+                            <div class="nf-dd nf-dd--mega">
+                                <button type="button"
+                                        class="flex items-center gap-1.5 text-sm font-bold transition-colors hover:text-brand {{ ($item['active'] ?? false) ? 'text-brand' : 'text-navy' }}"
+                                        aria-haspopup="true">
+                                    {{ $item['label'] }}
+                                    <svg class="nf-dd__chev h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+
+                                <div class="nf-dd__menu nf-dd__menu--mega" role="menu">
+                                    {{-- Tabs --}}
+                                    <div class="nf-mega__tabs" data-mega>
+                                        <button type="button" class="nf-mega__tab is-active" data-mega-tab="appeals">{{ config('giving.appeals.heading') }}</button>
+                                        <button type="button" class="nf-mega__tab" data-mega-tab="islamic">{{ config('giving.islamic.heading') }}</button>
+                                    </div>
+
+                                    {{-- Appeals panel --}}
+                                    <div class="nf-mega__panel is-active" data-mega-panel="appeals">
+                                        <div class="nf-mega__grid">
+                                            @foreach (config('giving.appeals.items') as $g)
+                                                <a href="{{ $givingUrl($g) }}" class="nf-mega__item">
+                                                    <span class="nf-mega__dot"></span>
+                                                    <span class="flex-1 truncate">{{ $g['title'] }}</span>
+                                                    {!! $arrowSvg !!}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+                                    {{-- Islamic Giving panel --}}
+                                    <div class="nf-mega__panel" data-mega-panel="islamic">
+                                        <div class="nf-mega__grid">
+                                            @foreach (config('giving.islamic.items') as $g)
+                                                <a href="{{ $givingUrl($g) }}" class="nf-mega__item">
+                                                    <span class="nf-mega__dot"></span>
+                                                    <span class="flex-1 truncate">{{ $g['title'] }}</span>
+                                                    {!! $arrowSvg !!}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                        <div class="nf-mega__featured">
+                                            @foreach (config('giving.islamic.featured') as $g)
+                                                <a href="{{ $givingUrl($g) }}" class="nf-mega__feat">
+                                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                    <span class="flex-1">{{ $g['title'] }}</span>
+                                                    {!! $arrowSvg !!}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @elseif (!empty($item['children']))
+                            {{-- ===== Who We Are dropdown ===== --}}
                             <div class="nf-dd">
                                 <button type="button"
                                         class="flex items-center gap-1.5 text-sm font-bold transition-colors hover:text-brand {{ ($item['active'] ?? false) ? 'text-brand' : 'text-navy' }}"
@@ -95,7 +154,26 @@
             <nav data-menu-panel class="hidden border-t border-gray-100 bg-white lg:hidden">
                 <div class="flex flex-col px-5 py-2 sm:px-7">
                     @foreach ($navGroups as $item)
-                        @if (!empty($item['children']))
+                        @if (!empty($item['mega']))
+                            <div class="border-b border-gray-100">
+                                <button type="button" data-subnav-toggle aria-expanded="false"
+                                        class="flex w-full items-center justify-between py-3 text-sm font-semibold text-navy">
+                                    {{ $item['label'] }}
+                                    <svg data-subnav-chev class="h-4 w-4 text-brand transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                                <div data-subnav class="hidden flex-col pb-2">
+                                    @foreach (['appeals', 'islamic'] as $key)
+                                        <p class="px-1 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-brand">{{ config('giving.'.$key.'.heading') }}</p>
+                                        @foreach (array_merge(config('giving.'.$key.'.items'), config('giving.'.$key.'.featured', [])) as $g)
+                                            <a href="{{ $givingUrl($g) }}"
+                                               class="ml-2 border-l-2 border-cream py-2 pl-4 text-sm font-medium text-navy transition-colors hover:border-brand hover:text-brand">
+                                                {{ $g['title'] }}
+                                            </a>
+                                        @endforeach
+                                    @endforeach
+                                </div>
+                            </div>
+                        @elseif (!empty($item['children']))
                             <div class="border-b border-gray-100">
                                 <button type="button" data-subnav-toggle aria-expanded="false"
                                         class="flex w-full items-center justify-between py-3 text-sm font-semibold text-navy">

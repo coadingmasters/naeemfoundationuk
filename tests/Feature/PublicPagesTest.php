@@ -21,6 +21,9 @@ class PublicPagesTest extends TestCase
             'news' => ['news'],
             'privacy-policy' => ['privacy-policy'],
             'zakat' => ['zakat'],
+            'give.food-sustenance' => ['give.food-sustenance'],
+            'give.sehri-iftar' => ['give.sehri-iftar'],
+            'give.ramadan-food-packs' => ['give.ramadan-food-packs'],
         ];
     }
 
@@ -39,5 +42,18 @@ class PublicPagesTest extends TestCase
         $response->assertSee('About Us');
         $response->assertSee('Annual Report');
         $response->assertSee('News &amp; Press', false);
+    }
+
+    public function test_giving_mega_menu_is_present_in_header(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('Giving');
+        $response->assertSee('Appeals');
+        $response->assertSee('Islamic Giving');
+        $response->assertSee('Sehri &amp; Iftar', false);
+        $response->assertSee('Zakat ul Fitr');
+        $response->assertSee('Give Ramadan Food Packs');
     }
 }
