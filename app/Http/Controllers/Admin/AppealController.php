@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\AssignsSortOrder;
 use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\Appeal;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 
 class AppealController extends Controller
 {
-    use HandlesImageUploads;
+    use AssignsSortOrder, HandlesImageUploads;
 
     /** Directory (relative to the web root) where appeal images are stored. */
     private const UPLOAD_DIR = 'images/appeals';
@@ -24,7 +25,7 @@ class AppealController extends Controller
 
     public function create()
     {
-        $appeal = new Appeal(['is_active' => true, 'sort_order' => 0]);
+        $appeal = new Appeal(['is_active' => true]);
 
         return view('admin.appeals.create', compact('appeal'));
     }
@@ -32,6 +33,9 @@ class AppealController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request, true);
+        $data['sort_order'] = $request->filled('sort_order')
+            ? (int) $request->input('sort_order')
+            : $this->nextSortOrder(Appeal::class);
         $data['image'] = $this->storeUploadedImage($request->file('image'), self::UPLOAD_DIR, 'appeal');
         $data['is_active'] = $request->boolean('is_active');
 
@@ -50,6 +54,10 @@ class AppealController extends Controller
     {
         $data = $this->validateData($request, false);
         $data['is_active'] = $request->boolean('is_active');
+
+        if (! $request->filled('sort_order')) {
+            unset($data['sort_order']); // keep the existing order
+        }
 
         if ($request->hasFile('image')) {
             $this->deleteUploadedImage($appeal->image, self::UPLOAD_DIR);
@@ -79,7 +87,7 @@ class AppealController extends Controller
             'description' => ['required', 'string', 'max:500'],
             'image' => [$imageRequired ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'link' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['required', 'integer', 'min:0', 'max:9999'],
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
     }
 }

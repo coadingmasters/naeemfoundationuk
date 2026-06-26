@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\AssignsSortOrder;
 use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 
 class HeroSlideController extends Controller
 {
-    use HandlesImageUploads;
+    use AssignsSortOrder, HandlesImageUploads;
 
     /** Directory (relative to the web root) where hero images are stored. */
     private const UPLOAD_DIR = 'images/hero';
@@ -24,7 +25,7 @@ class HeroSlideController extends Controller
 
     public function create()
     {
-        $slide = new HeroSlide(['is_active' => true, 'sort_order' => 0]);
+        $slide = new HeroSlide(['is_active' => true]);
 
         return view('admin.hero-slides.create', compact('slide'));
     }
@@ -32,6 +33,9 @@ class HeroSlideController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request, true);
+        $data['sort_order'] = $request->filled('sort_order')
+            ? (int) $request->input('sort_order')
+            : $this->nextSortOrder(HeroSlide::class);
         $data['image'] = $this->storeUploadedImage($request->file('image'), self::UPLOAD_DIR, 'hero');
         $data['is_active'] = $request->boolean('is_active');
 
@@ -50,6 +54,10 @@ class HeroSlideController extends Controller
     {
         $data = $this->validateData($request, false);
         $data['is_active'] = $request->boolean('is_active');
+
+        if (! $request->filled('sort_order')) {
+            unset($data['sort_order']); // keep the existing order
+        }
 
         if ($request->hasFile('image')) {
             $this->deleteUploadedImage($heroSlide->image, self::UPLOAD_DIR);
@@ -80,7 +88,7 @@ class HeroSlideController extends Controller
             'image' => [$imageRequired ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'button_text' => ['nullable', 'string', 'max:60'],
             'button_url' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['required', 'integer', 'min:0', 'max:9999'],
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
     }
 }

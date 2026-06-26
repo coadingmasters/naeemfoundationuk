@@ -143,6 +143,22 @@ class AdminHeroSlideTest extends TestCase
             ->assertSessionHasErrors(['title', 'image']);
     }
 
+    public function test_sort_order_auto_assigns_filling_gaps(): void
+    {
+        foreach ([1, 2, 4] as $o) {
+            HeroSlide::create(['title' => "S{$o}", 'image' => 'images/homepagehero.png', 'is_active' => true, 'sort_order' => $o]);
+        }
+
+        $this->actingAs($this->admin())->post(route('admin.hero-slides.store'), [
+            'title' => 'Gap Filler',
+            'image' => UploadedFile::fake()->create('s.jpg', 100, 'image/jpeg'),
+        ]);
+
+        $gap = HeroSlide::where('title', 'Gap Filler')->first();
+        $this->assertSame(3, $gap->sort_order);
+        @unlink(public_path($gap->image));
+    }
+
     public function test_seeder_is_idempotent_and_non_destructive(): void
     {
         $this->seed(DatabaseSeeder::class);

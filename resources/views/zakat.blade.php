@@ -12,7 +12,7 @@
 
         <div class="relative grid items-stretch lg:grid-cols-2">
             {{-- Image --}}
-            <div class="relative min-h-[300px] sm:min-h-[380px] lg:min-h-[540px]">
+            <div class="relative min-h-[280px] sm:min-h-[360px] lg:min-h-[500px]">
                 <img src="{{ asset('images/zakathero.png') }}" alt="Zakat donations"
                      class="absolute inset-0 h-full w-full object-cover">
                 {{-- Blend image into the navy panel --}}
@@ -28,17 +28,13 @@
             </div>
 
             {{-- Donate widget --}}
-            <div class="relative flex flex-col justify-center px-5 py-10 sm:px-10 lg:px-12 lg:py-12" data-donate>
-                <span class="inline-flex w-max items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-white ring-1 ring-white/15">
-                    <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>
-                    Fulfil Your Zakat
-                </span>
-                <h2 class="mt-4 text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">Zakat Donations 2026</h2>
+            <div class="relative flex flex-col justify-center px-5 py-8 sm:px-10 lg:px-12" data-donate>
+                <h2 class="text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">Zakat Donations 2026</h2>
                 <p class="mt-2 max-w-md text-sm leading-relaxed text-white/70">
                     Purify your wealth with 2.5% that brings food, water and hope to families in need.
                 </p>
 
-                <div class="mt-6 rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6">
+                <div class="mt-5 rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6">
                     <p class="text-center text-sm font-bold uppercase tracking-wide text-brand">Choose an amount</p>
 
                     {{-- Frequency --}}

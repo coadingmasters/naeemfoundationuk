@@ -111,7 +111,48 @@ class AdminAppealTest extends TestCase
     public function test_create_requires_title_description_and_image(): void
     {
         $this->actingAs($this->admin())
-            ->post(route('admin.appeals.store'), ['sort_order' => 0])
+            ->post(route('admin.appeals.store'), [])
             ->assertSessionHasErrors(['title', 'description', 'image']);
+    }
+
+    public function test_sort_order_auto_assigns_filling_gaps_then_appends(): void
+    {
+        // Existing orders 1, 2, 4 — leaving a gap at 3.
+        foreach ([1, 2, 4] as $o) {
+            Appeal::create(['title' => "A{$o}", 'description' => 'd', 'image' => 'images/changinslives1.jpg', 'is_active' => true, 'sort_order' => $o]);
+        }
+
+        // No order given → fills the gap (3).
+        $this->actingAs($this->admin())->post(route('admin.appeals.store'), [
+            'title' => 'Gap Filler',
+            'description' => 'fills the gap',
+            'image' => UploadedFile::fake()->create('a.jpg', 100, 'image/jpeg'),
+        ]);
+        $gap = Appeal::where('title', 'Gap Filler')->first();
+        $this->assertSame(3, $gap->sort_order);
+        @unlink(public_path($gap->image));
+
+        // Orders are now 1,2,3,4 (contiguous) → next goes after the last (5).
+        $this->actingAs($this->admin())->post(route('admin.appeals.store'), [
+            'title' => 'After Last',
+            'description' => 'appended',
+            'image' => UploadedFile::fake()->create('b.jpg', 100, 'image/jpeg'),
+        ]);
+        $last = Appeal::where('title', 'After Last')->first();
+        $this->assertSame(5, $last->sort_order);
+        @unlink(public_path($last->image));
+    }
+
+    public function test_sort_order_starts_at_one_when_empty(): void
+    {
+        $this->actingAs($this->admin())->post(route('admin.appeals.store'), [
+            'title' => 'First',
+            'description' => 'd',
+            'image' => UploadedFile::fake()->create('a.jpg', 100, 'image/jpeg'),
+        ]);
+
+        $first = Appeal::where('title', 'First')->first();
+        $this->assertSame(1, $first->sort_order);
+        @unlink(public_path($first->image));
     }
 }

@@ -68,10 +68,10 @@
 
             <div class="space-y-5">
                 <div>
-                    <label for="sort_order" class="mb-1.5 block text-sm font-semibold text-navy-dark">Display order</label>
-                    <input id="sort_order" name="sort_order" type="number" min="0" max="9999" value="{{ old('sort_order', $appeal->sort_order ?? 0) }}"
+                    <label for="sort_order" class="mb-1.5 block text-sm font-semibold text-navy-dark">Display order <span class="text-gray-400">(optional)</span></label>
+                    <input id="sort_order" name="sort_order" type="number" min="0" max="9999" value="{{ old('sort_order', $appeal->sort_order) }}" placeholder="Auto"
                            class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    <p class="mt-1 text-xs text-gray-400">Lower numbers show first.</p>
+                    <p class="mt-1 text-xs text-gray-400">Leave empty to place it automatically after the last one (a gap from a deleted appeal is filled first). Lower numbers show first.</p>
                 </div>
 
                 <div>
