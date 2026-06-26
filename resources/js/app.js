@@ -106,11 +106,15 @@ function setupCursor() {
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const dot = document.createElement('div');
-    dot.className = 'nf-cursor-dot is-hidden';
+    const arrow = document.createElement('div');
+    arrow.className = 'nf-cursor-arrow is-hidden';
+    arrow.innerHTML =
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M2 1.5 L2 18 L6.7 13.5 L9.7 19.6 L12 18.6 L9 12.6 L15 12.6 Z" ' +
+        'fill="#fff" stroke="#740a2e" stroke-width="1.5" stroke-linejoin="round"/></svg>';
     const ring = document.createElement('div');
     ring.className = 'nf-cursor-ring is-hidden';
-    document.body.appendChild(dot);
+    document.body.appendChild(arrow);
     document.body.appendChild(ring);
     document.documentElement.classList.add('nf-has-cursor');
 
@@ -125,11 +129,11 @@ function setupCursor() {
         (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            dot.style.left = `${mouseX}px`;
-            dot.style.top = `${mouseY}px`;
+            arrow.style.left = `${mouseX}px`;
+            arrow.style.top = `${mouseY}px`;
             if (!shown) {
                 shown = true;
-                dot.classList.remove('is-hidden');
+                arrow.classList.remove('is-hidden');
                 ring.classList.remove('is-hidden');
             }
         },
@@ -158,20 +162,20 @@ function setupCursor() {
     // Click feedback.
     document.addEventListener('mousedown', () => {
         ring.classList.add('is-click');
-        dot.classList.add('is-click');
+        arrow.classList.add('is-click');
     });
     document.addEventListener('mouseup', () => {
         ring.classList.remove('is-click');
-        dot.classList.remove('is-click');
+        arrow.classList.remove('is-click');
     });
 
     // Hide when the pointer leaves the window.
     document.addEventListener('mouseleave', () => {
-        dot.classList.add('is-hidden');
+        arrow.classList.add('is-hidden');
         ring.classList.add('is-hidden');
     });
     document.addEventListener('mouseenter', () => {
-        dot.classList.remove('is-hidden');
+        arrow.classList.remove('is-hidden');
         ring.classList.remove('is-hidden');
     });
 }

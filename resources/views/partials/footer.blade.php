@@ -60,9 +60,9 @@
         {{-- Appeals --}}
         <div class="lg:col-span-2">
             <h4 class="mb-4 text-lg font-bold text-white">Appeals</h4>
-            <ul class="space-y-2 text-sm text-white/85">
+            <ul class="space-y-2 text-sm">
                 @foreach ($appealLinks as $link)
-                    <li><a href="#" class="transition-colors hover:text-white">{{ $link }}</a></li>
+                    <li><a href="#" class="text-white/85 transition-colors hover:text-white">{{ $link }}</a></li>
                 @endforeach
             </ul>
         </div>
@@ -70,9 +70,9 @@
         {{-- Useful Links --}}
         <div class="lg:col-span-2">
             <h4 class="mb-4 text-lg font-bold text-white">Useful Links</h4>
-            <ul class="space-y-2 text-sm text-white/85">
+            <ul class="space-y-2 text-sm">
                 @foreach ($usefulLinks as $link)
-                    <li><a href="{{ $link['url'] }}" class="transition-colors hover:text-white">{{ $link['label'] }}</a></li>
+                    <li><a href="{{ $link['url'] }}" class="text-white/85 transition-colors hover:text-white">{{ $link['label'] }}</a></li>
                 @endforeach
             </ul>
         </div>
