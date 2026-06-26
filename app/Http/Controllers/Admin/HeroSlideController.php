@@ -82,11 +82,11 @@ class HeroSlideController extends Controller
         ]);
     }
 
-    /** Move an uploaded file into public/images/hero and return its relative path. */
+    /** Move an uploaded file into the web root's images/hero and return its relative path. */
     private function storeImage(UploadedFile $file): string
     {
         $name = 'hero-'.now()->format('YmdHis').'-'.substr(md5(uniqid('', true)), 0, 8).'.'.$file->getClientOriginalExtension();
-        $file->move(public_path(self::UPLOAD_DIR), $name);
+        $file->move($this->webRoot().'/'.self::UPLOAD_DIR, $name);
 
         return self::UPLOAD_DIR.'/'.$name;
     }
@@ -95,10 +95,26 @@ class HeroSlideController extends Controller
     private function deleteImage(?string $path): void
     {
         if ($path && str_starts_with($path, self::UPLOAD_DIR.'/')) {
-            $full = public_path($path);
+            $full = $this->webRoot().'/'.$path;
             if (is_file($full)) {
                 @unlink($full);
             }
         }
+    }
+
+    /**
+     * The directory the web server actually serves from.
+     *
+     * On Hostinger (and similar shared hosting) the public document root is
+     * `public_html`, a sibling of the Laravel app folder — NOT the app's own
+     * `public/`. Writing uploads to public_path() there saves them somewhere
+     * the browser can't reach. We detect that layout and use it; otherwise we
+     * fall back to the standard public path (local dev, normal hosting).
+     */
+    private function webRoot(): string
+    {
+        $docroot = base_path('../public_html');
+
+        return is_dir($docroot) ? $docroot : public_path();
     }
 }
