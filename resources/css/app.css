@@ -532,3 +532,41 @@
         opacity: 0;
     }
 }
+
+/* ---------- Header verse marquee (continuous scroll) ---------- */
+.nf-marquee {
+    position: relative;
+}
+.nf-marquee__track {
+    display: flex;
+    width: max-content;
+    flex-wrap: nowrap;
+    animation: nf-marquee 32s linear infinite;
+}
+.nf-marquee:hover .nf-marquee__track {
+    animation-play-state: paused;
+}
+.nf-marquee__group {
+    display: flex;
+    flex: none;
+    align-items: center;
+}
+.nf-marquee__item {
+    flex: none;
+    white-space: nowrap;
+    padding: 0 0.25rem;
+}
+.nf-marquee__sep {
+    flex: none;
+    padding: 0 1.4rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+@keyframes nf-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .nf-marquee__track {
+        animation: none;
+    }
+}

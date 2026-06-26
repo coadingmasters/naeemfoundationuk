@@ -175,12 +175,20 @@
                 </div>
             </nav>
 
-            {{-- Arabic verse bar --}}
-            <div class="overflow-hidden rounded-b-2xl bg-brand text-white">
-                <div class="px-5 py-2 text-center sm:px-7">
-                    <p class="text-sm leading-relaxed" dir="rtl" lang="ar">
-                        قُلْ مَنْ يُنَجِّيكُمْ مِنْ ظُلُمَاتِ الْبَرِّ وَالْبَحْرِ تَدْعُونَهُ تَضَرُّعًا وَخُفْيَةً لَئِنْ أَنْجَانَا مِنْ هَٰذِهِ لَنَكُونَنَّ مِنَ الشَّاكِرِينَ ٦٣
-                    </p>
+            {{-- Arabic verse marquee — continuous right-to-left scroll --}}
+            @php
+                $verse = 'قُلْ مَنْ يُنَجِّيكُمْ مِنْ ظُلُمَاتِ الْبَرِّ وَالْبَحْرِ تَدْعُونَهُ تَضَرُّعًا وَخُفْيَةً لَئِنْ أَنْجَانَا مِنْ هَٰذِهِ لَنَكُونَنَّ مِنَ الشَّاكِرِينَ ٦٣';
+            @endphp
+            <div class="nf-marquee overflow-hidden rounded-b-2xl bg-brand py-2 text-white">
+                <div class="nf-marquee__track" dir="ltr">
+                    @for ($i = 0; $i < 2; $i++)
+                        <div class="nf-marquee__group" @if ($i === 1) aria-hidden="true" @endif>
+                            @for ($j = 0; $j < 3; $j++)
+                                <span class="nf-marquee__item text-sm leading-relaxed" dir="rtl" lang="ar">{{ $verse }}</span>
+                                <span class="nf-marquee__sep" aria-hidden="true">۞</span>
+                            @endfor
+                        </div>
+                    @endfor
                 </div>
             </div>
         </div>
