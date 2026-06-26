@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AppealController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroSlideController;
@@ -72,6 +73,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('hero-slides', HeroSlideController::class)
+            ->except(['show']);
+
+        Route::resource('appeals', AppealController::class)
             ->except(['show']);
     });
 });

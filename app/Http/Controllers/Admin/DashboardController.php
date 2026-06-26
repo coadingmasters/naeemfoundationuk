@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Appeal;
 use App\Models\HeroSlide;
 
 class DashboardController extends Controller
@@ -12,7 +13,8 @@ class DashboardController extends Controller
         $stats = [
             'total_slides' => HeroSlide::count(),
             'active_slides' => HeroSlide::where('is_active', true)->count(),
-            'inactive_slides' => HeroSlide::where('is_active', false)->count(),
+            'total_appeals' => Appeal::count(),
+            'active_appeals' => Appeal::where('is_active', true)->count(),
         ];
 
         $recentSlides = HeroSlide::ordered()->take(5)->get();

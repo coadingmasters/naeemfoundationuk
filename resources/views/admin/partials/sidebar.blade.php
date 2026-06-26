@@ -12,6 +12,12 @@
             'active' => request()->routeIs('admin.hero-slides.*'),
             'icon' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-4 4 3 3-2 6 5" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
+        [
+            'label' => 'Latest Appeals',
+            'route' => 'admin.appeals.index',
+            'active' => request()->routeIs('admin.appeals.*'),
+            'icon' => '<path d="M12 21s-7-4.35-9-8.5C1.5 9 3.5 6 6.5 6 9 6 12 9 12 9s3-3 5.5-3C20.5 6 22.5 9 21 12.5 19 16.65 12 21 12 21z" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
     ];
 @endphp
 

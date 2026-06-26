@@ -18,20 +18,20 @@
         ]);
     }
 
-    // Latest Appeals cards
-    $appeals = [
-        ['image' => 'images/changinslives1.jpg', 'title' => 'Education', 'text' => 'Sadaqah: The Power of Giving. Have you ever felt the true…'],
-        ['image' => 'images/changinslives2.jpg', 'title' => 'Food & Sustenance', 'text' => 'Food Support. Our Mission to Provide for People in Need. Donate…'],
-        ['image' => 'images/changinslives3.jpg', 'title' => 'Binoria Water', 'text' => 'Water Crisis Hit Jamia Binoria Hard. Students Struggle even for a…'],
-        ['image' => 'images/changinslives4.jpg', 'title' => 'Healthcare', 'text' => 'In rural areas, access to healthcare is often limited. At Naeem Foundation…'],
-        ['image' => 'images/changinslives2.jpg', 'title' => 'Ramadan Food Packs', 'text' => 'Provide a month of meals for a family in need this Ramadan…'],
-        ['image' => 'images/changinslives4.jpg', 'title' => 'Medical Camps', 'text' => 'Free check-ups and medicine for remote communities. Support today…'],
-        ['image' => 'images/changinslives1.jpg', 'title' => 'Orphan Sponsorship', 'text' => 'Give an orphan shelter, food and education every single month…'],
-        ['image' => 'images/changinslives3.jpg', 'title' => 'Clean Water Wells', 'text' => 'Fund a well and bring clean water to an entire village…'],
-    ];
+    // Latest Appeals are managed in the admin dashboard and passed in by
+    // HomeController. Fall back to a default set if none have been created yet.
+    $appeals = ($appeals ?? collect());
+    if ($appeals->isEmpty()) {
+        $appeals = collect([
+            (object) ['image' => 'images/changinslives1.jpg', 'title' => 'Education', 'description' => 'Sadaqah: The Power of Giving. Have you ever felt the true joy of helping a child learn?', 'link' => '#'],
+            (object) ['image' => 'images/changinslives2.jpg', 'title' => 'Food & Sustenance', 'description' => 'Food Support. Our mission to provide for people in need. Donate today.', 'link' => '#'],
+            (object) ['image' => 'images/changinslives3.jpg', 'title' => 'Binoria Water', 'description' => 'Water Crisis Hit Jamia Binoria Hard. Students struggle even for a drop of clean water.', 'link' => '#'],
+            (object) ['image' => 'images/changinslives4.jpg', 'title' => 'Healthcare', 'description' => 'In rural areas, access to healthcare is often limited. We bring care closer.', 'link' => '#'],
+        ]);
+    }
 
     // Group appeals into pages of 4 for the carousel
-    $appealPages = array_chunk($appeals, 4);
+    $appealPages = $appeals->chunk(4);
 
     // Causes carousel
     $causes = [
@@ -181,12 +181,12 @@
                             <div class="w-full shrink-0" data-slide>
                                 <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
                                     @foreach ($page as $appeal)
-                                        <a href="#" class="group flex gap-4">
-                                            <img src="{{ asset($appeal['image']) }}" alt="{{ $appeal['title'] }}"
+                                        <a href="{{ $appeal->link ?: '#' }}" class="group flex gap-4">
+                                            <img src="{{ asset($appeal->image) }}" alt="{{ $appeal->title }}"
                                                  class="h-16 w-20 shrink-0 rounded object-cover">
                                             <div>
-                                                <h3 class="font-semibold text-navy-dark group-hover:text-brand">{{ $appeal['title'] }}</h3>
-                                                <p class="mt-1 text-sm text-gray-500">{{ $appeal['text'] }}</p>
+                                                <h3 class="font-semibold text-navy-dark group-hover:text-brand">{{ $appeal->title }}</h3>
+                                                <p class="mt-1 text-sm text-gray-500">{{ $appeal->description }}</p>
                                             </div>
                                         </a>
                                     @endforeach

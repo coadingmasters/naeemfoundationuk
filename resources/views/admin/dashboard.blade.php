@@ -8,8 +8,9 @@
     @php
         $cards = [
             ['label' => 'Total Slides', 'value' => $stats['total_slides'], 'tone' => 'brand', 'icon' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-4 4 3 3-2 6 5" stroke-linecap="round" stroke-linejoin="round"/>'],
-            ['label' => 'Active (Live)', 'value' => $stats['active_slides'], 'tone' => 'green', 'icon' => '<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>'],
-            ['label' => 'Hidden', 'value' => $stats['inactive_slides'], 'tone' => 'navy', 'icon' => '<path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 4.2A9.8 9.8 0 0 1 12 4c5 0 9 4.5 10 8a12 12 0 0 1-2.2 3.2M6.6 6.6C4.3 8 2.7 10 2 12c1 3.5 5 8 10 8 1.4 0 2.7-.3 3.9-.8" stroke-linecap="round" stroke-linejoin="round"/>'],
+            ['label' => 'Live Slides', 'value' => $stats['active_slides'], 'tone' => 'green', 'icon' => '<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>'],
+            ['label' => 'Total Appeals', 'value' => $stats['total_appeals'], 'tone' => 'navy', 'icon' => '<path d="M12 21s-7-4.35-9-8.5C1.5 9 3.5 6 6.5 6 9 6 12 9 12 9s3-3 5.5-3C20.5 6 22.5 9 21 12.5 19 16.65 12 21 12 21z" stroke-linecap="round" stroke-linejoin="round"/>'],
+            ['label' => 'Live Appeals', 'value' => $stats['active_appeals'], 'tone' => 'green', 'icon' => '<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>'],
         ];
         $tones = [
             'brand' => 'bg-brand text-white',
@@ -19,7 +20,7 @@
     @endphp
 
     {{-- Stat cards --}}
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         @foreach ($cards as $card)
             <div class="flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                 <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl {{ $tones[$card['tone']] }}">
@@ -47,6 +48,9 @@
                 </a>
                 <a href="{{ route('admin.hero-slides.index') }}" class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20">
                     Manage Slides
+                </a>
+                <a href="{{ route('admin.appeals.index') }}" class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20">
+                    Manage Appeals
                 </a>
             </div>
         </div>

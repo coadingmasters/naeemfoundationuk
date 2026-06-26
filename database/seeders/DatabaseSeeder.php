@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Appeal;
 use App\Models\HeroSlide;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -57,6 +58,28 @@ class DatabaseSeeder extends Seeder
                 HeroSlide::create(array_merge($slide, [
                     'image' => 'images/homepagehero.png',
                     'button_url' => '#',
+                    'sort_order' => $i,
+                    'is_active' => true,
+                ]));
+            }
+        }
+
+        // Sample "Latest Appeals" cards — only when the table is empty.
+        if (Appeal::count() === 0) {
+            $appeals = [
+                ['title' => 'Education', 'description' => 'Sadaqah: The Power of Giving. Have you ever felt the true joy of helping a child learn?', 'image' => 'images/changinslives1.jpg'],
+                ['title' => 'Food & Sustenance', 'description' => 'Food Support. Our mission to provide for people in need. Donate today and feed a family.', 'image' => 'images/changinslives2.jpg'],
+                ['title' => 'Binoria Water', 'description' => 'Water Crisis Hit Jamia Binoria Hard. Students struggle even for a single drop of clean water.', 'image' => 'images/changinslives3.jpg'],
+                ['title' => 'Healthcare', 'description' => 'In rural areas, access to healthcare is often limited. At Naeem Foundation we bring care closer.', 'image' => 'images/changinslives4.jpg'],
+                ['title' => 'Ramadan Food Packs', 'description' => 'Provide a month of meals for a family in need this Ramadan and earn endless rewards.', 'image' => 'images/changinslives2.jpg'],
+                ['title' => 'Medical Camps', 'description' => 'Free check-ups and medicine for remote communities. Support a medical camp today.', 'image' => 'images/changinslives4.jpg'],
+                ['title' => 'Orphan Sponsorship', 'description' => 'Give an orphan shelter, food and education every single month and change a life.', 'image' => 'images/changinslives1.jpg'],
+                ['title' => 'Clean Water Wells', 'description' => 'Fund a well and bring clean water to an entire village for years to come.', 'image' => 'images/changinslives3.jpg'],
+            ];
+
+            foreach ($appeals as $i => $appeal) {
+                Appeal::create(array_merge($appeal, [
+                    'link' => '#',
                     'sort_order' => $i,
                     'is_active' => true,
                 ]));

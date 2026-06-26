@@ -5,19 +5,40 @@
 @section('content')
 
     {{-- ===================== HERO + DONATE WIDGET ===================== --}}
-    <section class="bg-navy">
-        <div class="grid items-stretch lg:grid-cols-2">
+    <section class="relative overflow-hidden bg-gradient-to-br from-navy via-navy to-navy-dark">
+        {{-- Decorative glows --}}
+        <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
+        <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
+
+        <div class="relative grid items-stretch lg:grid-cols-2">
             {{-- Image --}}
-            <div class="relative min-h-[260px] sm:min-h-[340px]">
+            <div class="relative min-h-[300px] sm:min-h-[380px] lg:min-h-[540px]">
                 <img src="{{ asset('images/zakathero.png') }}" alt="Zakat donations"
                      class="absolute inset-0 h-full w-full object-cover">
+                {{-- Blend image into the navy panel --}}
+                <div class="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-navy"></div>
+
+                {{-- Floating trust badge --}}
+                <div class="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 shadow-lg backdrop-blur sm:bottom-6 sm:left-6">
+                    <span class="grid h-7 w-7 place-items-center rounded-full bg-brand text-white">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span class="text-xs font-bold text-navy-dark">100% Zakat Policy</span>
+                </div>
             </div>
 
             {{-- Donate widget --}}
-            <div class="px-5 py-8 sm:px-10 lg:px-12 lg:py-10" data-donate>
-                <h2 class="text-xl font-bold text-white sm:text-2xl">Zakat Donations 2026</h2>
+            <div class="relative flex flex-col justify-center px-5 py-10 sm:px-10 lg:px-12 lg:py-12" data-donate>
+                <span class="inline-flex w-max items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-white ring-1 ring-white/15">
+                    <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>
+                    Fulfil Your Zakat
+                </span>
+                <h2 class="mt-4 text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">Zakat Donations 2026</h2>
+                <p class="mt-2 max-w-md text-sm leading-relaxed text-white/70">
+                    Purify your wealth with 2.5% that brings food, water and hope to families in need.
+                </p>
 
-                <div class="mt-4 rounded-xl bg-gray-100 p-5 shadow-sm sm:p-6">
+                <div class="mt-6 rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6">
                     <p class="text-center text-sm font-bold uppercase tracking-wide text-brand">Choose an amount</p>
 
                     {{-- Frequency --}}
@@ -30,7 +51,7 @@
                     <div class="mt-3 grid grid-cols-4 gap-2" data-choice-group>
                         <button type="button" data-choice class="nf-choice py-2">£100</button>
                         <button type="button" data-choice class="nf-choice is-selected py-2">£240</button>
-                        <button type="button" data-choice class="nf-choice py-2">£240</button>
+                        <button type="button" data-choice class="nf-choice py-2">£500</button>
                         <button type="button" data-choice class="nf-choice py-2">£Other</button>
                     </div>
 
@@ -41,9 +62,30 @@
                     </button>
 
                     {{-- Payment methods --}}
-                    <div class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
+                    <div class="mt-6 flex flex-wrap items-center justify-center gap-3 border-t border-gray-100 pt-5">
+                        {{-- Fundraising Regulator (kept) --}}
                         <img src="{{ asset('images/firstpaymenticon.png') }}" alt="Registered with Fundraising Regulator" class="h-10 w-auto sm:h-11">
-                        <img src="{{ asset('images/otheralinoneicons.png') }}" alt="Visa, Mastercard, PayPal" class="h-9 w-auto sm:h-10">
+
+                        {{-- Visa --}}
+                        <span class="grid h-9 w-14 place-items-center rounded-md bg-white shadow-sm ring-1 ring-gray-200" title="Visa">
+                            <span class="text-[15px] font-black italic leading-none tracking-tight text-[#1A1F71]">VISA</span>
+                        </span>
+
+                        {{-- Mastercard --}}
+                        <span class="grid h-9 w-14 place-items-center rounded-md bg-white shadow-sm ring-1 ring-gray-200" title="Mastercard">
+                            <svg class="h-5 w-auto" viewBox="0 0 48 30" fill="none" aria-hidden="true">
+                                <circle cx="19" cy="15" r="10" fill="#EB001B"/>
+                                <circle cx="29" cy="15" r="10" fill="#F79E1B"/>
+                                <path d="M24 7.2a10 10 0 0 1 0 15.6 10 10 0 0 1 0-15.6z" fill="#FF5F00"/>
+                            </svg>
+                        </span>
+
+                        {{-- PayPal --}}
+                        <span class="grid h-9 w-14 place-items-center rounded-md bg-white shadow-sm ring-1 ring-gray-200" title="PayPal">
+                            <span class="text-[13px] font-black italic leading-none">
+                                <span class="text-[#003087]">Pay</span><span class="text-[#009CDE]">Pal</span>
+                            </span>
+                        </span>
                     </div>
                 </div>
             </div>

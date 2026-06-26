@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 
 class HeroSlideController extends Controller
 {
-    /** Directory (relative to public/) where hero images are stored. */
+    use HandlesImageUploads;
+
+    /** Directory (relative to the web root) where hero images are stored. */
     private const UPLOAD_DIR = 'images/hero';
 
     public function index()
@@ -30,7 +32,7 @@ class HeroSlideController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request, true);
-        $data['image'] = $this->storeImage($request->file('image'));
+        $data['image'] = $this->storeUploadedImage($request->file('image'), self::UPLOAD_DIR, 'hero');
         $data['is_active'] = $request->boolean('is_active');
 
         HeroSlide::create($data);
@@ -50,8 +52,8 @@ class HeroSlideController extends Controller
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $this->deleteImage($heroSlide->image);
-            $data['image'] = $this->storeImage($request->file('image'));
+            $this->deleteUploadedImage($heroSlide->image, self::UPLOAD_DIR);
+            $data['image'] = $this->storeUploadedImage($request->file('image'), self::UPLOAD_DIR, 'hero');
         }
 
         $heroSlide->update($data);
@@ -62,7 +64,7 @@ class HeroSlideController extends Controller
 
     public function destroy(HeroSlide $heroSlide): RedirectResponse
     {
-        $this->deleteImage($heroSlide->image);
+        $this->deleteUploadedImage($heroSlide->image, self::UPLOAD_DIR);
         $heroSlide->delete();
 
         return redirect()->route('admin.hero-slides.index')
@@ -80,41 +82,5 @@ class HeroSlideController extends Controller
             'button_url' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:9999'],
         ]);
-    }
-
-    /** Move an uploaded file into the web root's images/hero and return its relative path. */
-    private function storeImage(UploadedFile $file): string
-    {
-        $name = 'hero-'.now()->format('YmdHis').'-'.substr(md5(uniqid('', true)), 0, 8).'.'.$file->getClientOriginalExtension();
-        $file->move($this->webRoot().'/'.self::UPLOAD_DIR, $name);
-
-        return self::UPLOAD_DIR.'/'.$name;
-    }
-
-    /** Remove a previously uploaded image (never touches seeded/shared images). */
-    private function deleteImage(?string $path): void
-    {
-        if ($path && str_starts_with($path, self::UPLOAD_DIR.'/')) {
-            $full = $this->webRoot().'/'.$path;
-            if (is_file($full)) {
-                @unlink($full);
-            }
-        }
-    }
-
-    /**
-     * The directory the web server actually serves from.
-     *
-     * On Hostinger (and similar shared hosting) the public document root is
-     * `public_html`, a sibling of the Laravel app folder — NOT the app's own
-     * `public/`. Writing uploads to public_path() there saves them somewhere
-     * the browser can't reach. We detect that layout and use it; otherwise we
-     * fall back to the standard public path (local dev, normal hosting).
-     */
-    private function webRoot(): string
-    {
-        $docroot = base_path('../public_html');
-
-        return is_dir($docroot) ? $docroot : public_path();
     }
 }
