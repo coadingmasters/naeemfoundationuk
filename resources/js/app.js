@@ -3,7 +3,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     setupMobileMenu();
     setupSubnav();
-    setupMega();
     setupTabs();
     setupReveal();
     setupChoiceGroups();
@@ -179,29 +178,6 @@ function setupSubnav() {
             panel.classList.toggle('flex', open);
             toggle.setAttribute('aria-expanded', String(open));
             if (chev) chev.style.transform = open ? 'rotate(180deg)' : '';
-        });
-    });
-}
-
-/* ---------- Giving mega-menu tab switching ---------- */
-function setupMega() {
-    document.querySelectorAll('[data-mega]').forEach((tabsWrap) => {
-        const menu = tabsWrap.closest('.nf-dd__menu') || tabsWrap.parentElement;
-        const tabs = [...tabsWrap.querySelectorAll('[data-mega-tab]')];
-        const panels = [...menu.querySelectorAll('[data-mega-panel]')];
-
-        const activate = (tab) => {
-            const key = tab.getAttribute('data-mega-tab');
-            tabs.forEach((t) => t.classList.toggle('is-active', t === tab));
-            panels.forEach((p) => p.classList.toggle('is-active', p.getAttribute('data-mega-panel') === key));
-        };
-
-        tabs.forEach((tab) => {
-            tab.addEventListener('mouseenter', () => activate(tab));
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-                activate(tab);
-            });
         });
     });
 }

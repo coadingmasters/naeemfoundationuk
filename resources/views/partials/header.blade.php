@@ -56,45 +56,21 @@
                                 </button>
 
                                 <div class="nf-dd__menu nf-dd__menu--mega" role="menu">
-                                    {{-- Tabs --}}
-                                    <div class="nf-mega__tabs" data-mega>
-                                        <button type="button" class="nf-mega__tab is-active" data-mega-tab="appeals">{{ config('giving.appeals.heading') }}</button>
-                                        <button type="button" class="nf-mega__tab" data-mega-tab="islamic">{{ config('giving.islamic.heading') }}</button>
-                                    </div>
-
-                                    {{-- Appeals panel --}}
-                                    <div class="nf-mega__panel is-active" data-mega-panel="appeals">
-                                        <div class="nf-mega__grid">
-                                            @foreach (config('giving.appeals.items') as $g)
-                                                <a href="{{ $givingUrl($g) }}" class="nf-mega__item">
-                                                    <span class="nf-mega__dot"></span>
-                                                    <span class="flex-1 truncate">{{ $g['title'] }}</span>
-                                                    {!! $arrowSvg !!}
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                    </div>
-
-                                    {{-- Islamic Giving panel --}}
-                                    <div class="nf-mega__panel" data-mega-panel="islamic">
-                                        <div class="nf-mega__grid">
-                                            @foreach (config('giving.islamic.items') as $g)
-                                                <a href="{{ $givingUrl($g) }}" class="nf-mega__item">
-                                                    <span class="nf-mega__dot"></span>
-                                                    <span class="flex-1 truncate">{{ $g['title'] }}</span>
-                                                    {!! $arrowSvg !!}
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                        <div class="nf-mega__featured">
-                                            @foreach (config('giving.islamic.featured') as $g)
-                                                <a href="{{ $givingUrl($g) }}" class="nf-mega__feat">
-                                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    <span class="flex-1">{{ $g['title'] }}</span>
-                                                    {!! $arrowSvg !!}
-                                                </a>
-                                            @endforeach
-                                        </div>
+                                    <div class="nf-mega__cols">
+                                        @foreach (['appeals', 'islamic'] as $key)
+                                            <div class="nf-mega__col">
+                                                <span class="nf-mega__head">{{ config('giving.'.$key.'.heading') }}</span>
+                                                <div class="nf-mega__list">
+                                                    @foreach (array_merge(config('giving.'.$key.'.items'), config('giving.'.$key.'.featured', [])) as $g)
+                                                        <a href="{{ $givingUrl($g) }}" class="nf-mega__item">
+                                                            <span class="nf-mega__dot"></span>
+                                                            <span class="flex-1 leading-tight">{{ $g['title'] }}</span>
+                                                            {!! $arrowSvg !!}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
