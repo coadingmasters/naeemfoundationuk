@@ -1,0 +1,61 @@
+name: Deploy to Hostinger
+
+# Runs automatically on every push to main (e.g. when you run `bash deploy.sh`
+# from your Codespace), and can also be triggered manually from the Actions tab.
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Never run two deploys at the same time.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      SERVER_HOST: 145.79.26.12
+      SERVER_PORT: 65002
+      SERVER_USER: u721035936
+      APP_PATH: ~/domains/naeemfoundation.qubexistech.com/naeemfoundation
+      PUBLIC_PATH: /home/u721035936/domains/naeemfoundation.qubexistech.com/public_html
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build front-end assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install rsync + sshpass
+        run: sudo apt-get update && sudo apt-get install -y rsync sshpass
+
+      - name: Upload compiled assets to the server
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
+          # Compiled CSS/JS (safe to mirror with --delete)
+          sshpass -e rsync -avz --delete -e "ssh ${SSH_OPTS}" \
+            public/build/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/build/"
+          # Images — NO --delete, so admin-uploaded hero images are never removed
+          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
+            public/images/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/images/"
+
+      - name: Pull code, migrate, seed and clear caches on the server
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
+          sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
+            "cd ${APP_PATH} && git pull origin main && php artisan migrate --force && php artisan db:seed --force && php artisan view:clear && php artisan cache:clear"
