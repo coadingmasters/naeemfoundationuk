@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Appeal;
 use App\Models\Cause;
 use App\Models\HeroSlide;
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -100,6 +101,24 @@ class DatabaseSeeder extends Seeder
 
             foreach ($causes as $i => $cause) {
                 Cause::create(array_merge($cause, [
+                    'link' => '#',
+                    'sort_order' => $i + 1,
+                    'is_active' => true,
+                ]));
+            }
+        }
+
+        // Sample "Our Projects" cards (Fidya page) — only when the table is empty.
+        if (Project::count() === 0) {
+            $projects = [
+                ['title' => 'Food', 'description' => 'Food Support — our mission to provide for people in need.', 'image' => 'images/changinslives2.jpg'],
+                ['title' => 'Binoria Water Campaign', 'description' => 'Water Crisis Hit Jamia Binoria Hard — students struggle for clean water.', 'image' => 'images/changinslives3.jpg'],
+                ['title' => 'Education', 'description' => 'Helping children in rural areas access quality education.', 'image' => 'images/changinslives1.jpg'],
+                ['title' => 'Healthcare', 'description' => 'Free medical care and medicine for remote communities.', 'image' => 'images/changinslives4.jpg'],
+            ];
+
+            foreach ($projects as $i => $project) {
+                Project::create(array_merge($project, [
                     'link' => '#',
                     'sort_order' => $i + 1,
                     'is_active' => true,

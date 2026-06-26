@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroSlideController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\FidyaController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +38,7 @@ Route::view('/news-and-press', 'placeholder', [
 
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
+Route::get('/fidya-and-kaffarah', [FidyaController::class, 'index'])->name('fidya');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {
@@ -80,6 +83,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->except(['show']);
 
         Route::resource('causes', CauseController::class)
+            ->except(['show']);
+
+        Route::resource('projects', ProjectController::class)
             ->except(['show']);
     });
 });

@@ -55,6 +55,9 @@
                 <a href="{{ route('admin.causes.index') }}" class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20">
                     Manage Causes
                 </a>
+                <a href="{{ route('admin.projects.index') }}" class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20">
+                    Manage Projects
+                </a>
             </div>
         </div>
 

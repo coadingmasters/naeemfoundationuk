@@ -30,7 +30,7 @@ return [
         'items' => [
             ['title' => 'Zakat', 'route' => 'zakat'],
             ['title' => 'Sadaqah', 'slug' => 'sadaqah'],
-            ['title' => 'Fidya & Kaffarah', 'slug' => 'fidya-kaffarah'],
+            ['title' => 'Fidya & Kaffarah', 'route' => 'fidya'],
             ['title' => 'Sehri & Iftar', 'slug' => 'sehri-iftar'],
             ['title' => 'Zakat ul Fitr', 'slug' => 'zakat-ul-fitr'],
             ['title' => 'Eid Gifts for Children', 'slug' => 'eid-gifts-for-children'],

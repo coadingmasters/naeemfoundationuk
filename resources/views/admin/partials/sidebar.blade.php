@@ -24,6 +24,12 @@
             'active' => request()->routeIs('admin.causes.*'),
             'icon' => '<path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 22l8.8-8.3a5 5 0 0 0 0-7.1z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
+        [
+            'label' => 'Projects',
+            'route' => 'admin.projects.index',
+            'active' => request()->routeIs('admin.projects.*'),
+            'icon' => '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
     ];
 @endphp
 
