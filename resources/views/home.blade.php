@@ -33,15 +33,19 @@
     // Group appeals into pages of 4 for the carousel
     $appealPages = $appeals->chunk(4);
 
-    // Causes carousel
-    $causes = [
-        ['image' => 'images/givezakat.png', 'title' => 'Give Zakat'],
-        ['image' => 'images/givesadqa.jpg', 'title' => 'Give Sadaqah'],
-        ['image' => 'images/supporton.png', 'title' => 'Support an Orphan'],
-        ['image' => 'images/handpump.jpg', 'title' => 'Water Pump'],
-        ['image' => 'images/givezakat.png', 'title' => 'Give Zakat'],
-        ['image' => 'images/givesadqa.jpg', 'title' => 'Give Sadaqah'],
-    ];
+    // Causes carousel — managed in the admin dashboard, passed in by
+    // HomeController. Falls back to a default set if none exist yet.
+    $causes = ($causes ?? collect());
+    if ($causes->isEmpty()) {
+        $causes = collect([
+            (object) ['image' => 'images/givezakat.png', 'title' => 'Give Zakat', 'description' => 'Purify your wealth and support those most in need.', 'link' => '#'],
+            (object) ['image' => 'images/givesadqa.jpg', 'title' => 'Give Sadaqah', 'description' => 'A voluntary act of charity that brings endless blessings.', 'link' => '#'],
+            (object) ['image' => 'images/supporton.png', 'title' => 'Support an Orphan', 'description' => 'Give an orphan shelter, food and a chance at education.', 'link' => '#'],
+            (object) ['image' => 'images/handpump.jpg', 'title' => 'Water Pump', 'description' => 'Provide clean, safe drinking water to a whole community.', 'link' => '#'],
+            (object) ['image' => 'images/changinslives4.jpg', 'title' => 'Emergency Relief', 'description' => 'Rapid help for families hit by disaster and crisis.', 'link' => '#'],
+            (object) ['image' => 'images/changinslives2.jpg', 'title' => 'Feed the Hungry', 'description' => 'Nutritious food parcels for struggling families.', 'link' => '#'],
+        ]);
+    }
 
     // Impact stats
     $impact = [
@@ -206,12 +210,13 @@
                 <div class="nf-track flex" data-track>
                     @foreach ($causes as $cause)
                         <div class="w-full shrink-0 px-3 sm:w-1/2 lg:w-1/4" data-card>
-                            <div class="overflow-hidden rounded-lg bg-white">
-                                <img src="{{ asset($cause['image']) }}" alt="{{ $cause['title'] }}"
+                            <div class="flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm">
+                                <img src="{{ asset($cause->image) }}" alt="{{ $cause->title }}"
                                      class="h-44 w-full object-cover">
-                                <div class="p-4 text-center">
-                                    <h3 class="mb-3 font-semibold text-navy-dark">{{ $cause['title'] }}</h3>
-                                    <a href="#" class="btn-brand w-full">Donate</a>
+                                <div class="flex flex-1 flex-col items-center p-5 text-center">
+                                    <h3 class="text-base font-bold text-navy-dark">{{ $cause->title }}</h3>
+                                    <p class="mt-1.5 line-clamp-1 text-xs text-gray-400">{{ $cause->description }}</p>
+                                    <a href="{{ $cause->link ?: '#' }}" class="btn-brand mt-4 px-9">Donate</a>
                                 </div>
                             </div>
                         </div>

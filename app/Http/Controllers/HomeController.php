@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appeal;
+use App\Models\Cause;
 use App\Models\HeroSlide;
 use Illuminate\Support\Facades\Schema;
 use Throwable;
@@ -16,8 +17,9 @@ class HomeController extends Controller
         // of breaking the live homepage.
         $heroSlides = $this->safeFetch('hero_slides', fn () => HeroSlide::active()->ordered()->get());
         $appeals = $this->safeFetch('appeals', fn () => Appeal::active()->ordered()->get());
+        $causes = $this->safeFetch('causes', fn () => Cause::active()->ordered()->get());
 
-        return view('home', compact('heroSlides', 'appeals'));
+        return view('home', compact('heroSlides', 'appeals', 'causes'));
     }
 
     /** Query a table only if it exists, swallowing connection errors. */

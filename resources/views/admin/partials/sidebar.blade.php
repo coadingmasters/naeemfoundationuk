@@ -18,6 +18,12 @@
             'active' => request()->routeIs('admin.appeals.*'),
             'icon' => '<path d="M12 21s-7-4.35-9-8.5C1.5 9 3.5 6 6.5 6 9 6 12 9 12 9s3-3 5.5-3C20.5 6 22.5 9 21 12.5 19 16.65 12 21 12 21z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
+        [
+            'label' => 'Causes',
+            'route' => 'admin.causes.index',
+            'active' => request()->routeIs('admin.causes.*'),
+            'icon' => '<path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 22l8.8-8.3a5 5 0 0 0 0-7.1z" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
     ];
 @endphp
 

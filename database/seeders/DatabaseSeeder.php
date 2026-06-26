@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Appeal;
+use App\Models\Cause;
 use App\Models\HeroSlide;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -81,6 +82,26 @@ class DatabaseSeeder extends Seeder
                 Appeal::create(array_merge($appeal, [
                     'link' => '#',
                     'sort_order' => $i,
+                    'is_active' => true,
+                ]));
+            }
+        }
+
+        // Sample "Causes" carousel cards — only when the table is empty.
+        if (Cause::count() === 0) {
+            $causes = [
+                ['title' => 'Give Zakat', 'description' => 'Purify your wealth and support those most in need.', 'image' => 'images/givezakat.png'],
+                ['title' => 'Give Sadaqah', 'description' => 'A voluntary act of charity that brings endless blessings.', 'image' => 'images/givesadqa.jpg'],
+                ['title' => 'Support an Orphan', 'description' => 'Give an orphan shelter, food and a chance at education.', 'image' => 'images/supporton.png'],
+                ['title' => 'Water Pump', 'description' => 'Provide clean, safe drinking water to a whole community.', 'image' => 'images/handpump.jpg'],
+                ['title' => 'Emergency Relief', 'description' => 'Rapid help for families hit by disaster and crisis.', 'image' => 'images/changinslives4.jpg'],
+                ['title' => 'Feed the Hungry', 'description' => 'Nutritious food parcels for struggling families.', 'image' => 'images/changinslives2.jpg'],
+            ];
+
+            foreach ($causes as $i => $cause) {
+                Cause::create(array_merge($cause, [
+                    'link' => '#',
+                    'sort_order' => $i + 1,
                     'is_active' => true,
                 ]));
             }

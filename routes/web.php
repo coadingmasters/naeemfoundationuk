@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AppealController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\HomeController;
@@ -76,6 +77,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->except(['show']);
 
         Route::resource('appeals', AppealController::class)
+            ->except(['show']);
+
+        Route::resource('causes', CauseController::class)
             ->except(['show']);
     });
 });
