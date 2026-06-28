@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\FidyaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SadaqahController;
+use App\Http\Controllers\SehriIftarController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +42,7 @@ Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
 Route::get('/fidya-and-kaffarah', [FidyaController::class, 'index'])->name('fidya');
 Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
+Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('sehri-iftar');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {

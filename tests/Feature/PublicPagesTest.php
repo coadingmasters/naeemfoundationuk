@@ -23,8 +23,8 @@ class PublicPagesTest extends TestCase
             'zakat' => ['zakat'],
             'fidya' => ['fidya'],
             'sadaqah' => ['sadaqah'],
+            'sehri-iftar' => ['sehri-iftar'],
             'give.food-sustenance' => ['give.food-sustenance'],
-            'give.sehri-iftar' => ['give.sehri-iftar'],
             'give.ramadan-food-packs' => ['give.ramadan-food-packs'],
         ];
     }
