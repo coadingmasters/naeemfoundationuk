@@ -570,3 +570,31 @@
         animation: none;
     }
 }
+
+/* ---------- Continuous horizontal card carousel (Our Projects) ---------- */
+.nf-xscroll {
+    overflow: hidden;
+}
+.nf-xscroll__track {
+    display: flex;
+    width: max-content;
+    animation: nf-xscroll 40s linear infinite;
+}
+.nf-xscroll:hover .nf-xscroll__track {
+    animation-play-state: paused;
+}
+.nf-xscroll__item {
+    flex: none;
+}
+@keyframes nf-xscroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .nf-xscroll {
+        overflow-x: auto;
+    }
+    .nf-xscroll__track {
+        animation: none;
+    }
+}

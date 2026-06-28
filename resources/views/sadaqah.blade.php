@@ -183,20 +183,8 @@
                 </p>
             </div>
 
-            <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ($projects as $project)
-                    <div class="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-lg">
-                        <div class="overflow-hidden">
-                            <img src="{{ asset($project->image) }}" alt="{{ $project->title }}"
-                                 class="h-48 w-full object-cover transition duration-500 group-hover:scale-105">
-                        </div>
-                        <div class="flex flex-1 flex-col p-5">
-                            <h3 class="font-bold text-brand">{{ $project->title }}</h3>
-                            <p class="mt-1.5 line-clamp-2 flex-1 text-sm text-gray-500">{{ $project->description }}</p>
-                            <a href="{{ $project->link ?: '#' }}" class="btn-brand mt-4 w-full py-2.5">Donate Now</a>
-                        </div>
-                    </div>
-                @endforeach
+            <div class="mt-10">
+                @include('partials.projects-carousel')
             </div>
         </div>
     </section>
