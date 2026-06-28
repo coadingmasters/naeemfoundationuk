@@ -29,7 +29,7 @@ return [
         'heading' => 'Islamic Giving',
         'items' => [
             ['title' => 'Zakat', 'route' => 'zakat'],
-            ['title' => 'Sadaqah', 'slug' => 'sadaqah'],
+            ['title' => 'Sadaqah', 'route' => 'sadaqah'],
             ['title' => 'Fidya & Kaffarah', 'route' => 'fidya'],
             ['title' => 'Sehri & Iftar', 'slug' => 'sehri-iftar'],
             ['title' => 'Zakat ul Fitr', 'slug' => 'zakat-ul-fitr'],

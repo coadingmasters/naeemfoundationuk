@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\FidyaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SadaqahController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,6 +40,7 @@ Route::view('/news-and-press', 'placeholder', [
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
 Route::get('/fidya-and-kaffarah', [FidyaController::class, 'index'])->name('fidya');
+Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {

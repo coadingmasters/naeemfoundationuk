@@ -22,6 +22,7 @@ class PublicPagesTest extends TestCase
             'privacy-policy' => ['privacy-policy'],
             'zakat' => ['zakat'],
             'fidya' => ['fidya'],
+            'sadaqah' => ['sadaqah'],
             'give.food-sustenance' => ['give.food-sustenance'],
             'give.sehri-iftar' => ['give.sehri-iftar'],
             'give.ramadan-food-packs' => ['give.ramadan-food-packs'],
