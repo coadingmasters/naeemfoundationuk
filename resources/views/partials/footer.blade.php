@@ -19,10 +19,10 @@
 @endphp
 
 <footer class="bg-brand text-white">
-    <div class="nf-container grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-12">
+    <div class="nf-container grid grid-cols-2 gap-x-8 gap-y-10 py-14 lg:grid-cols-12">
 
         {{-- Brand + contact --}}
-        <div class="lg:col-span-4">
+        <div class="col-span-2 lg:col-span-4">
             <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}"
                  class="mb-4 h-20 w-20 rounded-full bg-white/95 p-1.5 object-contain">
 
@@ -78,7 +78,7 @@
         </div>
 
         {{-- Make a Donation --}}
-        <div class="lg:col-span-4">
+        <div class="col-span-2 lg:col-span-4">
             <h4 class="mb-4 text-lg font-bold text-white">Make a Donation</h4>
             <div class="space-y-3 rounded-lg bg-white p-5 text-sm text-navy-dark">
                 @foreach ($bankDetails as $label => $value)

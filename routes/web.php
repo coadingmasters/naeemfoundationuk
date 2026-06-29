@@ -23,11 +23,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // "Who We Are" group
 Route::view('/about', 'about')->name('about');
 Route::view('/history', 'history')->name('history');
-Route::view('/careers', 'placeholder', [
-    'pageTag' => 'Who We Are',
-    'pageTitle' => 'Careers',
-    'pageText' => "We're not hiring at the moment — exciting opportunities to join our team are coming soon. Please check back later.",
-])->name('careers');
+Route::view('/careers', 'career')->name('careers');
 Route::view('/annual-report', 'placeholder', [
     'pageTag' => 'Who We Are',
     'pageTitle' => 'Annual Report',
