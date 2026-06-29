@@ -469,6 +469,13 @@
 }
 
 /* ---------- Custom animated cursor (mouse devices only) ---------- */
+/* Hidden by default so a stray cursor never shows on touch devices or in
+   responsive emulation; only shown when a precise pointer is present. */
+.nf-cursor-arrow,
+.nf-cursor-ring {
+    display: none;
+}
+
 @media (hover: hover) and (pointer: fine) {
     /* Hide the native arrow once the custom cursor is active */
     html.nf-has-cursor,
@@ -478,6 +485,7 @@
 
     .nf-cursor-arrow,
     .nf-cursor-ring {
+        display: block;
         position: fixed;
         top: 0;
         left: 0;
