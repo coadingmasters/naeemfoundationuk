@@ -29,44 +29,18 @@
 
 @section('content')
 
-    {{-- ===================== HERO ===================== --}}
-    <section class="relative overflow-hidden">
-        <img src="{{ asset('images/givesadqa.jpg') }}" alt="" class="absolute inset-0 h-full w-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand/85 to-brand/60"></div>
-        <div class="absolute inset-0 bg-navy-dark/25"></div>
+    {{-- ===================== HERO + DONATE ===================== --}}
+    @include('partials.donate-hero', [
+        'heroImage' => 'images/givesadqa.jpg',
+        'heroEyebrow' => 'Sadaqah',
+        'heroTitle' => 'Sadaqah: The Power of <span class="text-cream">Giving</span>',
+        'heroSubtitle' => 'A voluntary act of charity that brings endless blessings — give for the love of Allah (SWT).',
+        'widgetCauses' => ['Sadaqah', 'Zakat', 'Where Most Needed'],
+    ])
 
-        <div class="nf-container relative py-16 sm:py-20 lg:py-24">
-            <div class="max-w-2xl text-white nf-reveal">
-                <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
-                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                    Sadaqah
-                </span>
-                <h1 class="mt-5 text-4xl font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
-                    Sadaqah: The<br>Power of <span class="text-cream">Giving</span>
-                </h1>
-                <p class="mt-4 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
-                    A voluntary act of charity that brings endless blessings — give for the love of Allah (SWT) and
-                    help make the world a better place.
-                </p>
-                <a href="#donate" class="btn-white mt-7 px-7 py-3">
-                    Donate Now
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-
-                <nav class="mt-6 flex items-center gap-2 text-sm text-white/70">
-                    <a href="{{ route('home') }}" class="hover:text-white">Home</a>
-                    <span>/</span>
-                    <span class="text-white">Sadaqah</span>
-                </nav>
-            </div>
-        </div>
-    </section>
-
-    {{-- ===================== WHAT IS SADAQAH + DONATE ===================== --}}
-    <section id="donate" class="py-14 sm:py-16">
-        <div class="nf-container grid gap-10 lg:grid-cols-2 lg:gap-14">
-
-            {{-- Left --}}
+    {{-- ===================== WHAT IS SADAQAH ===================== --}}
+    <section class="py-14 sm:py-16">
+        <div class="nf-container grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
             <div>
                 <p class="inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-brand">What is Sadaqah?</p>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
@@ -75,21 +49,17 @@
                     Muhammad (PBUH) taught us that even the smallest of actions — when done with kindness — can be
                     considered Sadaqah.
                 </p>
+            </div>
 
-                <figure class="mt-6 border-l-4 border-brand bg-cream/60 p-5">
+            <div class="space-y-4">
+                <figure class="border-l-4 border-brand bg-cream/60 p-5">
                     <blockquote class="text-sm font-semibold italic text-navy-dark sm:text-base">“Your smile for your brother is charity.”</blockquote>
                     <figcaption class="mt-2 text-xs text-gray-500">— Jami' at-Tirmidhi 1956</figcaption>
                 </figure>
-
-                <figure class="mt-4 border-l-4 border-brand bg-cream/60 p-5">
+                <figure class="border-l-4 border-brand bg-cream/60 p-5">
                     <blockquote class="text-sm font-semibold italic text-navy-dark sm:text-base">“Give Sadaqah without delay, for it stands in the way of calamity.”</blockquote>
                     <figcaption class="mt-2 text-xs text-gray-500">— Mishkat al-Masabih 1887</figcaption>
                 </figure>
-            </div>
-
-            {{-- Right --}}
-            <div class="lg:pl-2">
-                @include('partials.donate-widget', ['widgetCauses' => ['Sadaqah', 'Zakat', 'Where Most Needed']])
             </div>
         </div>
     </section>

@@ -29,38 +29,20 @@
 
 @section('content')
 
-    {{-- ===================== HERO ===================== --}}
-    <section class="relative overflow-hidden">
-        <img src="{{ asset('images/changinslives2.jpg') }}" alt="" class="absolute inset-0 h-full w-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand/85 to-brand/60"></div>
-        <div class="absolute inset-0 bg-navy-dark/25"></div>
+    {{-- ===================== HERO + DONATE ===================== --}}
+    @include('partials.donate-hero', [
+        'heroImage' => 'images/changinslives2.jpg',
+        'heroEyebrow' => 'Sehri & Iftar',
+        'heroTitle' => 'Sponsor a Meal for <span class="text-cream">Seher or Iftar</span>',
+        'heroSubtitle' => 'Help a fasting family begin and break their fast with a nutritious meal this Ramadan.',
+        'widgetCauses' => ['Sehri', 'Iftar', 'Where Most Needed'],
+    ])
 
-        <div class="nf-container relative py-16 sm:py-20 lg:py-24">
-            <div class="max-w-2xl text-white nf-reveal">
-                <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
-                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                    Sehri &amp; Iftar
-                </span>
-                <h1 class="mt-5 text-3xl font-extrabold uppercase leading-[1.1] sm:text-4xl lg:text-5xl">
-                    <span class="bg-cream px-2 text-brand-dark">Sponsor</span> a meal for<br>
-                    Seher or Iftar and bring<br>comfort to someone in need.
-                </h1>
-                <p class="mt-4 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
-                    Help a fasting family begin and break their fast with a nutritious meal this Ramadan.
-                </p>
-                <a href="#donate" class="btn-white mt-7 px-7 py-3">
-                    Donate Now
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-            </div>
-        </div>
-    </section>
+    {{-- ===================== INTRO ===================== --}}
+    <section class="py-14 sm:py-16">
+        <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
 
-    {{-- ===================== INTRO + DONATE ===================== --}}
-    <section id="donate" class="py-14 sm:py-16">
-        <div class="nf-container grid gap-10 lg:grid-cols-2 lg:gap-14">
-
-            {{-- Left --}}
+            {{-- Left: text --}}
             <div>
                 <p class="inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-brand">Sehri Support for the Needy</p>
                 <h2 class="mt-4 text-2xl font-bold text-navy-dark sm:text-3xl">Naeem Foundation's Ramadan Initiative</h2>
@@ -73,18 +55,15 @@
                 <h3 class="mt-6 text-xl font-bold text-navy-dark">Providing Nutritious Sehri Meals</h3>
                 <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
                     Our team has been hard at work preparing nutritious and fulfilling meals for those who are less
-                    fortunate. We believe that everyone deserves a meal to break their fast, and through your generous
-                    donations, we are able to provide Sehri meals to those in need — reaching individuals and families
-                    who may otherwise go without this essential meal during Ramadan.
+                    fortunate. Through your generous donations, we are able to reach individuals and families who may
+                    otherwise go without this essential meal during Ramadan.
                 </p>
-
-                <img src="{{ asset('images/changinslives2.jpg') }}" alt="Sehri meal distribution"
-                     class="mt-6 h-56 w-full rounded-2xl object-cover sm:h-64">
             </div>
 
-            {{-- Right --}}
-            <div class="lg:pl-2">
-                @include('partials.donate-widget', ['widgetCauses' => ['Sehri', 'Iftar', 'Where Most Needed']])
+            {{-- Right: image --}}
+            <div>
+                <img src="{{ asset('images/changinslives2.jpg') }}" alt="Sehri meal distribution"
+                     class="h-72 w-full rounded-2xl object-cover shadow-md sm:h-80 lg:h-[420px]">
             </div>
         </div>
     </section>

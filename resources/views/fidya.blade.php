@@ -25,33 +25,20 @@
 
 @section('content')
 
-    {{-- ===================== HERO ===================== --}}
-    <section class="relative overflow-hidden">
-        <img src="{{ asset('images/zakatcenter.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand/85 to-brand/60"></div>
-        <div class="absolute inset-0 bg-navy-dark/20"></div>
+    {{-- ===================== HERO + DONATE ===================== --}}
+    @include('partials.donate-hero', [
+        'heroImage' => 'images/zakatcenter.png',
+        'heroEyebrow' => 'Fidya & Kaffarah',
+        'heroTitle' => 'Turn Missed Fasts Into <span class="text-cream">Mercy</span>',
+        'heroSubtitle' => 'Fulfil your obligation by feeding those who go hungry every day.',
+        'widgetCauses' => ['Fidya', 'Kaffarah', 'Where Most Needed'],
+    ])
 
-        <div class="nf-container relative py-16 sm:py-20 lg:py-24">
-            <div class="max-w-2xl text-white nf-reveal">
-                <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
-                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                    Fidya &amp; Kaffarah
-                </span>
-                <h1 class="mt-5 text-4xl font-extrabold uppercase leading-[1.05] sm:text-5xl lg:text-6xl">
-                    Turn Missed<br>Fasts Into Mercy
-                </h1>
-                <p class="mt-4 max-w-md text-base leading-relaxed text-white/85 sm:text-lg">
-                    Fulfil your obligation by feeding those who go hungry every day.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    {{-- ===================== INTRO + DONATE WIDGET ===================== --}}
+    {{-- ===================== INTRO ===================== --}}
     <section class="py-14 sm:py-16">
         <div class="nf-container grid gap-10 lg:grid-cols-2 lg:gap-14">
 
-            {{-- Left: verse + intro + options --}}
+            {{-- Left: verse + intro --}}
             <div>
                 <figure class="border-l-4 border-brand bg-cream/60 p-5 sm:p-6">
                     <blockquote class="text-sm italic leading-relaxed text-gray-700 sm:text-base">
@@ -66,11 +53,14 @@
                     Fidya is a mandatory charitable act for those who cannot fast during Ramadan due to legitimate
                     health reasons.
                 </h2>
+            </div>
 
-                <p class="mt-6 inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-brand">Donation options for Fidya</p>
+            {{-- Right: donation options --}}
+            <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+                <p class="inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-brand">Donation options for Fidya</p>
                 <h3 class="mt-3 text-xl font-bold text-navy-dark">Donations</h3>
 
-                <ul class="mt-4 space-y-4">
+                <ul class="mt-5 space-y-4">
                     @foreach ($donations as $d)
                         <li class="flex gap-3">
                             <span class="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand/10 text-brand">
@@ -82,11 +72,6 @@
                         </li>
                     @endforeach
                 </ul>
-            </div>
-
-            {{-- Right: donate widget --}}
-            <div class="lg:pl-2">
-                @include('partials.donate-widget', ['widgetCauses' => ['Fidya', 'Kaffarah', 'Where Most Needed']])
             </div>
         </div>
     </section>
