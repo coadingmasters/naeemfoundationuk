@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupChoiceGroups();
     setupCustomSelects();
     setupScrollTop();
-    setupCursor();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
     setupTrackCarousel(document.querySelector('[data-carousel="causes"]'));
@@ -98,86 +97,6 @@ function setupScrollTop() {
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     update();
-}
-
-/* ---------- Custom animated cursor (dot + trailing ring) ---------- */
-function setupCursor() {
-    // Only on real pointers; respect reduced-motion preference.
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const arrow = document.createElement('div');
-    arrow.className = 'nf-cursor-arrow is-hidden';
-    arrow.innerHTML =
-        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
-        '<path d="M2 1.5 L2 18 L6.7 13.5 L9.7 19.6 L12 18.6 L9 12.6 L15 12.6 Z" ' +
-        'fill="#fff" stroke="#740a2e" stroke-width="1.5" stroke-linejoin="round"/></svg>';
-    const ring = document.createElement('div');
-    ring.className = 'nf-cursor-ring is-hidden';
-    document.body.appendChild(arrow);
-    document.body.appendChild(ring);
-    document.documentElement.classList.add('nf-has-cursor');
-
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let ringX = mouseX;
-    let ringY = mouseY;
-    let shown = false;
-
-    window.addEventListener(
-        'mousemove',
-        (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            arrow.style.left = `${mouseX}px`;
-            arrow.style.top = `${mouseY}px`;
-            if (!shown) {
-                shown = true;
-                arrow.classList.remove('is-hidden');
-                ring.classList.remove('is-hidden');
-            }
-        },
-        { passive: true }
-    );
-
-    // Ring follows with easing for a smooth trailing effect.
-    const animate = () => {
-        ringX += (mouseX - ringX) * 0.18;
-        ringY += (mouseY - ringY) * 0.18;
-        ring.style.left = `${ringX}px`;
-        ring.style.top = `${ringY}px`;
-        requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-
-    // Grow over interactive elements.
-    const interactive = 'a, button, input, textarea, select, label, summary, [role="button"], [data-cursor]';
-    document.addEventListener('mouseover', (e) => {
-        if (e.target.closest && e.target.closest(interactive)) ring.classList.add('is-hover');
-    });
-    document.addEventListener('mouseout', (e) => {
-        if (e.target.closest && e.target.closest(interactive)) ring.classList.remove('is-hover');
-    });
-
-    // Click feedback.
-    document.addEventListener('mousedown', () => {
-        ring.classList.add('is-click');
-        arrow.classList.add('is-click');
-    });
-    document.addEventListener('mouseup', () => {
-        ring.classList.remove('is-click');
-        arrow.classList.remove('is-click');
-    });
-
-    // Hide when the pointer leaves the window.
-    document.addEventListener('mouseleave', () => {
-        arrow.classList.add('is-hidden');
-        ring.classList.add('is-hidden');
-    });
-    document.addEventListener('mouseenter', () => {
-        arrow.classList.remove('is-hidden');
-        ring.classList.remove('is-hidden');
-    });
 }
 
 /* ---------- Donation widget choice groups (frequency + amount) ---------- */

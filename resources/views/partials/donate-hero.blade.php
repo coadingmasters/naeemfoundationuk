@@ -6,7 +6,7 @@
 
     <div class="relative grid items-stretch lg:grid-cols-2">
         {{-- Image + heading --}}
-        <div class="relative min-h-[320px] sm:min-h-[420px] lg:min-h-[600px]">
+        <div class="relative min-h-[240px] sm:min-h-[340px] lg:min-h-[500px]">
             <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-navy-dark via-navy-dark/45 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-navy-dark/20 lg:to-navy"></div>
 
@@ -27,7 +27,7 @@
         </div>
 
         {{-- Donate widget --}}
-        <div class="flex flex-col justify-center px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
+        <div class="flex flex-col justify-center px-5 py-8 sm:px-8 lg:px-12 lg:py-8">
             @include('partials.donate-widget', ['widgetCauses' => $widgetCauses ?? ['Where Most Needed']])
         </div>
     </div>
