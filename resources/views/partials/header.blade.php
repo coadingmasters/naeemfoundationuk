@@ -39,10 +39,10 @@
             {{-- Logo + name --}}
             <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
                 <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-12 w-auto sm:h-14">
-                <span class="hidden leading-tight sm:block">
+                <!-- <span class="hidden leading-tight sm:block">
                     <span class="block text-base font-extrabold text-navy sm:text-lg">{{ config('app.name') }}</span>
                     <span class="block text-[11px] font-semibold uppercase tracking-wider text-brand">Changing Lives</span>
-                </span>
+                </span> -->
             </a>
 
             {{-- Desktop nav --}}
