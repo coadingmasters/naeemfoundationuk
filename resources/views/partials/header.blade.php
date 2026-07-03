@@ -21,7 +21,7 @@
         ['label' => 'Projects', 'url' => '#'],
         ['label' => 'Appeals', 'url' => '#'],
         ['label' => 'Community Center', 'url' => '#'],
-        ['label' => 'Hajj 2026', 'url' => '#'],
+        ['label' => 'Hajj 2027', 'url' => '#'],
     ];
 
     // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
