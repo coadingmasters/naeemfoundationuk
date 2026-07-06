@@ -11,12 +11,14 @@
             'navy' => 'bg-navy',
             'emerald' => 'bg-emerald-500',
             'amber' => 'bg-amber-500',
+            'sky' => 'bg-sky-500',
         ];
         $toneText = [
             'brand' => 'text-brand',
             'navy' => 'text-navy',
             'emerald' => 'text-emerald-600',
             'amber' => 'text-amber-600',
+            'sky' => 'text-sky-600',
         ];
     @endphp
 

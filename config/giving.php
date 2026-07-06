@@ -33,12 +33,12 @@ return [
             ['title' => 'Fidya & Kaffarah', 'route' => 'fidya'],
             ['title' => 'Sehri & Iftar', 'route' => 'sehri-iftar'],
             ['title' => 'Zakat ul Fitr', 'route' => 'zakat-ul-fitr'],
-            ['title' => 'Eid Gifts for Children', 'slug' => 'eid-gifts-for-children'],
+            ['title' => 'Eid Gifts for Children', 'route' => 'eid-gifts'],
         ],
         // Highlighted Ramadan calls-to-action shown at the bottom of the tab.
         'featured' => [
             ['title' => 'Schedule Your Ramadan Giving', 'slug' => 'schedule-ramadan-giving'],
-            ['title' => 'Give Ramadan Food Packs', 'slug' => 'ramadan-food-packs'],
+            ['title' => 'Give Ramadan Food Packs', 'route' => 'ramadan-food-packs'],
         ],
     ],
 ];

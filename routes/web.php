@@ -4,10 +4,14 @@ use App\Http\Controllers\Admin\AppealController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\EidGiftsController;
 use App\Http\Controllers\FidyaController;
+use App\Http\Controllers\HajjController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RamadanFoodPacksController;
 use App\Http\Controllers\SadaqahController;
 use App\Http\Controllers\SehriIftarController;
 use App\Http\Controllers\WaterWellController;
@@ -43,6 +47,11 @@ Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
 Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('sehri-iftar');
 Route::get('/water-well', [WaterWellController::class, 'index'])->name('water-well');
 Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
+Route::get('/eid-gifts-for-children', [EidGiftsController::class, 'index'])->name('eid-gifts');
+Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])->name('ramadan-food-packs');
+
+Route::get('/hajj-2027', [HajjController::class, 'index'])->name('hajj');
+Route::post('/hajj-2027/register', [HajjController::class, 'register'])->name('hajj.register');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {
@@ -90,6 +99,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->except(['show']);
 
         Route::resource('projects', ProjectController::class)
+            ->except(['show']);
+
+        Route::resource('hajj-videos', HajjVideoController::class)
             ->except(['show']);
     });
 });

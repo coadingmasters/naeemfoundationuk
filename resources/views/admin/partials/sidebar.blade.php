@@ -30,6 +30,12 @@
             'active' => request()->routeIs('admin.projects.*'),
             'icon' => '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
+        [
+            'label' => 'Hajj Videos',
+            'route' => 'admin.hajj-videos.index',
+            'active' => request()->routeIs('admin.hajj-videos.*'),
+            'icon' => '<path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.9L15 14M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
     ];
 @endphp
 

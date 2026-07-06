@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Appeal;
 use App\Models\Cause;
+use App\Models\HajjVideo;
 use App\Models\HeroSlide;
 use App\Models\Project;
 use Illuminate\Support\Collection;
@@ -23,6 +24,8 @@ class DashboardController extends Controller
                 '<path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 22l8.8-8.3a5 5 0 0 0 0-7.1z" stroke-linecap="round" stroke-linejoin="round"/>'),
             $this->section('Projects', Project::class, 'admin.projects', 'amber',
                 '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-linecap="round" stroke-linejoin="round"/>'),
+            $this->section('Hajj Videos', HajjVideo::class, 'admin.hajj-videos', 'sky',
+                '<path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.9L15 14M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" stroke-linecap="round" stroke-linejoin="round"/>'),
         ];
 
         $totals = [

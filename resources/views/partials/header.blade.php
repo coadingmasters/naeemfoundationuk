@@ -17,11 +17,11 @@
                  'icon' => '<path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" stroke-linejoin="round"/><path d="M17 9h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2M8 9h6M8 13h6M8 17h3" stroke-linecap="round" stroke-linejoin="round"/>'],
             ],
         ],
-        ['label' => 'Giving', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well')],
+        ['label' => 'Giving', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well')],
         ['label' => 'Projects', 'url' => '#'],
         ['label' => 'Appeals', 'url' => '#'],
         ['label' => 'Community Center', 'url' => '#'],
-        ['label' => 'Hajj 2027', 'url' => '#'],
+        ['label' => 'Hajj 2027', 'url' => route('hajj'), 'active' => request()->routeIs('hajj')],
     ];
 
     // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
@@ -103,7 +103,7 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ $item['url'] }}" class="text-sm font-bold text-navy transition-colors hover:text-brand">
+                        <a href="{{ $item['url'] }}" class="text-sm font-bold transition-colors hover:text-brand {{ ($item['active'] ?? false) ? 'text-brand' : 'text-navy' }}">
                             {{ $item['label'] }}
                         </a>
                     @endif
