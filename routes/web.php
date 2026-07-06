@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\AskMuftiController;
 use App\Http\Controllers\EidGiftsController;
 use App\Http\Controllers\FidyaController;
 use App\Http\Controllers\HajjController;
@@ -52,6 +53,9 @@ Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])-
 
 Route::get('/hajj-2027', [HajjController::class, 'index'])->name('hajj');
 Route::post('/hajj-2027/register', [HajjController::class, 'register'])->name('hajj.register');
+
+Route::get('/ask-a-mufti', [AskMuftiController::class, 'index'])->name('ask-mufti');
+Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-mufti.store');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {

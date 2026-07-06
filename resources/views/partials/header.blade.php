@@ -112,6 +112,11 @@
 
             {{-- Right --}}
             <div class="flex items-center gap-3">
+                <a href="{{ route('ask-mufti') }}"
+                   class="hidden items-center gap-2 rounded-md bg-cream px-4 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white sm:inline-flex">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Ask a Mufti
+                </a>
                 <a href="#" class="btn-brand">
                     Donate
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -177,6 +182,12 @@
                     </a>
                 @endif
             @endforeach
+
+            <a href="{{ route('ask-mufti') }}"
+               class="mt-3 inline-flex items-center justify-center gap-2 rounded-md bg-cream px-4 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Ask a Mufti
+            </a>
         </div>
     </nav>
 

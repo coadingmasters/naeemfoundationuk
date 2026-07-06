@@ -247,6 +247,48 @@
     transform: translateY(0);
 }
 
+/* Gentle floating loop for decorative hero elements */
+@keyframes nf-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+.nf-float {
+    animation: nf-float 6s ease-in-out infinite;
+}
+
+/* Slow Ken Burns zoom for hero background images */
+@keyframes nf-kenburns {
+    from { transform: scale(1); }
+    to { transform: scale(1.12); }
+}
+.nf-kenburns {
+    animation: nf-kenburns 16s ease-out forwards;
+}
+
+/* One-shot entrance animations */
+@keyframes nf-fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.nf-in-up {
+    animation: nf-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes nf-pop {
+    0% { opacity: 0; transform: scale(0.9); }
+    60% { transform: scale(1.02); }
+    100% { opacity: 1; transform: scale(1); }
+}
+.nf-pop {
+    animation: nf-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nf-float, .nf-kenburns, .nf-in-up, .nf-pop {
+        animation: none;
+    }
+}
+
 /* Carousel dots */
 .nf-dot {
     height: 0.5rem;
