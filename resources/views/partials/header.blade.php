@@ -113,8 +113,8 @@
             {{-- Right --}}
             <div class="flex items-center gap-3">
                 <a href="{{ route('ask-mufti') }}"
-                   class="hidden items-center gap-2 rounded-md bg-cream px-4 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white sm:inline-flex">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                   class="hidden items-center gap-2 rounded-md border border-brand/20 bg-cream px-5 py-2.5 text-sm font-semibold text-brand transition-colors hover:border-brand hover:bg-brand hover:text-white md:inline-flex {{ request()->routeIs('ask-mufti') ? 'bg-brand text-white' : '' }}">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Ask a Mufti
                 </a>
                 <a href="#" class="btn-brand">

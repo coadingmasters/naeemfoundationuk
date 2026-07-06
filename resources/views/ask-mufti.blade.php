@@ -15,37 +15,35 @@
         <div class="nf-float pointer-events-none absolute -right-20 top-10 h-64 w-64 rounded-full bg-brand/30 blur-3xl"></div>
         <div class="nf-float pointer-events-none absolute -left-16 bottom-24 h-56 w-56 rounded-full bg-white/10 blur-3xl" style="animation-delay: 1.5s"></div>
 
-        <div class="relative z-10 nf-container px-4 pb-32 pt-20 text-center sm:pb-40 sm:pt-28">
-            <div class="mx-auto max-w-2xl">
-                <span class="nf-in-up inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white ring-1 ring-white/20">
-                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                    Guidance & Fatwa
-                </span>
+        <div class="relative z-10 nf-container flex min-h-[460px] flex-col items-center justify-center px-4 pb-48 pt-20 text-center sm:min-h-[540px] sm:pb-56 sm:pt-24">
+            <span class="nf-in-up inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white ring-1 ring-white/20">
+                <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                Guidance &amp; Fatwa
+            </span>
 
-                <div class="nf-pop mx-auto mt-5 inline-block rounded-2xl bg-white px-8 py-4 shadow-2xl shadow-navy-dark/40" style="animation-delay: .1s">
-                    <h1 class="text-3xl font-extrabold text-navy-dark sm:text-4xl lg:text-5xl">Ask a <span class="text-brand">Mufti</span></h1>
-                </div>
-
-                <p class="nf-in-up mt-5 text-base text-white/90 sm:text-lg" style="animation-delay: .25s">
-                    Connect with Us for Positive Change and Impact
-                </p>
-
-                <nav class="nf-in-up mt-4 flex items-center justify-center gap-2 text-sm text-white/70" style="animation-delay: .35s">
-                    <a href="{{ route('home') }}" class="transition hover:text-white">Home</a>
-                    <span>›</span>
-                    <span class="text-white">Ask a Mufti</span>
-                </nav>
+            <div class="nf-pop mt-6 rounded-2xl bg-white px-8 py-4 shadow-2xl shadow-navy-dark/40 sm:px-12 sm:py-5" style="animation-delay: .1s">
+                <h1 class="text-3xl font-extrabold text-navy-dark sm:text-4xl lg:text-5xl">Ask a <span class="text-brand">Mufti</span></h1>
             </div>
+
+            <p class="nf-in-up mt-6 max-w-xl text-base text-white/90 sm:text-lg" style="animation-delay: .25s">
+                Connect with Us for Positive Change and Impact
+            </p>
+
+            <nav class="nf-in-up mt-4 flex items-center justify-center gap-2 text-sm text-white/70" style="animation-delay: .35s">
+                <a href="{{ route('home') }}" class="transition hover:text-white">Home</a>
+                <span>›</span>
+                <span class="text-white">Ask a Mufti</span>
+            </nav>
         </div>
 
         {{-- Curved bottom edge --}}
-        <svg class="absolute inset-x-0 bottom-0 h-[70px] w-full sm:h-[110px]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+        <svg class="absolute inset-x-0 bottom-0 h-[60px] w-full sm:h-[100px]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
             <path fill="#ffffff" d="M0,64 C360,140 1080,140 1440,64 L1440,120 L0,120 Z"></path>
         </svg>
     </section>
 
     {{-- ===================== FORM CARD (overlapping) ===================== --}}
-    <section id="form" class="relative z-10 -mt-16 scroll-mt-24 pb-16 sm:-mt-24 sm:pb-20">
+    <section id="form" class="relative z-10 -mt-40 scroll-mt-24 pb-16 sm:-mt-48 sm:pb-20">
         <div class="nf-container">
             <div class="nf-reveal overflow-hidden rounded-3xl bg-cream shadow-xl ring-1 ring-black/5">
                 <div class="grid lg:grid-cols-2">
