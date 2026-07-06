@@ -32,7 +32,7 @@ return [
             ['title' => 'Sadaqah', 'route' => 'sadaqah'],
             ['title' => 'Fidya & Kaffarah', 'route' => 'fidya'],
             ['title' => 'Sehri & Iftar', 'route' => 'sehri-iftar'],
-            ['title' => 'Zakat ul Fitr', 'slug' => 'zakat-ul-fitr'],
+            ['title' => 'Zakat ul Fitr', 'route' => 'zakat-ul-fitr'],
             ['title' => 'Eid Gifts for Children', 'slug' => 'eid-gifts-for-children'],
         ],
         // Highlighted Ramadan calls-to-action shown at the bottom of the tab.

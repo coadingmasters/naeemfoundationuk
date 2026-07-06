@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SadaqahController;
 use App\Http\Controllers\SehriIftarController;
 use App\Http\Controllers\WaterWellController;
+use App\Http\Controllers\ZakatUlFitrController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +42,7 @@ Route::get('/fidya-and-kaffarah', [FidyaController::class, 'index'])->name('fidy
 Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
 Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('sehri-iftar');
 Route::get('/water-well', [WaterWellController::class, 'index'])->name('water-well');
+Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {
