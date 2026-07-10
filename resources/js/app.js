@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupChoiceGroups();
     setupCustomSelects();
     setupPaymentForm();
+    setupRamadanScheduler();
+    setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
@@ -95,6 +97,196 @@ function setupPaymentForm() {
         btn.disabled = true;
         spinner?.classList.remove('hidden');
         if (label) label.textContent = 'Processing…';
+    });
+}
+
+/* ---------- Ramadan giving scheduler ---------- */
+function setupRamadanScheduler() {
+    const root = document.querySelector('[data-ramadan]');
+    if (!root) return;
+
+    const nights = Number(root.dataset.nights) || 30;
+
+    const amountBtns = [...root.querySelectorAll('[data-rg-amount]')];
+    const boostBtns = [...root.querySelectorAll('[data-rg-boost]')];
+    const causeBtns = [...root.querySelectorAll('[data-rg-cause]')];
+    const custom = root.querySelector('[data-rg-custom]');
+    const totalEl = root.querySelector('[data-rg-total]');
+    const boostEl = root.querySelector('[data-rg-boost-amount]');
+    const amountInput = root.querySelector('[data-rg-amount-input]');
+    const causeInput = root.querySelector('[data-rg-cause-input]');
+    const submit = root.querySelector('[data-rg-submit]');
+
+    let daily = Number(custom?.value) || 0;
+    let boost = 0;
+    let cause = causeBtns.find((b) => b.classList.contains('is-selected'))?.dataset.rgCause ?? '';
+
+    const money = (n) => `£${n.toFixed(2)}`;
+
+    const render = () => {
+        const extra = daily * (boost / 100);
+        const total = daily * nights + extra;
+
+        if (boostEl) boostEl.textContent = money(extra);
+        if (totalEl) totalEl.textContent = money(total);
+        if (amountInput) amountInput.value = total.toFixed(2);
+        if (causeInput) causeInput.value = `${cause} (Ramadan ${nights} Nights)`;
+        if (submit) submit.disabled = !(total > 0);
+
+        // Highlight the preset matching the current daily amount (if any).
+        amountBtns.forEach((b) => b.classList.toggle('is-selected', Number(b.dataset.rgAmount) === daily));
+    };
+
+    amountBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            daily = Number(btn.dataset.rgAmount);
+            if (custom) custom.value = daily;
+            render();
+        });
+    });
+
+    custom?.addEventListener('input', () => {
+        daily = Math.max(0, Number(custom.value) || 0);
+        render();
+    });
+
+    boostBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            boost = Number(btn.dataset.rgBoost);
+            boostBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
+            render();
+        });
+    });
+
+    causeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            cause = btn.dataset.rgCause;
+            causeBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
+            render();
+        });
+    });
+
+    render();
+}
+
+/* ---------- Toast ---------- */
+function showToast(message, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = `nf-toast${isError ? ' nf-toast--error' : ''}`;
+    toast.setAttribute('role', 'status');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    setTimeout(() => {
+        toast.classList.remove('is-visible');
+        setTimeout(() => toast.remove(), 300);
+    }, 3200);
+}
+
+/* ---------- Header mini-cart ---------- */
+function setupCart() {
+    const root = document.querySelector('[data-cart]');
+    if (!root) return;
+
+    const toggle = root.querySelector('[data-cart-toggle]');
+    const body = root.querySelector('[data-cart-body]');
+    const badge = root.querySelector('[data-cart-count]');
+
+    const open = () => {
+        root.classList.add('is-open');
+        toggle?.setAttribute('aria-expanded', 'true');
+    };
+    const close = () => {
+        root.classList.remove('is-open');
+        toggle?.setAttribute('aria-expanded', 'false');
+    };
+
+    toggle?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        root.classList.contains('is-open') ? close() : open();
+    });
+    root.querySelector('[data-cart-close]')?.addEventListener('click', close);
+    document.addEventListener('click', (e) => {
+        if (!root.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+    });
+
+    const setBadge = (count) => {
+        if (!badge) return;
+        badge.textContent = count;
+        badge.classList.toggle('hidden', !count);
+        badge.classList.remove('is-bumped');
+        void badge.offsetWidth; // force reflow so the animation restarts
+        badge.classList.add('is-bumped');
+    };
+
+    const refresh = (data) => {
+        if (body && typeof data.html === 'string') body.innerHTML = data.html;
+        setBadge(data.count);
+        bindRemoveForms();
+    };
+
+    const post = async (form) => {
+        const res = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
+            credentials: 'same-origin',
+        });
+        return { ok: res.ok, status: res.status, data: await res.json().catch(() => ({})) };
+    };
+
+    // Remove buttons live inside the panel, so rebind after every refresh.
+    function bindRemoveForms() {
+        root.querySelectorAll('form[data-cart-remove]').forEach((form) => {
+            if (form.dataset.bound) return;
+            form.dataset.bound = '1';
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    const { ok, data } = await post(form);
+                    if (!ok) throw new Error('failed');
+                    refresh(data);
+                } catch {
+                    form.submit();
+                }
+            });
+        });
+    }
+    bindRemoveForms();
+
+    // Any "add to basket" form on any page.
+    document.querySelectorAll('form[action$="/donate/add"]').forEach((form) => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = form.querySelector('[type="submit"]');
+            btn && (btn.disabled = true);
+
+            try {
+                const { ok, status, data } = await post(form);
+
+                if (status === 422) {
+                    const first = Object.values(data.errors ?? {})[0]?.[0] ?? 'Please check your donation amount.';
+                    showToast(first, true);
+                    return;
+                }
+                if (!ok) throw new Error('failed');
+
+                refresh(data);
+                open();
+                showToast(data.message ?? 'Added to your basket.');
+            } catch {
+                form.submit(); // no JS / network trouble: fall back to a normal post
+            } finally {
+                btn && (btn.disabled = false);
+            }
+        });
     });
 }
 

@@ -1,6 +1,8 @@
 {{-- Continuous, auto-scrolling carousel of project cards. Expects $projects. --}}
 @php
     $projects = $projects ?? collect();
+    // Treat an empty or placeholder '#' link as "no link" so the button still works.
+    $donateLink = fn ($link) => filled($link) && $link !== '#' ? $link : route('donate.checkout');
     // Duplicate the list so the loop is seamless; scale speed to the count.
     $loopProjects = $projects->concat($projects);
     $duration = max(20, $projects->count() * 6);
@@ -19,7 +21,7 @@
                         <div class="flex flex-1 flex-col p-5">
                             <h3 class="font-bold text-brand">{{ $project->title }}</h3>
                             <p class="mt-1.5 line-clamp-2 flex-1 text-sm text-gray-500">{{ $project->description }}</p>
-                            <a href="{{ $project->link ?: '#' }}" class="btn-brand mt-4 w-full py-2.5">Donate Now</a>
+                            <a href="{{ $donateLink($project->link) }}" class="btn-brand mt-4 w-full py-2.5">Donate Now</a>
                         </div>
                     </div>
                 </div>

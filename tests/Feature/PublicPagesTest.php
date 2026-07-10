@@ -29,9 +29,9 @@ class PublicPagesTest extends TestCase
             'food-sustenance' => ['food-sustenance'],
             'sustainable-livelihood' => ['sustainable-livelihood'],
             'cambodia-education-welfare' => ['cambodia-education-welfare'],
+            'prosthetic-limb' => ['prosthetic-limb'],
             'ramadan-food-packs' => ['ramadan-food-packs'],
-            // Still slug-driven, so this also covers the auto-generated placeholders.
-            'give.prosthetic-limb' => ['give.prosthetic-limb'],
+            'schedule-ramadan-giving' => ['schedule-ramadan-giving'],
         ];
     }
 

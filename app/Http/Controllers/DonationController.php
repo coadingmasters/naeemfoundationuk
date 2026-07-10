@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Donation;
 use App\Support\DonationCart;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -24,8 +25,13 @@ class DonationController extends Controller
     /** Card fields that must never be flashed back into the session. */
     private const SENSITIVE = ['card_number', 'cvc'];
 
-    /** Add a donation line to the basket, then send the donor to checkout. */
-    public function add(Request $request): RedirectResponse
+    /**
+     * Add a donation line to the basket.
+     *
+     * AJAX callers get the refreshed basket back so the header mini-cart can
+     * update in place; everyone else is redirected to checkout as before.
+     */
+    public function add(Request $request): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
             'cause' => ['required', 'string', 'max:120'],
@@ -43,16 +49,35 @@ class DonationController extends Controller
             'image' => $data['image'] ?? 'images/changinslives1.jpg',
         ]);
 
+        if ($request->expectsJson()) {
+            return $this->cartJson($data['cause'].' added to your basket.');
+        }
+
         return redirect()
             ->route('donate.checkout')
             ->with('success', $data['cause'].' added to your contribution.');
     }
 
-    public function remove(string $id): RedirectResponse
+    public function remove(Request $request, string $id): RedirectResponse|JsonResponse
     {
         DonationCart::remove($id);
 
+        if ($request->expectsJson()) {
+            return $this->cartJson('Item removed from your basket.');
+        }
+
         return redirect()->route('donate.checkout');
+    }
+
+    /** The basket state the header mini-cart needs after every change. */
+    private function cartJson(string $message): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'count' => DonationCart::count(),
+            'subtotal' => DonationCart::subtotal(),
+            'html' => view('partials.cart-body')->render(),
+        ]);
     }
 
     /** The "Complete Contribution" page. */

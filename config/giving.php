@@ -21,7 +21,7 @@ return [
             ['title' => 'Healthcare', 'route' => 'healthcare'],
             ['title' => 'Cambodia Education & Welfare', 'route' => 'cambodia-education-welfare'],
             ['title' => 'Water Well', 'route' => 'water-well'],
-            ['title' => 'Prosthetic Limb', 'slug' => 'prosthetic-limb'],
+            ['title' => 'Prosthetic Limb', 'route' => 'prosthetic-limb'],
         ],
     ],
 
@@ -37,7 +37,7 @@ return [
         ],
         // Highlighted Ramadan calls-to-action shown at the bottom of the tab.
         'featured' => [
-            ['title' => 'Schedule Your Ramadan Giving', 'slug' => 'schedule-ramadan-giving'],
+            ['title' => 'Schedule Your Ramadan Giving', 'route' => 'schedule-ramadan-giving'],
             ['title' => 'Give Ramadan Food Packs', 'route' => 'ramadan-food-packs'],
         ],
     ],

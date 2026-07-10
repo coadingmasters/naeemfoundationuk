@@ -58,7 +58,7 @@
                             handful of local relief efforts to wide-reaching programmes across food, water, education and
                             healthcare.
                         </p>
-                        <a href="#" class="btn-brand mt-6">Donate Now</a>
+                        <a href="{{ route('donate.checkout') }}" class="btn-brand mt-6">Donate Now</a>
                     </div>
 
                     {{-- Image --}}

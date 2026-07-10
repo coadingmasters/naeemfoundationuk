@@ -53,6 +53,26 @@
         @apply border-brand bg-brand text-white;
     }
 
+    /* Ramadan giving scheduler */
+    .nf-rg-option {
+        @apply cursor-pointer rounded-lg border border-gray-200 bg-white px-4 py-3 text-center text-sm font-bold text-navy-dark transition-all duration-200 hover:border-brand;
+    }
+    .nf-rg-option.is-selected {
+        @apply border-brand bg-brand/5 text-brand ring-2 ring-brand/25;
+    }
+    .nf-rg-pill {
+        @apply flex-1 cursor-pointer rounded-full px-3 py-1.5 text-xs font-bold text-navy-dark transition-colors hover:text-brand sm:text-sm;
+    }
+    .nf-rg-pill.is-selected {
+        @apply bg-brand text-white hover:text-white;
+    }
+    .nf-rg-cause {
+        @apply flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white px-2 py-4 text-center text-xs font-bold text-navy-dark transition-all duration-200 hover:border-brand sm:text-sm;
+    }
+    .nf-rg-cause.is-selected {
+        @apply border-brand bg-brand/5 text-brand ring-2 ring-brand/25;
+    }
+
     /* Inputs on the light payment card */
     .nf-pay-input {
         @apply w-full rounded-md border border-navy/20 bg-white px-3 py-2.5 text-sm text-navy-dark transition-all duration-200 placeholder:text-gray-400 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25;
@@ -244,6 +264,100 @@
 }
 .nf-scrolltop:hover .nf-scrolltop__arrow {
     transform: translateY(-2px);
+}
+
+/* Header basket (mini-cart) */
+.nf-cart {
+    position: relative;
+}
+.nf-cart__btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 9999px;
+    color: var(--color-navy);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.nf-cart__btn:hover {
+    background: var(--color-cream);
+    color: var(--color-brand);
+}
+.nf-cart__badge {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    display: grid;
+    place-items: center;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.25rem;
+    border-radius: 9999px;
+    background: var(--color-brand);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 0 0 2px #fff;
+}
+.nf-cart__panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.6rem);
+    z-index: 60;
+    width: 20rem;
+    max-width: calc(100vw - 1.5rem);
+    border-radius: 0.9rem;
+    border: 1px solid rgb(0 0 0 / 0.05);
+    background: #fff;
+    box-shadow: 0 22px 48px rgba(18, 45, 60, 0.22);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.98);
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
+}
+.nf-cart.is-open .nf-cart__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* Badge pops when an item is added */
+@keyframes nf-cart-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+.nf-cart__badge.is-bumped {
+    animation: nf-cart-pop 0.45s ease;
+}
+
+/* Lightweight toast (basket feedback / validation errors) */
+.nf-toast {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 5.5rem;
+    z-index: 70;
+    max-width: 20rem;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--color-navy-dark);
+    box-shadow: 0 12px 30px rgba(18, 45, 60, 0.28);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.nf-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.nf-toast--error {
+    background: var(--color-brand);
 }
 
 /* Thank-you page: warm gold → slate blue backdrop */

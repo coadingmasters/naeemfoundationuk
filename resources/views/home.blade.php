@@ -3,6 +3,9 @@
 @section('title', config('app.name') . ' — Changing Lives')
 
 @php
+    // Treat an empty or placeholder '#' link as "no link" so donate buttons still work.
+    $donateLink = fn ($link) => filled($link) && $link !== '#' ? $link : route('donate.checkout');
+
     // Hero slides are managed in the admin dashboard and passed in by HomeController.
     // Fall back to a single default slide if none have been created yet.
     $heroSlides = ($heroSlides ?? collect());
@@ -92,7 +95,7 @@
                                     {!! nl2br(e($slide->title)) !!}
                                 </h1>
                                 @if (!empty($slide->button_text))
-                                    <a href="{{ $slide->button_url ?: '#' }}" class="btn-brand mt-7 px-6 py-3 text-base shadow-xl">
+                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-7 px-6 py-3 text-base shadow-xl">
                                         {{ $slide->button_text }}
                                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </a>
@@ -121,8 +124,12 @@
     {{-- ===================== QUICK DONATE BAR ===================== --}}
     <section class="bg-navy">
         <div class="nf-container py-5">
-            <form class="flex flex-col items-stretch gap-3 lg:flex-row lg:items-center">
+            <form method="POST" action="{{ route('donate.add') }}"
+                  class="flex flex-col items-stretch gap-3 lg:flex-row lg:items-center">
+                @csrf
+                <input type="hidden" name="image" value="images/givezakat.png">
                 <span class="text-lg font-semibold text-white lg:mr-2">Quick Donate</span>
+
                 {{-- Frequency (custom dropdown) --}}
                 <div class="nf-cselect h-11 flex-1" data-cselect>
                     <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
@@ -130,27 +137,30 @@
                         <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                     <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
-                        <li class="nf-cselect__opt is-selected" role="option" data-value="One-Off-Donation">One-Off-Donation</li>
-                        <li class="nf-cselect__opt" role="option" data-value="Monthly Donation">Monthly Donation</li>
+                        <li class="nf-cselect__opt is-selected" role="option" data-value="one-off">One-Off-Donation</li>
+                        <li class="nf-cselect__opt" role="option" data-value="monthly">Monthly Donation</li>
                     </ul>
-                    <input type="hidden" name="frequency" data-cselect-input value="One-Off-Donation">
+                    <input type="hidden" name="frequency" data-cselect-input value="one-off">
                 </div>
 
                 {{-- Cause (custom dropdown) --}}
                 <div class="nf-cselect h-11 flex-1" data-cselect>
-                    <button type="button" class="nf-cselect__btn nf-cselect__btn--placeholder" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
-                        <span data-cselect-label>Select a Cause</span>
+                    <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
+                        <span data-cselect-label>Where Most Needed</span>
                         <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                     <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
+                        <li class="nf-cselect__opt is-selected" role="option" data-value="Where Most Needed">Where Most Needed</li>
                         <li class="nf-cselect__opt" role="option" data-value="Zakat">Zakat</li>
                         <li class="nf-cselect__opt" role="option" data-value="Sadaqah">Sadaqah</li>
                         <li class="nf-cselect__opt" role="option" data-value="Orphan Support">Orphan Support</li>
                         <li class="nf-cselect__opt" role="option" data-value="Water Pump">Water Pump</li>
                     </ul>
-                    <input type="hidden" name="cause" data-cselect-input value="">
+                    <input type="hidden" name="cause" data-cselect-input value="Where Most Needed">
                 </div>
-                <input type="number" placeholder="Value"
+
+                <input type="number" name="amount" min="1" step="0.01" placeholder="Value" required
+                       aria-label="Donation amount"
                        class="h-11 w-full rounded-md border-0 bg-white px-3 text-sm text-navy-dark focus:ring-2 focus:ring-brand lg:w-32">
                 <button type="submit" class="btn-white h-11">
                     Donate
@@ -185,7 +195,7 @@
                             <div class="w-full shrink-0" data-slide>
                                 <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
                                     @foreach ($page as $appeal)
-                                        <a href="{{ $appeal->link ?: '#' }}" class="group flex gap-4">
+                                        <a href="{{ $donateLink($appeal->link) }}" class="group flex gap-4">
                                             <img src="{{ asset($appeal->image) }}" alt="{{ $appeal->title }}"
                                                  class="h-16 w-20 shrink-0 rounded object-cover">
                                             <div>
@@ -216,7 +226,7 @@
                                 <div class="flex flex-1 flex-col items-center p-5 text-center">
                                     <h3 class="text-base font-bold text-navy-dark">{{ $cause->title }}</h3>
                                     <p class="mt-1.5 line-clamp-1 text-xs text-gray-400">{{ $cause->description }}</p>
-                                    <a href="{{ $cause->link ?: '#' }}" class="btn-brand mt-4 px-9">Donate</a>
+                                    <a href="{{ $donateLink($cause->link) }}" class="btn-brand mt-4 px-9">Donate</a>
                                 </div>
                             </div>
                         </div>

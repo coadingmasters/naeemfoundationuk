@@ -239,7 +239,7 @@
             <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base">
                 Giving your time means helping to give those most vulnerable a chance at the future they deserve.
             </p>
-            <a href="#" class="btn-brand mt-7 px-7 py-3">
+            <a href="{{ route('donate.checkout') }}" class="btn-brand mt-7 px-7 py-3">
                 Make a Donation
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
