@@ -7,6 +7,7 @@ use App\Support\DonationCart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -19,6 +20,9 @@ class DonationController extends Controller
         ['cause' => 'Gaza Children', 'amount' => 20],
         ['cause' => 'Gaza Children Plus', 'amount' => 25],
     ];
+
+    /** Card fields that must never be flashed back into the session. */
+    private const SENSITIVE = ['card_number', 'cvc'];
 
     /** Add a donation line to the basket, then send the donor to checkout. */
     public function add(Request $request): RedirectResponse
@@ -111,23 +115,146 @@ class DonationController extends Controller
             // Never block the donor if persistence fails; the payment step still runs.
         }
 
-        // Keep a copy for the payment screen, then empty the basket.
-        session(['donation_reference' => $reference, 'donation_total' => $payload['total']]);
+        // Carry the summary to the payment screen, then empty the basket.
+        session(['donation' => [
+            'reference' => $reference,
+            'donor' => $data['first_name'].' '.$data['last_name'],
+            'items' => $payload['items'],
+            'subtotal' => $payload['subtotal'],
+            'fee' => $payload['fee'],
+            'total' => $payload['total'],
+        ]]);
+
         DonationCart::clear();
 
         return redirect()->route('donate.payment');
     }
 
-    /** Placeholder until the payment gateway is connected. */
+    /** Payment screen: summary + card details. */
     public function payment()
     {
-        if (! session('donation_reference')) {
+        $donation = session('donation');
+
+        if (! $donation) {
             return redirect()->route('donate.checkout');
         }
 
         return view('donate.payment', [
-            'reference' => session('donation_reference'),
-            'total' => session('donation_total'),
+            'donation' => $donation,
+            'months' => $this->months(),
+            'years' => range((int) date('Y'), (int) date('Y') + 15),
         ]);
+    }
+
+    /**
+     * Validate the card and complete the donation.
+     *
+     * SECURITY: card details are validated for format only. They are never
+     * persisted, logged, or flashed back to the session. When a real gateway
+     * (Stripe, etc.) is connected, replace the fields with the provider's
+     * hosted elements so raw card data never reaches this server at all.
+     */
+    public function processPayment(Request $request): RedirectResponse
+    {
+        $donation = session('donation');
+
+        if (! $donation) {
+            return redirect()->route('donate.checkout');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'card_name' => ['required', 'string', 'max:120'],
+            'card_number' => ['required', 'string'],
+            'expiry_month' => ['required', 'integer', 'min:1', 'max:12'],
+            'expiry_year' => ['required', 'integer', 'min:'.date('Y'), 'max:'.(date('Y') + 20)],
+            'cvc' => ['required', 'digits_between:3,4'],
+        ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $digits = preg_replace('/\D/', '', (string) $request->input('card_number'));
+
+            if (strlen($digits) < 13 || strlen($digits) > 19 || ! $this->passesLuhn($digits)) {
+                $validator->errors()->add('card_number', 'Please enter a valid card number.');
+            }
+
+            $month = (int) $request->input('expiry_month');
+            $year = (int) $request->input('expiry_year');
+
+            if ($year === (int) date('Y') && $month > 0 && $month < (int) date('n')) {
+                $validator->errors()->add('expiry_month', 'This card has expired.');
+            }
+        });
+
+        if ($validator->fails()) {
+            // Never flash the card number or CVC back into the session.
+            return back()
+                ->withErrors($validator)
+                ->withInput($request->except(self::SENSITIVE));
+        }
+
+        // --- Gateway charge would happen here, using a tokenised card. ---
+
+        try {
+            if (Schema::hasTable('donations')) {
+                Donation::where('reference', $donation['reference'])->update(['status' => 'paid']);
+            }
+        } catch (Throwable $e) {
+            // Payment confirmation should not fail on a persistence error.
+        }
+
+        session()->forget('donation');
+        session(['donation_completed' => [
+            'reference' => $donation['reference'],
+            'total' => $donation['total'],
+        ]]);
+
+        return redirect()->route('donate.thank-you');
+    }
+
+    /** Final confirmation screen. */
+    public function thankYou()
+    {
+        $completed = session('donation_completed');
+
+        if (! $completed) {
+            return redirect()->route('donate.checkout');
+        }
+
+        return view('donate.thank-you', $completed);
+    }
+
+    /** Standard Luhn (mod 10) checksum used by all major card schemes. */
+    private function passesLuhn(string $number): bool
+    {
+        $sum = 0;
+        $double = false;
+
+        for ($i = strlen($number) - 1; $i >= 0; $i--) {
+            $digit = (int) $number[$i];
+
+            if ($double) {
+                $digit *= 2;
+                if ($digit > 9) {
+                    $digit -= 9;
+                }
+            }
+
+            $sum += $digit;
+            $double = ! $double;
+        }
+
+        return $sum % 10 === 0;
+    }
+
+    /** @return array<int, string> */
+    private function months(): array
+    {
+        $months = [];
+
+        foreach (range(1, 12) as $m) {
+            $months[$m] = str_pad((string) $m, 2, '0', STR_PAD_LEFT).' — '.date('F', mktime(0, 0, 0, $m, 1));
+        }
+
+        return $months;
     }
 }

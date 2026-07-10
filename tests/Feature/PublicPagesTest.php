@@ -26,8 +26,10 @@ class PublicPagesTest extends TestCase
             'sehri-iftar' => ['sehri-iftar'],
             'water-well' => ['water-well'],
             'healthcare' => ['healthcare'],
+            'food-sustenance' => ['food-sustenance'],
             'ramadan-food-packs' => ['ramadan-food-packs'],
-            'give.food-sustenance' => ['give.food-sustenance'],
+            // Still slug-driven, so this also covers the auto-generated placeholders.
+            'give.sustainable-livelihood' => ['give.sustainable-livelihood'],
         ];
     }
 

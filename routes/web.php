@@ -11,6 +11,7 @@ use App\Http\Controllers\AskMuftiController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\EidGiftsController;
 use App\Http\Controllers\FidyaController;
+use App\Http\Controllers\FoodSustenanceController;
 use App\Http\Controllers\HajjController;
 use App\Http\Controllers\HealthcareController;
 use App\Http\Controllers\HomeController;
@@ -50,6 +51,7 @@ Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
 Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('sehri-iftar');
 Route::get('/water-well', [WaterWellController::class, 'index'])->name('water-well');
 Route::get('/healthcare', [HealthcareController::class, 'index'])->name('healthcare');
+Route::get('/food-and-sustenance', [FoodSustenanceController::class, 'index'])->name('food-sustenance');
 Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
 Route::get('/eid-gifts-for-children', [EidGiftsController::class, 'index'])->name('eid-gifts');
 Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])->name('ramadan-food-packs');
@@ -66,6 +68,8 @@ Route::delete('/donate/remove/{id}', [DonationController::class, 'remove'])->nam
 Route::get('/donate/checkout', [DonationController::class, 'checkout'])->name('donate.checkout');
 Route::post('/donate/checkout', [DonationController::class, 'store'])->name('donate.store');
 Route::get('/donate/payment', [DonationController::class, 'payment'])->name('donate.payment');
+Route::post('/donate/payment', [DonationController::class, 'processPayment'])->name('donate.payment.process');
+Route::get('/donate/thank-you', [DonationController::class, 'thankYou'])->name('donate.thank-you');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {

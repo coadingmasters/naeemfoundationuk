@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupReveal();
     setupChoiceGroups();
     setupCustomSelects();
+    setupPaymentForm();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
@@ -59,6 +60,41 @@ function setupCustomSelects() {
     document.addEventListener('click', () => closeAll());
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeAll();
+    });
+}
+
+/* ---------- Payment form: card formatting, digit guards, submit state ---------- */
+function setupPaymentForm() {
+    const form = document.querySelector('[data-payment-form]');
+    if (!form) return;
+
+    // Group the card number into blocks of four as the donor types.
+    const cardNumber = form.querySelector('[data-card-number]');
+    if (cardNumber) {
+        cardNumber.addEventListener('input', () => {
+            const digits = cardNumber.value.replace(/\D/g, '').slice(0, 19);
+            cardNumber.value = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+        });
+    }
+
+    // CVC is digits only.
+    const cvc = form.querySelector('[data-cvc]');
+    if (cvc) {
+        cvc.addEventListener('input', () => {
+            cvc.value = cvc.value.replace(/\D/g, '').slice(0, 4);
+        });
+    }
+
+    // Prevent double submits and show progress.
+    form.addEventListener('submit', () => {
+        const btn = form.querySelector('[data-payment-submit]');
+        const spinner = form.querySelector('[data-payment-spinner]');
+        const label = form.querySelector('[data-payment-label]');
+        if (!btn) return;
+
+        btn.disabled = true;
+        spinner?.classList.remove('hidden');
+        if (label) label.textContent = 'Processing…';
     });
 }
 

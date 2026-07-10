@@ -152,20 +152,123 @@ class DonationTest extends TestCase
         $this->get(route('donate.payment'))->assertRedirect(route('donate.checkout'));
     }
 
-    public function test_payment_page_shows_the_reference_after_checkout(): void
+    public function test_payment_page_shows_the_summary_after_checkout(): void
+    {
+        $this->reachPaymentStep();
+
+        $this->get(route('donate.payment'))
+            ->assertOk()
+            ->assertSee('Payment Summary')
+            ->assertSee('Add Payment Details')
+            ->assertSee('Zakat')
+            ->assertSee(Donation::sole()->reference);
+    }
+
+    public function test_payment_requires_all_card_fields(): void
+    {
+        $this->reachPaymentStep();
+
+        $this->post(route('donate.payment.process'), [])
+            ->assertSessionHasErrors(['card_name', 'card_number', 'expiry_month', 'expiry_year', 'cvc']);
+    }
+
+    public function test_payment_rejects_a_card_number_failing_the_luhn_check(): void
+    {
+        $this->reachPaymentStep();
+
+        $this->post(route('donate.payment.process'), $this->cardPayload([
+            'card_number' => '4242 4242 4242 4241', // last digit broken
+        ]))->assertSessionHasErrors('card_number');
+
+        $this->assertSame('pending', Donation::sole()->status);
+    }
+
+    public function test_payment_rejects_an_expired_card(): void
+    {
+        $this->reachPaymentStep();
+
+        $lastMonth = now()->subMonth();
+
+        $response = $this->post(route('donate.payment.process'), $this->cardPayload([
+            'expiry_month' => $lastMonth->month,
+            'expiry_year' => $lastMonth->year,
+        ]));
+
+        // In January "last month" falls into the previous year, which the year
+        // rule rejects; otherwise the month rule catches it.
+        $response->assertSessionHasErrors(
+            $lastMonth->year < (int) date('Y') ? 'expiry_year' : 'expiry_month'
+        );
+
+        $this->assertSame('pending', Donation::sole()->status);
+    }
+
+    public function test_card_number_and_cvc_are_never_flashed_back_to_the_session(): void
+    {
+        $this->reachPaymentStep();
+
+        $this->post(route('donate.payment.process'), $this->cardPayload([
+            'card_number' => '4242 4242 4242 4241', // triggers a validation failure
+        ]))->assertSessionHasErrors('card_number');
+
+        $this->assertNull(session('_old_input.card_number'));
+        $this->assertNull(session('_old_input.cvc'));
+        $this->assertSame('Ahsan Nawaz', session('_old_input.card_name'));
+    }
+
+    public function test_a_valid_card_completes_the_donation(): void
+    {
+        $this->reachPaymentStep();
+
+        $this->post(route('donate.payment.process'), $this->cardPayload())
+            ->assertRedirect(route('donate.thank-you'));
+
+        $this->assertSame('paid', Donation::sole()->status);
+        $this->assertNull(session('donation'));
+    }
+
+    public function test_thank_you_page_redirects_when_no_donation_was_completed(): void
+    {
+        $this->get(route('donate.thank-you'))->assertRedirect(route('donate.checkout'));
+    }
+
+    public function test_thank_you_page_shows_the_reference_and_total(): void
+    {
+        $this->reachPaymentStep();
+        $this->post(route('donate.payment.process'), $this->cardPayload());
+
+        $this->get(route('donate.thank-you'))
+            ->assertOk()
+            ->assertSee('Thank You for Your Support', false)
+            ->assertSee('Successful')
+            ->assertSee(Donation::sole()->reference);
+    }
+
+    /** Add a donation and submit donor details so the payment step is reachable. */
+    private function reachPaymentStep(): void
     {
         $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 250]);
+
         $this->post(route('donate.store'), [
             'first_name' => 'Ahsan',
             'last_name' => 'Nawaz',
             'email' => 'ahsan@example.com',
             'phone' => '+441234567890',
             'billing_address' => '1 Test Street, London',
+            'cover_fee' => 1,
         ]);
+    }
 
-        $this->get(route('donate.payment'))
-            ->assertOk()
-            ->assertSee(Donation::sole()->reference);
+    /** @return array<string, mixed> */
+    private function cardPayload(array $overrides = []): array
+    {
+        return array_merge([
+            'card_name' => 'Ahsan Nawaz',
+            'card_number' => '4242 4242 4242 4242', // valid Luhn
+            'expiry_month' => 12,
+            'expiry_year' => (int) date('Y') + 2,
+            'cvc' => '123',
+        ], $overrides);
     }
 
     public function test_healthcare_page_loads(): void

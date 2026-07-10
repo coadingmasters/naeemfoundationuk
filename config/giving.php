@@ -16,7 +16,7 @@ return [
     'appeals' => [
         'heading' => 'Appeals',
         'items' => [
-            ['title' => 'Food & Sustenance', 'slug' => 'food-sustenance'],
+            ['title' => 'Food & Sustenance', 'route' => 'food-sustenance'],
             ['title' => 'Sustainable Livelihood', 'slug' => 'sustainable-livelihood'],
             ['title' => 'Healthcare', 'route' => 'healthcare'],
             ['title' => 'Cambodia Education & Welfare', 'slug' => 'cambodia-education-welfare'],
