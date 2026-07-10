@@ -18,6 +18,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RamadanFoodPacksController;
 use App\Http\Controllers\SadaqahController;
 use App\Http\Controllers\SehriIftarController;
+use App\Http\Controllers\SustainableLivelihoodController;
 use App\Http\Controllers\WaterWellController;
 use App\Http\Controllers\ZakatUlFitrController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,7 @@ Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('se
 Route::get('/water-well', [WaterWellController::class, 'index'])->name('water-well');
 Route::get('/healthcare', [HealthcareController::class, 'index'])->name('healthcare');
 Route::get('/food-and-sustenance', [FoodSustenanceController::class, 'index'])->name('food-sustenance');
+Route::get('/sustainable-livelihood', [SustainableLivelihoodController::class, 'index'])->name('sustainable-livelihood');
 Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
 Route::get('/eid-gifts-for-children', [EidGiftsController::class, 'index'])->name('eid-gifts');
 Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])->name('ramadan-food-packs');
