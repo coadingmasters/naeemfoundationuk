@@ -32,6 +32,7 @@ class PublicPagesTest extends TestCase
             'prosthetic-limb' => ['prosthetic-limb'],
             'ramadan-food-packs' => ['ramadan-food-packs'],
             'ramadan-calendar' => ['ramadan-calendar'],
+            'community-centre' => ['community-centre'],
             // Still slug-driven, so this also covers the auto-generated placeholders.
             'give.schedule-ramadan-giving' => ['give.schedule-ramadan-giving'],
         ];
