@@ -18,7 +18,7 @@ return [
         'items' => [
             ['title' => 'Food & Sustenance', 'slug' => 'food-sustenance'],
             ['title' => 'Sustainable Livelihood', 'slug' => 'sustainable-livelihood'],
-            ['title' => 'Healthcare', 'slug' => 'healthcare'],
+            ['title' => 'Healthcare', 'route' => 'healthcare'],
             ['title' => 'Cambodia Education & Welfare', 'slug' => 'cambodia-education-welfare'],
             ['title' => 'Water Well', 'route' => 'water-well'],
             ['title' => 'Prosthetic Limb', 'slug' => 'prosthetic-limb'],

@@ -8,9 +8,11 @@ use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\AskMuftiController;
+use App\Http\Controllers\DonationController;
 use App\Http\Controllers\EidGiftsController;
 use App\Http\Controllers\FidyaController;
 use App\Http\Controllers\HajjController;
+use App\Http\Controllers\HealthcareController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RamadanFoodPacksController;
 use App\Http\Controllers\SadaqahController;
@@ -47,6 +49,7 @@ Route::get('/fidya-and-kaffarah', [FidyaController::class, 'index'])->name('fidy
 Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
 Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('sehri-iftar');
 Route::get('/water-well', [WaterWellController::class, 'index'])->name('water-well');
+Route::get('/healthcare', [HealthcareController::class, 'index'])->name('healthcare');
 Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
 Route::get('/eid-gifts-for-children', [EidGiftsController::class, 'index'])->name('eid-gifts');
 Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])->name('ramadan-food-packs');
@@ -56,6 +59,13 @@ Route::post('/hajj-2027/register', [HajjController::class, 'register'])->name('h
 
 Route::get('/ask-a-mufti', [AskMuftiController::class, 'index'])->name('ask-mufti');
 Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-mufti.store');
+
+// Donation basket + checkout
+Route::post('/donate/add', [DonationController::class, 'add'])->name('donate.add');
+Route::delete('/donate/remove/{id}', [DonationController::class, 'remove'])->name('donate.remove');
+Route::get('/donate/checkout', [DonationController::class, 'checkout'])->name('donate.checkout');
+Route::post('/donate/checkout', [DonationController::class, 'store'])->name('donate.store');
+Route::get('/donate/payment', [DonationController::class, 'payment'])->name('donate.payment');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {

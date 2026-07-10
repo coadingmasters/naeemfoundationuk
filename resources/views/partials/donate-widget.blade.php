@@ -1,9 +1,15 @@
-{{-- Reusable "Donate For Betterment" widget. Optional: $widgetCauses (array). --}}
+{{-- Reusable "Donate For Betterment" widget. Optional: $widgetCauses (array), $widgetImage (string). --}}
 @php
     $widgetCauses = $widgetCauses ?? ['Where Most Needed', 'Sadaqah', 'Zakat', 'Orphan Support'];
+    $widgetImage = $widgetImage ?? 'images/changinslives1.jpg';
+    $defaultCause = $widgetCauses[0] ?? 'Where Most Needed';
 @endphp
 
-<div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl shadow-navy/5">
+<form method="POST" action="{{ route('donate.add') }}" data-donate-form
+      class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl shadow-navy/5">
+    @csrf
+    <input type="hidden" name="image" value="{{ $widgetImage }}">
+
     <div class="bg-gradient-to-br from-navy to-navy-dark px-6 py-4 text-center">
         <h2 class="text-lg font-bold text-white sm:text-xl">Donate For Betterment</h2>
         <p class="mt-0.5 text-xs text-white/70">100% of your donation reaches those in need.</p>
@@ -12,8 +18,9 @@
     <div class="space-y-4 p-5 sm:p-6">
         {{-- Frequency --}}
         <div class="grid grid-cols-2 gap-3" data-choice-group>
-            <button type="button" data-choice class="nf-choice is-selected py-2">One-Off</button>
-            <button type="button" data-choice class="nf-choice py-2">Monthly</button>
+            <button type="button" data-choice data-value="one-off" class="nf-choice is-selected py-2">One-Off</button>
+            <button type="button" data-choice data-value="monthly" class="nf-choice py-2">Monthly</button>
+            <input type="hidden" name="frequency" data-choice-input value="one-off">
         </div>
 
         {{-- Currency --}}
@@ -37,24 +44,32 @@
 
         {{-- Amounts --}}
         <div class="grid grid-cols-4 gap-2" data-choice-group>
-            <button type="button" data-choice class="nf-choice py-2">£30</button>
-            <button type="button" data-choice class="nf-choice is-selected py-2">£50</button>
-            <button type="button" data-choice class="nf-choice py-2">£100</button>
-            <button type="button" data-choice class="nf-choice py-2">Other</button>
+            <button type="button" data-choice data-value="30" class="nf-choice py-2">£30</button>
+            <button type="button" data-choice data-value="50" class="nf-choice is-selected py-2">£50</button>
+            <button type="button" data-choice data-value="100" class="nf-choice py-2">£100</button>
+            <button type="button" data-choice data-value="other" class="nf-choice py-2">Other</button>
+            <input type="hidden" name="amount" data-choice-input data-amount-input value="50">
+        </div>
+
+        {{-- Custom amount (revealed when "Other" is chosen) --}}
+        <div data-custom-amount class="hidden">
+            <label class="mb-1.5 block text-sm font-semibold text-navy-dark">Enter your amount</label>
+            <input type="number" min="1" step="0.01" placeholder="e.g. 75" data-custom-amount-input
+                   class="h-11 w-full rounded-md border border-gray-300 px-3 text-sm text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30">
         </div>
 
         {{-- Cause --}}
         <div class="nf-cselect h-11 rounded-md border border-gray-300" data-cselect>
-            <button type="button" class="nf-cselect__btn nf-cselect__btn--placeholder" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
-                <span data-cselect-label>Select a cause</span>
+            <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
+                <span data-cselect-label>{{ $defaultCause }}</span>
                 <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
-                @foreach ($widgetCauses as $c)
-                    <li class="nf-cselect__opt" role="option" data-value="{{ $c }}">{{ $c }}</li>
+                @foreach ($widgetCauses as $i => $c)
+                    <li class="nf-cselect__opt {{ $i === 0 ? 'is-selected' : '' }}" role="option" data-value="{{ $c }}">{{ $c }}</li>
                 @endforeach
             </ul>
-            <input type="hidden" name="cause" data-cselect-input value="">
+            <input type="hidden" name="cause" data-cselect-input value="{{ $defaultCause }}">
         </div>
 
         {{-- Gift Aid --}}
@@ -65,9 +80,9 @@
             </span>
         </label>
 
-        <button type="button" class="btn-brand w-full py-2.5">
+        <button type="submit" class="btn-brand w-full py-2.5">
             Donate Now
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
     </div>
-</div>
+</form>

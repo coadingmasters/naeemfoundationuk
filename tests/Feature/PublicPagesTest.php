@@ -25,8 +25,9 @@ class PublicPagesTest extends TestCase
             'sadaqah' => ['sadaqah'],
             'sehri-iftar' => ['sehri-iftar'],
             'water-well' => ['water-well'],
+            'healthcare' => ['healthcare'],
+            'ramadan-food-packs' => ['ramadan-food-packs'],
             'give.food-sustenance' => ['give.food-sustenance'],
-            'give.ramadan-food-packs' => ['give.ramadan-food-packs'],
         ];
     }
 

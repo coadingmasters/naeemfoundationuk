@@ -28,7 +28,10 @@
 
         {{-- Donate widget --}}
         <div class="flex flex-col justify-center px-5 py-8 sm:px-8 lg:px-12 lg:py-8">
-            @include('partials.donate-widget', ['widgetCauses' => $widgetCauses ?? ['Where Most Needed']])
+            @include('partials.donate-widget', [
+                'widgetCauses' => $widgetCauses ?? ['Where Most Needed'],
+                'widgetImage' => $heroImage,
+            ])
         </div>
     </div>
 </section>

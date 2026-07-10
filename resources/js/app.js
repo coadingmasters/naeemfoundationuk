@@ -103,11 +103,46 @@ function setupScrollTop() {
 function setupChoiceGroups() {
     document.querySelectorAll('[data-choice-group]').forEach((group) => {
         const btns = [...group.querySelectorAll('[data-choice]')];
+        const input = group.querySelector('[data-choice-input]');
+
         btns.forEach((btn) => {
             btn.addEventListener('click', () => {
                 btns.forEach((b) => b.classList.remove('is-selected'));
                 btn.classList.add('is-selected');
+
+                // Mirror the selection into the hidden field so the form submits it.
+                if (input && btn.dataset.value !== undefined) {
+                    input.value = btn.dataset.value;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                }
             });
+        });
+    });
+
+    setupCustomAmount();
+}
+
+/* ---------- "Other" amount field on the donate widget ---------- */
+function setupCustomAmount() {
+    document.querySelectorAll('[data-donate-form]').forEach((form) => {
+        const amount = form.querySelector('[data-amount-input]');
+        const wrap = form.querySelector('[data-custom-amount]');
+        const custom = form.querySelector('[data-custom-amount-input]');
+        if (!amount || !wrap || !custom) return;
+
+        amount.addEventListener('change', () => {
+            const isOther = amount.value === 'other';
+            wrap.classList.toggle('hidden', !isOther);
+
+            if (isOther) {
+                // Hand control of the amount over to the typed value.
+                amount.value = custom.value || '';
+                custom.focus();
+            }
+        });
+
+        custom.addEventListener('input', () => {
+            amount.value = custom.value;
         });
     });
 }
