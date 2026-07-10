@@ -69,6 +69,22 @@ class DonationController extends Controller
         return redirect()->route('donate.checkout');
     }
 
+    /** Increase / decrease a basket line. Dropping below 1 removes the line. */
+    public function quantity(Request $request, string $id): RedirectResponse|JsonResponse
+    {
+        $data = $request->validate([
+            'qty' => ['required', 'integer', 'min:0', 'max:'.DonationCart::MAX_QTY],
+        ]);
+
+        DonationCart::setQty($id, (int) $data['qty']);
+
+        if ($request->expectsJson()) {
+            return $this->cartJson('Basket updated.');
+        }
+
+        return redirect()->route('donate.checkout');
+    }
+
     /** The basket state the header mini-cart needs after every change. */
     private function cartJson(string $message): JsonResponse
     {
@@ -112,7 +128,10 @@ class DonationController extends Controller
         ]);
 
         $coverFee = $request->boolean('cover_fee');
-        $reference = 'NF-'.strtoupper(Str::random(10));
+
+        // Reuse the reference if the donor stepped back to edit their basket,
+        // so we update the pending donation rather than creating duplicates.
+        $reference = session('donation.reference') ?? 'NF-'.strtoupper(Str::random(10));
 
         $payload = [
             'reference' => $reference,
@@ -134,28 +153,25 @@ class DonationController extends Controller
 
         try {
             if (Schema::hasTable('donations')) {
-                Donation::create($payload);
+                Donation::updateOrCreate(['reference' => $reference], $payload);
             }
         } catch (Throwable $e) {
             // Never block the donor if persistence fails; the payment step still runs.
         }
 
-        // Carry the summary to the payment screen, then empty the basket.
+        // Only the donor's identity and fee choice are carried forward. The basket
+        // stays intact and remains the source of truth for the amount charged, so
+        // the donor can step back and adjust quantities before paying.
         session(['donation' => [
             'reference' => $reference,
             'donor' => $data['first_name'].' '.$data['last_name'],
-            'items' => $payload['items'],
-            'subtotal' => $payload['subtotal'],
-            'fee' => $payload['fee'],
-            'total' => $payload['total'],
+            'cover_fee' => $coverFee,
         ]]);
-
-        DonationCart::clear();
 
         return redirect()->route('donate.payment');
     }
 
-    /** Payment screen: summary + card details. */
+    /** Payment screen: live basket summary + card details. */
     public function payment()
     {
         $donation = session('donation');
@@ -164,11 +180,28 @@ class DonationController extends Controller
             return redirect()->route('donate.checkout');
         }
 
+        if (DonationCart::isEmpty()) {
+            return redirect()
+                ->route('donate.checkout')
+                ->withErrors(['cart' => 'Your contribution is empty. Please add a donation first.']);
+        }
+
         return view('donate.payment', [
-            'donation' => $donation,
+            'donation' => $donation + $this->summary((bool) ($donation['cover_fee'] ?? false)),
             'months' => $this->months(),
             'years' => range((int) date('Y'), (int) date('Y') + 15),
         ]);
+    }
+
+    /** Totals recalculated from the live basket. */
+    private function summary(bool $coverFee): array
+    {
+        return [
+            'items' => DonationCart::items(),
+            'subtotal' => DonationCart::subtotal(),
+            'fee' => $coverFee ? DonationCart::fee() : 0.0,
+            'total' => DonationCart::total($coverFee),
+        ];
     }
 
     /**
@@ -185,6 +218,12 @@ class DonationController extends Controller
 
         if (! $donation) {
             return redirect()->route('donate.checkout');
+        }
+
+        if (DonationCart::isEmpty()) {
+            return redirect()
+                ->route('donate.checkout')
+                ->withErrors(['cart' => 'Your contribution is empty. Please add a donation first.']);
         }
 
         $validator = Validator::make($request->all(), [
@@ -217,20 +256,35 @@ class DonationController extends Controller
                 ->withInput($request->except(self::SENSITIVE));
         }
 
+        // Recalculate from the live basket so a late edit can never be mischarged.
+        $summary = $this->summary((bool) ($donation['cover_fee'] ?? false));
+
         // --- Gateway charge would happen here, using a tokenised card. ---
 
         try {
             if (Schema::hasTable('donations')) {
-                Donation::where('reference', $donation['reference'])->update(['status' => 'paid']);
+                // Use a model instance so the `items` array cast is applied.
+                Donation::where('reference', $donation['reference'])
+                    ->first()
+                    ?->fill([
+                        'items' => $summary['items'],
+                        'subtotal' => $summary['subtotal'],
+                        'fee' => $summary['fee'],
+                        'total' => $summary['total'],
+                        'status' => 'paid',
+                    ])
+                    ->save();
             }
         } catch (Throwable $e) {
             // Payment confirmation should not fail on a persistence error.
         }
 
+        // Payment succeeded — only now is it safe to empty the basket.
+        DonationCart::clear();
         session()->forget('donation');
         session(['donation_completed' => [
             'reference' => $donation['reference'],
-            'total' => $donation['total'],
+            'total' => $summary['total'],
         ]]);
 
         return redirect()->route('donate.thank-you');

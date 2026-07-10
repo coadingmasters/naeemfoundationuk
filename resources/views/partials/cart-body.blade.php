@@ -25,16 +25,18 @@
                 <div class="min-w-0 flex-1">
                     <p class="truncate text-sm font-bold text-navy-dark">{{ $item['cause'] }}</p>
                     <p class="text-xs text-gray-500">
-                        £{{ number_format($item['amount'], 2) }} &times; {{ $item['qty'] }}
+                        £{{ number_format($item['amount'], 2) }} each
                         @if (($item['frequency'] ?? 'one-off') === 'monthly')
                             <span class="font-semibold text-brand">/ monthly</span>
                         @endif
                     </p>
+                    <div class="mt-1.5 flex items-center justify-between gap-2">
+                        @include('partials.cart-stepper', ['item' => $item])
+                        <span class="text-sm font-bold text-navy-dark">
+                            £{{ number_format($item['amount'] * $item['qty'], 2) }}
+                        </span>
+                    </div>
                 </div>
-
-                <span class="shrink-0 text-sm font-bold text-navy-dark">
-                    £{{ number_format($item['amount'] * $item['qty'], 2) }}
-                </span>
 
                 <form method="POST" action="{{ route('donate.remove', $item['id']) }}" data-cart-remove class="shrink-0">
                     @csrf

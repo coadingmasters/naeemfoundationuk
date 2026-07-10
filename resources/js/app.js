@@ -240,9 +240,9 @@ function setupCart() {
         return { ok: res.ok, status: res.status, data: await res.json().catch(() => ({})) };
     };
 
-    // Remove buttons live inside the panel, so rebind after every refresh.
+    // Remove + quantity forms live inside the panel, so rebind after every refresh.
     function bindRemoveForms() {
-        root.querySelectorAll('form[data-cart-remove]').forEach((form) => {
+        root.querySelectorAll('form[data-cart-remove], form[data-cart-qty]').forEach((form) => {
             if (form.dataset.bound) return;
             form.dataset.bound = '1';
 

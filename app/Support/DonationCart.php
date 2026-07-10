@@ -47,6 +47,31 @@ class DonationCart
         session([self::SESSION_KEY => $items]);
     }
 
+    /** Maximum quantity allowed per basket line. */
+    public const MAX_QTY = 99;
+
+    /** Set a line's quantity. A quantity below 1 removes the line entirely. */
+    public static function setQty(string $id, int $qty): void
+    {
+        $items = session(self::SESSION_KEY, []);
+
+        foreach ($items as $key => $item) {
+            if (($item['id'] ?? null) !== $id) {
+                continue;
+            }
+
+            if ($qty < 1) {
+                unset($items[$key]);
+            } else {
+                $items[$key]['qty'] = min($qty, self::MAX_QTY);
+            }
+
+            break;
+        }
+
+        session([self::SESSION_KEY => array_values($items)]);
+    }
+
     public static function remove(string $id): void
     {
         $items = array_filter(

@@ -45,7 +45,12 @@
                     </div>
                 </dl>
 
-                <p class="mt-1 text-xs text-gray-500">Reference: <span class="font-semibold text-navy-dark">{{ $donation['reference'] }}</span></p>
+                <div class="mt-1 flex flex-wrap items-center justify-between gap-2">
+                    <p class="text-xs text-gray-500">Reference: <span class="font-semibold text-navy-dark">{{ $donation['reference'] }}</span></p>
+                    <a href="{{ route('donate.checkout') }}" class="text-xs font-semibold text-brand underline hover:text-navy">
+                        Edit your basket
+                    </a>
+                </div>
 
                 {{-- ===== Card details ===== --}}
                 <h2 class="mt-9 text-xl font-bold text-navy sm:text-2xl">Add Payment Details</h2>

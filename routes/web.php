@@ -72,6 +72,7 @@ Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-muf
 // Donation basket + checkout
 Route::post('/donate/add', [DonationController::class, 'add'])->name('donate.add');
 Route::delete('/donate/remove/{id}', [DonationController::class, 'remove'])->name('donate.remove');
+Route::patch('/donate/quantity/{id}', [DonationController::class, 'quantity'])->name('donate.quantity');
 Route::get('/donate/checkout', [DonationController::class, 'checkout'])->name('donate.checkout');
 Route::post('/donate/checkout', [DonationController::class, 'store'])->name('donate.store');
 Route::get('/donate/payment', [DonationController::class, 'payment'])->name('donate.payment');
