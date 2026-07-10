@@ -20,7 +20,7 @@
         ['label' => 'Giving', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well')],
         ['label' => 'Projects', 'url' => '#'],
         ['label' => 'Appeals', 'url' => '#'],
-        ['label' => 'Community Center', 'url' => '#'],
+        ['label' => 'Community Centre', 'url' => route('community-centre'), 'active' => request()->routeIs('community-centre')],
         ['label' => 'Hajj 2027', 'url' => route('hajj'), 'active' => request()->routeIs('hajj')],
     ];
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Schedule Your Ramadan Giving — ' . config('app.name'))
+@section('title', 'Ramadan Calendar — ' . config('app.name'))
 
 @php
     $nights = (int) config('ramadan.nights');

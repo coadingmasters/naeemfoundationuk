@@ -20,7 +20,7 @@ class DonateButtonsTest extends TestCase
             'home', 'about', 'history', 'careers', 'ask-mufti', 'zakat',
             'healthcare', 'food-sustenance', 'sustainable-livelihood',
             'cambodia-education-welfare', 'prosthetic-limb', 'water-well',
-            'fidya', 'sadaqah', 'annual-report', 'schedule-ramadan-giving',
+            'fidya', 'sadaqah', 'annual-report', 'ramadan-calendar',
         ];
 
         foreach ($pages as $page) {

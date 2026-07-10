@@ -99,7 +99,7 @@ class DonationTest extends TestCase
         $this->assertSame(0, Donation::count());
     }
 
-    public function test_a_complete_donation_is_persisted_and_clears_the_basket(): void
+    public function test_a_complete_donation_is_persisted_and_keeps_the_basket_until_payment(): void
     {
         $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 250]);
         $this->post(route('donate.add'), ['cause' => 'Sadaqah', 'amount' => 50]);
@@ -125,8 +125,8 @@ class DonationTest extends TestCase
         $this->assertCount(2, $donation->items);
         $this->assertStringStartsWith('NF-', $donation->reference);
 
-        // Basket is emptied after a successful submission.
-        $this->assertTrue(DonationCart::isEmpty());
+        // The basket survives until payment succeeds, so the donor can still edit it.
+        $this->assertFalse(DonationCart::isEmpty());
     }
 
     public function test_fee_is_zero_when_the_donor_does_not_cover_it(): void
@@ -242,6 +242,81 @@ class DonationTest extends TestCase
             ->assertSee('Thank You for Your Support', false)
             ->assertSee('Successful')
             ->assertSee(Donation::sole()->reference);
+    }
+
+    public function test_quantity_can_be_increased_and_decreased(): void
+    {
+        $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 50]);
+        $id = DonationCart::items()[0]['id'];
+
+        $this->patch(route('donate.quantity', $id), ['qty' => 3])
+            ->assertRedirect(route('donate.checkout'));
+        $this->assertSame(3, DonationCart::items()[0]['qty']);
+        $this->assertSame(150.0, DonationCart::subtotal());
+
+        $this->patch(route('donate.quantity', $id), ['qty' => 2]);
+        $this->assertSame(100.0, DonationCart::subtotal());
+    }
+
+    public function test_dropping_quantity_below_one_removes_the_line(): void
+    {
+        $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 50]);
+        $id = DonationCart::items()[0]['id'];
+
+        $this->patch(route('donate.quantity', $id), ['qty' => 0]);
+
+        $this->assertTrue(DonationCart::isEmpty());
+    }
+
+    public function test_quantity_is_clamped_to_the_maximum(): void
+    {
+        $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 1]);
+        $id = DonationCart::items()[0]['id'];
+
+        // Above the allowed maximum is rejected by validation.
+        $this->patch(route('donate.quantity', $id), ['qty' => 500])
+            ->assertSessionHasErrors('qty');
+
+        // The cap itself is accepted.
+        $this->patch(route('donate.quantity', $id), ['qty' => DonationCart::MAX_QTY]);
+        $this->assertSame(DonationCart::MAX_QTY, DonationCart::items()[0]['qty']);
+    }
+
+    public function test_editing_the_basket_after_submitting_details_changes_the_amount_charged(): void
+    {
+        $this->reachPaymentStep(); // Zakat £250 x1, fee covered
+
+        $id = DonationCart::items()[0]['id'];
+        $this->patch(route('donate.quantity', $id), ['qty' => 2]); // now £500
+
+        // The payment page reflects the live basket, not the old snapshot.
+        $this->get(route('donate.payment'))
+            ->assertOk()
+            ->assertSee('507.00'); // 500 + 1.4% fee
+
+        $this->post(route('donate.payment.process'), $this->cardPayload())
+            ->assertRedirect(route('donate.thank-you'));
+
+        $donation = Donation::sole();
+        $this->assertSame('500.00', $donation->subtotal);
+        $this->assertSame('507.00', $donation->total);
+        $this->assertSame('paid', $donation->status);
+
+        // Exactly one donation record — editing must not create a duplicate.
+        $this->assertSame(1, Donation::count());
+        $this->assertTrue(DonationCart::isEmpty());
+    }
+
+    public function test_payment_page_redirects_if_the_basket_was_emptied(): void
+    {
+        $this->reachPaymentStep();
+
+        $id = DonationCart::items()[0]['id'];
+        $this->delete(route('donate.remove', $id));
+
+        $this->get(route('donate.payment'))
+            ->assertRedirect(route('donate.checkout'))
+            ->assertSessionHasErrors('cart');
     }
 
     /** Add a donation and submit donor details so the payment step is reachable. */

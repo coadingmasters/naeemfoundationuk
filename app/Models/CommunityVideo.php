@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\ResolvesVideoUrl;
 use Illuminate\Database\Eloquent\Model;
 
-class HajjVideo extends Model
+class CommunityVideo extends Model
 {
     use ResolvesVideoUrl;
 

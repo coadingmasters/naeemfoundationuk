@@ -8,7 +8,9 @@ use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\AskMuftiController;
+use App\Http\Controllers\Admin\CommunityVideoController;
 use App\Http\Controllers\CambodiaEducationController;
+use App\Http\Controllers\CommunityCentreController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\EidGiftsController;
 use App\Http\Controllers\FidyaController;
@@ -58,13 +60,16 @@ Route::get('/food-and-sustenance', [FoodSustenanceController::class, 'index'])->
 Route::get('/sustainable-livelihood', [SustainableLivelihoodController::class, 'index'])->name('sustainable-livelihood');
 Route::get('/cambodia-education-welfare', [CambodiaEducationController::class, 'index'])->name('cambodia-education-welfare');
 Route::get('/prosthetic-limb', [ProstheticLimbController::class, 'index'])->name('prosthetic-limb');
-Route::view('/schedule-ramadan-giving', 'schedule-ramadan-giving')->name('schedule-ramadan-giving');
+Route::view('/ramadan-calendar', 'ramadan-calendar')->name('ramadan-calendar');
 Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
 Route::get('/eid-gifts-for-children', [EidGiftsController::class, 'index'])->name('eid-gifts');
 Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])->name('ramadan-food-packs');
 
 Route::get('/hajj-2027', [HajjController::class, 'index'])->name('hajj');
 Route::post('/hajj-2027/register', [HajjController::class, 'register'])->name('hajj.register');
+
+Route::get('/community-centre', [CommunityCentreController::class, 'index'])->name('community-centre');
+Route::post('/community-centre/enquiry', [CommunityCentreController::class, 'enquire'])->name('community-centre.enquire');
 
 Route::get('/ask-a-mufti', [AskMuftiController::class, 'index'])->name('ask-mufti');
 Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-mufti.store');
@@ -128,6 +133,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->except(['show']);
 
         Route::resource('hajj-videos', HajjVideoController::class)
+            ->except(['show']);
+
+        Route::resource('community-videos', CommunityVideoController::class)
             ->except(['show']);
     });
 });
