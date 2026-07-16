@@ -29,20 +29,18 @@
 
     $arrowSvg = '<svg class="nf-mega__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-    $verse = 'قُلْ مَنْ يُنَجِّيكُمْ مِنْ ظُلُمَاتِ الْبَرِّ وَالْبَحْرِ تَدْعُونَهُ تَضَرُّعًا وَخُفْيَةً لَئِنْ أَنْجَانَا مِنْ هَٰذِهِ لَنَكُونَنَّ مِنَ الشَّاكِرِينَ ٦٣';
+    // Transparent overlay by default; light-hero pages request a solid header
+    // via @section('header-solid', 'yes').
+    $overlay = ! ($solid ?? false);
 @endphp
 
-<header class="sticky top-0 z-50 bg-white shadow-md">
+<header data-header class="nf-header {{ $overlay ? 'nf-header--overlay' : '' }}">
     {{-- ===== Main bar (full width) ===== --}}
-    <div class="nf-container">
-        <div class="flex h-20 items-center justify-between gap-4">
-            {{-- Logo + name --}}
+    <div class="nf-container relative z-10">
+        <div class="flex h-20 items-center justify-between gap-4 lg:h-24">
+            {{-- Logo --}}
             <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
-                <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-12 w-auto sm:h-14">
-                <!-- <span class="hidden leading-tight sm:block">
-                    <span class="block text-base font-extrabold text-navy sm:text-lg">{{ config('app.name') }}</span>
-                    <span class="block text-[11px] font-semibold uppercase tracking-wider text-brand">Changing Lives</span>
-                </span> -->
+                <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="nf-logo h-14 w-auto sm:h-16 lg:h-20">
             </a>
 
             {{-- Desktop nav --}}
@@ -52,7 +50,7 @@
                         {{-- ===== Giving mega-dropdown ===== --}}
                         <div class="nf-dd nf-dd--mega">
                             <button type="button"
-                                    class="flex items-center gap-1.5 text-sm font-bold transition-colors hover:text-brand {{ ($item['active'] ?? false) ? 'text-brand' : 'text-navy' }}"
+                                    class="nf-nav-item flex items-center gap-1.5 text-sm font-bold {{ ($item['active'] ?? false) ? 'is-active' : '' }}"
                                     aria-haspopup="true">
                                 {{ $item['label'] }}
                                 <svg class="nf-dd__chev h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -81,7 +79,7 @@
                         {{-- ===== Who We Are dropdown ===== --}}
                         <div class="nf-dd">
                             <button type="button"
-                                    class="flex items-center gap-1.5 text-sm font-bold transition-colors hover:text-brand {{ ($item['active'] ?? false) ? 'text-brand' : 'text-navy' }}"
+                                    class="nf-nav-item flex items-center gap-1.5 text-sm font-bold {{ ($item['active'] ?? false) ? 'is-active' : '' }}"
                                     aria-haspopup="true">
                                 {{ $item['label'] }}
                                 <svg class="nf-dd__chev h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -103,7 +101,7 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ $item['url'] }}" class="text-sm font-bold transition-colors hover:text-brand {{ ($item['active'] ?? false) ? 'text-brand' : 'text-navy' }}">
+                        <a href="{{ $item['url'] }}" class="nf-nav-item text-sm font-bold {{ ($item['active'] ?? false) ? 'is-active' : '' }}">
                             {{ $item['label'] }}
                         </a>
                     @endif
@@ -129,7 +127,7 @@
 
                 {{-- Mobile menu toggle --}}
                 <button type="button" data-menu-toggle
-                        class="grid h-10 w-10 place-items-center rounded-md text-navy lg:hidden"
+                        class="nf-header__toggle grid h-10 w-10 place-items-center rounded-md lg:hidden"
                         aria-label="Toggle menu" aria-expanded="false">
                     <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
@@ -193,18 +191,4 @@
             </a>
         </div>
     </nav>
-
-    {{-- ===== Arabic verse marquee — full width, scrolls left → right ===== --}}
-    <div class="nf-marquee nf-marquee--ltr overflow-hidden bg-brand py-2 text-white">
-        <div class="nf-marquee__track" dir="ltr">
-            @for ($i = 0; $i < 2; $i++)
-                <div class="nf-marquee__group" @if ($i === 1) aria-hidden="true" @endif>
-                    @for ($j = 0; $j < 3; $j++)
-                        <span class="nf-marquee__item text-sm leading-relaxed" dir="rtl" lang="ar">{{ $verse }}</span>
-                        <span class="nf-marquee__sep" aria-hidden="true">۞</span>
-                    @endfor
-                </div>
-            @endfor
-        </div>
-    </div>
 </header>

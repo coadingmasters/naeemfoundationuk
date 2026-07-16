@@ -2,6 +2,9 @@
 
 @section('title', 'Privacy Policy — ' . config('app.name'))
 
+{{-- Light hero → keep the header solid. --}}
+@section('header-solid', 'yes')
+
 @section('content')
 
     {{-- ===================== TITLE BAND ===================== --}}

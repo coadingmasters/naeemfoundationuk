@@ -2,6 +2,9 @@
 
 @section('title', 'Our History — ' . config('app.name'))
 
+{{-- Light hero → keep the header solid. --}}
+@section('header-solid', 'yes')
+
 @php
     // "Our work creates lasting changes" value cards
     $features = [

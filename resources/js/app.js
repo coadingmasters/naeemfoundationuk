@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPaymentForm();
     setupRamadanScheduler();
     setupPrintButtons();
+    setupHeader();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -168,6 +169,27 @@ function setupRamadanScheduler() {
     });
 
     render();
+}
+
+/* ---------- Header: transparent over hero → solid on scroll ---------- */
+function setupHeader() {
+    const header = document.querySelector('[data-header]');
+    if (!header || !header.classList.contains('nf-header--overlay')) return;
+
+    let ticking = false;
+    const update = () => {
+        header.classList.toggle('is-scrolled', window.scrollY > 40);
+        ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+
+    update();
 }
 
 /* ---------- Print buttons ---------- */
@@ -431,9 +453,13 @@ function setupMobileMenu() {
     const panel = document.querySelector('[data-menu-panel]');
     if (!toggle || !panel) return;
 
+    const header = document.querySelector('[data-header]');
+
     toggle.addEventListener('click', () => {
         const open = panel.classList.toggle('hidden') === false;
         toggle.setAttribute('aria-expanded', String(open));
+        // Force the transparent header solid while the mobile menu is open.
+        if (header) header.classList.toggle('is-menu-open', open);
     });
 }
 

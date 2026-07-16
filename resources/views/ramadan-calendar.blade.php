@@ -2,6 +2,9 @@
 
 @section('title', 'Ramadan Calendar — ' . config('app.name'))
 
+{{-- Light hero → keep the header solid. --}}
+@section('header-solid', 'yes')
+
 @php
     $nights = (int) config('ramadan.nights');
     $amounts = config('ramadan.amounts');

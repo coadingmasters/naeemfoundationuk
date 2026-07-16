@@ -2,6 +2,9 @@
 
 @section('title', 'About Us — ' . config('app.name'))
 
+{{-- Light hero → keep the header solid. --}}
+@section('header-solid', 'yes')
+
 @php
     // Tabs — each has its own content shown on click
     $tabs = [

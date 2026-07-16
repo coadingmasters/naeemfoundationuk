@@ -7,7 +7,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased">
-    @include('partials.header')
+    {{-- Pages with a light hero opt into a solid header via @section('header-solid', 'yes'). --}}
+    @include('partials.header', ['solid' => trim($__env->yieldContent('header-solid')) === 'yes'])
 
     <main>
         @yield('content')
