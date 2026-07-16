@@ -441,6 +441,289 @@
     }
 }
 
+/* ---------- Generic modal (add-ons popup) ---------- */
+.nf-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+}
+.nf-modal[hidden] {
+    display: none;
+}
+.nf-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(18, 45, 60, 0.55);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.nf-modal.is-open .nf-modal__backdrop {
+    opacity: 1;
+}
+.nf-modal__card {
+    position: relative;
+    width: 100%;
+    max-width: 34rem;
+    border-radius: 1.1rem;
+    background: #fff;
+    padding: 1.5rem 1.6rem;
+    box-shadow: 0 30px 70px rgba(18, 45, 60, 0.35);
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+    transition: opacity 0.3s ease, transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-modal.is-open .nf-modal__card {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+    .nf-modal__card {
+        transition: opacity 0.2s ease;
+        transform: none;
+    }
+}
+.nf-modal__close {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    display: grid;
+    place-items: center;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 9999px;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.nf-modal__close:hover {
+    background: var(--color-cream);
+    color: var(--color-brand);
+}
+
+/* Add-on choice button */
+.nf-addon {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    border-radius: 0.8rem;
+    border: 1px solid rgba(18, 45, 60, 0.12);
+    background: #fff;
+    padding: 0.9rem 1rem;
+    text-align: left;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+.nf-addon:hover {
+    border-color: var(--color-brand);
+    background: var(--color-cream);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(18, 45, 60, 0.12);
+}
+.nf-addon__price {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-brand);
+}
+.nf-addon__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-navy-dark);
+}
+.nf-addon__add {
+    margin-top: 0.35rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-navy);
+    opacity: 0.6;
+    transition: opacity 0.18s ease, color 0.18s ease;
+}
+.nf-addon:hover .nf-addon__add {
+    opacity: 1;
+    color: var(--color-brand);
+}
+
+/* ---------- Cookie consent ---------- */
+.nf-cookie {
+    position: fixed;
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 80;
+    display: flex;
+    justify-content: flex-start;
+    pointer-events: none;
+}
+.nf-cookie[hidden] {
+    display: none;
+}
+.nf-cookie__card {
+    pointer-events: auto;
+    width: 100%;
+    max-width: 30rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(18, 45, 60, 0.06);
+    background: #fff;
+    padding: 1.25rem 1.35rem;
+    box-shadow: 0 22px 55px rgba(18, 45, 60, 0.3);
+    opacity: 0;
+    transform: translateY(26px) scale(0.98);
+    transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-cookie.is-visible .nf-cookie__card {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+    .nf-cookie__card {
+        transition: opacity 0.2s ease;
+        transform: none;
+    }
+}
+.nf-cookie__icon {
+    display: grid;
+    place-items: center;
+    height: 2.5rem;
+    width: 2.5rem;
+    flex: none;
+    border-radius: 9999px;
+    background: var(--color-cream);
+    color: var(--color-brand);
+}
+.nf-cookie__title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--color-navy-dark);
+}
+.nf-cookie__text {
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: #4b5563;
+}
+.nf-cookie__link {
+    font-weight: 600;
+    color: var(--color-brand);
+    text-decoration: underline;
+}
+.nf-cookie__list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.nf-cookie__cat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-radius: 0.7rem;
+    background: #f8fafc;
+    padding: 0.7rem 0.85rem;
+}
+.nf-cookie__cat-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-navy-dark);
+}
+.nf-cookie__cat-desc {
+    margin-top: 0.1rem;
+    font-size: 0.72rem;
+    color: #6b7280;
+}
+.nf-cookie__actions {
+    margin-top: 1.1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+}
+.nf-cookie__btn {
+    cursor: pointer;
+    border-radius: 0.55rem;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.nf-cookie__btn--primary {
+    background: var(--color-brand);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(116, 10, 46, 0.25);
+}
+.nf-cookie__btn--primary:hover {
+    background: var(--color-brand-dark);
+    transform: translateY(-1px);
+}
+.nf-cookie__btn--ghost {
+    border: 1px solid rgba(18, 45, 60, 0.2);
+    color: var(--color-navy);
+}
+.nf-cookie__btn--ghost:hover {
+    background: var(--color-navy);
+    color: #fff;
+}
+.nf-cookie__btn--text {
+    margin-left: auto;
+    color: var(--color-navy);
+    text-decoration: underline;
+    padding-inline: 0.4rem;
+}
+.nf-cookie__btn--text:hover {
+    color: var(--color-brand);
+}
+
+/* Toggle switch */
+.nf-switch {
+    position: relative;
+    display: inline-flex;
+    height: 1.5rem;
+    width: 2.75rem;
+    flex: none;
+    cursor: pointer;
+}
+.nf-switch input {
+    position: absolute;
+    height: 0;
+    width: 0;
+    opacity: 0;
+}
+.nf-switch span {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: #cbd5e1;
+    transition: background-color 0.2s ease;
+}
+.nf-switch span::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    height: calc(1.5rem - 6px);
+    width: calc(1.5rem - 6px);
+    border-radius: 9999px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease;
+}
+.nf-switch input:checked + span {
+    background: var(--color-brand);
+}
+.nf-switch input:checked + span::after {
+    transform: translateX(1.25rem);
+}
+.nf-switch input:disabled + span {
+    opacity: 0.55;
+}
+
 /* Thank-you page: warm gold → slate blue backdrop */
 .nf-thankyou-bg {
     background: linear-gradient(115deg, #c9a24d 0%, #c4ac87 32%, #8e9aab 68%, #4a5f76 100%);

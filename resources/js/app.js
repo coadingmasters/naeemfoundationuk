@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupHeader();
     setupOrgField();
     setupCoverFee();
+    setupCookieConsent();
+    setupAddonsModal();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -255,6 +257,106 @@ function showToast(message, isError = false) {
         toast.classList.remove('is-visible');
         setTimeout(() => toast.remove(), 300);
     }, 3200);
+}
+
+/* ---------- Add-ons popup (payment page) ---------- */
+function setupAddonsModal() {
+    const modal = document.querySelector('[data-addons-modal]');
+    if (!modal) return;
+
+    const open = () => {
+        modal.hidden = false;
+        requestAnimationFrame(() => modal.classList.add('is-open'));
+    };
+    const close = () => {
+        modal.classList.remove('is-open');
+        setTimeout(() => { modal.hidden = true; }, 320);
+    };
+
+    document.querySelectorAll('[data-addons-open]').forEach((btn) => btn.addEventListener('click', open));
+    modal.querySelectorAll('[data-addons-close]').forEach((btn) => btn.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hidden) close();
+    });
+
+    // Re-open automatically after an add so the donor can keep adding.
+    if (modal.hasAttribute('data-open')) open();
+}
+
+/* ---------- Cookie consent ---------- */
+function setupCookieConsent() {
+    const root = document.querySelector('[data-cookie]');
+    if (!root) return;
+
+    const KEY = 'nf_cookie_consent';
+    const mainView = root.querySelector('[data-cookie-view="main"]');
+    const settingsView = root.querySelector('[data-cookie-view="settings"]');
+
+    const read = () => {
+        try {
+            return JSON.parse(localStorage.getItem(KEY) || 'null');
+        } catch {
+            return null;
+        }
+    };
+    const write = (prefs) => {
+        try {
+            localStorage.setItem(KEY, JSON.stringify({ ...prefs, ts: Date.now() }));
+        } catch {
+            /* storage disabled — banner simply reappears next visit */
+        }
+    };
+
+    const show = () => {
+        root.hidden = false;
+        requestAnimationFrame(() => root.classList.add('is-visible'));
+    };
+    const hide = () => {
+        root.classList.remove('is-visible');
+        setTimeout(() => { root.hidden = true; }, 400);
+    };
+
+    const view = (name) => {
+        if (mainView) mainView.hidden = name !== 'main';
+        if (settingsView) settingsView.hidden = name !== 'settings';
+    };
+
+    const acceptAll = () => { write({ necessary: true, analytics: true, marketing: true }); hide(); };
+    const declineAll = () => { write({ necessary: true, analytics: false, marketing: false }); hide(); };
+    const savePrefs = () => {
+        const prefs = { necessary: true };
+        root.querySelectorAll('[data-cookie-cat]').forEach((cat) => {
+            prefs[cat.dataset.cookieCat] = cat.checked;
+        });
+        write(prefs);
+        hide();
+    };
+
+    root.querySelector('[data-cookie-accept]')?.addEventListener('click', acceptAll);
+    root.querySelector('[data-cookie-reject]')?.addEventListener('click', declineAll);
+    root.querySelector('[data-cookie-save]')?.addEventListener('click', savePrefs);
+    root.querySelector('[data-cookie-prefs]')?.addEventListener('click', () => view('settings'));
+    root.querySelector('[data-cookie-back]')?.addEventListener('click', () => view('main'));
+
+    // Let a footer link (or anything) re-open the preferences later.
+    const openSettings = () => {
+        const saved = read();
+        root.querySelectorAll('[data-cookie-cat]').forEach((cat) => {
+            cat.checked = !!(saved && saved[cat.dataset.cookieCat]);
+        });
+        view('settings');
+        show();
+    };
+    window.openCookieSettings = openSettings;
+    document.querySelectorAll('[data-cookie-open]').forEach((btn) => {
+        btn.addEventListener('click', (e) => { e.preventDefault(); openSettings(); });
+    });
+
+    // First visit (no stored choice) → reveal after a short, polite delay.
+    if (!read()) {
+        view('main');
+        setTimeout(show, 900);
+    }
 }
 
 /* ---------- Header mini-cart ---------- */

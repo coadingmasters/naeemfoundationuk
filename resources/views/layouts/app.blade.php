@@ -16,6 +16,9 @@
 
     @include('partials.footer')
 
+    {{-- Cookie consent (shows once until the visitor chooses) --}}
+    @include('partials.cookie-consent')
+
     {{-- Scroll-to-top with circular scroll-progress ring (appears on every page) --}}
     <button type="button" id="scrollTop" class="nf-scrolltop" aria-label="Scroll to top">
         <svg class="nf-scrolltop__ring" viewBox="0 0 48 48" aria-hidden="true">

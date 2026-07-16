@@ -54,11 +54,14 @@ class DonationController extends Controller
         }
 
         // Add-ons on the payment page ask to return there; everyone else goes to checkout.
-        $target = $request->input('redirect') === 'payment' ? 'donate.payment' : 'donate.checkout';
+        $toPayment = $request->input('redirect') === 'payment';
+        $target = $toPayment ? 'donate.payment' : 'donate.checkout';
 
         return redirect()
             ->route($target)
-            ->with('success', $data['cause'].' added to your contribution.');
+            ->with('success', $data['cause'].' added to your contribution.')
+            // Re-open the add-ons popup so the donor can keep adding.
+            ->with('addons_open', $toPayment);
     }
 
     public function remove(Request $request, string $id): RedirectResponse|JsonResponse

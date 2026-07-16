@@ -91,7 +91,10 @@
     {{-- Bottom bar --}}
     <div class="border-t border-white/15">
         <div class="nf-container flex flex-col items-center justify-between gap-4 py-5 sm:flex-row">
-            <p class="text-sm text-white/85">&copy;NaeemFoundation. All rights reserved.</p>
+            <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-white/85">
+                <p>&copy;NaeemFoundation. All rights reserved.</p>
+                <button type="button" data-cookie-open class="underline transition-colors hover:text-white">Cookie Settings</button>
+            </div>
 
             {{-- Fundraising Regulator badge --}}
             <div class="inline-flex items-center gap-2 rounded-md bg-white px-3 py-1.5 text-navy-dark">
