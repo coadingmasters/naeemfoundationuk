@@ -59,3 +59,24 @@ jobs:
           SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
           sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
             "cd ${APP_PATH} && git pull origin main && php artisan migrate --force && php artisan db:seed --force && php artisan view:clear && php artisan cache:clear"
+
+      # Writes the SMTP settings into the server's .env from GitHub Secrets, so
+      # donation receipts actually send in production. Skipped if no secret is set.
+      - name: Configure mail on the server
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
+        run: |
+          if [ -z "${MAIL_PASSWORD}" ]; then
+            echo "No MAIL_PASSWORD secret set — skipping mail configuration."
+            exit 0
+          fi
+          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
+          sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
+            "cd ${APP_PATH} && \
+             sed -i '/^MAIL_MAILER=/d;/^MAIL_HOST=/d;/^MAIL_PORT=/d;/^MAIL_USERNAME=/d;/^MAIL_PASSWORD=/d;/^MAIL_ENCRYPTION=/d;/^MAIL_FROM_ADDRESS=/d' .env && \
+             printf 'MAIL_MAILER=smtp\nMAIL_HOST=smtp.gmail.com\nMAIL_PORT=587\nMAIL_USERNAME=%s\nMAIL_PASSWORD=%s\nMAIL_ENCRYPTION=tls\nMAIL_FROM_ADDRESS=%s\n' '${MAIL_USERNAME}' '${MAIL_PASSWORD}' '${MAIL_FROM_ADDRESS}' >> .env && \
+             php artisan config:clear"
+          echo "Mail settings applied to the server .env."
