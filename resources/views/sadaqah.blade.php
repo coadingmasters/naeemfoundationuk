@@ -49,9 +49,8 @@
                     Muhammad (PBUH) taught us that even the smallest of actions — when done with kindness — can be
                     considered Sadaqah.
                 </p>
-            </div>
 
-            <div class="space-y-4">
+                <div class="mt-6 space-y-4">
                 <figure class="border-l-4 border-brand bg-cream/60 p-5">
                     <blockquote class="text-sm font-semibold italic text-navy-dark sm:text-base">“Your smile for your brother is charity.”</blockquote>
                     <figcaption class="mt-2 text-xs text-gray-500">— Jami' at-Tirmidhi 1956</figcaption>
@@ -60,6 +59,12 @@
                     <blockquote class="text-sm font-semibold italic text-navy-dark sm:text-base">“Give Sadaqah without delay, for it stands in the way of calamity.”</blockquote>
                     <figcaption class="mt-2 text-xs text-gray-500">— Mishkat al-Masabih 1887</figcaption>
                 </figure>
+                </div>
+            </div>
+
+            {{-- Right: animated video --}}
+            <div>
+                @include('partials.video-card', ['videoKey' => 'sadaqah'])
             </div>
         </div>
     </section>

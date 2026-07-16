@@ -49,9 +49,8 @@
                     Your generosity changes that. An Eid gift is more than a present — it is a message to a child that
                     they are seen, valued and not forgotten.
                 </p>
-            </div>
 
-            <div class="space-y-4">
+                <div class="mt-6 space-y-4">
                 <figure class="border-l-4 border-brand bg-cream/60 p-5">
                     <blockquote class="text-sm font-semibold italic text-navy-dark sm:text-base">“He is not a believer whose stomach is filled while the neighbour to his side goes hungry.”</blockquote>
                     <figcaption class="mt-2 text-xs text-gray-500">— Al-Adab Al-Mufrad 112</figcaption>
@@ -60,6 +59,12 @@
                     <blockquote class="text-sm font-semibold italic text-navy-dark sm:text-base">“The best of you are those who are best to their families.”</blockquote>
                     <figcaption class="mt-2 text-xs text-gray-500">— Jami' at-Tirmidhi 3895</figcaption>
                 </figure>
+                </div>
+            </div>
+
+            {{-- Right: animated video --}}
+            <div>
+                @include('partials.video-card', ['videoKey' => 'eid-gifts'])
             </div>
         </div>
     </section>

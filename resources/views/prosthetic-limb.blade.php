@@ -62,14 +62,9 @@
                 </p>
             </div>
 
-            {{-- Right: two-up gallery --}}
-            <div class="grid grid-cols-2 gap-4">
-                @foreach ($introGallery as $i => $shot)
-                    <div class="nf-reveal group overflow-hidden rounded-xl" style="transition-delay: {{ $i * 120 }}ms">
-                        <img src="{{ asset($shot['image']) }}" alt="{{ $shot['alt'] }}"
-                             class="h-56 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 sm:h-64 lg:h-72">
-                    </div>
-                @endforeach
+            {{-- Right: animated video --}}
+            <div>
+                @include('partials.video-card', ['videoKey' => 'prosthetic-limb'])
             </div>
         </div>
     </section>

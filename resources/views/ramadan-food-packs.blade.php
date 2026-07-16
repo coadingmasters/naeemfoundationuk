@@ -50,9 +50,8 @@
                     Every pack is carefully assembled with nutritious, long-lasting essentials and hand-delivered to
                     widows, orphans and struggling families who need it most.
                 </p>
-            </div>
 
-            <div class="space-y-4">
+                <div class="mt-6 space-y-4">
                 <figure class="border-l-4 border-brand bg-cream/60 p-5">
                     <blockquote class="text-sm font-semibold italic text-navy-dark sm:text-base">“Whoever feeds a fasting person will have a reward like that of the fasting person, without any reduction in his reward.”</blockquote>
                     <figcaption class="mt-2 text-xs text-gray-500">— Jami' at-Tirmidhi 807</figcaption>
@@ -61,6 +60,12 @@
                     <blockquote class="text-sm font-semibold italic text-navy-dark sm:text-base">“The best charity is that given in Ramadan.”</blockquote>
                     <figcaption class="mt-2 text-xs text-gray-500">— Jami' at-Tirmidhi 663</figcaption>
                 </figure>
+                </div>
+            </div>
+
+            {{-- Right: animated video --}}
+            <div>
+                @include('partials.video-card', ['videoKey' => 'ramadan-food-packs'])
             </div>
         </div>
     </section>

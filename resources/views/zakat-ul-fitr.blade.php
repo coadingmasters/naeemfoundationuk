@@ -36,13 +36,22 @@
     {{-- ===================== WHY GIVE FITRANA ===================== --}}
     <section class="py-14 sm:py-16">
         <div class="nf-container">
-            <div class="mx-auto max-w-2xl text-center">
-                <p class="text-sm font-semibold uppercase tracking-wider text-brand">An obligation before Eid</p>
-                <h2 class="mt-2 text-3xl font-bold text-navy-dark sm:text-4xl">Why Give Fitrana?</h2>
-                <p class="mt-3 text-sm leading-relaxed text-gray-500 sm:text-base">
-                    At Naeem Foundation, we believe in the power of giving and in ensuring that everyone in our community
-                    can celebrate Eid with dignity and joy.
-                </p>
+            <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+                {{-- Left: text --}}
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-wider text-brand">An obligation before Eid</p>
+                    <h2 class="mt-2 text-3xl font-bold text-navy-dark sm:text-4xl">Why Give Fitrana?</h2>
+                    <p class="mt-3 text-sm leading-relaxed text-gray-500 sm:text-base">
+                        At Naeem Foundation, we believe in the power of giving and in ensuring that everyone in our
+                        community can celebrate Eid with dignity and joy — Fitrana purifies the fast and makes sure no
+                        family is left out of the celebration.
+                    </p>
+                </div>
+
+                {{-- Right: animated video --}}
+                <div>
+                    @include('partials.video-card', ['videoKey' => 'zakat-ul-fitr'])
+                </div>
             </div>
 
             <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

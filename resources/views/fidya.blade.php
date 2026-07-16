@@ -55,24 +55,34 @@
                 </h2>
             </div>
 
-            {{-- Right: donation options --}}
-            <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-                <p class="inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-brand">Donation options for Fidya</p>
-                <h3 class="mt-3 text-xl font-bold text-navy-dark">Donations</h3>
-
-                <ul class="mt-5 space-y-4">
-                    @foreach ($donations as $d)
-                        <li class="flex gap-3">
-                            <span class="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand/10 text-brand">
-                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </span>
-                            <p class="text-sm leading-relaxed text-gray-600 sm:text-base">
-                                <span class="font-bold text-navy-dark">{{ $d['amount'] }}:</span> {{ $d['note'] }}
-                            </p>
-                        </li>
-                    @endforeach
-                </ul>
+            {{-- Right: animated video --}}
+            <div>
+                @include('partials.video-card', ['videoKey' => 'fidya'])
             </div>
+        </div>
+    </section>
+
+
+    {{-- ===================== DONATION OPTIONS ===================== --}}
+    <section class="pb-14">
+        <div class="nf-container">
+            <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+                    <p class="inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-brand">Donation options for Fidya</p>
+                    <h3 class="mt-3 text-xl font-bold text-navy-dark">Donations</h3>
+
+                    <ul class="mt-5 space-y-4">
+                        @foreach ($donations as $d)
+                            <li class="flex gap-3">
+                                <span class="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand/10 text-brand">
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                                <p class="text-sm leading-relaxed text-gray-600 sm:text-base">
+                                    <span class="font-bold text-navy-dark">{{ $d['amount'] }}:</span> {{ $d['note'] }}
+                                </p>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
         </div>
     </section>
 

@@ -43,8 +43,9 @@
 
     {{-- ===================== INTRO ===================== --}}
     <section class="py-14 sm:py-16">
-        <div class="nf-container">
-            <div class="max-w-3xl">
+        <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            {{-- Left: text --}}
+            <div>
                 <p class="text-sm leading-relaxed text-gray-600 sm:text-base">
                     In Cambodia, many schools operate without adequate classrooms, reliable access to clean water, or
                     sufficient learning materials. Students often attend lessons hungry, while teachers work with minimal
@@ -66,6 +67,11 @@
                         </li>
                     @endforeach
                 </ul>
+            </div>
+
+            {{-- Right: animated video --}}
+            <div>
+                @include('partials.video-card', ['videoKey' => 'cambodia-education-welfare'])
             </div>
         </div>
     </section>
