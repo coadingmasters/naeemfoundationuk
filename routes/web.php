@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnnualReportController as AdminAnnualReportController;
 use App\Http\Controllers\Admin\AppealController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CauseController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\AnnualReportController;
 use App\Http\Controllers\AskMuftiController;
 use App\Http\Controllers\Admin\CommunityVideoController;
 use App\Http\Controllers\CambodiaEducationController;
@@ -39,11 +41,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::view('/about', 'about')->name('about');
 Route::view('/history', 'history')->name('history');
 Route::view('/careers', 'career')->name('careers');
-Route::view('/annual-report', 'placeholder', [
-    'pageTag' => 'Who We Are',
-    'pageTitle' => 'Annual Report',
-    'pageText' => 'Full transparency on how your donations are used. Our latest annual reports and audited accounts will be published here.',
-])->name('annual-report');
+Route::get('/annual-report', [AnnualReportController::class, 'index'])->name('annual-report');
 Route::view('/news-and-press', 'placeholder', [
     'pageTag' => 'Who We Are',
     'pageTitle' => 'News & Press',
@@ -138,6 +136,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->except(['show']);
 
         Route::resource('community-videos', CommunityVideoController::class)
+            ->except(['show']);
+
+        Route::resource('annual-reports', AdminAnnualReportController::class)
             ->except(['show']);
     });
 });

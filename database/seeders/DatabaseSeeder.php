@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AnnualReport;
 use App\Models\Appeal;
 use App\Models\Cause;
 use App\Models\HeroSlide;
@@ -102,6 +103,23 @@ class DatabaseSeeder extends Seeder
             foreach ($causes as $i => $cause) {
                 Cause::create(array_merge($cause, [
                     'link' => '#',
+                    'sort_order' => $i + 1,
+                    'is_active' => true,
+                ]));
+            }
+        }
+
+        // Sample annual reports — only when the table is empty, so uploaded
+        // reports are never touched.
+        if (AnnualReport::count() === 0) {
+            $reports = [
+                ['title' => 'Annual Report 2024', 'year' => '2024', 'summary' => 'Our impact, programmes and audited accounts for 2024.', 'file_path' => 'reports/annual-report-2024.pdf'],
+                ['title' => 'Annual Report 2023', 'year' => '2023', 'summary' => 'How your donations were spent across food, water, healthcare and education.', 'file_path' => 'reports/annual-report-2023.pdf'],
+                ['title' => 'Annual Report 2022', 'year' => '2022', 'summary' => 'A year of growth — our reach, results and financial statements.', 'file_path' => 'reports/annual-report-2022.pdf'],
+            ];
+
+            foreach ($reports as $i => $report) {
+                AnnualReport::create(array_merge($report, [
                     'sort_order' => $i + 1,
                     'is_active' => true,
                 ]));

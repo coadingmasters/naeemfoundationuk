@@ -54,6 +54,9 @@ jobs:
           # Self-hosted fonts (e.g. Geogrotesque) — NO --delete
           sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
             public/fonts/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/fonts/"
+          # Annual report PDFs — NO --delete, so admin-uploaded reports are never removed
+          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
+            public/reports/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/reports/"
 
       - name: Pull code, migrate, seed and clear caches on the server
         env:

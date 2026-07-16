@@ -37,6 +37,12 @@
             'icon' => '<path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.9L15 14M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
         [
+            'label' => 'Annual Reports',
+            'route' => 'admin.annual-reports.index',
+            'active' => request()->routeIs('admin.annual-reports.*'),
+            'icon' => '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" stroke-linejoin="round"/><path d="M14 3v5h5M9 13h6M9 17h4" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
+        [
             'label' => 'Community Videos',
             'route' => 'admin.community-videos.index',
             'active' => request()->routeIs('admin.community-videos.*'),
