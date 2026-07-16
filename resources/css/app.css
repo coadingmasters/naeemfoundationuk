@@ -159,11 +159,6 @@
     color: #fff;
 }
 
-/* Lift the logo off busy hero backgrounds while transparent. */
-.nf-header--overlay:not(.is-scrolled):not(.is-menu-open) .nf-logo {
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
-}
-
 /* Quick Donate — fully brand-styled custom dropdown */
 .nf-cselect {
     position: relative;

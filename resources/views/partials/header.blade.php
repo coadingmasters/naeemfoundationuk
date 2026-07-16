@@ -18,8 +18,6 @@
             ],
         ],
         ['label' => 'Giving', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well')],
-        ['label' => 'Projects', 'url' => '#'],
-        ['label' => 'Appeals', 'url' => '#'],
         ['label' => 'Community Centre', 'url' => route('community-centre'), 'active' => request()->routeIs('community-centre')],
         ['label' => 'Hajj 2027', 'url' => route('hajj'), 'active' => request()->routeIs('hajj')],
     ];
@@ -38,13 +36,17 @@
     {{-- ===== Main bar (full width) ===== --}}
     <div class="nf-container relative z-10">
         <div class="flex h-20 items-center justify-between gap-4 lg:h-24">
-            {{-- Logo --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
-                <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="nf-logo h-14 w-auto sm:h-16 lg:h-20">
-            </a>
+            {{-- Left: logo + nav --}}
+            <div class="flex items-center gap-6 xl:gap-10">
+                {{-- Logo (white badge so it stays crisp on any background) --}}
+                <a href="{{ route('home') }}" class="shrink-0">
+                    <span class="grid place-items-center rounded-full bg-white p-2 shadow-md ring-1 ring-black/5 sm:p-2.5">
+                        <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="nf-logo h-14 w-auto sm:h-16 lg:h-[76px]">
+                    </span>
+                </a>
 
-            {{-- Desktop nav --}}
-            <nav class="hidden items-center gap-6 xl:gap-8 lg:flex">
+                {{-- Desktop nav --}}
+                <nav class="hidden items-center gap-6 xl:gap-8 lg:flex">
                 @foreach ($navGroups as $item)
                     @if (!empty($item['mega']))
                         {{-- ===== Giving mega-dropdown ===== --}}
@@ -106,9 +108,10 @@
                         </a>
                     @endif
                 @endforeach
-            </nav>
+                </nav>
+            </div>
 
-            {{-- Right --}}
+            {{-- Right: basket + actions --}}
             <div class="flex items-center gap-3">
                 {{-- Basket --}}
                 @include('partials.cart')
