@@ -28,7 +28,7 @@
             </div>
 
             {{-- Donate widget (extra top padding on desktop so it clears the fixed header) --}}
-            <div class="relative flex flex-col justify-center px-5 py-8 sm:px-10 lg:px-12 lg:pb-12 lg:pt-32" data-donate>
+            <div class="relative flex flex-col justify-center px-5 py-8 sm:px-10 lg:px-12 lg:pb-12 lg:pt-40" data-donate>
                 <h2 class="text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">Zakat Donations 2026</h2>
                 <p class="mt-2 max-w-md text-sm leading-relaxed text-white/70">
                     Purify your wealth with 2.5% that brings food, water and hope to families in need.

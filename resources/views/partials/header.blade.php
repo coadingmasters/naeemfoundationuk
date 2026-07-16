@@ -46,15 +46,49 @@
 @endphp
 
 <header data-header class="nf-header {{ $overlay ? 'nf-header--overlay' : '' }}">
+
+    {{-- ===== Top utility bar ===== --}}
+    <div class="nf-topbar" data-topbar>
+        <div class="nf-container flex h-9 items-center justify-between gap-4">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <a href="tel:+442070788118" class="nf-topbar__link">
+                    <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
+                    <span class="hidden sm:inline">Donation Line:</span> +44 20 7078 8118
+                </a>
+                <span class="nf-topbar__sep"></span>
+                <span class="hidden md:inline">Registered Charity No. <strong class="font-semibold text-white">1199466</strong></span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="mailto:Contact@naeemfoundation.co.uk" class="nf-topbar__link hidden lg:inline-flex">
+                    <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+                    Contact@naeemfoundation.co.uk
+                </a>
+                <span class="nf-topbar__sep hidden lg:inline-block"></span>
+                <div class="flex items-center gap-1.5">
+                    <a href="#" aria-label="Facebook" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.6l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.3-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H8v3h2v8h3Z"/></svg></a>
+                    <a href="#" aria-label="Instagram" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+                    <a href="#" aria-label="TikTok" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a5 5 0 0 0 5 5v3a8 8 0 0 1-5-1.8V15a6 6 0 1 1-6-6c.3 0 .7 0 1 .1v3.2A2.8 2.8 0 1 0 13 15V3h3Z"/></svg></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ===== Main bar (full width) ===== --}}
     <div class="nf-container relative z-10">
         <div class="flex h-20 items-center justify-between gap-4 lg:h-24">
             {{-- Left: logo + nav --}}
             <div class="flex items-center gap-6 xl:gap-10">
-                {{-- Logo (white badge so it stays crisp on any background) --}}
-                <a href="{{ route('home') }}" class="shrink-0">
-                    <span class="grid place-items-center rounded-full bg-white p-2 shadow-md ring-1 ring-black/5 sm:p-2.5">
-                        <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="nf-logo h-14 w-auto sm:h-16 lg:h-[76px]">
+                {{-- Brand lockup: emblem in a white badge + wordmark (the emblem's own
+                     lettering is unreadable at header size, so the wordmark carries the name). --}}
+                <a href="{{ route('home') }}" class="nf-brand shrink-0" aria-label="{{ config('app.name') }} — home">
+                    <span class="nf-brand__badge">
+                        <img src="{{ asset('images/logo.png') }}" alt=""
+                             class="h-12 w-12 sm:h-[52px] sm:w-[52px] lg:h-[58px] lg:w-[58px]">
+                    </span>
+                    <span class="nf-brand__text">
+                        <span class="nf-brand__name">Naeem Foundation</span>
+                        <span class="nf-brand__tag">Building Hopes &amp; Futures</span>
                     </span>
                 </a>
 
@@ -143,15 +177,15 @@
                 @include('partials.cart')
 
                 <a href="{{ route('ask-mufti') }}"
-                   class="hidden items-center gap-2 rounded-md border px-5 py-2.5 text-sm font-semibold transition-colors md:inline-flex {{ request()->routeIs('ask-mufti') ? 'border-brand bg-brand text-white' : 'border-brand/20 bg-cream text-brand hover:border-brand hover:bg-brand hover:text-white' }}">
+                   class="hidden items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors md:inline-flex {{ request()->routeIs('ask-mufti') ? 'border-brand bg-brand text-white' : 'border-brand/25 bg-cream text-brand hover:border-brand hover:bg-brand hover:text-white' }}">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Ask a Mufti
                 </a>
-                <a href="{{ route('donate.checkout') }}" class="btn-brand">
-                    Donate
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+                <a href="{{ route('donate.checkout') }}" class="nf-donate">
+                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/>
                     </svg>
+                    Donate
                 </a>
 
                 {{-- Mobile menu toggle --}}

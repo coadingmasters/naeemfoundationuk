@@ -178,6 +178,9 @@ function setupRamadanScheduler() {
 
 /* ---------- Header: transparent over hero → solid on scroll ---------- */
 function setupHeader() {
+    // Overlay headers only: they're fixed, so collapsing the top bar costs no
+    // reflow. A solid header is sticky and still occupies flow — shrinking it
+    // mid-scroll would jerk the page content up by the bar's height.
     const header = document.querySelector('[data-header]');
     if (!header || !header.classList.contains('nf-header--overlay')) return;
 

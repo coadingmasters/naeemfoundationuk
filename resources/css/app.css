@@ -182,10 +182,183 @@
     opacity: 0;
 }
 
+/* ---------- Brand lockup (emblem + wordmark) ---------- */
+.nf-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+.nf-brand__badge {
+    display: grid;
+    place-items: center;
+    border-radius: 9999px;
+    background: #fff;
+    padding: 0.3rem;
+    box-shadow: 0 8px 22px rgba(18, 45, 60, 0.18);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+.nf-brand__badge img {
+    border-radius: 9999px;
+}
+.nf-brand:hover .nf-brand__badge {
+    transform: scale(1.05);
+    box-shadow: 0 10px 26px rgba(116, 10, 46, 0.28);
+}
+/* Wordmark is dead weight on small screens — the emblem alone carries it. */
+.nf-brand__text {
+    display: none;
+}
+@media (min-width: 640px) {
+    .nf-brand__text {
+        display: block;
+    }
+}
+.nf-brand__name {
+    display: block;
+    font-size: 1.02rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--color-navy-dark);
+    transition: color 0.35s ease;
+}
+.nf-brand__tag {
+    display: block;
+    margin-top: 0.1rem;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+    transition: color 0.35s ease;
+}
+/* Over a hero image the wordmark flips to white. */
+.nf-header--overlay:not(.is-scrolled):not(.is-menu-open) .nf-brand__name {
+    color: #fff;
+}
+.nf-header--overlay:not(.is-scrolled):not(.is-menu-open) .nf-brand__tag {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ---------- Header donate button ---------- */
+.nf-donate {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, var(--color-brand), #a01342);
+    padding: 0.7rem 1.4rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(116, 10, 46, 0.32);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.nf-donate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(116, 10, 46, 0.45);
+}
+/* Sheen sweep on hover. */
+.nf-donate::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 45%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.55s ease;
+    pointer-events: none;
+}
+.nf-donate:hover::after {
+    left: 120%;
+}
+/* The heart gives a gentle nudge on hover. */
+.nf-donate svg {
+    transition: transform 0.3s ease;
+}
+.nf-donate:hover svg {
+    transform: scale(1.15);
+}
+
+/* ---------- Top utility bar ---------- */
+.nf-topbar {
+    position: relative;
+    z-index: 10;
+    background: var(--color-navy-dark);
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.72rem;
+    overflow: hidden;
+    max-height: 2.25rem;
+    transition: max-height 0.35s ease, opacity 0.3s ease;
+}
+/* Over a hero the bar stays translucent so the slider still reads through it. */
+.nf-header--overlay .nf-topbar {
+    background: rgba(18, 45, 60, 0.55);
+    backdrop-filter: blur(6px);
+}
+/* Collapse the bar once scrolled so the sticky header stays compact. */
+.nf-header.is-scrolled .nf-topbar {
+    max-height: 0;
+    opacity: 0;
+}
+.nf-topbar__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+.nf-topbar__link:hover {
+    color: #fff;
+}
+.nf-topbar__sep {
+    display: inline-block;
+    height: 0.8rem;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.25);
+}
+.nf-topbar__social {
+    display: grid;
+    place-items: center;
+    height: 1.4rem;
+    width: 1.4rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.nf-topbar__social:hover {
+    background: var(--color-brand);
+    color: #fff;
+}
+
 /* Nav items flip white while the header is transparent. */
 .nf-nav-item {
+    position: relative;
     color: var(--color-navy);
     transition: color 0.2s ease;
+}
+/* Animated underline that grows from the centre. */
+.nf-nav-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.45rem;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-nav-item:hover::after,
+.nf-nav-item.is-active::after {
+    transform: scaleX(1);
 }
 .nf-nav-item:hover,
 .nf-nav-item.is-active {
@@ -1100,7 +1273,7 @@
 /* Wide panel, centred under the header so it reads as one balanced block. */
 .nf-dd__menu--mega {
     position: fixed;
-    top: 6rem;
+    top: 8.25rem;
     left: 0;
     right: 0;
     margin-inline: auto;
@@ -1112,6 +1285,10 @@
 .nf-dd--mega:hover .nf-dd__menu--mega,
 .nf-dd--mega:focus-within .nf-dd__menu--mega {
     transform: translateY(0);
+}
+/* Once the top bar collapses, the menu rides up with the header. */
+.nf-header.is-scrolled .nf-dd__menu--mega {
+    top: 6rem;
 }
 /* Tall hover bridge so the centred menu stays open as the cursor travels down. */
 .nf-dd__menu--mega::before {

@@ -15,7 +15,7 @@
         <div class="nf-float pointer-events-none absolute -right-20 top-10 h-64 w-64 rounded-full bg-brand/30 blur-3xl"></div>
         <div class="nf-float pointer-events-none absolute -left-16 bottom-24 h-56 w-56 rounded-full bg-white/10 blur-3xl" style="animation-delay: 1.5s"></div>
 
-        <div class="relative z-10 nf-container flex min-h-[460px] flex-col items-center justify-center px-4 pb-48 pt-28 text-center sm:min-h-[540px] sm:pb-56 sm:pt-32">
+        <div class="relative z-10 nf-container flex min-h-[460px] flex-col items-center justify-center px-4 pb-48 pt-32 text-center sm:min-h-[540px] sm:pb-56 sm:pt-40">
             <span class="nf-in-up inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white ring-1 ring-white/20">
                 <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
                 Guidance &amp; Fatwa

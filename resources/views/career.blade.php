@@ -42,7 +42,7 @@
         <img src="{{ asset('images/about us hero banner.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-brand/80 to-brand/55"></div>
 
-        <div class="nf-container relative pb-16 pt-24 text-center sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-36">
+        <div class="nf-container relative pb-16 pt-24 text-center sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-44">
             <div class="mx-auto max-w-2xl text-white nf-reveal">
                 <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
                     <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
