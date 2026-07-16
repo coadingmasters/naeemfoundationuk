@@ -648,30 +648,112 @@
     color: #fff;
 }
 
-/* ---------- Giving mega-menu (two columns) ---------- */
+/* ---------- Giving mega-menu (three columns + promo card) ---------- */
 .nf-dd__menu--mega {
     left: 0;
-    width: min(42rem, calc(100vw - 2rem));
+    width: min(62rem, calc(100vw - 2rem));
     transform: translateX(0) translateY(10px);
-    padding: 1.1rem;
+    padding: 1.25rem;
 }
 .nf-dd--mega:hover .nf-dd__menu--mega,
 .nf-dd--mega:focus-within .nf-dd__menu--mega {
     transform: translateX(0) translateY(0);
 }
-.nf-mega__cols {
+.nf-mega__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 13rem;
+    gap: 1.25rem;
 }
 .nf-mega__col {
     min-width: 0;
+    /* Staggered column entrance */
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.nf-mega__col:first-child {
-    padding-right: 1.1rem;
+.nf-dd--mega:hover .nf-mega__col,
+.nf-dd--mega:focus-within .nf-mega__col {
+    opacity: 1;
+    transform: translateY(0);
 }
+.nf-dd--mega:hover .nf-mega__col:nth-child(2),
+.nf-dd--mega:focus-within .nf-mega__col:nth-child(2) { transition-delay: 0.05s; }
+.nf-dd--mega:hover .nf-mega__col:nth-child(3),
+.nf-dd--mega:focus-within .nf-mega__col:nth-child(3) { transition-delay: 0.1s; }
 .nf-mega__col + .nf-mega__col {
     border-left: 1px solid #f1f5f9;
-    padding-left: 1.1rem;
+    padding-left: 1.25rem;
+}
+
+/* Promo image card */
+.nf-mega__promo {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    border-radius: 0.9rem;
+    min-height: 14rem;
+    box-shadow: 0 12px 26px rgba(18, 45, 60, 0.14);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-dd--mega:hover .nf-mega__promo,
+.nf-dd--mega:focus-within .nf-mega__promo {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.14s;
+}
+.nf-mega__promo-media {
+    position: absolute;
+    inset: 0;
+}
+.nf-mega__promo-media img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+.nf-mega__promo:hover .nf-mega__promo-media img {
+    transform: scale(1.07);
+}
+.nf-mega__promo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(116, 10, 46, 0.94), rgba(116, 10, 46, 0.2) 55%, rgba(116, 10, 46, 0));
+}
+.nf-mega__promo-band {
+    position: relative;
+    width: 100%;
+    padding: 1rem 1.1rem;
+    color: #fff;
+}
+.nf-mega__promo-eyebrow {
+    display: block;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+}
+.nf-mega__promo-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+.nf-mega__promo-arrow {
+    height: 1.05rem;
+    width: 1.05rem;
+    flex: none;
+    transition: transform 0.25s ease;
+}
+.nf-mega__promo:hover .nf-mega__promo-arrow {
+    transform: translateX(4px);
 }
 /* Section heading styled to look like a tab pill (static, not clickable) */
 .nf-mega__head {

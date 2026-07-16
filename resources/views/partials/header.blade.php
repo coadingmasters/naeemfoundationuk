@@ -25,6 +25,19 @@
     // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
     $givingUrl = fn ($item) => ! empty($item['route']) ? route($item['route']) : route('give.'.$item['slug']);
 
+    // Giving mega-menu: three link columns + a promo image card.
+    $megaColumns = [
+        ['heading' => config('giving.appeals.heading'), 'items' => config('giving.appeals.items')],
+        ['heading' => config('giving.islamic.heading'), 'items' => config('giving.islamic.items')],
+        ['heading' => 'This Ramadan', 'items' => config('giving.islamic.featured', [])],
+    ];
+    $megaPromo = [
+        'image' => 'images/zakatcenter.png',
+        'eyebrow' => 'Not sure where to give?',
+        'title' => 'Where Most Needed',
+        'url' => route('donate.checkout'),
+    ];
+
     $arrowSvg = '<svg class="nf-mega__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
     // Transparent overlay by default; light-hero pages request a solid header
@@ -59,12 +72,12 @@
                             </button>
 
                             <div class="nf-dd__menu nf-dd__menu--mega" role="menu">
-                                <div class="nf-mega__cols">
-                                    @foreach (['appeals', 'islamic'] as $key)
+                                <div class="nf-mega__grid">
+                                    @foreach ($megaColumns as $col)
                                         <div class="nf-mega__col">
-                                            <span class="nf-mega__head">{{ config('giving.'.$key.'.heading') }}</span>
+                                            <span class="nf-mega__head">{{ $col['heading'] }}</span>
                                             <div class="nf-mega__list">
-                                                @foreach (array_merge(config('giving.'.$key.'.items'), config('giving.'.$key.'.featured', [])) as $g)
+                                                @foreach ($col['items'] as $g)
                                                     <a href="{{ $givingUrl($g) }}" class="nf-mega__item">
                                                         <span class="nf-mega__dot"></span>
                                                         <span class="flex-1 leading-tight">{{ $g['title'] }}</span>
@@ -74,6 +87,20 @@
                                             </div>
                                         </div>
                                     @endforeach
+
+                                    {{-- Promo image card --}}
+                                    <a href="{{ $megaPromo['url'] }}" class="nf-mega__promo group">
+                                        <span class="nf-mega__promo-media">
+                                            <img src="{{ asset($megaPromo['image']) }}" alt="">
+                                        </span>
+                                        <span class="nf-mega__promo-band">
+                                            <span class="nf-mega__promo-eyebrow">{{ $megaPromo['eyebrow'] }}</span>
+                                            <span class="nf-mega__promo-title">
+                                                {{ $megaPromo['title'] }}
+                                                <svg class="nf-mega__promo-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </span>
+                                        </span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -152,9 +179,9 @@
                             <svg data-subnav-chev class="h-4 w-4 text-brand transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                         <div data-subnav class="hidden flex-col pb-2">
-                            @foreach (['appeals', 'islamic'] as $key)
-                                <p class="px-1 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-brand">{{ config('giving.'.$key.'.heading') }}</p>
-                                @foreach (array_merge(config('giving.'.$key.'.items'), config('giving.'.$key.'.featured', [])) as $g)
+                            @foreach ($megaColumns as $col)
+                                <p class="px-1 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-brand">{{ $col['heading'] }}</p>
+                                @foreach ($col['items'] as $g)
                                     <a href="{{ $givingUrl($g) }}"
                                        class="ml-2 border-l-2 border-cream py-2 pl-4 text-sm font-medium text-navy transition-colors hover:border-brand hover:text-brand">
                                         {{ $g['title'] }}
