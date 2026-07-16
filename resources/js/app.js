@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCustomSelects();
     setupPaymentForm();
     setupRamadanScheduler();
+    setupPrintButtons();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -167,6 +168,13 @@ function setupRamadanScheduler() {
     });
 
     render();
+}
+
+/* ---------- Print buttons ---------- */
+function setupPrintButtons() {
+    document.querySelectorAll('[data-print-page]').forEach((btn) => {
+        btn.addEventListener('click', () => window.print());
+    });
 }
 
 /* ---------- Toast ---------- */

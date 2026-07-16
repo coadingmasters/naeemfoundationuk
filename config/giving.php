@@ -37,7 +37,7 @@ return [
         ],
         // Highlighted Ramadan calls-to-action shown at the bottom of the tab.
         'featured' => [
-            ['title' => 'Schedule Your Ramadan Giving', 'slug' => 'schedule-ramadan-giving'],
+            ['title' => 'Schedule Your Ramadan Giving', 'route' => 'schedule-ramadan-giving'],
             ['title' => 'Ramadan Calendar', 'route' => 'ramadan-calendar'],
             ['title' => 'Give Ramadan Food Packs', 'route' => 'ramadan-food-packs'],
         ],

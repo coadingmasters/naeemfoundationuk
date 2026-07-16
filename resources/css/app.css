@@ -360,6 +360,20 @@
     background: var(--color-brand);
 }
 
+/* Print: keep only the timetable on the page */
+@media print {
+    .nf-noprint,
+    header,
+    footer,
+    .nf-scrolltop,
+    .nf-toast {
+        display: none !important;
+    }
+    body {
+        background: #fff;
+    }
+}
+
 /* Thank-you page: warm gold → slate blue backdrop */
 .nf-thankyou-bg {
     background: linear-gradient(115deg, #c9a24d 0%, #c4ac87 32%, #8e9aab 68%, #4a5f76 100%);

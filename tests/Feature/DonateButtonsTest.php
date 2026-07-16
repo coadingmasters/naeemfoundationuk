@@ -21,6 +21,7 @@ class DonateButtonsTest extends TestCase
             'healthcare', 'food-sustenance', 'sustainable-livelihood',
             'cambodia-education-welfare', 'prosthetic-limb', 'water-well',
             'fidya', 'sadaqah', 'annual-report', 'ramadan-calendar', 'community-centre',
+            'schedule-ramadan-giving',
         ];
 
         foreach ($pages as $page) {

@@ -20,6 +20,7 @@ use App\Http\Controllers\HealthcareController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProstheticLimbController;
 use App\Http\Controllers\RamadanFoodPacksController;
+use App\Http\Controllers\RamadanTimetableController;
 use App\Http\Controllers\SadaqahController;
 use App\Http\Controllers\SehriIftarController;
 use App\Http\Controllers\SustainableLivelihoodController;
@@ -61,6 +62,7 @@ Route::get('/sustainable-livelihood', [SustainableLivelihoodController::class, '
 Route::get('/cambodia-education-welfare', [CambodiaEducationController::class, 'index'])->name('cambodia-education-welfare');
 Route::get('/prosthetic-limb', [ProstheticLimbController::class, 'index'])->name('prosthetic-limb');
 Route::view('/ramadan-calendar', 'ramadan-calendar')->name('ramadan-calendar');
+Route::get('/schedule-ramadan-giving', [RamadanTimetableController::class, 'index'])->name('schedule-ramadan-giving');
 Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
 Route::get('/eid-gifts-for-children', [EidGiftsController::class, 'index'])->name('eid-gifts');
 Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])->name('ramadan-food-packs');
