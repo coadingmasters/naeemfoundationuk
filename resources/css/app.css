@@ -4,9 +4,54 @@
 @source '../../storage/framework/views/*.php';
 @source '../views';
 
+/* ---------- Geogrotesque (self-hosted, licensed) ----------
+   Drop the licensed font files into  public/fonts/geogrotesque/
+   using the filenames below. Until then the site falls back to
+   Instrument Sans, so nothing ever looks broken. */
+@font-face {
+    font-family: 'Geogrotesque';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/geogrotesque/geogrotesque-400.woff2') format('woff2'),
+         url('/fonts/geogrotesque/geogrotesque-400.woff') format('woff');
+}
+@font-face {
+    font-family: 'Geogrotesque';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/fonts/geogrotesque/geogrotesque-500.woff2') format('woff2'),
+         url('/fonts/geogrotesque/geogrotesque-500.woff') format('woff');
+}
+@font-face {
+    font-family: 'Geogrotesque';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/fonts/geogrotesque/geogrotesque-600.woff2') format('woff2'),
+         url('/fonts/geogrotesque/geogrotesque-600.woff') format('woff');
+}
+@font-face {
+    font-family: 'Geogrotesque';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/fonts/geogrotesque/geogrotesque-700.woff2') format('woff2'),
+         url('/fonts/geogrotesque/geogrotesque-700.woff') format('woff');
+}
+@font-face {
+    font-family: 'Geogrotesque';
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url('/fonts/geogrotesque/geogrotesque-800.woff2') format('woff2'),
+         url('/fonts/geogrotesque/geogrotesque-800.woff') format('woff');
+}
+
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Geogrotesque', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     /* Brand colors */
     --color-brand: #740a2e;

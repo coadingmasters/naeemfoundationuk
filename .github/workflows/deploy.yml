@@ -51,6 +51,9 @@ jobs:
           # Images — NO --delete, so admin-uploaded hero images are never removed
           sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
             public/images/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/images/"
+          # Self-hosted fonts (e.g. Geogrotesque) — NO --delete
+          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
+            public/fonts/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/fonts/"
 
       - name: Pull code, migrate, seed and clear caches on the server
         env:
