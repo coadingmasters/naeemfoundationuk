@@ -37,6 +37,12 @@
             'icon' => '<path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.9L15 14M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
         [
+            'label' => 'News & Press',
+            'route' => 'admin.news.index',
+            'active' => request()->routeIs('admin.news.*'),
+            'icon' => '<path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" stroke-linejoin="round"/><path d="M17 9h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2M8 9h6M8 13h6M8 17h3" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
+        [
             'label' => 'Annual Reports',
             'route' => 'admin.annual-reports.index',
             'active' => request()->routeIs('admin.annual-reports.*'),

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
+use App\Http\Controllers\Admin\NewsPostController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\AnnualReportController;
 use App\Http\Controllers\AskMuftiController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\FoodSustenanceController;
 use App\Http\Controllers\HajjController;
 use App\Http\Controllers\HealthcareController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProstheticLimbController;
 use App\Http\Controllers\RamadanFoodPacksController;
 use App\Http\Controllers\RamadanTimetableController;
@@ -42,11 +44,8 @@ Route::view('/about', 'about')->name('about');
 Route::view('/history', 'history')->name('history');
 Route::view('/careers', 'career')->name('careers');
 Route::get('/annual-report', [AnnualReportController::class, 'index'])->name('annual-report');
-Route::view('/news-and-press', 'placeholder', [
-    'pageTag' => 'Who We Are',
-    'pageTitle' => 'News & Press',
-    'pageText' => 'The latest updates, press releases and stories from the field at Naeem Foundation.',
-])->name('news');
+Route::get('/news-and-press', [NewsController::class, 'index'])->name('news');
+Route::get('/news-and-press/{slug}', [NewsController::class, 'show'])->name('news.show');
 
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
@@ -139,6 +138,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->except(['show']);
 
         Route::resource('annual-reports', AdminAnnualReportController::class)
+            ->except(['show']);
+
+        Route::resource('news', NewsPostController::class)
+            ->parameters(['news' => 'news'])
             ->except(['show']);
     });
 });

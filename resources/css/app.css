@@ -128,6 +128,14 @@
         @apply w-full rounded-md border border-white/60 bg-transparent px-3 py-2.5 text-sm text-white placeholder:text-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/30;
     }
 
+    /* News & Press category filter chips */
+    .nf-chip {
+        @apply inline-flex items-center rounded-full border border-navy/15 px-4 py-2 text-sm font-semibold text-navy transition-colors hover:border-brand hover:text-brand;
+    }
+    .nf-chip.is-active {
+        @apply border-brand bg-brand text-white hover:text-white;
+    }
+
     /* About page tab buttons — navy segmented bar */
     .nf-tab {
         @apply cursor-pointer bg-white text-navy-dark hover:bg-cream;

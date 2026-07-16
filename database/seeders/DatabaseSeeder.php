@@ -6,6 +6,7 @@ use App\Models\AnnualReport;
 use App\Models\Appeal;
 use App\Models\Cause;
 use App\Models\HeroSlide;
+use App\Models\NewsPost;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -104,6 +105,58 @@ class DatabaseSeeder extends Seeder
                 Cause::create(array_merge($cause, [
                     'link' => '#',
                     'sort_order' => $i + 1,
+                    'is_active' => true,
+                ]));
+            }
+        }
+
+        // Sample news stories — only when the table is empty.
+        if (NewsPost::count() === 0) {
+            $stories = [
+                [
+                    'title' => 'Civilians Fleeing Conflict Urgently Need Aid',
+                    'category' => 'Emergency',
+                    'excerpt' => 'Thousands of families have been displaced with little more than what they could carry. Our teams are on the ground delivering food, water and shelter.',
+                    'image' => 'images/latestnews.png',
+                    'is_featured' => true,
+                ],
+                [
+                    'title' => 'Naeem Foundation Opens New Water Well in Sindh',
+                    'category' => 'Press Release',
+                    'excerpt' => 'A new deep-bore well now serves over 400 people, ending a daily two-hour walk for clean water.',
+                    'image' => 'images/handpump.jpg',
+                ],
+                [
+                    'title' => 'Ramadan 2026: How Your Donations Fed 3,000 Families',
+                    'category' => 'News',
+                    'excerpt' => 'A month of generosity delivered food packs across four regions. Here is exactly where your support went.',
+                    'image' => 'images/changinslives2.jpg',
+                ],
+                [
+                    'title' => 'Why Sadaqah Is More Than Money',
+                    'category' => 'Blog',
+                    'excerpt' => 'From a smile to a meal — the small acts of charity that carry the greatest weight.',
+                    'image' => 'images/givesadqa.jpg',
+                ],
+                [
+                    'title' => 'Free Medical Camp Treats 800 Patients in One Weekend',
+                    'category' => 'News',
+                    'excerpt' => 'Volunteer doctors provided check-ups, medicine and referrals to families with no access to healthcare.',
+                    'image' => 'images/changinslives4.jpg',
+                ],
+                [
+                    'title' => 'Our Commitment to Transparency',
+                    'category' => 'Press Release',
+                    'excerpt' => 'Read our latest audited accounts and see how every pound is spent.',
+                    'image' => 'images/changinslives1.jpg',
+                ],
+            ];
+
+            foreach ($stories as $i => $story) {
+                NewsPost::create(array_merge($story, [
+                    'slug' => NewsPost::uniqueSlug($story['title']),
+                    'body' => "At Naeem Foundation, our work is only possible because of the generosity of supporters like you.\n\nThis story is a sample article. Replace it — or write your own — from the admin dashboard under News & Press. You can add a headline, standfirst, main image, category and the full article text.\n\nEvery pound donated is tracked and reported, and our audited accounts are published each year on our Annual Reports page. Thank you for standing with the families we serve.",
+                    'published_at' => now()->subDays($i * 9),
                     'is_active' => true,
                 ]));
             }
