@@ -173,6 +173,27 @@ class DonationTest extends TestCase
             ->assertDontSee('Want to add these', false);
     }
 
+    public function test_editing_the_basket_pre_fills_the_previously_entered_details(): void
+    {
+        $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 100]);
+
+        $this->post(route('donate.store'), [
+            'first_name' => 'Ahsan',
+            'last_name' => 'Nawaz',
+            'email' => 'ahsan@example.com',
+            'phone' => '+441234567890',
+            'billing_address' => '1 Test Street, London',
+        ]);
+
+        // Going back to the checkout (e.g. "Edit your basket") keeps the details.
+        $this->get(route('donate.checkout'))
+            ->assertOk()
+            ->assertSee('value="Ahsan"', false)
+            ->assertSee('value="Nawaz"', false)
+            ->assertSee('value="ahsan@example.com"', false)
+            ->assertSee('value="1 Test Street, London"', false);
+    }
+
     public function test_organisation_name_is_required_when_donating_on_behalf(): void
     {
         $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 100]);
@@ -243,7 +264,7 @@ class DonationTest extends TestCase
 
         $this->get(route('donate.payment'))
             ->assertOk()
-            ->assertSee('Payment Summary')
+            ->assertSee('Order Summary')
             ->assertSee('Add Payment Details')
             ->assertSee('Zakat')
             ->assertSee(Donation::sole()->reference);

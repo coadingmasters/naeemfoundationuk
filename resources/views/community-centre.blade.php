@@ -49,7 +49,7 @@
         <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
         <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
 
-        <div class="nf-container relative grid items-center gap-10 py-14 lg:grid-cols-2 lg:gap-14 lg:py-20">
+        <div class="nf-container relative grid items-center gap-10 py-14 lg:grid-cols-2 lg:gap-14 lg:pb-20 lg:pt-32">
 
             {{-- Left: copy --}}
             <div class="nf-reveal text-white">

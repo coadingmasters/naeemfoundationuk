@@ -105,6 +105,8 @@ class DonationController extends Controller
         return view('donate.checkout', [
             'items' => DonationCart::items(),
             'subtotal' => DonationCart::subtotal(),
+            // Pre-fill the form if the donor has already entered details this session.
+            'details' => session('donation.details', []),
         ]);
     }
 

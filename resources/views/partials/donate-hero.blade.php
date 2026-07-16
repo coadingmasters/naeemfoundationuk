@@ -26,8 +26,8 @@
             </div>
         </div>
 
-        {{-- Donate widget --}}
-        <div class="flex flex-col justify-center px-5 py-8 sm:px-8 lg:px-12 lg:py-8">
+        {{-- Donate widget (extra top padding on desktop so it clears the fixed header) --}}
+        <div class="flex flex-col justify-center px-5 py-8 sm:px-8 lg:px-12 lg:pb-12 lg:pt-32">
             @include('partials.donate-widget', [
                 'widgetCauses' => $widgetCauses ?? ['Where Most Needed'],
                 'widgetImage' => $heroImage,

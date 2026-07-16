@@ -79,6 +79,7 @@
                 @endif
 
                 {{-- ===== Details form ===== --}}
+                @php $d = $details ?? []; @endphp
                 <form method="POST" action="{{ route('donate.store') }}" class="mt-10">
                     @csrf
 
@@ -87,7 +88,7 @@
                     {{-- Gift Aid --}}
                     <h3 class="mt-6 text-lg font-semibold italic text-white/90">Gift Aid</h3>
                     <label class="mt-2 flex cursor-pointer items-start gap-3">
-                        <input type="checkbox" name="gift_aid" value="1" @checked(old('gift_aid', true))
+                        <input type="checkbox" name="gift_aid" value="1" @checked(old('gift_aid', $d['gift_aid'] ?? true))
                                class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/40 bg-white/10 text-brand focus:ring-2 focus:ring-white/40">
                         <span class="text-xs leading-relaxed text-white/85 sm:text-sm">
                             I am a UK taxpayer, donating as an individual and would like Naeem Foundation to claim Gift Aid
@@ -99,13 +100,13 @@
                     <div class="mt-6 grid gap-5 sm:grid-cols-2">
                         <div>
                             <label for="first_name" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*First Name</label>
-                            <input id="first_name" type="text" name="first_name" value="{{ old('first_name') }}" required
+                            <input id="first_name" type="text" name="first_name" value="{{ old('first_name', $d['first_name'] ?? '') }}" required
                                    class="nf-dark-input">
                             @error('first_name') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label for="last_name" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Last Name</label>
-                            <input id="last_name" type="text" name="last_name" value="{{ old('last_name') }}" required
+                            <input id="last_name" type="text" name="last_name" value="{{ old('last_name', $d['last_name'] ?? '') }}" required
                                    class="nf-dark-input">
                             @error('last_name') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                         </div>
@@ -115,13 +116,13 @@
                     <div class="mt-5 grid gap-5 sm:grid-cols-2">
                         <div>
                             <label for="email" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Email</label>
-                            <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                            <input id="email" type="email" name="email" value="{{ old('email', $d['email'] ?? '') }}" required
                                    class="nf-dark-input">
                             @error('email') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label for="phone" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Contact Number</label>
-                            <input id="phone" type="tel" name="phone" value="{{ old('phone') }}" required
+                            <input id="phone" type="tel" name="phone" value="{{ old('phone', $d['phone'] ?? '') }}" required
                                    class="nf-dark-input">
                             @error('phone') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                         </div>
@@ -130,15 +131,15 @@
                     {{-- On behalf of org (reveals the organisation name) --}}
                     <label class="mt-6 flex cursor-pointer items-center gap-3">
                         <input type="checkbox" name="on_behalf_of_organisation" value="1" data-org-toggle
-                               @checked(old('on_behalf_of_organisation'))
+                               @checked(old('on_behalf_of_organisation', $d['on_behalf_of_organisation'] ?? false))
                                class="h-5 w-5 shrink-0 rounded border-white/40 bg-white/10 text-brand focus:ring-2 focus:ring-white/40">
                         <span class="text-xs text-white/85 sm:text-sm">I am donating on behalf of an organization.</span>
                     </label>
 
                     {{-- Organisation name — revealed only when the box above is ticked --}}
-                    <div data-org-field class="mt-4 {{ old('on_behalf_of_organisation') ? '' : 'hidden' }}">
+                    <div data-org-field class="mt-4 {{ old('on_behalf_of_organisation', $d['on_behalf_of_organisation'] ?? false) ? '' : 'hidden' }}">
                         <label for="organisation_name" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Organization Name</label>
-                        <input id="organisation_name" type="text" name="organisation_name" value="{{ old('organisation_name') }}"
+                        <input id="organisation_name" type="text" name="organisation_name" value="{{ old('organisation_name', $d['organisation_name'] ?? '') }}"
                                placeholder="Enter your organization's name" class="nf-dark-input">
                         @error('organisation_name') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
@@ -146,7 +147,7 @@
                     {{-- Billing address --}}
                     <div class="mt-6">
                         <label for="billing_address" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Billing Address</label>
-                        <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address') }}" required
+                        <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address', $d['billing_address'] ?? '') }}" required
                                class="nf-dark-input">
                         @error('billing_address') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
