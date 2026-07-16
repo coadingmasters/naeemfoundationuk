@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\DonationReceipt;
 use App\Models\Donation;
 use App\Support\DonationCart;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -311,6 +313,9 @@ class DonationController extends Controller
             // Payment confirmation should not fail on a persistence error.
         }
 
+        // Email the donor a professional receipt (never blocks the flow if it fails).
+        $this->sendReceipt($donation, $summary, $coverFee);
+
         // Payment succeeded — only now is it safe to empty the basket.
         DonationCart::clear();
         session()->forget('donation');
@@ -332,6 +337,32 @@ class DonationController extends Controller
         }
 
         return view('donate.thank-you', $completed);
+    }
+
+    /** Email the donor their receipt. Failures are swallowed so a mail outage
+     *  never breaks a completed donation. */
+    private function sendReceipt(array $donation, array $summary, bool $coverFee): void
+    {
+        $details = $donation['details'] ?? [];
+        $email = $details['email'] ?? null;
+
+        if (! $email) {
+            return;
+        }
+
+        try {
+            Mail::to($email)->send(new DonationReceipt(
+                reference: $donation['reference'],
+                name: trim(($details['first_name'] ?? '').' '.($details['last_name'] ?? '')),
+                items: $summary['items'],
+                subtotal: (float) $summary['subtotal'],
+                fee: (float) $summary['fee'],
+                total: (float) $summary['total'],
+                giftAid: (bool) ($details['gift_aid'] ?? false),
+            ));
+        } catch (Throwable $e) {
+            // Mail transport unavailable — the donation still completes.
+        }
     }
 
     /** Standard Luhn (mod 10) checksum used by all major card schemes. */

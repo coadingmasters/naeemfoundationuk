@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Mail\DonationReceipt;
 use App\Models\Donation;
 use App\Support\DonationCart;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class DonationTest extends TestCase
@@ -320,6 +322,51 @@ class DonationTest extends TestCase
         $this->assertNull(session('_old_input.card_number'));
         $this->assertNull(session('_old_input.cvc'));
         $this->assertSame('Ahsan Nawaz', session('_old_input.card_name'));
+    }
+
+    public function test_a_receipt_email_is_sent_to_the_donor_after_payment(): void
+    {
+        Mail::fake();
+
+        $this->reachPaymentStep(); // stores email ahsan@example.com in the session
+
+        $this->post(route('donate.payment.process'), $this->cardPayload())
+            ->assertRedirect(route('donate.thank-you'));
+
+        Mail::assertSent(DonationReceipt::class, function ($mail) {
+            return $mail->hasTo('ahsan@example.com')
+                && $mail->reference === Donation::sole()->reference
+                && $mail->total === 253.50; // £250 + covered fee
+        });
+    }
+
+    public function test_no_receipt_is_sent_when_the_card_is_invalid(): void
+    {
+        Mail::fake();
+
+        $this->reachPaymentStep();
+        $this->post(route('donate.payment.process'), $this->cardPayload(['card_number' => '4242 4242 4242 4241']))
+            ->assertSessionHasErrors('card_number');
+
+        Mail::assertNothingSent();
+    }
+
+    public function test_the_receipt_email_template_renders(): void
+    {
+        $rendered = (new DonationReceipt(
+            reference: 'NF-TEST123456',
+            name: 'Ahsan Nawaz',
+            items: [['cause' => 'Zakat', 'amount' => 250, 'qty' => 1, 'frequency' => 'one-off']],
+            subtotal: 250,
+            fee: 3.5,
+            total: 253.5,
+            giftAid: true,
+        ))->render();
+
+        $this->assertStringContainsString('Thank you for your donation', $rendered);
+        $this->assertStringContainsString('NF-TEST123456', $rendered);
+        $this->assertStringContainsString('£253.50', $rendered);
+        $this->assertStringContainsString('Gift Aid confirmed', $rendered);
     }
 
     public function test_a_valid_card_completes_the_donation(): void

@@ -62,13 +62,11 @@
                         Reference: <span class="font-semibold text-navy-dark">{{ $reference }}</span>
                     </p>
 
-                    {{-- CTA --}}
-                    <div class="mt-8">
-                        <a href="{{ route('home') }}"
-                           class="inline-flex items-center justify-center rounded-full bg-navy-dark px-8 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-navy hover:shadow-xl">
-                            See Impact
-                        </a>
-                    </div>
+                    {{-- Email confirmation note --}}
+                    <p class="mx-auto mt-6 flex max-w-sm items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-xs text-gray-600 shadow-sm">
+                        <svg class="h-4 w-4 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16v12H4zM4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        A receipt has been emailed to you. Please keep it for your records.
+                    </p>
                 </div>
             </div>
         </div>
