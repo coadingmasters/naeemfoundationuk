@@ -127,12 +127,21 @@
                         </div>
                     </div>
 
-                    {{-- On behalf of org --}}
+                    {{-- On behalf of org (reveals the organisation name) --}}
                     <label class="mt-6 flex cursor-pointer items-center gap-3">
-                        <input type="checkbox" name="on_behalf_of_organisation" value="1" @checked(old('on_behalf_of_organisation'))
+                        <input type="checkbox" name="on_behalf_of_organisation" value="1" data-org-toggle
+                               @checked(old('on_behalf_of_organisation'))
                                class="h-5 w-5 shrink-0 rounded border-white/40 bg-white/10 text-brand focus:ring-2 focus:ring-white/40">
                         <span class="text-xs text-white/85 sm:text-sm">I am donating on behalf of an organization.</span>
                     </label>
+
+                    {{-- Organisation name — revealed only when the box above is ticked --}}
+                    <div data-org-field class="mt-4 {{ old('on_behalf_of_organisation') ? '' : 'hidden' }}">
+                        <label for="organisation_name" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Organization Name</label>
+                        <input id="organisation_name" type="text" name="organisation_name" value="{{ old('organisation_name') }}"
+                               placeholder="Enter your organization's name" class="nf-dark-input">
+                        @error('organisation_name') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                    </div>
 
                     {{-- Billing address --}}
                     <div class="mt-6">
@@ -142,17 +151,6 @@
                         @error('billing_address') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
 
-                    {{-- Transaction fee --}}
-                    <label class="mt-8 flex cursor-pointer items-start gap-3">
-                        <input type="checkbox" name="cover_fee" value="1" @checked(old('cover_fee', true))
-                               class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/40 bg-white/10 text-brand focus:ring-2 focus:ring-white/40">
-                        <span class="text-xs leading-relaxed text-white/85 sm:text-sm">
-                            We are charged a small fee of 1.4% on every transaction by our payment provider. Would you like
-                            to cover the transaction fee of <span class="font-semibold">£{{ number_format($fee, 2) }}</span>
-                            so that we receive your full donation?
-                        </span>
-                    </label>
-
                     <div class="mt-8 flex justify-end">
                         <button type="submit" @disabled(empty($items))
                                 class="rounded-lg bg-white px-6 py-3 text-sm font-bold text-navy-dark transition-colors hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50">
@@ -160,25 +158,6 @@
                         </button>
                     </div>
                 </form>
-
-                {{-- ===== Add-ons (separate forms so they don't submit the details form) ===== --}}
-                <div class="mt-10">
-                    <h2 class="text-xl font-bold text-white sm:text-2xl">Want to add these ?</h2>
-                    <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                        @foreach ($addons as $addon)
-                            <form method="POST" action="{{ route('donate.add') }}">
-                                @csrf
-                                <input type="hidden" name="cause" value="{{ $addon['cause'] }}">
-                                <input type="hidden" name="amount" value="{{ $addon['amount'] }}">
-                                <input type="hidden" name="frequency" value="one-off">
-                                <button type="submit"
-                                        class="w-full rounded-lg bg-white px-3 py-3 text-xs font-bold text-navy-dark transition-colors hover:bg-cream sm:text-sm">
-                                    £{{ $addon['amount'] }} {{ $addon['cause'] }}
-                                </button>
-                            </form>
-                        @endforeach
-                    </div>
-                </div>
 
             </div>
         </div>

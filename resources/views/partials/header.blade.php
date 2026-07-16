@@ -79,7 +79,6 @@
                                             <div class="nf-mega__list">
                                                 @foreach ($col['items'] as $g)
                                                     <a href="{{ $givingUrl($g) }}" class="nf-mega__item">
-                                                        <span class="nf-mega__dot"></span>
                                                         <span class="flex-1 leading-tight">{{ $g['title'] }}</span>
                                                         {!! $arrowSvg !!}
                                                     </a>

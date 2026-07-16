@@ -649,20 +649,38 @@
 }
 
 /* ---------- Giving mega-menu (three columns + promo card) ---------- */
+/* Wide panel, centred under the header so it reads as one balanced block. */
 .nf-dd__menu--mega {
+    position: fixed;
+    top: 6rem;
     left: 0;
-    width: min(62rem, calc(100vw - 2rem));
-    transform: translateX(0) translateY(10px);
-    padding: 1.25rem;
+    right: 0;
+    margin-inline: auto;
+    width: min(70rem, calc(100vw - 2rem));
+    transform: translateY(12px);
+    padding: 1.75rem;
+    border-radius: 1.1rem;
 }
 .nf-dd--mega:hover .nf-dd__menu--mega,
 .nf-dd--mega:focus-within .nf-dd__menu--mega {
-    transform: translateX(0) translateY(0);
+    transform: translateY(0);
+}
+/* Tall hover bridge so the centred menu stays open as the cursor travels down. */
+.nf-dd__menu--mega::before {
+    left: 0;
+    right: 0;
+    top: -2.75rem;
+    height: 2.75rem;
+}
+/* The little pointer arrow doesn't fit a wide centred panel. */
+.nf-dd--mega > button::after {
+    display: none;
 }
 .nf-mega__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 13rem;
-    gap: 1.25rem;
+    grid-template-columns: 1fr 1fr 1fr 15rem;
+    gap: 2rem;
+    align-items: start;
 }
 .nf-mega__col {
     min-width: 0;
@@ -680,19 +698,59 @@
 .nf-dd--mega:focus-within .nf-mega__col:nth-child(2) { transition-delay: 0.05s; }
 .nf-dd--mega:hover .nf-mega__col:nth-child(3),
 .nf-dd--mega:focus-within .nf-mega__col:nth-child(3) { transition-delay: 0.1s; }
-.nf-mega__col + .nf-mega__col {
-    border-left: 1px solid #f1f5f9;
-    padding-left: 1.25rem;
+
+/* Underlined section heading (reference style) */
+.nf-mega__head {
+    display: block;
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-brand);
+    color: var(--color-brand);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.nf-mega__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+.nf-mega__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.55rem;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-navy);
+    transition: background-color 0.16s ease, color 0.16s ease;
+}
+.nf-mega__item:hover {
+    background: var(--color-cream);
+    color: var(--color-brand);
+}
+.nf-mega__arrow {
+    height: 0.9rem;
+    width: 0.9rem;
+    flex: none;
+    color: var(--color-brand);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.16s ease, transform 0.16s ease;
+}
+.nf-mega__item:hover .nf-mega__arrow {
+    opacity: 1;
+    transform: translateX(0);
 }
 
-/* Promo image card */
+/* Promo card — image on top, solid brand band below (reference style) */
 .nf-mega__promo {
-    position: relative;
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
     overflow: hidden;
     border-radius: 0.9rem;
-    min-height: 14rem;
     box-shadow: 0 12px 26px rgba(18, 45, 60, 0.14);
     opacity: 0;
     transform: translateY(10px);
@@ -705,8 +763,8 @@
     transition-delay: 0.14s;
 }
 .nf-mega__promo-media {
-    position: absolute;
-    inset: 0;
+    height: 9rem;
+    overflow: hidden;
 }
 .nf-mega__promo-media img {
     height: 100%;
@@ -717,33 +775,26 @@
 .nf-mega__promo:hover .nf-mega__promo-media img {
     transform: scale(1.07);
 }
-.nf-mega__promo::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(116, 10, 46, 0.94), rgba(116, 10, 46, 0.2) 55%, rgba(116, 10, 46, 0));
-}
 .nf-mega__promo-band {
-    position: relative;
-    width: 100%;
-    padding: 1rem 1.1rem;
+    background: var(--color-brand);
     color: #fff;
+    padding: 0.9rem 1rem 1rem;
 }
 .nf-mega__promo-eyebrow {
     display: block;
-    font-size: 0.66rem;
+    font-size: 0.64rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    opacity: 0.85;
+    opacity: 0.82;
 }
 .nf-mega__promo-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
-    margin-top: 0.2rem;
-    font-size: 1.05rem;
+    margin-top: 0.25rem;
+    font-size: 1.02rem;
     font-weight: 800;
 }
 .nf-mega__promo-arrow {
@@ -754,64 +805,6 @@
 }
 .nf-mega__promo:hover .nf-mega__promo-arrow {
     transform: translateX(4px);
-}
-/* Section heading styled to look like a tab pill (static, not clickable) */
-.nf-mega__head {
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: 0.7rem;
-    border-radius: 9999px;
-    background: var(--color-cream);
-    color: var(--color-brand);
-    padding: 0.4rem 0.95rem;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-}
-.nf-mega__list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-}
-.nf-mega__item {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    border-radius: 0.55rem;
-    padding: 0.5rem 0.6rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--color-navy);
-    transition: background-color 0.16s ease, color 0.16s ease;
-}
-.nf-mega__item:hover {
-    background: var(--color-cream);
-    color: var(--color-brand);
-}
-.nf-mega__dot {
-    height: 0.4rem;
-    width: 0.4rem;
-    flex: none;
-    border-radius: 9999px;
-    background: #cbd5e1;
-    transition: background-color 0.16s ease;
-}
-.nf-mega__item:hover .nf-mega__dot {
-    background: var(--color-brand);
-}
-.nf-mega__arrow {
-    height: 0.85rem;
-    width: 0.85rem;
-    flex: none;
-    color: var(--color-brand);
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: opacity 0.16s ease, transform 0.16s ease;
-}
-.nf-mega__item:hover .nf-mega__arrow {
-    opacity: 1;
-    transform: translateX(0);
 }
 
 /* ---------- Header verse marquee (continuous scroll) ---------- */

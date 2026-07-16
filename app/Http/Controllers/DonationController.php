@@ -53,8 +53,11 @@ class DonationController extends Controller
             return $this->cartJson($data['cause'].' added to your basket.');
         }
 
+        // Add-ons on the payment page ask to return there; everyone else goes to checkout.
+        $target = $request->input('redirect') === 'payment' ? 'donate.payment' : 'donate.checkout';
+
         return redirect()
-            ->route('donate.checkout')
+            ->route($target)
             ->with('success', $data['cause'].' added to your contribution.');
     }
 
@@ -102,8 +105,6 @@ class DonationController extends Controller
         return view('donate.checkout', [
             'items' => DonationCart::items(),
             'subtotal' => DonationCart::subtotal(),
-            'fee' => DonationCart::fee(),
-            'addons' => self::ADDONS,
         ]);
     }
 
@@ -124,10 +125,11 @@ class DonationController extends Controller
             'billing_address' => ['required', 'string', 'max:500'],
             'gift_aid' => ['nullable', 'boolean'],
             'on_behalf_of_organisation' => ['nullable', 'boolean'],
-            'cover_fee' => ['nullable', 'boolean'],
+            // Required only when donating on behalf of an organisation.
+            'organisation_name' => ['nullable', 'required_if:on_behalf_of_organisation,1', 'string', 'max:255'],
         ]);
 
-        $coverFee = $request->boolean('cover_fee');
+        $onBehalf = $request->boolean('on_behalf_of_organisation');
 
         // Reuse the reference if the donor stepped back to edit their basket,
         // so we update the pending donation rather than creating duplicates.
@@ -141,13 +143,15 @@ class DonationController extends Controller
             'phone' => $data['phone'],
             'billing_address' => $data['billing_address'],
             'gift_aid' => $request->boolean('gift_aid'),
-            'on_behalf_of_organisation' => $request->boolean('on_behalf_of_organisation'),
-            'cover_fee' => $coverFee,
+            'on_behalf_of_organisation' => $onBehalf,
+            'organisation_name' => $onBehalf ? $data['organisation_name'] : null,
+            // The transaction fee is decided on the payment step, so start without it.
+            'cover_fee' => false,
             'items' => DonationCart::items(),
             'currency' => 'GBP',
             'subtotal' => DonationCart::subtotal(),
-            'fee' => $coverFee ? DonationCart::fee() : 0,
-            'total' => DonationCart::total($coverFee),
+            'fee' => 0,
+            'total' => DonationCart::subtotal(),
             'status' => 'pending',
         ];
 
@@ -159,19 +163,28 @@ class DonationController extends Controller
             // Never block the donor if persistence fails; the payment step still runs.
         }
 
-        // Only the donor's identity and fee choice are carried forward. The basket
-        // stays intact and remains the source of truth for the amount charged, so
-        // the donor can step back and adjust quantities before paying.
+        // Carry the donor's identity forward, and keep their full details so the
+        // checkout form is pre-filled if they step back to edit the basket. The
+        // basket stays intact and remains the source of truth for the amount charged.
         session(['donation' => [
             'reference' => $reference,
             'donor' => $data['first_name'].' '.$data['last_name'],
-            'cover_fee' => $coverFee,
+            'details' => [
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'billing_address' => $data['billing_address'],
+                'gift_aid' => $request->boolean('gift_aid'),
+                'on_behalf_of_organisation' => $onBehalf,
+                'organisation_name' => $onBehalf ? $data['organisation_name'] : null,
+            ],
         ]]);
 
         return redirect()->route('donate.payment');
     }
 
-    /** Payment screen: live basket summary + card details. */
+    /** Payment screen: live basket summary, fee option, add-ons + card details. */
     public function payment()
     {
         $donation = session('donation');
@@ -186,8 +199,19 @@ class DonationController extends Controller
                 ->withErrors(['cart' => 'Your contribution is empty. Please add a donation first.']);
         }
 
+        $subtotal = DonationCart::subtotal();
+        $feeAmount = DonationCart::fee();
+        // Default to covering the fee; preserve the donor's choice across validation errors.
+        $coverFee = old('cover_fee_present') ? (bool) old('cover_fee') : true;
+
         return view('donate.payment', [
-            'donation' => $donation + $this->summary((bool) ($donation['cover_fee'] ?? false)),
+            'reference' => $donation['reference'],
+            'items' => DonationCart::items(),
+            'subtotal' => $subtotal,
+            'feeAmount' => $feeAmount,
+            'coverFee' => $coverFee,
+            'total' => $subtotal + ($coverFee ? $feeAmount : 0),
+            'addons' => self::ADDONS,
             'months' => $this->months(),
             'years' => range((int) date('Y'), (int) date('Y') + 15),
         ]);
@@ -256,8 +280,10 @@ class DonationController extends Controller
                 ->withInput($request->except(self::SENSITIVE));
         }
 
-        // Recalculate from the live basket so a late edit can never be mischarged.
-        $summary = $this->summary((bool) ($donation['cover_fee'] ?? false));
+        // The fee choice is made here on the payment step. Recalculate from the
+        // live basket so a late edit can never be mischarged.
+        $coverFee = $request->boolean('cover_fee');
+        $summary = $this->summary($coverFee);
 
         // --- Gateway charge would happen here, using a tokenised card. ---
 
@@ -271,6 +297,7 @@ class DonationController extends Controller
                         'subtotal' => $summary['subtotal'],
                         'fee' => $summary['fee'],
                         'total' => $summary['total'],
+                        'cover_fee' => $coverFee,
                         'status' => 'paid',
                     ])
                     ->save();

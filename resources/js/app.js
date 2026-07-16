@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupRamadanScheduler();
     setupPrintButtons();
     setupHeader();
+    setupOrgField();
+    setupCoverFee();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -192,6 +194,46 @@ function setupHeader() {
     update();
 }
 
+/* ---------- Checkout: reveal organisation name when donating on behalf of one ---------- */
+function setupOrgField() {
+    const toggle = document.querySelector('[data-org-toggle]');
+    const field = document.querySelector('[data-org-field]');
+    if (!toggle || !field) return;
+
+    const input = field.querySelector('input');
+
+    const sync = () => {
+        field.classList.toggle('hidden', !toggle.checked);
+        if (input) input.required = toggle.checked;
+    };
+
+    toggle.addEventListener('change', sync);
+    sync();
+}
+
+/* ---------- Payment: live total as the fee-cover box is toggled ---------- */
+function setupCoverFee() {
+    const summary = document.querySelector('[data-summary]');
+    const checkbox = document.querySelector('[data-cover-fee]');
+    if (!summary || !checkbox) return;
+
+    const feeLine = summary.querySelector('[data-fee-line]');
+    const totalLine = summary.querySelector('[data-total-line]');
+    const subtotal = parseFloat(summary.dataset.subtotal) || 0;
+    const fee = parseFloat(summary.dataset.fee) || 0;
+
+    const money = (n) => `£${n.toFixed(2)}`;
+
+    const update = () => {
+        const covered = checkbox.checked;
+        if (feeLine) feeLine.textContent = money(covered ? fee : 0);
+        if (totalLine) totalLine.textContent = money(subtotal + (covered ? fee : 0));
+    };
+
+    checkbox.addEventListener('change', update);
+    update();
+}
+
 /* ---------- Print buttons ---------- */
 function setupPrintButtons() {
     document.querySelectorAll('[data-print-page]').forEach((btn) => {
@@ -290,8 +332,9 @@ function setupCart() {
     }
     bindRemoveForms();
 
-    // Any "add to basket" form on any page.
-    document.querySelectorAll('form[action$="/donate/add"]').forEach((form) => {
+    // Any "add to basket" form on any page — except ones marked to full-reload
+    // (payment-page add-ons need the server-rendered summary to refresh).
+    document.querySelectorAll('form[action$="/donate/add"]:not([data-cart-skip])').forEach((form) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 

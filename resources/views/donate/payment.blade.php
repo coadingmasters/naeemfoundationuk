@@ -19,8 +19,8 @@
                 {{-- ===== Summary ===== --}}
                 <h2 class="border-b border-navy/15 pb-3 text-xl font-bold text-navy sm:text-2xl">Payment Summary</h2>
 
-                <dl class="mt-1">
-                    @foreach ($donation['items'] as $item)
+                <dl class="mt-1" data-summary data-subtotal="{{ $subtotal }}" data-fee="{{ $feeAmount }}">
+                    @foreach ($items as $item)
                         <div class="flex items-center justify-between border-b border-navy/10 py-3">
                             <dt class="text-sm font-bold text-navy-dark">
                                 {{ $item['cause'] }}
@@ -35,21 +35,46 @@
                     @endforeach
 
                     <div class="flex items-center justify-between border-b border-navy/10 py-3">
-                        <dt class="text-sm font-bold text-navy-dark">Fees</dt>
-                        <dd class="text-sm font-semibold text-navy-dark">£{{ number_format($donation['fee'], 2) }}</dd>
+                        <dt class="text-sm text-gray-500">Subtotal</dt>
+                        <dd class="text-sm font-semibold text-navy-dark">£{{ number_format($subtotal, 2) }}</dd>
+                    </div>
+
+                    <div class="flex items-center justify-between border-b border-navy/10 py-3">
+                        <dt class="text-sm text-gray-500">Transaction fee</dt>
+                        <dd class="text-sm font-semibold text-navy-dark" data-fee-line>£{{ number_format($coverFee ? $feeAmount : 0, 2) }}</dd>
                     </div>
 
                     <div class="flex items-center justify-between py-3">
                         <dt class="text-base font-bold text-navy-dark">Total</dt>
-                        <dd class="text-base font-extrabold text-brand">£{{ number_format($donation['total'], 2) }}</dd>
+                        <dd class="text-base font-extrabold text-brand" data-total-line>£{{ number_format($total, 2) }}</dd>
                     </div>
                 </dl>
 
                 <div class="mt-1 flex flex-wrap items-center justify-between gap-2">
-                    <p class="text-xs text-gray-500">Reference: <span class="font-semibold text-navy-dark">{{ $donation['reference'] }}</span></p>
+                    <p class="text-xs text-gray-500">Reference: <span class="font-semibold text-navy-dark">{{ $reference }}</span></p>
                     <a href="{{ route('donate.checkout') }}" class="text-xs font-semibold text-brand underline hover:text-navy">
                         Edit your basket
                     </a>
+                </div>
+
+                {{-- ===== Add-ons (separate forms; a full reload refreshes the summary) ===== --}}
+                <div class="mt-8">
+                    <h2 class="text-lg font-bold text-navy sm:text-xl">Want to add these ?</h2>
+                    <div class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        @foreach ($addons as $addon)
+                            <form method="POST" action="{{ route('donate.add') }}" data-cart-skip>
+                                @csrf
+                                <input type="hidden" name="cause" value="{{ $addon['cause'] }}">
+                                <input type="hidden" name="amount" value="{{ $addon['amount'] }}">
+                                <input type="hidden" name="frequency" value="one-off">
+                                <input type="hidden" name="redirect" value="payment">
+                                <button type="submit"
+                                        class="w-full rounded-lg border border-navy/15 bg-white px-3 py-3 text-xs font-bold text-navy-dark transition-colors hover:border-brand hover:bg-cream sm:text-sm">
+                                    + £{{ $addon['amount'] }} {{ $addon['cause'] }}
+                                </button>
+                            </form>
+                        @endforeach
+                    </div>
                 </div>
 
                 {{-- ===== Card details ===== --}}
@@ -67,9 +92,22 @@
 
                 <form method="POST" action="{{ route('donate.payment.process') }}" class="mt-5" data-payment-form autocomplete="off">
                     @csrf
+                    <input type="hidden" name="cover_fee_present" value="1">
+
+                    {{-- Cover the transaction fee --}}
+                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-navy/15 bg-cream/60 p-4">
+                        <input type="checkbox" name="cover_fee" value="1" data-cover-fee @checked($coverFee)
+                               class="mt-0.5 h-5 w-5 shrink-0 rounded border-navy/30 text-brand focus:ring-2 focus:ring-brand/30">
+                        <span class="text-xs leading-relaxed text-gray-600 sm:text-sm">
+                            We are charged a small fee of 1.4% on every transaction by our payment provider. Would you like
+                            to cover the transaction fee of
+                            <span class="font-semibold text-navy-dark">£{{ number_format($feeAmount, 2) }}</span>
+                            so that we receive your full donation?
+                        </span>
+                    </label>
 
                     {{-- Name on card --}}
-                    <div class="max-w-sm">
+                    <div class="mt-6 max-w-sm">
                         <label for="card_name" class="mb-1.5 block text-xs font-bold text-navy">Name on card</label>
                         <input id="card_name" type="text" name="card_name" value="{{ old('card_name') }}"
                                placeholder="Enter Your Name" autocomplete="cc-name" required class="nf-pay-input">

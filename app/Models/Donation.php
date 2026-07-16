@@ -15,6 +15,7 @@ class Donation extends Model
         'billing_address',
         'gift_aid',
         'on_behalf_of_organisation',
+        'organisation_name',
         'cover_fee',
         'items',
         'currency',

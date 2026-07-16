@@ -99,7 +99,7 @@ class DonationTest extends TestCase
         $this->assertSame(0, Donation::count());
     }
 
-    public function test_a_complete_donation_is_persisted_and_keeps_the_basket_until_payment(): void
+    public function test_submitting_details_stores_a_pending_donation_and_keeps_the_basket(): void
     {
         $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 250]);
         $this->post(route('donate.add'), ['cause' => 'Sadaqah', 'amount' => 50]);
@@ -111,17 +111,18 @@ class DonationTest extends TestCase
             'phone' => '+441234567890',
             'billing_address' => '1 Test Street, London',
             'gift_aid' => 1,
-            'cover_fee' => 1,
         ])->assertRedirect(route('donate.payment'));
 
         $donation = Donation::sole();
 
         $this->assertSame('ahsan@example.com', $donation->email);
         $this->assertTrue($donation->gift_aid);
-        $this->assertTrue($donation->cover_fee);
+        // The fee is chosen on the payment step, so the pending record has none yet.
+        $this->assertFalse($donation->cover_fee);
+        $this->assertSame('pending', $donation->status);
         $this->assertSame('300.00', $donation->subtotal);
-        $this->assertSame('4.20', $donation->fee);
-        $this->assertSame('304.20', $donation->total);
+        $this->assertSame('0.00', $donation->fee);
+        $this->assertSame('300.00', $donation->total);
         $this->assertCount(2, $donation->items);
         $this->assertStringStartsWith('NF-', $donation->reference);
 
@@ -129,7 +130,50 @@ class DonationTest extends TestCase
         $this->assertFalse(DonationCart::isEmpty());
     }
 
-    public function test_fee_is_zero_when_the_donor_does_not_cover_it(): void
+    public function test_covering_the_fee_on_the_payment_step_adds_it_to_the_total(): void
+    {
+        $this->reachPaymentStep(); // Zakat £250
+
+        $this->post(route('donate.payment.process'), $this->cardPayload(['cover_fee' => 1]))
+            ->assertRedirect(route('donate.thank-you'));
+
+        $donation = Donation::sole();
+
+        $this->assertTrue($donation->cover_fee);
+        $this->assertSame('250.00', $donation->subtotal);
+        $this->assertSame('3.50', $donation->fee);       // 1.4% of 250
+        $this->assertSame('253.50', $donation->total);
+    }
+
+    public function test_fee_is_zero_when_the_donor_does_not_cover_it_at_payment(): void
+    {
+        $this->reachPaymentStep(); // Zakat £250
+
+        // cover_fee unchecked (absent) but the hidden "present" marker is sent.
+        $this->post(route('donate.payment.process'), $this->cardPayload(['cover_fee' => null]))
+            ->assertRedirect(route('donate.thank-you'));
+
+        $donation = Donation::sole();
+
+        $this->assertFalse($donation->cover_fee);
+        $this->assertSame('0.00', $donation->fee);
+        $this->assertSame('250.00', $donation->total);
+    }
+
+    public function test_checkout_has_the_org_field_but_not_the_fee_or_add_ons(): void
+    {
+        $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 100]);
+
+        $this->get(route('donate.checkout'))
+            ->assertOk()
+            ->assertSee('Organization Name', false)
+            ->assertSee('data-org-toggle', false)
+            // These moved to the payment step.
+            ->assertDontSee('cover the transaction fee', false)
+            ->assertDontSee('Want to add these', false);
+    }
+
+    public function test_organisation_name_is_required_when_donating_on_behalf(): void
     {
         $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 100]);
 
@@ -139,12 +183,53 @@ class DonationTest extends TestCase
             'email' => 'ahsan@example.com',
             'phone' => '+441234567890',
             'billing_address' => '1 Test Street, London',
+            'on_behalf_of_organisation' => 1,
+        ])->assertSessionHasErrors('organisation_name');
+    }
+
+    public function test_organisation_name_is_stored(): void
+    {
+        $this->post(route('donate.add'), ['cause' => 'Zakat', 'amount' => 100]);
+
+        $this->post(route('donate.store'), [
+            'first_name' => 'Ahsan',
+            'last_name' => 'Nawaz',
+            'email' => 'ahsan@example.com',
+            'phone' => '+441234567890',
+            'billing_address' => '1 Test Street, London',
+            'on_behalf_of_organisation' => 1,
+            'organisation_name' => 'Acme Charity Ltd',
         ])->assertRedirect(route('donate.payment'));
 
         $donation = Donation::sole();
 
-        $this->assertSame('0.00', $donation->fee);
-        $this->assertSame('100.00', $donation->total);
+        $this->assertTrue($donation->on_behalf_of_organisation);
+        $this->assertSame('Acme Charity Ltd', $donation->organisation_name);
+    }
+
+    public function test_payment_page_shows_the_fee_option_and_add_ons(): void
+    {
+        $this->reachPaymentStep();
+
+        $this->get(route('donate.payment'))
+            ->assertOk()
+            ->assertSee('cover the transaction fee', false)
+            ->assertSee('Want to add these', false)
+            ->assertSee('Orphan Cloth');
+    }
+
+    public function test_a_payment_page_add_on_returns_to_the_payment_page(): void
+    {
+        $this->reachPaymentStep();
+
+        $this->post(route('donate.add'), [
+            'cause' => 'Family Meal',
+            'amount' => 10,
+            'frequency' => 'one-off',
+            'redirect' => 'payment',
+        ])->assertRedirect(route('donate.payment'));
+
+        $this->assertSame(260.0, DonationCart::subtotal()); // 250 + 10
     }
 
     public function test_payment_page_redirects_without_a_reference(): void
@@ -284,7 +369,7 @@ class DonationTest extends TestCase
 
     public function test_editing_the_basket_after_submitting_details_changes_the_amount_charged(): void
     {
-        $this->reachPaymentStep(); // Zakat £250 x1, fee covered
+        $this->reachPaymentStep(); // Zakat £250 x1
 
         $id = DonationCart::items()[0]['id'];
         $this->patch(route('donate.quantity', $id), ['qty' => 2]); // now £500
@@ -330,11 +415,10 @@ class DonationTest extends TestCase
             'email' => 'ahsan@example.com',
             'phone' => '+441234567890',
             'billing_address' => '1 Test Street, London',
-            'cover_fee' => 1,
         ]);
     }
 
-    /** @return array<string, mixed> */
+    /** Card details plus the fee-cover choice made on the payment step. */
     private function cardPayload(array $overrides = []): array
     {
         return array_merge([
@@ -343,6 +427,8 @@ class DonationTest extends TestCase
             'expiry_month' => 12,
             'expiry_year' => (int) date('Y') + 2,
             'cvc' => '123',
+            'cover_fee_present' => 1,
+            'cover_fee' => 1,
         ], $overrides);
     }
 
