@@ -60,10 +60,9 @@
                 </p>
             </div>
 
-            {{-- Right: image --}}
+            {{-- Right: animated video --}}
             <div>
-                <img src="{{ asset('images/changinslives2.jpg') }}" alt="Sehri meal distribution"
-                     class="h-72 w-full rounded-2xl object-cover shadow-md sm:h-80 lg:h-[420px]">
+                @include('partials.video-card', ['videoKey' => 'sehri-iftar'])
             </div>
         </div>
     </section>

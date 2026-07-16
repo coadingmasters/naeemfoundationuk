@@ -64,10 +64,9 @@
                 </ul>
             </div>
 
-            {{-- Right: image --}}
+            {{-- Right: animated video --}}
             <div>
-                <img src="{{ asset('images/supporton.png') }}" alt="Sustainable livelihood training"
-                     class="h-72 w-full rounded-2xl object-cover shadow-md sm:h-80 lg:h-[420px]">
+                @include('partials.video-card', ['videoKey' => 'sustainable-livelihood'])
             </div>
         </div>
     </section>

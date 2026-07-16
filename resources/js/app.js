@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupOrgField();
     setupCoverFee();
     setupCookieConsent();
+    setupVideoCards();
     setupAddonsModal();
     setupCart();
     setupScrollTop();
@@ -257,6 +258,40 @@ function showToast(message, isError = false) {
         toast.classList.remove('is-visible');
         setTimeout(() => toast.remove(), 300);
     }, 3200);
+}
+
+/* ---------- Click-to-play video cards ---------- */
+function setupVideoCards() {
+    document.querySelectorAll('[data-video-card]').forEach((card) => {
+        const btn = card.querySelector('[data-video-play]');
+        if (!btn) return;
+
+        btn.addEventListener('click', () => {
+            if (card.classList.contains('is-playing')) return;
+
+            const src = card.dataset.src;
+            const isEmbed = card.dataset.embed === '1';
+            if (!src) return;
+
+            let player;
+            if (isEmbed) {
+                player = document.createElement('iframe');
+                player.src = src;
+                player.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                player.setAttribute('allowfullscreen', '');
+                player.loading = 'lazy';
+            } else {
+                player = document.createElement('video');
+                player.src = src;
+                player.controls = true;
+                player.autoplay = true;
+                player.playsInline = true;
+            }
+
+            card.appendChild(player);
+            card.classList.add('is-playing');
+        });
+    });
 }
 
 /* ---------- Add-ons popup (payment page) ---------- */

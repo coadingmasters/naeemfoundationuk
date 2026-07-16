@@ -79,7 +79,9 @@
 
     {{-- ===================== WHAT IS ZAKAT ===================== --}}
     <section class="pt-12 sm:pt-14">
-        <div class="nf-container">
+        <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            {{-- Left: text --}}
+            <div>
             <h2 class="mb-4 text-2xl font-bold text-brand">What is Zakat?</h2>
             <p class="text-sm leading-relaxed text-gray-700 sm:text-base">
                 Zakat is more than just charity; it's an essential practice for all eligible Muslims. It's a duty to give
@@ -87,6 +89,12 @@
                 mandatory for those who meet specific financial criteria. It helps the poor, the needy, and others in
                 vulnerable situations. By giving Zakat, we cleanse our wealth, making it a blessing for ourselves and others.
             </p>
+            </div>
+
+            {{-- Right: animated video --}}
+            <div>
+                @include('partials.video-card', ['videoKey' => 'zakat'])
+            </div>
         </div>
     </section>
 
