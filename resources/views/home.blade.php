@@ -346,10 +346,10 @@
                 <h2 class="text-2xl font-bold">Subscribe</h2>
                 <p class="mt-2 text-sm text-white/80">Sign up with your email address to receive news and updates.</p>
                 <form class="mx-auto mt-6 flex max-w-3xl flex-col gap-3 sm:flex-row">
-                    <input type="text" placeholder="First Name" class="h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
-                    <input type="text" placeholder="Last Name" class="h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
-                    <input type="email" placeholder="Email" class="h-11 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
-                    <button type="submit" class="btn-brand h-11">Subscribe</button>
+                    <input type="text" placeholder="First Name" class="h-11 min-w-0 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
+                    <input type="text" placeholder="Last Name" class="h-11 min-w-0 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
+                    <input type="email" placeholder="Email" class="h-11 min-w-0 flex-1 rounded-md border-0 bg-white px-3 text-sm text-navy-dark placeholder:text-gray-400 focus:ring-2 focus:ring-brand">
+                    <button type="submit" class="btn-brand h-11 shrink-0">Subscribe</button>
                 </form>
                 <p class="mt-4 text-xs text-white/70">We respect your privacy.</p>
             </div>

@@ -58,7 +58,7 @@
 
     {{-- ===== Top utility bar ===== --}}
     <div class="nf-topbar" data-topbar>
-        <div class="nf-container flex h-9 items-center justify-between gap-3">
+        <div class="nf-header__bar flex h-9 items-center justify-between gap-3">
             <div class="flex min-w-0 items-center gap-3 sm:gap-4">
                 <a href="tel:+442070788118" class="nf-topbar__link inline-flex shrink-0">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
@@ -85,7 +85,7 @@
     </div>
 
     {{-- ===== Main bar (full width) ===== --}}
-    <div class="nf-container relative z-10">
+    <div class="nf-header__bar relative z-10">
         <div class="flex h-20 items-center justify-between gap-4 lg:h-24">
             {{-- Left: logo + nav --}}
             <div class="flex items-center gap-6 xl:gap-10">

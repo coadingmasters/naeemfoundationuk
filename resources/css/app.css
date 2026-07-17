@@ -191,6 +191,27 @@
     opacity: 0;
 }
 
+/* ---------- Header bar ----------
+   The header spans the full viewport rather than using .nf-container's centred
+   1200px cap, so the logo/nav sit hard left and the basket/actions hard right
+   at every width instead of floating inward.
+   Deliberately sets no `display` — that would beat the markup's Tailwind
+   utilities, since this rule is unlayered. */
+.nf-header__bar {
+    width: 100%;
+    padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+    .nf-header__bar {
+        padding-inline: 1.5rem;
+    }
+}
+@media (min-width: 1024px) {
+    .nf-header__bar {
+        padding-inline: 2.5rem;
+    }
+}
+
 /* ---------- Mobile drawer ----------
    Sits flush under the header (which stays above it at z-50), so the burger
    remains visible and tappable while the drawer is out. */

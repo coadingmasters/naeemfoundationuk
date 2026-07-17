@@ -14,7 +14,9 @@
 |
 */
 
-$sample = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+// Shared Naeem Foundation film, shown on every Giving page until each appeal
+// has its own footage — override any entry's `url` to give it a dedicated one.
+$sample = 'https://www.youtube.com/watch?v=Yys7PIwg6Fs';
 
 return [
     'default' => [
