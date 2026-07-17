@@ -178,11 +178,23 @@ function setupRamadanScheduler() {
 
 /* ---------- Header: transparent over hero → solid on scroll ---------- */
 function setupHeader() {
+    const header = document.querySelector('[data-header]');
+    if (!header) return;
+
+    // Publish the live header height so the drawer, its backdrop and the mobile
+    // basket sheet can sit flush beneath it. It changes when the top bar
+    // collapses on scroll, so track it rather than hard-coding a value.
+    const publishHeight = () => {
+        document.documentElement.style.setProperty('--nf-header-h', `${header.offsetHeight}px`);
+    };
+    publishHeight();
+    if (window.ResizeObserver) new ResizeObserver(publishHeight).observe(header);
+    window.addEventListener('resize', publishHeight, { passive: true });
+
     // Overlay headers only: they're fixed, so collapsing the top bar costs no
     // reflow. A solid header is sticky and still occupies flow — shrinking it
     // mid-scroll would jerk the page content up by the bar's height.
-    const header = document.querySelector('[data-header]');
-    if (!header || !header.classList.contains('nf-header--overlay')) return;
+    if (!header.classList.contains('nf-header--overlay')) return;
 
     let ticking = false;
     const update = () => {
@@ -637,13 +649,34 @@ function setupMobileMenu() {
     if (!toggle || !panel) return;
 
     const header = document.querySelector('[data-header]');
+    const backdrop = document.querySelector('[data-menu-backdrop]');
 
-    toggle.addEventListener('click', () => {
-        const open = panel.classList.toggle('hidden') === false;
+    const setOpen = (open) => {
+        panel.classList.toggle('is-open', open);
+        toggle.classList.toggle('is-open', open);
+        backdrop?.classList.toggle('is-open', open);
         toggle.setAttribute('aria-expanded', String(open));
-        // Force the transparent header solid while the mobile menu is open.
-        if (header) header.classList.toggle('is-menu-open', open);
+        // Force the transparent header solid while the drawer is out.
+        header?.classList.toggle('is-menu-open', open);
+        // Stop the page scrolling behind the drawer.
+        document.body.classList.toggle('nf-noscroll', open);
+    };
+
+    toggle.addEventListener('click', () => setOpen(!panel.classList.contains('is-open')));
+    backdrop?.addEventListener('click', () => setOpen(false));
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && panel.classList.contains('is-open')) setOpen(false);
     });
+
+    // Following a link should leave the drawer closed behind it.
+    panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+    // The drawer is mobile-only; if the viewport grows to desktop while it's
+    // open, drop it so the body scroll lock doesn't strand the page.
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024 && panel.classList.contains('is-open')) setOpen(false);
+    }, { passive: true });
 }
 
 /* ---------- Mobile sub-nav accordions ("Who We Are" etc.) ---------- */

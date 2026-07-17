@@ -182,6 +182,100 @@
     opacity: 0;
 }
 
+/* ---------- Mobile drawer ----------
+   Sits flush under the header (which stays above it at z-50), so the burger
+   remains visible and tappable while the drawer is out. */
+.nf-drawer {
+    position: fixed;
+    top: var(--nf-header-h, 7.25rem);
+    bottom: 0;
+    left: 0;
+    z-index: 45;
+    width: min(19rem, 82vw);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: #fff;
+    box-shadow: 8px 0 32px rgba(18, 45, 60, 0.18);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.4s;
+}
+.nf-drawer.is-open {
+    transform: translateX(0);
+    visibility: visible;
+}
+.nf-drawer__backdrop {
+    position: fixed;
+    top: var(--nf-header-h, 7.25rem);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 44;
+    background: rgba(18, 45, 60, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+.nf-drawer__backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+.nf-noscroll {
+    overflow: hidden;
+}
+
+/* ---------- Animated hamburger (morphs to a cross) ---------- */
+.nf-burger {
+    display: grid;
+    place-items: center;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.nf-burger__box {
+    position: relative;
+    display: block;
+    height: 0.875rem;
+    width: 1.35rem;
+}
+.nf-burger__line {
+    position: absolute;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    background: currentColor;
+    transition: top 0.25s ease 0.2s, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.15s ease 0.1s;
+}
+.nf-burger__line:nth-child(1) {
+    top: 0;
+}
+.nf-burger__line:nth-child(2) {
+    top: calc(50% - 1px);
+}
+.nf-burger__line:nth-child(3) {
+    top: calc(100% - 2px);
+}
+/* Bars slide to the middle first, then rotate into the cross. */
+.nf-burger.is-open .nf-burger__line {
+    transition: top 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1) 0.2s,
+        opacity 0.15s ease 0.15s;
+}
+.nf-burger.is-open .nf-burger__line:nth-child(1) {
+    top: calc(50% - 1px);
+    transform: rotate(45deg);
+}
+.nf-burger.is-open .nf-burger__line:nth-child(2) {
+    opacity: 0;
+}
+.nf-burger.is-open .nf-burger__line:nth-child(3) {
+    top: calc(50% - 1px);
+    transform: rotate(-45deg);
+}
+
 /* ---------- Brand lockup (emblem + wordmark) ---------- */
 .nf-brand {
     display: flex;
@@ -615,6 +709,22 @@
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
+}
+/* On narrow screens the basket button sits well in from the right edge, so a
+   button-anchored panel runs off the left of the viewport. Pin it to the
+   viewport under the header instead, and cap it so it can always scroll. */
+@media (max-width: 767px) {
+    .nf-cart__panel {
+        position: fixed;
+        top: calc(var(--nf-header-h, 7.25rem) + 0.5rem);
+        right: 0.75rem;
+        left: 0.75rem;
+        width: auto;
+        max-width: none;
+        max-height: calc(100vh - var(--nf-header-h, 7.25rem) - 1.5rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
 }
 
 /* Badge pops when an item is added */

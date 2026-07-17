@@ -49,23 +49,24 @@
 
     {{-- ===== Top utility bar ===== --}}
     <div class="nf-topbar" data-topbar>
-        <div class="nf-container flex h-9 items-center justify-between gap-4">
-            <div class="flex items-center gap-3 sm:gap-4">
-                <a href="tel:+442070788118" class="nf-topbar__link">
+        <div class="nf-container flex h-9 items-center justify-between gap-3">
+            <div class="flex min-w-0 items-center gap-3 sm:gap-4">
+                <a href="tel:+442070788118" class="nf-topbar__link shrink-0">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
                     <span class="hidden sm:inline">Donation Line:</span> +44 20 7078 8118
                 </a>
-                <span class="nf-topbar__sep"></span>
-                <span class="hidden md:inline">Registered Charity No. <strong class="font-semibold text-white">1199466</strong></span>
+                <span class="nf-topbar__sep hidden md:inline-block"></span>
+                <span class="hidden truncate md:inline">Registered Charity No. <strong class="font-semibold text-white">1199466</strong></span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex shrink-0 items-center gap-3">
                 <a href="mailto:Contact@naeemfoundation.co.uk" class="nf-topbar__link hidden lg:inline-flex">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
                     Contact@naeemfoundation.co.uk
                 </a>
                 <span class="nf-topbar__sep hidden lg:inline-block"></span>
-                <div class="flex items-center gap-1.5">
+                {{-- Socials are the first thing to go when width is tight. --}}
+                <div class="hidden items-center gap-1.5 sm:flex">
                     <a href="#" aria-label="Facebook" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.6l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.3-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H8v3h2v8h3Z"/></svg></a>
                     <a href="#" aria-label="Instagram" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
                     <a href="#" aria-label="TikTok" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a5 5 0 0 0 5 5v3a8 8 0 0 1-5-1.8V15a6 6 0 1 1-6-6c.3 0 .7 0 1 .1v3.2A2.8 2.8 0 1 0 13 15V3h3Z"/></svg></a>
@@ -177,32 +178,38 @@
                 @include('partials.cart')
 
                 <a href="{{ route('ask-mufti') }}"
-                   class="hidden items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors md:inline-flex {{ request()->routeIs('ask-mufti') ? 'border-brand bg-brand text-white' : 'border-brand/25 bg-cream text-brand hover:border-brand hover:bg-brand hover:text-white' }}">
+                   class="hidden items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors lg:inline-flex {{ request()->routeIs('ask-mufti') ? 'border-brand bg-brand text-white' : 'border-brand/25 bg-cream text-brand hover:border-brand hover:bg-brand hover:text-white' }}">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Ask a Mufti
                 </a>
-                <a href="{{ route('donate.checkout') }}" class="nf-donate">
+                {{-- Desktop only — on mobile the Donate CTA lives in the drawer,
+                     which keeps the small header down to logo, basket and menu. --}}
+                <a href="{{ route('donate.checkout') }}" class="nf-donate hidden lg:inline-flex">
                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/>
                     </svg>
                     Donate
                 </a>
 
-                {{-- Mobile menu toggle --}}
+                {{-- Mobile menu toggle (morphs into a cross while the drawer is out) --}}
                 <button type="button" data-menu-toggle
-                        class="nf-header__toggle grid h-10 w-10 place-items-center rounded-md lg:hidden"
-                        aria-label="Toggle menu" aria-expanded="false">
-                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
-                    </svg>
+                        class="nf-header__toggle nf-burger lg:hidden"
+                        aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-drawer">
+                    <span class="nf-burger__box" aria-hidden="true">
+                        <span class="nf-burger__line"></span>
+                        <span class="nf-burger__line"></span>
+                        <span class="nf-burger__line"></span>
+                    </span>
                 </button>
             </div>
         </div>
     </div>
 
-    {{-- ===== Mobile nav panel ===== --}}
-    <nav data-menu-panel class="hidden border-t border-gray-100 bg-white lg:hidden">
-        <div class="nf-container flex flex-col py-2">
+    {{-- ===== Mobile drawer (slides in from the left) ===== --}}
+    <div class="nf-drawer__backdrop lg:hidden" data-menu-backdrop aria-hidden="true"></div>
+
+    <nav id="mobile-drawer" data-menu-panel class="nf-drawer lg:hidden" aria-label="Main menu">
+        <div class="flex flex-col px-5 py-2">
             @foreach ($navGroups as $item)
                 @if (!empty($item['mega']))
                     <div class="border-b border-gray-100">
@@ -247,11 +254,26 @@
                 @endif
             @endforeach
 
+            {{-- Primary actions live here rather than in the compact mobile bar. --}}
+            <a href="{{ route('donate.checkout') }}" class="nf-donate mt-4 justify-center">
+                <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/>
+                </svg>
+                Donate
+            </a>
+
             <a href="{{ route('ask-mufti') }}"
-               class="mt-3 inline-flex items-center justify-center gap-2 rounded-md bg-cream px-4 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white">
+               class="mt-2.5 inline-flex items-center justify-center gap-2 rounded-full border border-brand/25 bg-cream px-4 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Ask a Mufti
             </a>
+
+            {{-- Contact details, since the top bar sheds them on small screens. --}}
+            <div class="mt-5 border-t border-gray-100 pt-4 text-xs text-gray-500">
+                <a href="tel:+442070788118" class="block font-semibold text-navy">+44 20 7078 8118</a>
+                <a href="mailto:Contact@naeemfoundation.co.uk" class="mt-1 block break-all hover:text-brand">Contact@naeemfoundation.co.uk</a>
+                <p class="mt-2">Registered Charity No. <strong class="text-navy">1199466</strong></p>
+            </div>
         </div>
     </nav>
 </header>
