@@ -553,8 +553,10 @@
     max-height: 0;
     opacity: 0;
 }
+/* These two deliberately do NOT set `display`: they're unlayered, which would
+   beat Tailwind's layered `hidden`/`lg:inline-flex` utilities and pin them
+   visible at every breakpoint. The markup supplies the display utility. */
 .nf-topbar__link {
-    display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     white-space: nowrap;
@@ -564,7 +566,6 @@
     color: #fff;
 }
 .nf-topbar__sep {
-    display: inline-block;
     height: 0.8rem;
     width: 1px;
     background: rgba(255, 255, 255, 0.25);

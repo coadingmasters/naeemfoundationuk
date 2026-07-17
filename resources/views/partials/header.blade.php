@@ -27,7 +27,8 @@
         'Who We Are' => '<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0" stroke-linecap="round"/>',
         'Giving' => '<path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z" stroke-linejoin="round"/>',
         'Community Centre' => '<path d="M3 10.5 12 4l9 6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" stroke-linecap="round" stroke-linejoin="round"/>',
-        'Hajj 2027' => '<path d="M4 20h16" stroke-linecap="round"/><path d="M6 20V9l6-4 6 4v11" stroke-linejoin="round"/><path d="M10 20v-4a2 2 0 0 1 4 0v4" stroke-linecap="round"/>',
+        // Kaaba — deliberately distinct from the Community Centre house.
+        'Hajj 2027' => '<rect x="5" y="7" width="14" height="13" rx="1"/><path d="M5 11h14" stroke-linecap="round"/><path d="M12 3v4M9.5 4.5h5" stroke-linecap="round"/>',
     ];
 
     // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
@@ -59,7 +60,7 @@
     <div class="nf-topbar" data-topbar>
         <div class="nf-container flex h-9 items-center justify-between gap-3">
             <div class="flex min-w-0 items-center gap-3 sm:gap-4">
-                <a href="tel:+442070788118" class="nf-topbar__link shrink-0">
+                <a href="tel:+442070788118" class="nf-topbar__link inline-flex shrink-0">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
                     <span class="hidden sm:inline">Donation Line:</span> +44 20 7078 8118
                 </a>
@@ -275,7 +276,7 @@
 
             {{-- Contact details, since the top bar sheds them on small screens. --}}
             <div class="nf-drawer__row mt-5 border-t border-gray-100 pt-4 text-xs text-gray-500">
-                <a href="tel:+442070788118" class="nf-topbar__link font-semibold text-navy hover:text-brand">
+                <a href="tel:+442070788118" class="nf-topbar__link inline-flex font-semibold text-navy hover:text-brand">
                     <svg class="h-3.5 w-3.5 shrink-0 text-brand" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
                     +44 20 7078 8118
                 </a>
