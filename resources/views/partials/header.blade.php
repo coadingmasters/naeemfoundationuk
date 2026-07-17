@@ -22,6 +22,14 @@
         ['label' => 'Hajj 2027', 'url' => route('hajj'), 'active' => request()->routeIs('hajj')],
     ];
 
+    // Top-level icons, used by the mobile drawer.
+    $navIcons = [
+        'Who We Are' => '<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0" stroke-linecap="round"/>',
+        'Giving' => '<path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z" stroke-linejoin="round"/>',
+        'Community Centre' => '<path d="M3 10.5 12 4l9 6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" stroke-linecap="round" stroke-linejoin="round"/>',
+        'Hajj 2027' => '<path d="M4 20h16" stroke-linecap="round"/><path d="M6 20V9l6-4 6 4v11" stroke-linejoin="round"/><path d="M10 20v-4a2 2 0 0 1 4 0v4" stroke-linecap="round"/>',
+    ];
+
     // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
     $givingUrl = fn ($item) => ! empty($item['route']) ? route($item['route']) : route('give.'.$item['slug']);
 
@@ -184,7 +192,7 @@
                 </a>
                 {{-- Desktop only — on mobile the Donate CTA lives in the drawer,
                      which keeps the small header down to logo, basket and menu. --}}
-                <a href="{{ route('donate.checkout') }}" class="nf-donate hidden lg:inline-flex">
+                <a href="{{ route('donate.checkout') }}" class="nf-donate nf-donate--desktop">
                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/>
                     </svg>
@@ -193,7 +201,7 @@
 
                 {{-- Mobile menu toggle (morphs into a cross while the drawer is out) --}}
                 <button type="button" data-menu-toggle
-                        class="nf-header__toggle nf-burger lg:hidden"
+                        class="nf-header__toggle nf-burger"
                         aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-drawer">
                     <span class="nf-burger__box" aria-hidden="true">
                         <span class="nf-burger__line"></span>
@@ -211,68 +219,73 @@
     <nav id="mobile-drawer" data-menu-panel class="nf-drawer lg:hidden" aria-label="Main menu">
         <div class="flex flex-col px-5 py-2">
             @foreach ($navGroups as $item)
-                @if (!empty($item['mega']))
-                    <div class="border-b border-gray-100">
+                @php $ico = $navIcons[$item['label']] ?? ''; @endphp
+
+                @if (!empty($item['mega']) || !empty($item['children']))
+                    <div class="nf-drawer__row border-b border-gray-100">
                         <button type="button" data-subnav-toggle aria-expanded="false"
-                                class="flex w-full items-center justify-between py-3 text-sm font-semibold text-navy">
-                            {{ $item['label'] }}
-                            <svg data-subnav-chev class="h-4 w-4 text-brand transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                class="nf-drawer__link {{ ($item['active'] ?? false) ? 'is-active' : '' }}">
+                            <span class="nf-drawer__ico">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">{!! $ico !!}</svg>
+                            </span>
+                            <span class="flex-1 text-left">{{ $item['label'] }}</span>
+                            <svg data-subnav-chev class="nf-drawer__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                         <div data-subnav class="hidden flex-col pb-2">
-                            @foreach ($megaColumns as $col)
-                                <p class="px-1 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-brand">{{ $col['heading'] }}</p>
-                                @foreach ($col['items'] as $g)
-                                    <a href="{{ $givingUrl($g) }}"
-                                       class="ml-2 border-l-2 border-cream py-2 pl-4 text-sm font-medium text-navy transition-colors hover:border-brand hover:text-brand">
-                                        {{ $g['title'] }}
-                                    </a>
+                            @if (!empty($item['mega']))
+                                @foreach ($megaColumns as $col)
+                                    <p class="nf-drawer__group">{{ $col['heading'] }}</p>
+                                    @foreach ($col['items'] as $g)
+                                        <a href="{{ $givingUrl($g) }}" class="nf-drawer__sub">{{ $g['title'] }}</a>
+                                    @endforeach
                                 @endforeach
-                            @endforeach
-                        </div>
-                    </div>
-                @elseif (!empty($item['children']))
-                    <div class="border-b border-gray-100">
-                        <button type="button" data-subnav-toggle aria-expanded="false"
-                                class="flex w-full items-center justify-between py-3 text-sm font-semibold text-navy">
-                            {{ $item['label'] }}
-                            <svg data-subnav-chev class="h-4 w-4 text-brand transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <div data-subnav class="hidden flex-col pb-2">
-                            @foreach ($item['children'] as $child)
-                                <a href="{{ $child['url'] }}"
-                                   class="ml-2 border-l-2 border-cream py-2.5 pl-4 text-sm font-medium text-navy transition-colors hover:border-brand hover:text-brand">
-                                    {{ $child['label'] }}
-                                </a>
-                            @endforeach
+                            @else
+                                @foreach ($item['children'] as $child)
+                                    <a href="{{ $child['url'] }}" class="nf-drawer__sub">{{ $child['label'] }}</a>
+                                @endforeach
+                            @endif
                         </div>
                     </div>
                 @else
                     <a href="{{ $item['url'] }}"
-                       class="border-b border-gray-100 py-3 text-sm font-semibold text-navy last:border-0 hover:text-brand">
-                        {{ $item['label'] }}
+                       class="nf-drawer__row nf-drawer__link border-b border-gray-100 {{ ($item['active'] ?? false) ? 'is-active' : '' }}">
+                        <span class="nf-drawer__ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">{!! $ico !!}</svg>
+                        </span>
+                        <span class="flex-1 text-left">{{ $item['label'] }}</span>
                     </a>
                 @endif
             @endforeach
 
             {{-- Primary actions live here rather than in the compact mobile bar. --}}
-            <a href="{{ route('donate.checkout') }}" class="nf-donate mt-4 justify-center">
-                <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/>
-                </svg>
-                Donate
-            </a>
+            <div class="nf-drawer__row nf-drawer__cta">
+                <a href="{{ route('donate.checkout') }}" class="nf-donate w-full justify-center">
+                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/>
+                    </svg>
+                    Donate
+                </a>
 
-            <a href="{{ route('ask-mufti') }}"
-               class="mt-2.5 inline-flex items-center justify-center gap-2 rounded-full border border-brand/25 bg-cream px-4 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Ask a Mufti
-            </a>
+                <a href="{{ route('ask-mufti') }}"
+                   class="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-full border border-brand/25 bg-cream px-4 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-white">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Ask a Mufti
+                </a>
+            </div>
 
             {{-- Contact details, since the top bar sheds them on small screens. --}}
-            <div class="mt-5 border-t border-gray-100 pt-4 text-xs text-gray-500">
-                <a href="tel:+442070788118" class="block font-semibold text-navy">+44 20 7078 8118</a>
-                <a href="mailto:Contact@naeemfoundation.co.uk" class="mt-1 block break-all hover:text-brand">Contact@naeemfoundation.co.uk</a>
+            <div class="nf-drawer__row mt-5 border-t border-gray-100 pt-4 text-xs text-gray-500">
+                <a href="tel:+442070788118" class="nf-topbar__link font-semibold text-navy hover:text-brand">
+                    <svg class="h-3.5 w-3.5 shrink-0 text-brand" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
+                    +44 20 7078 8118
+                </a>
+                <a href="mailto:Contact@naeemfoundation.co.uk" class="mt-2 block break-all hover:text-brand">Contact@naeemfoundation.co.uk</a>
                 <p class="mt-2">Registered Charity No. <strong class="text-navy">1199466</strong></p>
+                <div class="mt-3 flex items-center gap-2">
+                    <a href="#" aria-label="Facebook" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.6l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.3-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H8v3h2v8h3Z"/></svg></a>
+                    <a href="#" aria-label="Instagram" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+                    <a href="#" aria-label="TikTok" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a5 5 0 0 0 5 5v3a8 8 0 0 1-5-1.8V15a6 6 0 1 1-6-6c.3 0 .7 0 1 .1v3.2A2.8 2.8 0 1 0 13 15V3h3Z"/></svg></a>
+                </div>
             </div>
         </div>
     </nav>

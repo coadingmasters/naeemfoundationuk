@@ -5,8 +5,9 @@
     <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
 
     <div class="relative grid items-stretch lg:grid-cols-2">
-        {{-- Image + heading --}}
-        <div class="relative min-h-[240px] sm:min-h-[340px] lg:min-h-[500px]">
+        {{-- Image + heading. The heading is bottom-anchored, so the panel has to be
+             tall enough that it clears the fixed header sitting over the top of it. --}}
+        <div class="relative min-h-[400px] sm:min-h-[440px] lg:min-h-[500px]">
             <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-navy-dark via-navy-dark/45 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-navy-dark/20 lg:to-navy"></div>
 

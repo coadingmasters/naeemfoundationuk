@@ -167,7 +167,16 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(18, 45, 60, 0.5), rgba(18, 45, 60, 0));
+    /* Extends past the header so the fade lands on the image, not on the nav —
+       keeps the logo and links readable over busy hero photography. */
+    background: linear-gradient(
+        to bottom,
+        rgba(18, 45, 60, 0.78) 0%,
+        rgba(18, 45, 60, 0.55) 55%,
+        rgba(18, 45, 60, 0.28) 85%,
+        rgba(18, 45, 60, 0) 100%
+    );
+    bottom: -2.5rem;
     transition: opacity 0.35s ease;
     pointer-events: none;
 }
@@ -224,6 +233,131 @@
     overflow: hidden;
 }
 
+/* Rows fan in one after another once the drawer lands. */
+.nf-drawer__row {
+    opacity: 0;
+    transform: translateX(-18px);
+    transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-drawer.is-open .nf-drawer__row {
+    opacity: 1;
+    transform: translateX(0);
+}
+.nf-drawer.is-open .nf-drawer__row:nth-child(1) { transition-delay: 0.14s; }
+.nf-drawer.is-open .nf-drawer__row:nth-child(2) { transition-delay: 0.19s; }
+.nf-drawer.is-open .nf-drawer__row:nth-child(3) { transition-delay: 0.24s; }
+.nf-drawer.is-open .nf-drawer__row:nth-child(4) { transition-delay: 0.29s; }
+.nf-drawer.is-open .nf-drawer__row:nth-child(5) { transition-delay: 0.34s; }
+.nf-drawer.is-open .nf-drawer__row:nth-child(6) { transition-delay: 0.39s; }
+
+.nf-drawer__link {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 0.25rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    cursor: pointer;
+    transition: color 0.2s ease, padding-left 0.25s ease;
+}
+.nf-drawer__link:hover,
+.nf-drawer__link.is-active {
+    color: var(--color-brand);
+    padding-left: 0.5rem;
+}
+/* Brand rail that wipes in from the left edge of the row. */
+.nf-drawer__link::before {
+    content: "";
+    position: absolute;
+    left: -1.25rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--color-brand);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-drawer__link:hover::before,
+.nf-drawer__link.is-active::before {
+    transform: scaleY(1);
+}
+.nf-drawer__ico {
+    display: grid;
+    place-items: center;
+    height: 2rem;
+    width: 2rem;
+    flex-shrink: 0;
+    border-radius: 0.6rem;
+    background: var(--color-cream);
+    color: var(--color-brand);
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+.nf-drawer__ico svg {
+    height: 1.05rem;
+    width: 1.05rem;
+}
+.nf-drawer__link:hover .nf-drawer__ico,
+.nf-drawer__link.is-active .nf-drawer__ico {
+    background: var(--color-brand);
+    color: #fff;
+    transform: scale(1.06);
+}
+.nf-drawer__chev {
+    height: 1rem;
+    width: 1rem;
+    flex-shrink: 0;
+    color: var(--color-brand);
+    transition: transform 0.3s ease;
+}
+.nf-drawer__group {
+    padding: 0.6rem 0 0.3rem 3.5rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+}
+.nf-drawer__sub {
+    margin-left: 3.5rem;
+    border-left: 2px solid var(--color-cream);
+    padding: 0.5rem 0 0.5rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--color-navy);
+    transition: border-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+}
+.nf-drawer__sub:hover {
+    border-color: var(--color-brand);
+    color: var(--color-brand);
+    padding-left: 1rem;
+}
+.nf-drawer__cta {
+    margin-top: 1.25rem;
+    border-radius: 1rem;
+    background: linear-gradient(160deg, rgba(244, 239, 230, 0.9), rgba(244, 239, 230, 0.35));
+    padding: 0.9rem;
+}
+.nf-drawer__social {
+    display: grid;
+    place-items: center;
+    height: 1.85rem;
+    width: 1.85rem;
+    border-radius: 9999px;
+    background: var(--color-cream);
+    color: var(--color-brand);
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.nf-drawer__social:hover {
+    background: var(--color-brand);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
 /* ---------- Animated hamburger (morphs to a cross) ---------- */
 .nf-burger {
     display: grid;
@@ -233,6 +367,14 @@
     border-radius: 9999px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+}
+/* These components live outside @layer, and unlayered rules beat Tailwind's
+   layered utilities — so `lg:hidden` in the markup cannot override the
+   `display` set above. Breakpoint behaviour has to be declared here. */
+@media (min-width: 1024px) {
+    .nf-burger {
+        display: none;
+    }
 }
 .nf-burger__box {
     position: relative;
@@ -355,6 +497,16 @@
 .nf-donate:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 26px rgba(116, 10, 46, 0.45);
+}
+/* Desktop-only instance. Same reason as .nf-burger: `hidden lg:inline-flex` in
+   the markup loses to the unlayered `display` above, so it's declared here. */
+.nf-donate--desktop {
+    display: none;
+}
+@media (min-width: 1024px) {
+    .nf-donate--desktop {
+        display: inline-flex;
+    }
 }
 /* Sheen sweep on hover. */
 .nf-donate::after {
