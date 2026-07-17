@@ -458,7 +458,9 @@
     height: 6.25rem; /* bar is 5rem on mobile → overhangs 1.25rem */
     padding-bottom: 1rem;
     background: #fff;
-    border-radius: 0 0 1.1rem 1.1rem;
+    /* Rounded on all four corners — a square top edge reads as clipped where it
+       meets the top bar. */
+    border-radius: 1.1rem;
     box-shadow: 0 16px 32px rgba(18, 45, 60, 0.28);
     transition: box-shadow 0.3s ease, height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
