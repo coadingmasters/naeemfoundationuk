@@ -87,14 +87,15 @@
     {{-- ===== Main bar (full width) ===== --}}
     <div class="nf-header__bar relative z-10">
         <div class="flex h-20 items-center justify-between gap-4 lg:h-24">
-            {{-- Left: logo + nav --}}
-            <div class="flex items-center gap-6 xl:gap-10">
+            {{-- Left: logo + nav. self-stretch so the brand panel can measure
+                 against the bar's full height and overhang only downward. --}}
+            <div class="flex items-center gap-6 self-stretch xl:gap-10">
                 {{-- Brand lockup: emblem in a white badge + wordmark (the emblem's own
                      lettering is unreadable at header size, so the wordmark carries the name). --}}
                 <a href="{{ route('home') }}" class="nf-brand shrink-0" aria-label="{{ config('app.name') }} — home">
-                    <span class="nf-brand__badge">
+                    <span class="nf-brand__panel">
                         <img src="{{ asset('images/logo.png') }}" alt=""
-                             class="h-12 w-12 sm:h-[52px] sm:w-[52px] lg:h-[58px] lg:w-[58px]">
+                             class="h-14 w-14 lg:h-[70px] lg:w-[70px]">
                     </span>
                     <span class="nf-brand__text">
                         <span class="nf-brand__name">Naeem Foundation</span>
