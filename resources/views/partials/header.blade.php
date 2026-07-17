@@ -95,7 +95,7 @@
                 <a href="{{ route('home') }}" class="nf-brand shrink-0" aria-label="{{ config('app.name') }} — home">
                     <span class="nf-brand__panel">
                         <img src="{{ asset('images/logo.png') }}" alt=""
-                             class="h-14 w-14 lg:h-[70px] lg:w-[70px]">
+                             class="h-12 w-12 lg:h-[70px] lg:w-[70px]">
                     </span>
                     <span class="nf-brand__text">
                         <span class="nf-brand__name">Naeem Foundation</span>

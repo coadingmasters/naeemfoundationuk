@@ -2,6 +2,10 @@
 
 @section('title', 'Payments — ' . config('app.name'))
 
+{{-- No hero image here, so the header must be solid rather than
+     transparent — otherwise this page's content sits under it. --}}
+@section('header-solid', 'yes')
+
 @section('content')
 
     {{-- ===================== TITLE BAND ===================== --}}

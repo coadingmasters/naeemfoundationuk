@@ -2,6 +2,10 @@
 
 @section('title', 'Thank You — ' . config('app.name'))
 
+{{-- No hero image here, so the header must be solid rather than
+     transparent — otherwise this page's content sits under it. --}}
+@section('header-solid', 'yes')
+
 @section('content')
 
     <section class="nf-thankyou-bg relative overflow-hidden py-12 sm:py-16 lg:py-20">

@@ -447,28 +447,28 @@
     /* Override the row's items-center so the panel can start at the bar's top. */
     align-self: stretch;
 }
-/* White panel that drops below the header bar and overhangs the hero. It's
-   taller than the bar, so it spills past the bottom edge without growing the
-   row (nothing in the header clips overflow). */
+/* Mobile keeps the original compact circular badge — the overhanging panel is a
+   desktop-only treatment. */
 .nf-brand__panel {
-    align-self: flex-start;
+    align-self: center;
     display: grid;
     place-items: center;
-    width: 4.5rem;
-    height: 6.25rem; /* bar is 5rem on mobile → overhangs 1.25rem */
-    padding-bottom: 1rem;
+    padding: 0.3rem;
     background: #fff;
-    /* Rounded on all four corners — a square top edge reads as clipped where it
-       meets the top bar. */
-    border-radius: 1.1rem;
-    box-shadow: 0 16px 32px rgba(18, 45, 60, 0.28);
+    border-radius: 9999px;
+    box-shadow: 0 8px 22px rgba(18, 45, 60, 0.18);
     transition: box-shadow 0.3s ease, height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
+/* Desktop: a rounded panel taller than the bar, so it overhangs the hero
+   without growing the row (nothing in the header clips overflow). */
 @media (min-width: 1024px) {
     .nf-brand__panel {
+        align-self: flex-start;
         width: 5.75rem;
-        height: 8rem; /* bar is 6rem on desktop → overhangs 2rem */
-        padding-bottom: 1.35rem;
+        height: 8rem; /* bar is 6rem → overhangs 2rem */
+        padding: 0 0 1.35rem;
+        border-radius: 1.1rem;
+        box-shadow: 0 16px 32px rgba(18, 45, 60, 0.28);
     }
 }
 .nf-brand__panel img {
@@ -481,10 +481,8 @@
 .nf-brand:hover .nf-brand__panel img {
     transform: scale(1.06);
 }
-/* Once scrolled the header tightens up, so the overhang pulls in with it. */
-.nf-header.is-scrolled .nf-brand__panel {
-    height: 5.75rem;
-}
+/* Once scrolled the header tightens up, so the overhang pulls in with it.
+   Desktop only — the mobile badge is a plain circle with no overhang. */
 @media (min-width: 1024px) {
     .nf-header.is-scrolled .nf-brand__panel {
         height: 7rem;
