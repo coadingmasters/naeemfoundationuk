@@ -25,28 +25,28 @@
         ],
     ];
 
-    // Our Value pills — two columns. color: 'navy' | 'brand'
+    // Our Value pills — two columns, now expandable. color: 'navy' | 'brand'
     $valuesLeft = [
-        ['label' => 'Sustainable Development Goals', 'color' => 'navy'],
-        ['label' => 'No Poverty', 'color' => 'brand'],
-        ['label' => 'Zero Hunger', 'color' => 'navy'],
-        ['label' => 'Good Health & Well-being', 'color' => 'brand'],
-        ['label' => 'Quality Education', 'color' => 'navy'],
-        ['label' => 'Gender Equality', 'color' => 'brand'],
-        ['label' => 'Clean Water and Sanitation', 'color' => 'navy'],
-        ['label' => 'Affordable and Sustainable Energy', 'color' => 'brand'],
-        ['label' => 'Decent Work & Economic Growth', 'color' => 'navy'],
+        ['label' => 'Sustainable Development Goals', 'color' => 'navy', 'answer' => 'We align every programme with the United Nations’ 17 Sustainable Development Goals, using them as a shared framework to plan our work, measure our impact and report transparently to the communities and donors we serve.'],
+        ['label' => 'No Poverty', 'color' => 'brand', 'answer' => 'Through emergency relief, livelihood grants and long-term development projects, we help families break the cycle of poverty and build a stable, dignified future for themselves and their children.'],
+        ['label' => 'Zero Hunger', 'color' => 'navy', 'answer' => 'Our food distributions, Ramadan food packs and nutrition programmes ensure that vulnerable families and children have access to regular, nourishing meals — especially in times of crisis.'],
+        ['label' => 'Good Health & Well-being', 'color' => 'brand', 'answer' => 'We fund medical camps, essential treatment and clean-water initiatives so that underserved communities can access the healthcare they need to live healthier lives.'],
+        ['label' => 'Quality Education', 'color' => 'navy', 'answer' => 'We support schools, scholarships and learning resources so that children — particularly orphans and the underprivileged — can access the education that transforms their futures.'],
+        ['label' => 'Gender Equality', 'color' => 'brand', 'answer' => 'We invest in women through skills training, safe spaces and income opportunities, empowering them to lead, earn and support their households with dignity.'],
+        ['label' => 'Clean Water and Sanitation', 'color' => 'navy', 'answer' => 'Our water wells and hand pumps bring safe, clean drinking water to communities who would otherwise walk miles each day for it, reducing disease and hardship.'],
+        ['label' => 'Affordable and Sustainable Energy', 'color' => 'brand', 'answer' => 'Wherever possible we introduce solar and energy-efficient solutions, giving communities reliable power without adding to the strain on our environment.'],
+        ['label' => 'Decent Work & Economic Growth', 'color' => 'navy', 'answer' => 'Our vocational and livelihood programmes equip people with the skills and tools they need to earn a fair, sustainable income and stand on their own feet.'],
     ];
     $valuesRight = [
-        ['label' => 'Industry, Innovation, and Infrastructure', 'color' => 'brand'],
-        ['label' => 'Reduced Inequalities', 'color' => 'navy'],
-        ['label' => 'Sustainable Cities & Communities', 'color' => 'brand'],
-        ['label' => 'Responsible Consumption & Production', 'color' => 'navy'],
-        ['label' => 'Climate Action', 'color' => 'navy'],
-        ['label' => 'Life Below Water', 'color' => 'navy'],
-        ['label' => 'Life on Land', 'color' => 'navy'],
-        ['label' => 'Peace, Justice, and Strong Institutions', 'color' => 'navy'],
-        ['label' => 'Partnerships for the Goals', 'color' => 'brand'],
+        ['label' => 'Industry, Innovation, and Infrastructure', 'color' => 'brand', 'answer' => 'We help rebuild essential infrastructure and adopt practical innovations that make our aid faster, fairer and more effective for the people who rely on it.'],
+        ['label' => 'Reduced Inequalities', 'color' => 'navy', 'answer' => 'We reach the most marginalised — regardless of background, gender or location — ensuring that our aid is distributed on the basis of need alone.'],
+        ['label' => 'Sustainable Cities & Communities', 'color' => 'brand', 'answer' => 'We strengthen communities with resilient, locally-led projects designed to keep serving people long after our teams have moved on.'],
+        ['label' => 'Responsible Consumption & Production', 'color' => 'navy', 'answer' => 'We manage every donation responsibly — minimising waste and maximising the impact of every pound entrusted to us.'],
+        ['label' => 'Climate Action', 'color' => 'navy', 'answer' => 'We build climate resilience into our projects, helping vulnerable communities prepare for, withstand and recover from environmental shocks.'],
+        ['label' => 'Life Below Water', 'color' => 'navy', 'answer' => 'We promote responsible practices that protect water sources and the fishing livelihoods that so many families depend upon.'],
+        ['label' => 'Life on Land', 'color' => 'navy', 'answer' => 'We support sustainable land use and greening initiatives that protect the natural environment the communities we serve rely on.'],
+        ['label' => 'Peace, Justice, and Strong Institutions', 'color' => 'navy', 'answer' => 'We operate with full transparency and accountability, working only with trusted partners so that aid reaches people safely, fairly and without exploitation.'],
+        ['label' => 'Partnerships for the Goals', 'color' => 'brand', 'answer' => 'We believe lasting change is only possible together, so we collaborate closely with donors, local partners and institutions to multiply our impact.'],
     ];
 
     // Team
@@ -134,24 +134,42 @@
 
     {{-- ===================== OUR VALUE ===================== --}}
     <section class="pt-12">
-        <div class="nf-container">
+        <div class="nf-container" data-faq>
             <h2 class="mb-6 text-2xl font-bold text-navy">Our Value</h2>
             <div class="grid gap-x-8 gap-y-4 md:grid-cols-2">
                 {{-- Left column --}}
                 <div class="space-y-4">
                     @foreach ($valuesLeft as $value)
-                        <div class="rounded-md px-5 py-3 text-sm font-semibold text-white underline underline-offset-2
-                            {{ $value['color'] === 'brand' ? 'bg-brand' : 'bg-navy' }}">
-                            {{ $value['label'] }}
+                        <div data-faq-item>
+                            <button type="button" data-faq-toggle aria-expanded="false"
+                                    class="flex w-full items-center justify-between gap-3 rounded-md px-5 py-3 text-left text-sm font-semibold text-white
+                                    {{ $value['color'] === 'brand' ? 'bg-brand' : 'bg-navy' }}">
+                                <span class="underline underline-offset-2">{{ $value['label'] }}</span>
+                                <svg class="nf-vfaq__icon h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="nf-vfaq__panel">
+                                <div>
+                                    <p class="mt-2 rounded-md bg-cream px-5 py-3.5 text-sm leading-relaxed text-gray-700">{{ $value['answer'] }}</p>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
                 {{-- Right column --}}
                 <div class="space-y-4">
                     @foreach ($valuesRight as $value)
-                        <div class="rounded-md px-5 py-3 text-sm font-semibold text-white underline underline-offset-2
-                            {{ $value['color'] === 'brand' ? 'bg-brand' : 'bg-navy' }}">
-                            {{ $value['label'] }}
+                        <div data-faq-item>
+                            <button type="button" data-faq-toggle aria-expanded="false"
+                                    class="flex w-full items-center justify-between gap-3 rounded-md px-5 py-3 text-left text-sm font-semibold text-white
+                                    {{ $value['color'] === 'brand' ? 'bg-brand' : 'bg-navy' }}">
+                                <span class="underline underline-offset-2">{{ $value['label'] }}</span>
+                                <svg class="nf-vfaq__icon h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="nf-vfaq__panel">
+                                <div>
+                                    <p class="mt-2 rounded-md bg-cream px-5 py-3.5 text-sm leading-relaxed text-gray-700">{{ $value['answer'] }}</p>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -243,5 +261,20 @@
             </div>
         </div>
     </section>
+
+@push('scripts')
+<script>
+    // Our Values FAQ — animated open/close (each item toggles independently).
+    document.querySelectorAll('[data-faq]').forEach((faq) => {
+        faq.querySelectorAll('[data-faq-toggle]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const item = btn.closest('[data-faq-item]');
+                const open = item.classList.toggle('is-open');
+                btn.setAttribute('aria-expanded', String(open));
+            });
+        });
+    });
+</script>
+@endpush
 
 @endsection

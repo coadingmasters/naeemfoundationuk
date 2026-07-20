@@ -10,7 +10,8 @@
         <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
         <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
 
-        <div class="relative grid items-stretch lg:grid-cols-2">
+        {{-- Wider image column + capped card keeps the widget compact. --}}
+        <div class="relative grid items-stretch lg:grid-cols-[1.55fr_1fr]">
             {{-- Image --}}
             <div class="relative min-h-[280px] sm:min-h-[360px] lg:min-h-[500px]">
                 <img src="{{ asset('images/zakathero.png') }}" alt="Zakat donations"
@@ -35,7 +36,7 @@
                 </p>
 
                 <form method="POST" action="{{ route('donate.add') }}" data-donate-form
-                      class="mt-5 rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6">
+                      class="mt-5 w-full rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6 lg:max-w-[28rem]">
                     @csrf
                     <input type="hidden" name="cause" value="Zakat">
                     <input type="hidden" name="image" value="images/zakathero.png">

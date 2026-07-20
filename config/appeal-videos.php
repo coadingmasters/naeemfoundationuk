@@ -25,6 +25,12 @@ return [
         'title' => 'See the impact of your donation',
     ],
 
+    'hajj' => [
+        'url' => $sample,
+        'poster' => 'images/givezakat.png',
+        'title' => 'Your Hajj journey, guided with care',
+    ],
+
     'zakat' => [
         'url' => $sample,
         'poster' => 'images/zakathero.png',

@@ -86,23 +86,9 @@
 
     {{-- ===== Main bar (full width) ===== --}}
     <div class="nf-header__bar relative z-10">
-        <div class="flex h-20 items-center justify-between gap-4 lg:h-24">
-            {{-- Left: logo + nav. self-stretch so the brand panel can measure
-                 against the bar's full height and overhang only downward. --}}
-            <div class="flex items-center gap-6 self-stretch xl:gap-10">
-                {{-- Brand lockup: emblem in a white badge + wordmark (the emblem's own
-                     lettering is unreadable at header size, so the wordmark carries the name). --}}
-                <a href="{{ route('home') }}" class="nf-brand shrink-0" aria-label="{{ config('app.name') }} — home">
-                    <span class="nf-brand__panel">
-                        <img src="{{ asset('images/logo.png') }}" alt=""
-                             class="h-12 w-12 lg:h-[70px] lg:w-[70px]">
-                    </span>
-                    <span class="nf-brand__text">
-                        <span class="nf-brand__name">Naeem Foundation</span>
-                        <span class="nf-brand__tag">Building Hopes &amp; Futures</span>
-                    </span>
-                </a>
-
+        <div class="flex h-20 items-center gap-4 lg:h-24">
+            {{-- Left: primary nav, pinned to the start of the bar. --}}
+            <div class="flex flex-1 items-center self-stretch">
                 {{-- Desktop nav --}}
                 <nav class="hidden items-center gap-6 xl:gap-8 lg:flex">
                 @foreach ($navGroups as $item)
@@ -182,8 +168,17 @@
                 </nav>
             </div>
 
+            {{-- Centre: logo box only. The wordmark is gone — the emblem stands
+                 alone in a clean white panel, sized to fill the box on all screens. --}}
+            <a href="{{ route('home') }}" class="nf-brand shrink-0" aria-label="{{ config('app.name') }} — home">
+                <span class="nf-brand__panel">
+                    <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}"
+                         class="nf-brand__logo">
+                </span>
+            </a>
+
             {{-- Right: basket + actions --}}
-            <div class="flex items-center gap-3">
+            <div class="flex flex-1 items-center justify-end gap-3">
                 {{-- Basket --}}
                 @include('partials.cart')
 
@@ -194,7 +189,7 @@
                 </a>
                 {{-- Desktop only — on mobile the Donate CTA lives in the drawer,
                      which keeps the small header down to logo, basket and menu. --}}
-                <a href="{{ route('donate.checkout') }}" class="nf-donate nf-donate--desktop">
+                <a href="{{ route('donate.make') }}" class="nf-donate nf-donate--desktop">
                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/>
                     </svg>
@@ -261,7 +256,7 @@
 
             {{-- Primary actions live here rather than in the compact mobile bar. --}}
             <div class="nf-drawer__row nf-drawer__cta">
-                <a href="{{ route('donate.checkout') }}" class="nf-donate w-full justify-center">
+                <a href="{{ route('donate.make') }}" class="nf-donate w-full justify-center">
                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/>
                     </svg>

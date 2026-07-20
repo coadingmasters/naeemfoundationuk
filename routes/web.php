@@ -73,6 +73,10 @@ Route::post('/community-centre/enquiry', [CommunityCentreController::class, 'enq
 Route::get('/ask-a-mufti', [AskMuftiController::class, 'index'])->name('ask-mufti');
 Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-mufti.store');
 
+// "Make a donation" landing page — the header Donate CTA lands here, then the
+// donor picks a cause/amount which flows into the existing basket + checkout.
+Route::view('/make-a-donation', 'donate.make')->name('donate.make');
+
 // Donation basket + checkout
 Route::post('/donate/add', [DonationController::class, 'add'])->name('donate.add');
 Route::delete('/donate/remove/{id}', [DonationController::class, 'remove'])->name('donate.remove');

@@ -4,7 +4,9 @@
     <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
     <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
 
-    <div class="relative grid items-stretch lg:grid-cols-2">
+    {{-- Image column is wider than the widget column so the photo gets more
+         room and the donation card reads as a compact, professional panel. --}}
+    <div class="relative grid items-stretch lg:grid-cols-[1.55fr_1fr]">
         {{-- Image + heading. The copy sits in normal flow (bottom-aligned via
              items-end) rather than absolutely positioned, so a long headline grows
              the panel instead of spilling upward underneath the fixed header. The
@@ -29,12 +31,15 @@
             </div>
         </div>
 
-        {{-- Donate widget (extra top padding on desktop so it clears the fixed header) --}}
-        <div class="flex flex-col justify-center px-5 py-8 sm:px-8 lg:px-12 lg:pb-12 lg:pt-40">
-            @include('partials.donate-widget', [
-                'widgetCauses' => $widgetCauses ?? ['Where Most Needed'],
-                'widgetImage' => $heroImage,
-            ])
+        {{-- Donate widget (extra top padding on desktop so it clears the fixed header).
+             Capped width keeps the card compact and gives the photo more space. --}}
+        <div class="flex flex-col justify-center px-5 py-8 sm:px-8 lg:px-10 lg:pb-12 lg:pt-40">
+            <div class="w-full lg:mx-auto lg:max-w-[28rem]">
+                @include('partials.donate-widget', [
+                    'widgetCauses' => $widgetCauses ?? ['Where Most Needed'],
+                    'widgetImage' => $heroImage,
+                ])
+            </div>
         </div>
     </div>
 </section>

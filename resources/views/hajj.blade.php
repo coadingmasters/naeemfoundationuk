@@ -89,25 +89,38 @@
 
     {{-- ===================== HAJJ JOURNEY INTRO ===================== --}}
     <section class="py-14 sm:py-16">
-        <div class="nf-container max-w-3xl">
-            <h2 class="text-3xl font-bold text-navy-dark sm:text-4xl">Hajj Journey</h2>
-            <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-                Hajj is not just travel; it is a once-in-a-lifetime calling. It is a journey that strips away status,
-                comfort and routine, bringing every pilgrim before Allah as equals. From the moment a pilgrim enters
-                ihram, every step becomes an act of worship, patience, humility and devotion combined.
-            </p>
-            <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                With Naeem Foundation’s Elite Hajj services, pilgrims are supported throughout this sacred journey with
-                care, organisation and guidance — allowing hearts to remain focused on worship while we take care of the
-                rest.
-            </p>
+        <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            {{-- Left: text --}}
+            <div>
+                <p class="inline-block border-b-2 border-brand pb-1 text-sm font-semibold uppercase tracking-wide text-brand">A Once-in-a-Lifetime Calling</p>
+                <h2 class="mt-3 text-3xl font-extrabold leading-tight text-navy-dark sm:text-4xl lg:text-[2.6rem]">The Hajj Journey</h2>
+                <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    Hajj is not just travel; it is a once-in-a-lifetime calling. It is a journey that strips away status,
+                    comfort and routine, bringing every pilgrim before Allah as equals. From the moment a pilgrim enters
+                    ihram, every step becomes an act of worship, patience, humility and devotion combined.
+                </p>
+                <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    With Naeem Foundation’s Elite Hajj services, pilgrims are supported throughout this sacred journey with
+                    care, organisation and guidance — allowing hearts to remain focused on worship while we take care of the
+                    rest.
+                </p>
+            </div>
+
+            {{-- Right: animated video card (same as zakat & other pages) --}}
+            <div>
+                @include('partials.video-card', ['videoKey' => 'hajj'])
+            </div>
         </div>
     </section>
 
-    {{-- ===================== WHY HAJJ IS IMPORTANT ===================== --}}
+    {{-- ===================== WHY HAJJ IS IMPORTANT (image left / text right) ===================== --}}
     <section class="pb-14">
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <div>
+            <div class="relative order-2 lg:order-1">
+                <img src="{{ asset('images/zakathero.png') }}" alt="The Kaaba in Makkah"
+                     class="h-72 w-full rounded-2xl object-cover shadow-lg sm:h-80 lg:h-[420px]">
+            </div>
+            <div class="order-1 lg:order-2">
                 <p class="inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-brand">Why Hajj Is Important</p>
                 <h3 class="mt-3 text-2xl font-bold text-navy-dark sm:text-3xl">A Pillar That Completes Faith</h3>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
@@ -122,21 +135,13 @@
                     praying alike, humbled alike.
                 </p>
             </div>
-            <div class="relative">
-                <img src="{{ asset('images/zakathero.png') }}" alt="The Kaaba in Makkah"
-                     class="h-72 w-full rounded-2xl object-cover shadow-lg sm:h-80 lg:h-[420px]">
-            </div>
         </div>
     </section>
 
-    {{-- ===================== WHAT HAPPENS DURING HAJJ ===================== --}}
+    {{-- ===================== WHAT HAPPENS DURING HAJJ (text left / image right) ===================== --}}
     <section class="pb-16">
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <div class="relative order-2 lg:order-1">
-                <img src="{{ asset('images/givezakat.png') }}" alt="Pilgrims during Hajj"
-                     class="h-72 w-full rounded-2xl object-cover shadow-lg sm:h-80 lg:h-[420px]">
-            </div>
-            <div class="order-1 lg:order-2">
+            <div>
                 <p class="inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-brand">What Happens During Hajj</p>
                 <h3 class="mt-3 text-2xl font-bold text-navy-dark sm:text-3xl">Days of Worship & Transformation</h3>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
@@ -148,6 +153,10 @@
                     Every ritual performed during Hajj is a reminder of faith, sacrifice and accountability — shaping the
                     pilgrim long after they return home.
                 </p>
+            </div>
+            <div class="relative">
+                <img src="{{ asset('images/givezakat.png') }}" alt="Pilgrims during Hajj"
+                     class="h-72 w-full rounded-2xl object-cover shadow-lg sm:h-80 lg:h-[420px]">
             </div>
         </div>
     </section>

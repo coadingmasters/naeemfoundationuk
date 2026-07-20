@@ -76,31 +76,58 @@
                 </aside>
 
                 {{-- ===== Add-ons popup ===== --}}
-                <div class="nf-modal" data-addons-modal @if (session('addons_open')) data-open @endif hidden>
+                {{-- Always opens on load (app.js reads data-open) so the donor is
+                     prompted to boost their gift every time they reach payment. --}}
+                <div class="nf-modal" data-addons-modal data-open hidden>
                     <div class="nf-modal__backdrop" data-addons-close></div>
-                    <div class="nf-modal__card" role="dialog" aria-modal="true" aria-label="Add to your donation">
+                    <div class="nf-modal__card nf-modal__card--split" role="dialog" aria-modal="true" aria-label="Add to your donation">
                         <button type="button" class="nf-modal__close" data-addons-close aria-label="Close">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
                         </button>
 
-                        <h3 class="text-lg font-bold text-navy-dark sm:text-xl">Want to add these?</h3>
-                        <p class="mt-1 text-sm text-gray-500">Boost your impact — add an extra gift to your basket.</p>
+                        <div class="grid sm:grid-cols-2">
+                            {{-- Left: amounts --}}
+                            <div class="p-6 sm:p-7 lg:p-8">
+                                <h3 class="text-xl font-extrabold text-navy-dark sm:text-2xl">Add more to your donation</h3>
+                                <p class="mt-1.5 text-sm text-gray-500">Boost your impact — add an extra gift before you pay.</p>
 
-                        <div class="mt-5 grid gap-3 sm:grid-cols-2">
-                            @foreach ($addons as $addon)
-                                <form method="POST" action="{{ route('donate.add') }}" data-cart-skip>
-                                    @csrf
-                                    <input type="hidden" name="cause" value="{{ $addon['cause'] }}">
-                                    <input type="hidden" name="amount" value="{{ $addon['amount'] }}">
-                                    <input type="hidden" name="frequency" value="one-off">
-                                    <input type="hidden" name="redirect" value="payment">
-                                    <button type="submit" class="nf-addon">
-                                        <span class="nf-addon__price">£{{ $addon['amount'] }}</span>
-                                        <span class="nf-addon__label">{{ $addon['cause'] }}</span>
-                                        <span class="nf-addon__add">Add +</span>
-                                    </button>
-                                </form>
-                            @endforeach
+                                <div class="mt-5 flex flex-col gap-3">
+                                    @foreach ($addons as $addon)
+                                        <form method="POST" action="{{ route('donate.add') }}" data-cart-skip>
+                                            @csrf
+                                            <input type="hidden" name="cause" value="{{ $addon['cause'] }}">
+                                            <input type="hidden" name="amount" value="{{ $addon['amount'] }}">
+                                            <input type="hidden" name="frequency" value="one-off">
+                                            <input type="hidden" name="redirect" value="payment">
+                                            <button type="submit" class="nf-addon">
+                                                <span class="nf-addon__info">
+                                                    <span class="nf-addon__price">£{{ $addon['amount'] }}</span>
+                                                    <span class="nf-addon__label">{{ $addon['cause'] }}</span>
+                                                </span>
+                                                <span class="nf-addon__add">Add +</span>
+                                            </button>
+                                        </form>
+                                    @endforeach
+                                </div>
+
+                                {{-- Dismiss without adding anything. --}}
+                                <button type="button" data-addons-close
+                                        class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500 transition-colors hover:text-brand">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+                                    No thanks, continue to payment
+                                </button>
+                            </div>
+
+                            {{-- Right: image --}}
+                            <div class="relative hidden min-h-[20rem] sm:block">
+                                <img src="{{ asset('images/changinslives2.jpg') }}" alt=""
+                                     class="absolute inset-0 h-full w-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-navy-dark/60 via-navy-dark/10 to-transparent"></div>
+                                <div class="absolute inset-x-0 bottom-0 p-6 text-white">
+                                    <p class="text-xs font-semibold uppercase tracking-wide text-white/80">Every gift counts</p>
+                                    <p class="mt-1 text-lg font-bold leading-tight">Your kindness changes lives.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

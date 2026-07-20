@@ -440,89 +440,61 @@
 }
 
 /* ---------- Brand lockup (emblem + wordmark) ---------- */
+/* Centre brand: a single white "tab" holding the emblem only. Flat top edge,
+   rounded bottom — it hangs flush from the top of the bar and overhangs downward. */
 .nf-brand {
     display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    /* Override the row's items-center so the panel can start at the bar's top. */
-    align-self: stretch;
+    align-items: flex-start;
+    justify-content: center;
+    /* Top-align within the bar so the flat top sits flush and the panel overhangs
+       downward. The header never clips overflow, so the overhang is free. */
+    align-self: flex-start;
 }
-/* Mobile keeps the original compact circular badge — the overhanging panel is a
-   desktop-only treatment. */
 .nf-brand__panel {
-    align-self: center;
     display: grid;
     place-items: center;
-    padding: 0.3rem;
     background: #fff;
-    border-radius: 9999px;
-    box-shadow: 0 8px 22px rgba(18, 45, 60, 0.18);
-    transition: box-shadow 0.3s ease, height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 14px 30px rgba(18, 45, 60, 0.22);
+    transition: box-shadow 0.3s ease, width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Mobile: a compact tab. */
+    width: 4.5rem;
+    height: 5rem;
+    padding: 0.4rem;
+    /* Flat top corners, rounded bottom only. */
+    border-radius: 0 0 1rem 1rem;
 }
-/* Desktop: a rounded panel taller than the bar, so it overhangs the hero
-   without growing the row (nothing in the header clips overflow). */
+/* Desktop: a big, professional tab that overhangs the hero. */
 @media (min-width: 1024px) {
     .nf-brand__panel {
-        align-self: flex-start;
-        width: 5.75rem;
-        height: 8rem; /* bar is 6rem → overhangs 2rem */
-        padding: 0 0 1.35rem;
-        border-radius: 1.1rem;
-        box-shadow: 0 16px 32px rgba(18, 45, 60, 0.28);
+        width: 7rem;
+        height: 7.5rem; /* bar is 6rem → overhangs ~1.5rem */
+        padding: 0.55rem;
+        border-radius: 0 0 1.5rem 1.5rem;
+        box-shadow: 0 22px 44px rgba(18, 45, 60, 0.28);
     }
 }
-.nf-brand__panel img {
-    border-radius: 9999px;
+/* object-fit: contain keeps the whole emblem inside the box, big and undistorted,
+   with even breathing room from the panel padding. */
+.nf-brand__logo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .nf-brand:hover .nf-brand__panel {
-    box-shadow: 0 20px 40px rgba(116, 10, 46, 0.32);
+    box-shadow: 0 26px 50px rgba(116, 10, 46, 0.30);
 }
-.nf-brand:hover .nf-brand__panel img {
-    transform: scale(1.06);
+.nf-brand:hover .nf-brand__logo {
+    transform: scale(1.05);
 }
-/* Once scrolled the header tightens up, so the overhang pulls in with it.
-   Desktop only — the mobile badge is a plain circle with no overhang. */
+/* Once scrolled the header tightens up, so the tab pulls in with it. */
 @media (min-width: 1024px) {
     .nf-header.is-scrolled .nf-brand__panel {
-        height: 7rem;
+        width: 6.25rem;
+        height: 6.5rem;
     }
-}
-/* Wordmark is dead weight on small screens — the emblem alone carries it. */
-.nf-brand__text {
-    display: none;
-}
-@media (min-width: 640px) {
-    .nf-brand__text {
-        display: block;
-    }
-}
-.nf-brand__name {
-    display: block;
-    font-size: 1.02rem;
-    font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
-    color: var(--color-navy-dark);
-    transition: color 0.35s ease;
-}
-.nf-brand__tag {
-    display: block;
-    margin-top: 0.1rem;
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: var(--color-brand);
-    transition: color 0.35s ease;
-}
-/* Over a hero image the wordmark flips to white. */
-.nf-header--overlay:not(.is-scrolled):not(.is-menu-open) .nf-brand__name {
-    color: #fff;
-}
-.nf-header--overlay:not(.is-scrolled):not(.is-menu-open) .nf-brand__tag {
-    color: rgba(255, 255, 255, 0.8);
 }
 
 /* ---------- Header donate button ---------- */
@@ -1159,19 +1131,34 @@
     color: var(--color-brand);
 }
 
-/* Add-on choice button */
+/* Wide split add-ons modal: amounts on the left, image on the right. */
+.nf-modal__card--split {
+    max-width: 52rem;
+    padding: 0;
+    overflow: hidden;
+}
+.nf-modal__card--split .nf-modal__close {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-navy);
+    box-shadow: 0 2px 8px rgba(18, 45, 60, 0.18);
+}
+.nf-modal__card--split .nf-modal__close:hover {
+    background: #fff;
+    color: var(--color-brand);
+}
+
+/* Add-on choice — horizontal row: price + label left, "Add" pill right. */
 .nf-addon {
     display: flex;
     width: 100%;
-    height: 100%;
     cursor: pointer;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.15rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
     border-radius: 0.8rem;
     border: 1px solid rgba(18, 45, 60, 0.12);
     background: #fff;
-    padding: 0.9rem 1rem;
+    padding: 0.85rem 1rem;
     text-align: left;
     transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
@@ -1181,29 +1168,39 @@
     transform: translateY(-2px);
     box-shadow: 0 10px 22px rgba(18, 45, 60, 0.12);
 }
+.nf-addon__info {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+}
 .nf-addon__price {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 800;
+    line-height: 1.1;
     color: var(--color-brand);
 }
 .nf-addon__label {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--color-navy-dark);
 }
 .nf-addon__add {
-    margin-top: 0.35rem;
-    font-size: 0.68rem;
-    font-weight: 700;
+    flex: none;
+    border-radius: 9999px;
+    background: var(--color-cream);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-navy);
-    opacity: 0.6;
-    transition: opacity 0.18s ease, color 0.18s ease;
+    letter-spacing: 0.04em;
+    color: var(--color-brand);
+    transition: background-color 0.18s ease, color 0.18s ease;
 }
 .nf-addon:hover .nf-addon__add {
-    opacity: 1;
-    color: var(--color-brand);
+    background: var(--color-brand);
+    color: #fff;
 }
 
 /* ---------- Cookie consent ---------- */
@@ -1469,10 +1466,12 @@
 }
 .nf-dd__menu {
     position: absolute;
-    left: 50%;
+    /* Left-aligned to the trigger: this dropdown sits at the far-left of the bar,
+       so a centred menu would spill off the left edge. Opens rightward instead. */
+    left: 0;
     top: calc(100% + 1.1rem);
     width: 18rem;
-    transform: translateX(-50%) translateY(10px);
+    transform: translateY(10px);
     border-radius: 1rem;
     background: #fff;
     padding: 0.5rem;
@@ -1522,7 +1521,7 @@
 .nf-dd:focus-within .nf-dd__menu {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
 }
 .nf-dd:hover > button::after,
 .nf-dd:focus-within > button::after {
@@ -1819,3 +1818,200 @@
         animation: none;
     }
 }
+
+/* ============================================================
+   Donation wizard — "Make a Donation" multi-step flow
+   ============================================================ */
+.nf-wz-steps {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.25rem;
+    max-width: 48rem;
+    margin-inline: auto;
+    list-style: none;
+    padding: 0;
+}
+.nf-wz-step {
+    position: relative;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+}
+/* Connector line running back to the previous step. */
+.nf-wz-step::before {
+    content: "";
+    position: absolute;
+    top: 1.4rem;
+    right: 50%;
+    width: 100%;
+    height: 2px;
+    background: #e4dfd4;
+    z-index: 0;
+    transition: background-color 0.35s ease;
+}
+.nf-wz-step:first-child::before { display: none; }
+.nf-wz-step.is-active::before,
+.nf-wz-step.is-done::before { background: var(--color-brand); }
+.nf-wz-step__num {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    height: 2.8rem;
+    width: 2.8rem;
+    border-radius: 0.9rem;
+    background: #fff;
+    border: 2px solid #e4dfd4;
+    font-weight: 800;
+    color: #9aa4ad;
+    transition: all 0.3s ease;
+}
+.nf-wz-step.is-active .nf-wz-step__num {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(116, 10, 46, 0.28);
+}
+.nf-wz-step.is-done .nf-wz-step__num {
+    background: var(--color-navy);
+    border-color: var(--color-navy);
+    color: #fff;
+}
+.nf-wz-step__label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #9aa4ad;
+    transition: color 0.3s ease;
+}
+.nf-wz-step.is-active .nf-wz-step__label { color: var(--color-brand); }
+.nf-wz-step.is-done .nf-wz-step__label { color: var(--color-navy); }
+@media (max-width: 480px) {
+    .nf-wz-step__label { font-size: 0.66rem; }
+    .nf-wz-step__num { height: 2.4rem; width: 2.4rem; }
+    .nf-wz-step::before { top: 1.2rem; }
+}
+
+/* Step panels + inline reveals — fade/slide in. */
+.nf-wz-panel,
+.nf-wz-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-wz-panel.is-in,
+.nf-wz-reveal.is-in { opacity: 1; transform: none; }
+.nf-wz-panel[hidden],
+.nf-wz-reveal[hidden] { display: none; }
+
+/* Selectable option cards (frequency + fund). */
+.nf-wz-opt {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 0.85rem;
+    border: 2px solid #e4dfd4;
+    background: #fff;
+    padding: 0.95rem 1.1rem;
+    font-weight: 700;
+    color: var(--color-navy-dark);
+    text-align: center;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease,
+        transform 0.2s ease, box-shadow 0.2s ease;
+}
+.nf-wz-opt:hover {
+    border-color: var(--color-brand);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(18, 45, 60, 0.1);
+}
+.nf-wz-opt.is-selected {
+    border-color: var(--color-brand);
+    background: rgba(116, 10, 46, 0.05);
+    color: var(--color-brand);
+    box-shadow: 0 0 0 3px rgba(116, 10, 46, 0.15);
+}
+/* Tick badge on the selected card. */
+.nf-wz-opt__tick {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.55rem;
+    height: 1.15rem;
+    width: 1.15rem;
+    display: grid;
+    place-items: center;
+    border-radius: 9999px;
+    background: var(--color-brand);
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nf-wz-opt.is-selected .nf-wz-opt__tick { opacity: 1; transform: scale(1); }
+
+/* Big One-off / Monthly CTAs on the start screen. */
+.nf-wz-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    border-radius: 0.6rem;
+    background: var(--color-brand);
+    padding: 0.95rem 1.25rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #fff;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.nf-wz-cta:hover {
+    background: var(--color-brand-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(116, 10, 46, 0.38);
+}
+.nf-wz-cta svg { height: 1.15rem; width: 1.15rem; flex: none; transition: transform 0.2s ease; }
+.nf-wz-cta:hover svg { transform: translateX(3px); }
+
+/* Screens sit clear of the sticky header when scrolled into view. */
+.nf-wz-screen { scroll-margin-top: calc(var(--nf-header-h, 7.25rem) + 1rem); }
+/* Fade a screen in when it becomes the active step. */
+.nf-wz-screen[hidden] { display: none; }
+.nf-wz-fade { opacity: 0; transform: translateY(14px); transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+.nf-wz-fade.is-in { opacity: 1; transform: none; }
+
+/* Secondary "Back" button inside the wizard. */
+.nf-wz-nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    background: transparent;
+    border: 1px solid rgba(24, 59, 79, 0.2);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.nf-wz-nav-back:hover {
+    background: rgba(24, 59, 79, 0.06);
+    border-color: rgba(24, 59, 79, 0.4);
+}
+
+/* ---------- Values accordion (About · Our Value) — original colour bars, now expandable ---------- */
+/* Height animation via grid-template-rows 0fr → 1fr (no JS height measuring needed). */
+.nf-vfaq__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-faq-item].is-open .nf-vfaq__panel { grid-template-rows: 1fr; }
+.nf-vfaq__panel > div { overflow: hidden; }
+.nf-vfaq__icon { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+[data-faq-item].is-open .nf-vfaq__icon { transform: rotate(180deg); }
