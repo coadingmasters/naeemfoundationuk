@@ -105,7 +105,7 @@
                 {{-- Gallery --}}
                 <div class="mt-8 grid gap-5 sm:grid-cols-2">
                     @foreach ($creamGallery as $i => $shot)
-                        <div class="nf-reveal group overflow-hidden rounded-xl" style="transition-delay: {{ $i * 120 }}ms">
+                        <div class="nf-reveal group overflow-hidden rounded-xl" data-reveal-delay="{{ $i * 120 }}">
                             <img src="{{ asset($shot['image']) }}" alt="{{ $shot['alt'] }}"
                                  class="h-64 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 sm:h-72 lg:h-80">
                         </div>

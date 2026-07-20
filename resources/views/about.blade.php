@@ -195,7 +195,7 @@
 
             <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($team as $i => $member)
-                    <div class="nf-reveal group" style="transition-delay: {{ $i * 120 }}ms">
+                    <div class="nf-reveal group" data-reveal-delay="{{ $i * 120 }}">
                         <div class="overflow-hidden rounded-xl shadow-sm ring-1 ring-black/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl">
                             {{-- Photo + name band --}}
                             <div class="relative overflow-hidden">

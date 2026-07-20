@@ -605,6 +605,12 @@ function setupReveal() {
     const els = document.querySelectorAll('.nf-reveal');
     if (!els.length) return;
 
+    // Optional per-element stagger via data-reveal-delay="<ms>" in the markup
+    // (kept out of an inline `style` so editors don't lint the Blade expression).
+    els.forEach((el) => {
+        if (el.dataset.revealDelay) el.style.transitionDelay = `${el.dataset.revealDelay}ms`;
+    });
+
     if (!('IntersectionObserver' in window)) {
         els.forEach((el) => el.classList.add('is-visible'));
         return;

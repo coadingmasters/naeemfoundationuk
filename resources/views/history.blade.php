@@ -82,7 +82,7 @@
 
             <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($features as $i => $feature)
-                    <div class="nf-reveal rounded-lg bg-cream p-6" style="transition-delay: {{ $i * 100 }}ms">
+                    <div class="nf-reveal rounded-lg bg-cream p-6" data-reveal-delay="{{ $i * 100 }}">
                         <span class="block text-4xl font-extrabold leading-none text-slate-300">{{ $feature['no'] }}</span>
                         <h3 class="mt-3 font-bold leading-snug text-navy">{{ $feature['title'] }}</h3>
                         <p class="mt-2 text-sm leading-relaxed text-gray-600">{{ $feature['text'] }}</p>

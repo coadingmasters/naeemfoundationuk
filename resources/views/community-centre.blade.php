@@ -161,7 +161,7 @@
             <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($services as $i => $service)
                     <div class="nf-reveal group rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-                         style="transition-delay: {{ $i * 90 }}ms">
+                         data-reveal-delay="{{ $i * 90 }}">
                         <span class="grid h-12 w-12 place-items-center rounded-xl bg-brand/10 text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-white">
                             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                                 {!! $service['icon'] !!}
@@ -244,7 +244,7 @@
             @if ($galleryVideos->isNotEmpty())
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($galleryVideos as $i => $video)
-                        <div class="nf-reveal" style="transition-delay: {{ $i * 110 }}ms">
+                        <div class="nf-reveal" data-reveal-delay="{{ $i * 110 }}">
                             @include('partials.video-player', ['video' => $video])
                             <p class="mt-2.5 text-sm font-semibold text-navy-dark">{{ $video->title }}</p>
                         </div>

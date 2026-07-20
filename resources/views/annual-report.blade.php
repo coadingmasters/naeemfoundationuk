@@ -38,7 +38,7 @@
                     @foreach ($reports as $i => $report)
                         {{-- Left: report card · Right: the details as prose --}}
                         <article class="nf-reveal grid items-center gap-8 lg:grid-cols-5 lg:gap-12"
-                                 style="transition-delay: {{ $i * 90 }}ms">
+                                 data-reveal-delay="{{ $i*  90 }}">
 
                             {{-- Left: the card --}}
                             <div class="lg:col-span-2">

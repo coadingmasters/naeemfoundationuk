@@ -77,6 +77,13 @@ Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-muf
 // donor picks a cause/amount which flows into the existing basket + checkout.
 Route::view('/make-a-donation', 'donate.make')->name('donate.make');
 
+// Appeal detail page — each "Latest Appeals" card opens its own dynamic page.
+Route::get('/appeals/{appeal}', function (\App\Models\Appeal $appeal) {
+    abort_unless($appeal->is_active, 404);
+
+    return view('appeals.show', ['appeal' => $appeal]);
+})->name('appeals.show');
+
 // Donation basket + checkout
 Route::post('/donate/add', [DonationController::class, 'add'])->name('donate.add');
 Route::delete('/donate/remove/{id}', [DonationController::class, 'remove'])->name('donate.remove');

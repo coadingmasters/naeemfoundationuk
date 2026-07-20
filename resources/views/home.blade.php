@@ -195,7 +195,7 @@
                             <div class="w-full shrink-0" data-slide>
                                 <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
                                     @foreach ($page as $appeal)
-                                        <a href="{{ $donateLink($appeal->link) }}" class="group flex gap-4">
+                                        <a href="{{ isset($appeal->id) ? route('appeals.show', $appeal) : $donateLink($appeal->link) }}" class="group flex gap-4">
                                             <img src="{{ asset($appeal->image) }}" alt="{{ $appeal->title }}"
                                                  class="h-16 w-20 shrink-0 rounded object-cover">
                                             <div>
