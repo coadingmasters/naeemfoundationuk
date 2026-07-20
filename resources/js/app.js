@@ -573,6 +573,32 @@ function setupChoiceGroups() {
     });
 
     setupCustomAmount();
+    setupFrequencyAmounts();
+}
+
+/* ---------- Swap preset amounts when One-Off ↔ Monthly is toggled ----------
+   Each preset button carries data-oneoff / data-monthly; the shown price and its
+   value follow the chosen frequency, so a one-off gift and a monthly gift never
+   share the same prices. */
+function setupFrequencyAmounts() {
+    document.querySelectorAll('[data-donate-form]').forEach((form) => {
+        const freqInput = form.querySelector('input[name="frequency"]');
+        const presetBtns = [...form.querySelectorAll('[data-choice][data-oneoff]')];
+        const amountInput = form.querySelector('[data-amount-input]');
+        if (!freqInput || !presetBtns.length || !amountInput) return;
+
+        freqInput.addEventListener('change', () => {
+            const monthly = freqInput.value === 'monthly';
+            presetBtns.forEach((btn) => {
+                const val = monthly ? btn.dataset.monthly : btn.dataset.oneoff;
+                btn.dataset.value = val;
+                btn.textContent = '£' + val;
+            });
+            // Keep the highlighted preset's price in sync (unless "Other" is active).
+            const selected = presetBtns.find((b) => b.classList.contains('is-selected'));
+            if (selected) amountInput.value = selected.dataset.value;
+        });
+    });
 }
 
 /* ---------- "Other" amount field on the donate widget ---------- */

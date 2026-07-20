@@ -8,11 +8,14 @@
     $widgetCauses = $widgetCauses ?? ['Where Most Needed'];
     $widgetImage = $widgetImage ?? 'images/changinslives1.jpg';
     $widgetAmounts = $widgetAmounts ?? [50, 100, 250];
+    // Smaller presets shown when the donor switches to a Monthly gift.
+    $widgetMonthlyAmounts = $widgetMonthlyAmounts ?? [10, 25, 50];
     $widgetTitle = $widgetTitle ?? 'Choose an amount';
 
     $cause = $widgetCauses[0];
     // Show three preset amounts, then an "Other" button. Pick a sensible default.
     $presets = array_slice(array_values($widgetAmounts), 0, 3);
+    $monthlyPresets = array_slice(array_values($widgetMonthlyAmounts), 0, 3);
     $defaultAmount = $presets[1] ?? $presets[0];
 @endphp
 
@@ -34,8 +37,9 @@
 
     {{-- Amounts --}}
     <div class="mt-3 grid grid-cols-4 gap-2" data-choice-group>
-        @foreach ($presets as $amount)
+        @foreach ($presets as $i => $amount)
             <button type="button" data-choice data-value="{{ $amount }}"
+                    data-oneoff="{{ $amount }}" data-monthly="{{ $monthlyPresets[$i] ?? $amount }}"
                     class="nf-choice py-2 {{ $amount === $defaultAmount ? 'is-selected' : '' }}">£{{ $amount }}</button>
         @endforeach
         <button type="button" data-choice data-value="other" class="nf-choice py-2">£Other</button>
