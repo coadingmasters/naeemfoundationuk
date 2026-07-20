@@ -14,6 +14,7 @@ use App\Http\Controllers\AskMuftiController;
 use App\Http\Controllers\Admin\CommunityVideoController;
 use App\Http\Controllers\CambodiaEducationController;
 use App\Http\Controllers\CommunityCentreController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\EidGiftsController;
 use App\Http\Controllers\FidyaController;
@@ -72,6 +73,10 @@ Route::post('/community-centre/enquiry', [CommunityCentreController::class, 'enq
 
 Route::get('/ask-a-mufti', [AskMuftiController::class, 'index'])->name('ask-mufti');
 Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-mufti.store');
+
+// Contact Us — animated page with a working message form.
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // "Make a donation" landing page — the header Donate CTA lands here, then the
 // donor picks a cause/amount which flows into the existing basket + checkout.

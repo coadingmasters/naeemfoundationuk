@@ -1,11 +1,20 @@
 @php
-    $appealLinks = ['Orphan support', 'Sadaqah', 'zakat', 'water pump', 'Foods'];
+    // Only real, existing pages are linked here (dead "#" placeholders removed).
+    $appealLinks = [
+        ['label' => 'Zakat', 'url' => route('zakat')],
+        ['label' => 'Sadaqah', 'url' => route('sadaqah')],
+        ['label' => 'Food & Sustenance', 'url' => route('food-sustenance')],
+        ['label' => 'Water Well', 'url' => route('water-well')],
+        ['label' => 'Healthcare', 'url' => route('healthcare')],
+    ];
     $usefulLinks = [
-        ['label' => 'About', 'url' => route('about')],
-        ['label' => 'Projects', 'url' => '#'],
-        ['label' => 'Media', 'url' => '#'],
-        ['label' => 'Career', 'url' => route('careers')],
-        ['label' => 'Contact', 'url' => '#'],
+        ['label' => 'About Us', 'url' => route('about')],
+        ['label' => 'Community Centre', 'url' => route('community-centre')],
+        ['label' => 'Hajj 2027', 'url' => route('hajj')],
+        ['label' => 'Ask a Mufti', 'url' => route('ask-mufti')],
+        ['label' => 'Annual Report', 'url' => route('annual-report')],
+        ['label' => 'Careers', 'url' => route('careers')],
+        ['label' => 'Contact Us', 'url' => route('contact')],
         ['label' => 'Privacy Policy', 'url' => route('privacy-policy')],
     ];
 
@@ -62,7 +71,7 @@
             <h4 class="mb-4 text-lg font-bold text-white">Appeals</h4>
             <ul class="space-y-2 text-sm">
                 @foreach ($appealLinks as $link)
-                    <li><a href="#" class="text-white/85 transition-colors hover:text-white">{{ $link }}</a></li>
+                    <li><a href="{{ $link['url'] }}" class="text-white/85 transition-colors hover:text-white">{{ $link['label'] }}</a></li>
                 @endforeach
             </ul>
         </div>

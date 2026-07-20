@@ -8,12 +8,11 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
+            // Free grotesque that stands in for the licensed Geogrotesque until
+            // its real files are added to public/fonts/geogrotesque/.
             fonts: [
-                bunny('Montserrat', {
+                bunny('Hanken Grotesk', {
                     weights: [400, 500, 600, 700, 800],
-                }),
-                bunny('Open Sans', {
-                    weights: [400, 600, 700],
                 }),
             ],
         }),

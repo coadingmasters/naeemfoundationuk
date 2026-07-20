@@ -50,8 +50,7 @@
 }
 
 @theme {
-    --font-sans: 'Montserrat', 'Open Sans', Arial, sans-serif, 'Apple Color Emoji',
-        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Geogrotesque', 'Hanken Grotesk', sans-serif;
 
     /* Brand colors */
     --color-brand: #740a2e;
@@ -442,40 +441,34 @@
 /* ---------- Brand lockup (emblem + wordmark) ---------- */
 /* Centre brand: a single white "tab" holding the emblem only. Flat top edge,
    rounded bottom — it hangs flush from the top of the bar and overhangs downward. */
+/* Default = CONTAINED: the badge sits fully inside the bar, so it never pokes out
+   below a solid/white header (e.g. once scrolled, or on non-hero pages). */
 .nf-brand {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
-    /* Top-align within the bar so the flat top sits flush and the panel overhangs
-       downward. The header never clips overflow, so the overhang is free. */
-    align-self: flex-start;
+    align-self: center;
 }
 .nf-brand__panel {
     display: grid;
     place-items: center;
     background: #fff;
-    box-shadow: 0 14px 30px rgba(18, 45, 60, 0.22);
+    box-shadow: 0 8px 20px rgba(18, 45, 60, 0.16);
     transition: box-shadow 0.3s ease, width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    /* Mobile: a compact tab. */
-    width: 4.5rem;
-    height: 5rem;
-    padding: 0.4rem;
-    /* Flat top corners, rounded bottom only. */
-    border-radius: 0 0 1rem 1rem;
+        height 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.35s ease;
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0.32rem;
+    border-radius: 0.85rem;
 }
-/* Desktop: a big, professional tab that overhangs the hero. */
 @media (min-width: 1024px) {
     .nf-brand__panel {
-        width: 7rem;
-        height: 7.5rem; /* bar is 6rem → overhangs ~1.5rem */
-        padding: 0.55rem;
-        border-radius: 0 0 1.5rem 1.5rem;
-        box-shadow: 0 22px 44px rgba(18, 45, 60, 0.28);
+        width: 5rem;
+        height: 5rem;
+        padding: 0.45rem;
+        border-radius: 1.05rem;
     }
 }
-/* object-fit: contain keeps the whole emblem inside the box, big and undistorted,
-   with even breathing room from the panel padding. */
 .nf-brand__logo {
     display: block;
     width: 100%;
@@ -484,16 +477,34 @@
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .nf-brand:hover .nf-brand__panel {
-    box-shadow: 0 26px 50px rgba(116, 10, 46, 0.30);
+    box-shadow: 0 12px 26px rgba(116, 10, 46, 0.22);
 }
 .nf-brand:hover .nf-brand__logo {
     transform: scale(1.05);
 }
-/* Once scrolled the header tightens up, so the tab pulls in with it. */
+
+/* OVERHANG = only over a TRANSPARENT hero header that hasn't been scrolled and
+   has no open menu. The badge grows into a flat-topped tab that hangs below the
+   bar over the hero image. Any other state (scrolled → white, or a solid header)
+   keeps the contained badge above, so it never sticks out of a white bar. */
+.nf-header--overlay:not(.is-scrolled):not(.is-menu-open) .nf-brand {
+    align-items: flex-start;
+    align-self: flex-start;
+}
+.nf-header--overlay:not(.is-scrolled):not(.is-menu-open) .nf-brand__panel {
+    width: 4.5rem;
+    height: 5rem;
+    padding: 0.4rem;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 14px 30px rgba(18, 45, 60, 0.22);
+}
 @media (min-width: 1024px) {
-    .nf-header.is-scrolled .nf-brand__panel {
-        width: 6.25rem;
-        height: 6.5rem;
+    .nf-header--overlay:not(.is-scrolled):not(.is-menu-open) .nf-brand__panel {
+        width: 7rem;
+        height: 7.5rem;
+        padding: 0.55rem;
+        border-radius: 0 0 1.5rem 1.5rem;
+        box-shadow: 0 22px 44px rgba(18, 45, 60, 0.28);
     }
 }
 
@@ -2015,3 +2026,44 @@
 .nf-vfaq__panel > div { overflow: hidden; }
 .nf-vfaq__icon { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
 [data-faq-item].is-open .nf-vfaq__icon { transform: rotate(180deg); }
+
+/* ---------- Animated layered waves (Contact hero bottom edge) ---------- */
+.nf-waves {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -1px;
+    z-index: 5;
+    width: 100%;
+    height: 55px;
+}
+@media (min-width: 640px) {
+    .nf-waves { height: 85px; }
+}
+.nf-waves__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.nf-waves__parallax > use {
+    animation: nf-wave-move 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+}
+.nf-waves__parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 8s; }
+.nf-waves__parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 11s; }
+.nf-waves__parallax > use:nth-child(3) { animation-delay: -4s; animation-duration: 15s; }
+.nf-waves__parallax > use:nth-child(4) { animation-delay: -5s; animation-duration: 22s; }
+@keyframes nf-wave-move {
+    0% { transform: translate3d(-90px, 0, 0); }
+    100% { transform: translate3d(85px, 0, 0); }
+}
+
+/* Gentle attention pulse on the contact submit button. */
+.nf-cta-pulse { animation: nf-cta-pulse 2.8s ease-in-out infinite; }
+@keyframes nf-cta-pulse {
+    0%, 100% { box-shadow: 0 8px 20px rgba(116, 10, 46, 0.28); }
+    50% { box-shadow: 0 10px 30px rgba(116, 10, 46, 0.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nf-waves__parallax > use,
+    .nf-cta-pulse { animation: none; }
+}
