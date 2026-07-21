@@ -2071,6 +2071,14 @@
     font-weight: 600;
 }
 
+/* Admin table rows — staggered fade-up entrance (class toggled by JS on load). */
+.nf-adm-row { opacity: 0; transform: translateY(10px); }
+.nf-adm-row.in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .nf-waves__parallax > use,
     .nf-cta-pulse { animation: none; }

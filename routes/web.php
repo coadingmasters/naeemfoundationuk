@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\AppealController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\HajjRegistrationController as AdminHajjRegistrationController;
+use App\Http\Controllers\Admin\VolunteerController as AdminVolunteerController;
 use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\NewsPostController;
@@ -154,6 +156,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('hajj-videos', HajjVideoController::class)
             ->except(['show']);
+
+        // Hajj 2027 registrations submitted through the public form (read + delete + export).
+        Route::get('hajj-registrations', [AdminHajjRegistrationController::class, 'index'])->name('hajj-registrations.index');
+        Route::get('hajj-registrations/export', [AdminHajjRegistrationController::class, 'export'])->name('hajj-registrations.export');
+        Route::delete('hajj-registrations/{registration}', [AdminHajjRegistrationController::class, 'destroy'])->name('hajj-registrations.destroy');
+
+        // Volunteer sign-ups submitted through the public form (read + delete + export).
+        Route::get('volunteers', [AdminVolunteerController::class, 'index'])->name('volunteers.index');
+        Route::get('volunteers/export', [AdminVolunteerController::class, 'export'])->name('volunteers.export');
+        Route::delete('volunteers/{volunteer}', [AdminVolunteerController::class, 'destroy'])->name('volunteers.destroy');
 
         Route::resource('community-videos', CommunityVideoController::class)
             ->except(['show']);

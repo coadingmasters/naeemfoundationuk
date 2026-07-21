@@ -37,6 +37,18 @@
             'icon' => '<path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.9L15 14M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
         [
+            'label' => 'Hajj Registrations',
+            'route' => 'admin.hajj-registrations.index',
+            'active' => request()->routeIs('admin.hajj-registrations.*'),
+            'icon' => '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1M9 10h6M9 14h6M9 18h3" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
+        [
+            'label' => 'Volunteers',
+            'route' => 'admin.volunteers.index',
+            'active' => request()->routeIs('admin.volunteers.*'),
+            'icon' => '<circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0" stroke-linecap="round"/><path d="M16 3.2a3 3 0 0 1 0 5.6M17.5 20a5.5 5.5 0 0 0-2.7-4.8" stroke-linecap="round"/>',
+        ],
+        [
             'label' => 'News & Press',
             'route' => 'admin.news.index',
             'active' => request()->routeIs('admin.news.*'),
