@@ -12,6 +12,7 @@
         ['label' => 'Community Centre', 'url' => route('community-centre')],
         ['label' => 'Hajj 2027', 'url' => route('hajj')],
         ['label' => 'Ask a Mufti', 'url' => route('ask-mufti')],
+        ['label' => 'Volunteer', 'url' => route('volunteer')],
         ['label' => 'Annual Report', 'url' => route('annual-report')],
         ['label' => 'Careers', 'url' => route('careers')],
         ['label' => 'Contact Us', 'url' => route('contact')],

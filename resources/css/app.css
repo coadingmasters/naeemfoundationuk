@@ -2063,6 +2063,14 @@
     50% { box-shadow: 0 10px 30px rgba(116, 10, 46, 0.5); }
 }
 
+/* Volunteer skill chip highlights when its checkbox is ticked. */
+.nf-skill:has(input:checked) {
+    border-color: var(--color-brand);
+    background: rgba(116, 10, 46, 0.06);
+    color: var(--color-brand);
+    font-weight: 600;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .nf-waves__parallax > use,
     .nf-cta-pulse { animation: none; }

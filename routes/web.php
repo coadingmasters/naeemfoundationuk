@@ -29,6 +29,7 @@ use App\Http\Controllers\RamadanTimetableController;
 use App\Http\Controllers\SadaqahController;
 use App\Http\Controllers\SehriIftarController;
 use App\Http\Controllers\SustainableLivelihoodController;
+use App\Http\Controllers\VolunteerController;
 use App\Http\Controllers\WaterWellController;
 use App\Http\Controllers\ZakatUlFitrController;
 use Illuminate\Support\Facades\Route;
@@ -77,6 +78,10 @@ Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-muf
 // Contact Us — animated page with a working message form.
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+// Volunteer — animated sign-up page with a working registration form.
+Route::get('/volunteer', [VolunteerController::class, 'index'])->name('volunteer');
+Route::post('/volunteer', [VolunteerController::class, 'store'])->name('volunteer.store');
 
 // "Make a donation" landing page — the header Donate CTA lands here, then the
 // donor picks a cause/amount which flows into the existing basket + checkout.
