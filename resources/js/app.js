@@ -644,29 +644,88 @@ function shopToast(message) {
 }
 
 function setupShopBag() {
+    const root = document.querySelector('[data-shopbag]');
+    const badges = document.querySelectorAll('[data-shopbag-count]');
+
+    const post = async (form) => {
+        const res = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
+            credentials: 'same-origin',
+        });
+        return { ok: res.ok, data: await res.json().catch(() => ({})) };
+    };
+
+    const setBadge = (count) => {
+        badges.forEach((b) => {
+            b.textContent = count;
+            b.classList.toggle('hidden', !count);
+            b.classList.remove('is-bumped');
+            void b.offsetWidth; // restart the bump animation
+            b.classList.add('is-bumped');
+        });
+    };
+
+    let open = () => {};
+    let refresh = (d) => setBadge(d.count);
+
+    // Header mini-bag popup (open/close + live item list).
+    if (root) {
+        const panelBody = root.querySelector('[data-shopbag-body]');
+        const toggle = root.querySelector('[data-shopbag-toggle]');
+        const close = () => { root.classList.remove('is-open'); toggle?.setAttribute('aria-expanded', 'false'); };
+        open = () => { root.classList.add('is-open'); toggle?.setAttribute('aria-expanded', 'true'); };
+
+        toggle?.addEventListener('click', (e) => { e.stopPropagation(); root.classList.contains('is-open') ? close() : open(); });
+        root.querySelector('[data-shopbag-close]')?.addEventListener('click', close);
+        document.addEventListener('click', (e) => { if (!root.contains(e.target)) close(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+        const bindRemove = () => {
+            root.querySelectorAll('form[data-shopbag-remove]').forEach((form) => {
+                if (form.dataset.bound) return;
+                form.dataset.bound = '1';
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    try {
+                        const { ok, data } = await post(form);
+                        if (!ok) throw new Error('failed');
+                        refresh(data);
+                    } catch { form.submit(); }
+                });
+            });
+        };
+
+        refresh = (d) => {
+            if (panelBody && typeof d.html === 'string') panelBody.innerHTML = d.html;
+            setBadge(d.count);
+            bindRemove();
+        };
+        bindRemove();
+    }
+
+    // Add-to-bag forms across the shop → AJAX add, pop the bag open, "Added ✓" feedback.
     document.querySelectorAll('[data-bag-form]').forEach((form) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = form.querySelector('[type="submit"]');
+            const original = btn ? btn.innerHTML : '';
             if (btn) btn.disabled = true;
 
             try {
-                const res = await fetch(form.action, {
-                    method: 'POST',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
-                    body: new FormData(form),
-                });
-                const data = await res.json();
-
-                document.querySelectorAll('[data-shopbag-count]').forEach((b) => {
-                    b.textContent = data.count;
-                    b.classList.toggle('hidden', !data.count);
-                });
+                const { ok, data } = await post(form);
+                if (!ok) throw new Error('failed');
+                refresh(data);
+                open();
+                if (btn) {
+                    btn.classList.add('is-added');
+                    btn.innerHTML = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Added';
+                    setTimeout(() => { btn.innerHTML = original; btn.classList.remove('is-added'); btn.disabled = false; }, 1400);
+                }
                 shopToast(data.message || 'Added to your bag.');
             } catch {
-                form.submit(); // no JS / network trouble → normal post
-            } finally {
-                if (btn) btn.disabled = false;
+                form.submit();
             }
         });
     });

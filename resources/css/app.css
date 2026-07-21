@@ -2119,6 +2119,13 @@
 .nf-filter-opt:has(input:checked) .nf-filter-opt__dot { border-color: var(--color-brand); }
 .nf-filter-opt:has(input:checked) .nf-filter-opt__dot::after { transform: scale(1); }
 
+/* Add-to-bag "Added ✓" success state (briefly flashed after adding). */
+.is-added {
+    background-color: #16a34a !important;
+    border-color: #16a34a !important;
+    color: #fff !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .nf-waves__parallax > use,
     .nf-cta-pulse { animation: none; }

@@ -20,7 +20,7 @@
 
                 {{-- Details --}}
                 <div class="lg:col-span-2">
-                    <div class="rounded-2xl border border-navy/10 bg-white p-6 shadow-sm sm:p-8">
+                    <div class="nf-reveal rounded-2xl border border-navy/10 bg-white p-6 shadow-sm sm:p-8">
                         <h2 class="text-xl font-bold text-navy-dark">Delivery details</h2>
 
                         @if ($errors->any())
@@ -56,7 +56,7 @@
 
                 {{-- Summary --}}
                 <div class="lg:sticky lg:top-28 lg:col-span-1">
-                    <div class="rounded-2xl border border-navy/10 bg-white p-6 shadow-sm">
+                    <div class="nf-reveal rounded-2xl border border-navy/10 bg-white p-6 shadow-sm" data-reveal-delay="120">
                         <h2 class="text-lg font-bold text-navy-dark">Your order</h2>
                         <div class="mt-4 space-y-3">
                             @foreach ($items as $item)

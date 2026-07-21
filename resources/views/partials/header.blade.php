@@ -183,14 +183,10 @@
 
             {{-- Right: basket + actions --}}
             <div class="flex flex-1 items-center justify-end gap-3">
-                {{-- Shop bag --}}
-                <a href="{{ route('shop.cart') }}" class="nf-cart__btn" aria-label="Shopping bag">
-                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/></svg>
-                    @php $bagCount = \App\Support\ProductCart::count(); @endphp
-                    <span class="nf-cart__badge {{ $bagCount ? '' : 'hidden' }}" data-shopbag-count>{{ $bagCount }}</span>
-                </a>
+                {{-- Shop bag (mini-bag popup) --}}
+                @include('partials.shop-bag')
 
-                {{-- Basket --}}
+                {{-- Donation basket --}}
                 @include('partials.cart')
 
                 <a href="{{ route('ask-mufti') }}"

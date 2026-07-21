@@ -27,16 +27,13 @@ class ProductCartController extends Controller
         ProductCart::add((int) $data['product_id'], (int) ($data['qty'] ?? 1));
 
         if ($request->expectsJson()) {
-            return response()->json([
-                'count' => ProductCart::count(),
-                'message' => 'Added to your bag.',
-            ]);
+            return $this->bagJson('Added to your bag.');
         }
 
         return back()->with('success', 'Added to your bag.');
     }
 
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
             'qty' => ['required', 'integer', 'min:0', 'max:20'],
@@ -44,13 +41,31 @@ class ProductCartController extends Controller
 
         ProductCart::setQty($id, (int) $data['qty']);
 
+        if ($request->expectsJson()) {
+            return $this->bagJson('Bag updated.');
+        }
+
         return back();
     }
 
-    public function remove(int $id): RedirectResponse
+    public function remove(Request $request, int $id): RedirectResponse|JsonResponse
     {
         ProductCart::remove($id);
 
+        if ($request->expectsJson()) {
+            return $this->bagJson('Item removed from your bag.');
+        }
+
         return back()->with('success', 'Item removed from your bag.');
+    }
+
+    /** The bag state the header mini-bag needs after each change. */
+    private function bagJson(string $message): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'count' => ProductCart::count(),
+            'html' => view('partials.shop-bag-body')->render(),
+        ]);
     }
 }

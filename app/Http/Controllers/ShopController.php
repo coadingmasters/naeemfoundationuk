@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderReceipt;
 use App\Models\Order;
 use App\Models\Product;
 use App\Support\ProductCart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Throwable;
@@ -110,6 +112,13 @@ class ShopController extends Controller
         ]);
 
         $reference = 'NF-'.strtoupper(Str::random(8));
+        $subtotal = ProductCart::subtotal();
+        $orderItems = array_map(fn ($i) => [
+            'name' => $i['product']->name,
+            'price' => (float) $i['product']->price,
+            'qty' => $i['qty'],
+            'line' => $i['line'],
+        ], $items);
 
         try {
             if (Schema::hasTable('orders')) {
@@ -119,17 +128,25 @@ class ShopController extends Controller
                     'email' => $data['email'],
                     'phone' => $data['phone'],
                     'address' => $data['address'],
-                    'items' => array_map(fn ($i) => [
-                        'name' => $i['product']->name,
-                        'price' => (float) $i['product']->price,
-                        'qty' => $i['qty'],
-                        'line' => $i['line'],
-                    ], $items),
-                    'subtotal' => ProductCart::subtotal(),
+                    'items' => $orderItems,
+                    'subtotal' => $subtotal,
                 ]);
             }
         } catch (Throwable $e) {
             // Never block the confirmation on a storage hiccup.
+        }
+
+        // Confirmation email (same system as the donation receipt).
+        try {
+            Mail::to($data['email'])->send(new OrderReceipt(
+                reference: $reference,
+                name: $data['name'],
+                items: $orderItems,
+                subtotal: $subtotal,
+                address: $data['address'],
+            ));
+        } catch (Throwable $e) {
+            // Never block the confirmation on a mail failure.
         }
 
         ProductCart::clear();
@@ -137,6 +154,7 @@ class ShopController extends Controller
         return redirect()->route('shop.order-complete')->with('order', [
             'reference' => $reference,
             'name' => $data['name'],
+            'total' => $subtotal,
         ]);
     }
 
