@@ -31,6 +31,12 @@
             'icon' => '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
         [
+            'label' => 'Shop Products',
+            'route' => 'admin.products.index',
+            'active' => request()->routeIs('admin.products.*'),
+            'icon' => '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/>',
+        ],
+        [
             'label' => 'Hajj Videos',
             'route' => 'admin.hajj-videos.index',
             'active' => request()->routeIs('admin.hajj-videos.*'),

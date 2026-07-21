@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
     setupReveal();
     setupChoiceGroups();
+    setupShopBag();
+    setupQtyStepper();
     setupCustomSelects();
     setupPaymentForm();
     setupRamadanScheduler();
@@ -622,6 +624,62 @@ function setupCustomAmount() {
 
         custom.addEventListener('input', () => {
             amount.value = custom.value;
+        });
+    });
+}
+
+/* ---------- Shop: add-to-bag (AJAX) + qty steppers ---------- */
+function shopToast(message) {
+    let el = document.querySelector('[data-shop-toast]');
+    if (!el) {
+        el = document.createElement('div');
+        el.setAttribute('data-shop-toast', '');
+        el.className = 'fixed bottom-6 left-1/2 z-[120] -translate-x-1/2 rounded-full bg-navy-dark px-5 py-2.5 text-sm font-semibold text-white shadow-xl opacity-0 transition-opacity duration-300';
+        document.body.appendChild(el);
+    }
+    el.textContent = message;
+    requestAnimationFrame(() => el.classList.remove('opacity-0'));
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.add('opacity-0'), 2200);
+}
+
+function setupShopBag() {
+    document.querySelectorAll('[data-bag-form]').forEach((form) => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('[type="submit"]');
+            if (btn) btn.disabled = true;
+
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
+                    body: new FormData(form),
+                });
+                const data = await res.json();
+
+                document.querySelectorAll('[data-shopbag-count]').forEach((b) => {
+                    b.textContent = data.count;
+                    b.classList.toggle('hidden', !data.count);
+                });
+                shopToast(data.message || 'Added to your bag.');
+            } catch {
+                form.submit(); // no JS / network trouble → normal post
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        });
+    });
+}
+
+function setupQtyStepper() {
+    document.querySelectorAll('[data-qty-input]').forEach((input) => {
+        const scope = input.closest('form') || input.parentElement;
+        scope?.querySelector('[data-qty-dec]')?.addEventListener('click', () => {
+            input.value = Math.max(1, (parseInt(input.value, 10) || 1) - 1);
+        });
+        scope?.querySelector('[data-qty-inc]')?.addEventListener('click', () => {
+            input.value = Math.min(20, (parseInt(input.value, 10) || 1) + 1);
         });
     });
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\VolunteerController as AdminVolunteerController;
 use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\NewsPostController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\AnnualReportController;
 use App\Http\Controllers\AskMuftiController;
@@ -18,6 +19,8 @@ use App\Http\Controllers\CambodiaEducationController;
 use App\Http\Controllers\CommunityCentreController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\ProductCartController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\EidGiftsController;
 use App\Http\Controllers\FidyaController;
 use App\Http\Controllers\FoodSustenanceController;
@@ -84,6 +87,18 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 // Volunteer — animated sign-up page with a working registration form.
 Route::get('/volunteer', [VolunteerController::class, 'index'])->name('volunteer');
 Route::post('/volunteer', [VolunteerController::class, 'store'])->name('volunteer.store');
+
+// Shop / store — product listing, cart and product detail.
+// (cart route declared before {product} so "cart" isn't matched as a slug)
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+Route::get('/shop/cart', [ProductCartController::class, 'index'])->name('shop.cart');
+Route::post('/shop/cart/add', [ProductCartController::class, 'add'])->name('shop.cart.add');
+Route::patch('/shop/cart/{id}', [ProductCartController::class, 'update'])->name('shop.cart.update');
+Route::delete('/shop/cart/{id}', [ProductCartController::class, 'remove'])->name('shop.cart.remove');
+Route::get('/shop/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
+Route::post('/shop/checkout', [ShopController::class, 'placeOrder'])->name('shop.checkout.place');
+Route::get('/shop/order-complete', [ShopController::class, 'orderComplete'])->name('shop.order-complete');
+Route::get('/shop/{product}', [ShopController::class, 'show'])->name('shop.show');
 
 // "Make a donation" landing page — the header Donate CTA lands here, then the
 // donor picks a cause/amount which flows into the existing basket + checkout.
@@ -152,6 +167,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->except(['show']);
 
         Route::resource('projects', ProjectController::class)
+            ->except(['show']);
+
+        Route::resource('products', AdminProductController::class)
             ->except(['show']);
 
         Route::resource('hajj-videos', HajjVideoController::class)

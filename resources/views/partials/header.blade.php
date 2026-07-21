@@ -22,6 +22,7 @@
         ['label' => 'Giving', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well')],
         ['label' => 'Community Centre', 'url' => route('community-centre'), 'active' => request()->routeIs('community-centre')],
         ['label' => 'Hajj 2027', 'url' => route('hajj'), 'active' => request()->routeIs('hajj')],
+        ['label' => 'Shop', 'url' => route('shop'), 'active' => request()->routeIs('shop', 'shop.*')],
     ];
 
     // Top-level icons, used by the mobile drawer.
@@ -31,6 +32,7 @@
         'Community Centre' => '<path d="M3 10.5 12 4l9 6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" stroke-linecap="round" stroke-linejoin="round"/>',
         // Kaaba — deliberately distinct from the Community Centre house.
         'Hajj 2027' => '<rect x="5" y="7" width="14" height="13" rx="1"/><path d="M5 11h14" stroke-linecap="round"/><path d="M12 3v4M9.5 4.5h5" stroke-linecap="round"/>',
+        'Shop' => '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/>',
     ];
 
     // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
@@ -181,6 +183,13 @@
 
             {{-- Right: basket + actions --}}
             <div class="flex flex-1 items-center justify-end gap-3">
+                {{-- Shop bag --}}
+                <a href="{{ route('shop.cart') }}" class="nf-cart__btn" aria-label="Shopping bag">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/></svg>
+                    @php $bagCount = \App\Support\ProductCart::count(); @endphp
+                    <span class="nf-cart__badge {{ $bagCount ? '' : 'hidden' }}" data-shopbag-count>{{ $bagCount }}</span>
+                </a>
+
                 {{-- Basket --}}
                 @include('partials.cart')
 

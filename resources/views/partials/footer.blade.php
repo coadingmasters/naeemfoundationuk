@@ -9,6 +9,7 @@
     ];
     $usefulLinks = [
         ['label' => 'About Us', 'url' => route('about')],
+        ['label' => 'Shop', 'url' => route('shop')],
         ['label' => 'Community Centre', 'url' => route('community-centre')],
         ['label' => 'Hajj 2027', 'url' => route('hajj')],
         ['label' => 'Ask a Mufti', 'url' => route('ask-mufti')],
