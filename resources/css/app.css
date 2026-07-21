@@ -4,6 +4,9 @@
 @source '../../storage/framework/views/*.php';
 @source '../views';
 
+/* Class-based dark mode (toggled only inside the admin panel). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ---------- Geogrotesque (self-hosted, licensed) ----------
    Drop the licensed font files into  public/fonts/geogrotesque/
    using the filenames below. Until then the site falls back to
@@ -2071,6 +2074,10 @@
     font-weight: 600;
 }
 
+/* Hide scrollbar (e.g. admin sidebar) while keeping scroll functional. */
+.nf-noscrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.nf-noscrollbar::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
 /* Admin table rows — staggered fade-up entrance (class toggled by JS on load). */
 .nf-adm-row { opacity: 0; transform: translateY(10px); }
 .nf-adm-row.in {
@@ -2119,11 +2126,85 @@
 .nf-filter-opt:has(input:checked) .nf-filter-opt__dot { border-color: var(--color-brand); }
 .nf-filter-opt:has(input:checked) .nf-filter-opt__dot::after { transform: scale(1); }
 
-/* Add-to-bag "Added ✓" success state (briefly flashed after adding). */
+/* ---------- Product card "Add to Cart" button ---------- */
+.nf-addcart {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    border-radius: 0.85rem;
+    background: var(--color-navy);
+    padding: 0.72rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.nf-addcart:hover:not(:disabled) {
+    background: var(--color-brand);
+    box-shadow: 0 12px 24px rgba(116, 10, 46, 0.3);
+    transform: translateY(-2px);
+}
+.nf-addcart:active:not(:disabled) { transform: translateY(0); }
+.nf-addcart:disabled { cursor: not-allowed; opacity: 0.4; }
+.nf-addcart__icon { transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+.nf-addcart:hover:not(:disabled) .nf-addcart__icon { transform: translateX(-3px) scale(1.08); }
+/* Sheen sweep on hover. */
+.nf-addcart::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 45%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.55s ease;
+    pointer-events: none;
+}
+.nf-addcart:hover:not(:disabled)::after { left: 130%; }
+
+/* Add-to-cart "Added ✓" success state (briefly flashed after adding). */
 .is-added {
     background-color: #16a34a !important;
     border-color: #16a34a !important;
     color: #fff !important;
+}
+.is-added::after { display: none; }
+
+/* ---------- Admin dark theme (scoped to .dark, only toggled inside the admin) ---------- */
+.dark { color-scheme: dark; }
+.dark body { background-color: #0a1622; }
+.dark .bg-white { background-color: #10202e !important; }
+.dark .bg-gray-50 { background-color: #0d1b27 !important; }
+.dark .bg-cream { background-color: #17293a !important; }
+.dark .border-gray-100 { border-color: rgba(148, 163, 184, 0.1) !important; }
+.dark .border-gray-200 { border-color: rgba(148, 163, 184, 0.16) !important; }
+.dark .border-gray-300 { border-color: rgba(148, 163, 184, 0.2) !important; }
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(148, 163, 184, 0.1) !important; }
+.dark .ring-gray-200 { --tw-ring-color: rgba(148, 163, 184, 0.16) !important; }
+.dark .text-navy-dark { color: #eef2f6 !important; }
+.dark .text-navy { color: #d3dde7 !important; }
+.dark .text-gray-600 { color: #a7b6c5 !important; }
+.dark .text-gray-500 { color: #93a3b4 !important; }
+.dark .text-gray-400 { color: #7f8ea0 !important; }
+.dark .hover\:bg-gray-50:hover { background-color: rgba(255, 255, 255, 0.04) !important; }
+.dark input:not([type='checkbox']):not([type='radio']),
+.dark select,
+.dark textarea { background-color: #0d1b27 !important; color: #eef2f6 !important; }
+
+/* ---------- Dashboard bar chart ---------- */
+.nf-bar {
+    height: 0;
+    border-radius: 0.4rem 0.4rem 0 0;
+    transition: height 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Donut ring draws in on load. */
+.nf-donut__val {
+    transition: stroke-dashoffset 1.1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {

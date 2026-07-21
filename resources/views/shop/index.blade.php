@@ -114,17 +114,25 @@
                         Showing <span class="font-semibold text-navy-dark">{{ $products->firstItem() ?? 0 }}–{{ $products->lastItem() ?? 0 }}</span>
                         of <span class="font-semibold text-navy-dark">{{ $products->total() }}</span> products
                     </p>
-                    <label class="flex items-center gap-2 text-sm">
-                        <span class="text-gray-500">Sort</span>
-                        <select name="sort" form="shopFilters" onchange="document.getElementById('shopFilters').submit()"
-                                class="h-10 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-navy-dark outline-none focus:border-brand focus:ring-2 focus:ring-brand/25">
-                            <option value="" @selected(! $cur['sort'])>Featured</option>
-                            <option value="newest" @selected($cur['sort'] === 'newest')>Newest</option>
-                            <option value="price_asc" @selected($cur['sort'] === 'price_asc')>Price: low to high</option>
-                            <option value="price_desc" @selected($cur['sort'] === 'price_desc')>Price: high to low</option>
-                            <option value="name" @selected($cur['sort'] === 'name')>Name: A–Z</option>
-                        </select>
-                    </label>
+                    <div class="flex items-center gap-3">
+                        <label class="flex items-center gap-2 text-sm">
+                            <span class="text-gray-500">Sort</span>
+                            <select name="sort" form="shopFilters" onchange="document.getElementById('shopFilters').submit()"
+                                    class="h-10 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-navy-dark outline-none focus:border-brand focus:ring-2 focus:ring-brand/25">
+                                <option value="" @selected(! $cur['sort'])>Featured</option>
+                                <option value="newest" @selected($cur['sort'] === 'newest')>Newest</option>
+                                <option value="price_asc" @selected($cur['sort'] === 'price_asc')>Price: low to high</option>
+                                <option value="price_desc" @selected($cur['sort'] === 'price_desc')>Price: high to low</option>
+                                <option value="name" @selected($cur['sort'] === 'name')>Name: A–Z</option>
+                            </select>
+                        </label>
+                        @php $bagCount = \App\Support\ProductCart::count(); @endphp
+                        <a href="{{ route('shop.cart') }}" class="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-semibold text-navy transition hover:border-brand hover:text-brand">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/></svg>
+                            <span class="hidden sm:inline">Bag</span>
+                            <span class="grid h-5 min-w-[1.25rem] place-items-center rounded-full bg-brand px-1 text-[11px] font-bold text-white {{ $bagCount ? '' : 'hidden' }}" data-shopbag-count>{{ $bagCount }}</span>
+                        </a>
+                    </div>
                 </div>
 
                 @if ($products->isEmpty())
@@ -155,18 +163,21 @@
                                     <h3 class="mt-1 font-bold leading-snug text-navy-dark">
                                         <a href="{{ route('shop.show', $product) }}" class="transition-colors hover:text-brand">{{ $product->name }}</a>
                                     </h3>
-                                    <div class="mt-3 flex items-center justify-between gap-2 pt-1">
+                                    <div class="mt-2 flex items-baseline gap-2">
                                         <span class="text-lg font-extrabold text-navy-dark">£{{ number_format($product->price, 2) }}</span>
-                                        <form method="POST" action="{{ route('shop.cart.add') }}" data-bag-form>
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <button type="submit" @disabled(! $product->in_stock)
-                                                    class="inline-flex items-center gap-1.5 rounded-lg bg-navy px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-navy-dark disabled:cursor-not-allowed disabled:opacity-40">
-                                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/></svg>
-                                                Add
-                                            </button>
-                                        </form>
+                                        @unless ($product->in_stock)
+                                            <span class="text-xs font-semibold text-gray-400">&middot; Sold out</span>
+                                        @endunless
                                     </div>
+
+                                    <form method="POST" action="{{ route('shop.cart.add') }}" data-bag-form class="mt-auto pt-4">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <button type="submit" @disabled(! $product->in_stock) class="nf-addcart">
+                                            <svg class="nf-addcart__icon h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/><path d="M3 3h2l2.4 11.5a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 7H6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            Add to Cart
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         @endforeach

@@ -183,10 +183,7 @@
 
             {{-- Right: basket + actions --}}
             <div class="flex flex-1 items-center justify-end gap-3">
-                {{-- Shop bag (mini-bag popup) --}}
-                @include('partials.shop-bag')
-
-                {{-- Donation basket --}}
+                {{-- Basket --}}
                 @include('partials.cart')
 
                 <a href="{{ route('ask-mufti') }}"

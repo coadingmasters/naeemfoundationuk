@@ -634,13 +634,22 @@ function shopToast(message) {
     if (!el) {
         el = document.createElement('div');
         el.setAttribute('data-shop-toast', '');
-        el.className = 'fixed bottom-6 left-1/2 z-[120] -translate-x-1/2 rounded-full bg-navy-dark px-5 py-2.5 text-sm font-semibold text-white shadow-xl opacity-0 transition-opacity duration-300';
+        el.className = 'fixed bottom-6 left-1/2 z-[120] flex -translate-x-1/2 items-center gap-3 rounded-full bg-navy-dark px-5 py-2.5 text-sm font-semibold text-white shadow-xl opacity-0 transition-opacity duration-300';
         document.body.appendChild(el);
     }
-    el.textContent = message;
+    el.innerHTML = '';
+    const text = document.createElement('span');
+    text.textContent = message;
+    el.appendChild(text);
+    const link = document.createElement('a');
+    link.href = '/shop/cart';
+    link.textContent = 'View bag →';
+    link.className = 'shrink-0 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-white transition hover:bg-white/25';
+    el.appendChild(link);
+
     requestAnimationFrame(() => el.classList.remove('opacity-0'));
     clearTimeout(el._t);
-    el._t = setTimeout(() => el.classList.add('opacity-0'), 2200);
+    el._t = setTimeout(() => el.classList.add('opacity-0'), 3400);
 }
 
 function setupShopBag() {

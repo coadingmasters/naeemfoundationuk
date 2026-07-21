@@ -4,6 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Dashboard') — {{ config('app.name') }} Admin</title>
+    {{-- Apply the saved theme before paint to avoid a flash. --}}
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('nf-admin-theme') === 'dark') {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-gray-50 antialiased">

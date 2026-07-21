@@ -164,7 +164,7 @@
     "src": "_hanken-grotesk-800-normal-rhXM_bnk.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BZZe04FO.css",
+    "file": "assets/app-BlxNieBK.css",
     "name": "app",
     "names": [
       "app.css"
@@ -173,7 +173,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-DSFuHNvu.js",
+    "file": "assets/app-CEPsumN-.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true

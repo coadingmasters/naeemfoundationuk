@@ -37,6 +37,12 @@
             'icon' => '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/>',
         ],
         [
+            'label' => 'Orders',
+            'route' => 'admin.orders.index',
+            'active' => request()->routeIs('admin.orders.*'),
+            'icon' => '<path d="M4 4h12l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" stroke-linejoin="round"/><path d="M8 9h8M8 13h8M8 17h5" stroke-linecap="round"/>',
+        ],
+        [
             'label' => 'Hajj Videos',
             'route' => 'admin.hajj-videos.index',
             'active' => request()->routeIs('admin.hajj-videos.*'),
@@ -91,7 +97,7 @@
         </div>
 
         {{-- Nav --}}
-        <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-5">
+        <nav class="nf-noscrollbar flex-1 space-y-1 overflow-y-auto px-3 py-5">
             <p class="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-white/40">Manage</p>
             @foreach ($nav as $item)
                 <a href="{{ route($item['route']) }}"

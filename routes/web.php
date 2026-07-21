@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\VolunteerController as AdminVolunteerController;
 use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\NewsPostController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\AnnualReportController;
@@ -171,6 +172,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('products', AdminProductController::class)
             ->except(['show']);
+
+        // Shop orders placed through checkout (read + status + delete + export).
+        Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/export', [AdminOrderController::class, 'export'])->name('orders.export');
+        Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+        Route::delete('orders/{order}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
         Route::resource('hajj-videos', HajjVideoController::class)
             ->except(['show']);
