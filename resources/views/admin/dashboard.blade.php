@@ -48,6 +48,27 @@
         </div>
     </div>
 
+    {{-- ===== Super-admin per-region breakdown (only in "all regions" mode) ===== --}}
+    @if (! empty($regionBreakdown))
+        <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-gray-400">By region</h3>
+        <div class="mb-6 grid gap-4 sm:grid-cols-3">
+            @foreach ($regionBreakdown as $rb)
+                <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl leading-none">{{ $rb['flag'] }}</span>
+                        <span class="font-bold text-navy-dark">{{ $rb['name'] }}</span>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-3">
+                        <div><p class="text-lg font-extrabold text-navy-dark">{{ $rb['live'] }}</p><p class="text-xs text-gray-500">Live items</p></div>
+                        <div><p class="text-lg font-extrabold text-navy-dark">{{ $rb['symbol'] }}{{ number_format($rb['revenue'], 2) }}</p><p class="text-xs text-gray-500">Revenue</p></div>
+                        <div><p class="text-lg font-extrabold text-navy-dark">{{ $rb['orders'] }}</p><p class="text-xs text-gray-500">Orders</p></div>
+                        <div><p class="text-lg font-extrabold text-navy-dark">{{ $rb['donations'] }}</p><p class="text-xs text-gray-500">Donations</p></div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
+
     {{-- ===== Engagement KPIs ===== --}}
     <div class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div class="nf-anim rounded-2xl border border-gray-100 bg-white p-5 shadow-sm" style="animation-delay:0ms">

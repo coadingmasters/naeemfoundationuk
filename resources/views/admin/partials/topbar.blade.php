@@ -11,6 +11,34 @@
     </div>
 
     <div class="ml-auto flex items-center gap-3">
+        {{-- Region context: super admin can switch; region admins see a locked badge --}}
+        @if (! empty($adminIsSuper))
+            <details class="relative">
+                <summary class="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-semibold text-navy-dark transition hover:bg-gray-50 dark:border-white/10 dark:hover:bg-white/10 [&::-webkit-details-marker]:hidden">
+                    <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 6 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-6-3.5-9s1-6.5 3.5-9z"/></svg>
+                    <span>{{ $adminIsAll ? 'All regions' : config('countries.list.'.$adminRegion.'.name', $adminRegion) }}</span>
+                    <svg class="h-3.5 w-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </summary>
+                <div class="absolute right-0 top-full z-30 mt-2 w-56 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl shadow-navy/10 dark:border-white/10">
+                    <p class="border-b border-gray-100 px-4 py-2 text-[11px] font-bold uppercase tracking-wide text-gray-400 dark:border-white/10">Manage region</p>
+                    <a href="{{ route('admin.region.switch', 'all') }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-navy-dark transition hover:bg-cream {{ $adminIsAll ? 'bg-brand/5 text-brand' : '' }}">
+                        <span class="text-base">🌍</span> All regions
+                        @if ($adminIsAll) <svg class="ml-auto h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> @endif
+                    </a>
+                    @foreach ($regions as $r)
+                        <a href="{{ route('admin.region.switch', $r['code']) }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-navy-dark transition hover:bg-cream {{ (! $adminIsAll && $adminRegion === $r['code']) ? 'bg-brand/5 text-brand' : '' }}">
+                            <span class="text-base">{{ $r['flag'] }}</span> {{ $r['name'] }}
+                            @if (! $adminIsAll && $adminRegion === $r['code']) <svg class="ml-auto h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> @endif
+                        </a>
+                    @endforeach
+                </div>
+            </details>
+        @elseif (! empty($adminRegion))
+            <span class="inline-flex items-center gap-1.5 rounded-lg bg-brand/10 px-3 py-1.5 text-sm font-semibold text-brand">
+                {{ config('countries.list.'.$adminRegion.'.flag', '') }} {{ config('countries.list.'.$adminRegion.'.name', $adminRegion) }}
+            </span>
+        @endif
+
         {{-- Dark / light theme toggle --}}
         <button type="button" data-theme-toggle aria-label="Toggle dark mode"
                 class="grid h-10 w-10 place-items-center rounded-lg text-navy transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/10">

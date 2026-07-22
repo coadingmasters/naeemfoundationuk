@@ -8,10 +8,13 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
+    use \App\Models\Concerns\BelongsToRegion;
+
     /** Shop categories used across the store + admin. */
     public const CATEGORIES = ['Clothing', 'Books', 'Gifts', 'Ramadan', 'Home & Living'];
 
     protected $fillable = [
+        'region',
         'name',
         'slug',
         'description',

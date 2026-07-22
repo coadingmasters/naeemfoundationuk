@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'admin.region' => \App\Http\Middleware\SetAdminRegion::class,
+            'super' => \App\Http\Middleware\EnsureSuperAdmin::class,
         ]);
 
         // Share the visitor's active region (currency, phone, charity) with every view.

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Appeal;
 use App\Models\Cause;
+use App\Models\Donation;
 use App\Models\HajjRegistration;
 use App\Models\HajjVideo;
 use App\Models\HeroSlide;
@@ -68,7 +69,26 @@ class DashboardController extends Controller
             ->take(6)
             ->values();
 
-        return view('admin.dashboard', compact('content', 'totals', 'engagement', 'revenue', 'recent'));
+        // Super admins viewing "all regions" get a per-region oversight breakdown.
+        $regionBreakdown = null;
+        if (auth()->user()?->isSuperAdmin() && \App\Support\RegionContext::isAll()) {
+            $regionBreakdown = collect(config('countries.list'))->map(fn ($r, $code) => [
+                'name' => $r['name'],
+                'flag' => $r['flag'],
+                'symbol' => $r['symbol'],
+                'live' => HeroSlide::forRegion($code)->where('is_active', true)->count()
+                    + Appeal::forRegion($code)->where('is_active', true)->count()
+                    + Cause::forRegion($code)->where('is_active', true)->count()
+                    + Project::forRegion($code)->where('is_active', true)->count()
+                    + Product::forRegion($code)->where('is_active', true)->count()
+                    + HajjVideo::forRegion($code)->where('is_active', true)->count(),
+                'orders' => Order::forRegion($code)->count(),
+                'donations' => Donation::forRegion($code)->count(),
+                'revenue' => (float) Order::forRegion($code)->whereIn('status', ['pending', 'processing', 'completed'])->sum('subtotal'),
+            ])->values();
+        }
+
+        return view('admin.dashboard', compact('content', 'totals', 'engagement', 'revenue', 'recent', 'regionBreakdown'));
     }
 
     private function section(string $label, string $model, string $routePrefix, string $tone, string $icon): array

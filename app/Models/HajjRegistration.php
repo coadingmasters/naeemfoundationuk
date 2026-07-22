@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class HajjRegistration extends Model
 {
+    use \App\Models\Concerns\BelongsToRegion;
+
     protected $fillable = [
+        'region',
         'first_name',
         'last_name',
         'email',

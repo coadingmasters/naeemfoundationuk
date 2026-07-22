@@ -8,7 +8,10 @@ use Illuminate\Support\Str;
 
 class Appeal extends Model
 {
+    use \App\Models\Concerns\BelongsToRegion;
+
     protected $fillable = [
+        'region',
         'title',
         'slug',
         'description',

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'is_admin'])]
+#[Fillable(['name', 'email', 'password', 'is_admin', 'role', 'region'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -29,5 +29,21 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_admin' => 'boolean',
         ];
+    }
+
+    /** Super admins see and manage every region. */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    /** Human label for this admin's region (or "All regions" for super admins). */
+    public function regionLabel(): string
+    {
+        if ($this->isSuperAdmin()) {
+            return 'All regions';
+        }
+
+        return config('countries.list.'.$this->region.'.name', $this->region ?? '—');
     }
 }

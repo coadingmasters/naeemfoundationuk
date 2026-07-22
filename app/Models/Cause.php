@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cause extends Model
 {
+    use \App\Models\Concerns\BelongsToRegion;
+
     protected $fillable = [
+        'region',
         'title',
         'description',
         'image',

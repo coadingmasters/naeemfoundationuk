@@ -164,8 +164,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
     | Admin dashboard (authenticated administrators only)
     |----------------------------------------------------------------------
     */
-    Route::middleware(['auth', 'admin'])->group(function () {
+    Route::middleware(['auth', 'admin', 'admin.region'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Super-admin region context switch (All / GB / US / CA).
+        Route::get('region/{code}', function (string $code) {
+            abort_unless(auth()->user()->isSuperAdmin(), 403);
+
+            if ($code === 'all') {
+                session()->forget('admin_region');
+            } elseif (array_key_exists($code, config('countries.list', []))) {
+                session(['admin_region' => $code]);
+            }
+
+            return redirect()->back();
+        })->name('region.switch');
 
         Route::resource('hero-slides', HeroSlideController::class)
             ->except(['show']);
@@ -209,6 +222,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('news', NewsPostController::class)
             ->parameters(['news' => 'news'])
+            ->except(['show']);
+
+        // Admin-user management — super admins only.
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class)
+            ->middleware('super')
             ->except(['show']);
     });
 });

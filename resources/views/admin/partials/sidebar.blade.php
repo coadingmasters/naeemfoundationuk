@@ -79,6 +79,16 @@
             'icon' => '<path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.9L15 14M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
     ];
+
+    // Admin-user management is super-admin only.
+    if (auth()->user()?->isSuperAdmin()) {
+        $nav[] = [
+            'label' => 'Admins',
+            'route' => 'admin.users.index',
+            'active' => request()->routeIs('admin.users.*'),
+            'icon' => '<circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0" stroke-linecap="round"/><path d="M16 3.2a3 3 0 0 1 0 5.6M17.5 20a5.5 5.5 0 0 0-2.7-4.8" stroke-linecap="round"/>',
+        ];
+    }
 @endphp
 
 <aside data-admin-sidebar
