@@ -453,6 +453,13 @@ function setupCart() {
     const refresh = (data) => {
         if (body && typeof data.html === 'string') body.innerHTML = data.html;
         setBadge(data.count);
+        // Keep the shop toolbar "Bag" badge in sync (product count only).
+        if (data.product_count !== undefined) {
+            document.querySelectorAll('[data-shopbag-count]').forEach((b) => {
+                b.textContent = data.product_count;
+                b.classList.toggle('hidden', !data.product_count);
+            });
+        }
         bindRemoveForms();
     };
 
@@ -486,21 +493,25 @@ function setupCart() {
     }
     bindRemoveForms();
 
-    // Any "add to basket" form on any page — except ones marked to full-reload
-    // (payment-page add-ons need the server-rendered summary to refresh).
-    document.querySelectorAll('form[action$="/donate/add"]:not([data-cart-skip])').forEach((form) => {
+    // Any "add to basket" form on any page — donations AND shop products — feeds the
+    // one header basket. Except forms marked to full-reload (payment-page add-ons need
+    // the server-rendered summary to refresh).
+    document.querySelectorAll('form[action$="/donate/add"]:not([data-cart-skip]), form[action$="/shop/cart/add"]').forEach((form) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const btn = form.querySelector('[type="submit"]');
-            btn && (btn.disabled = true);
+            const isAddCart = !!(btn && btn.classList.contains('nf-addcart'));
+            const original = btn ? btn.innerHTML : '';
+            if (btn) btn.disabled = true;
 
             try {
                 const { ok, status, data } = await post(form);
 
                 if (status === 422) {
-                    const first = Object.values(data.errors ?? {})[0]?.[0] ?? 'Please check your donation amount.';
+                    const first = Object.values(data.errors ?? {})[0]?.[0] ?? 'Please check your amount.';
                     showToast(first, true);
+                    if (btn) btn.disabled = false;
                     return;
                 }
                 if (!ok) throw new Error('failed');
@@ -508,10 +519,17 @@ function setupCart() {
                 refresh(data);
                 open();
                 showToast(data.message ?? 'Added to your basket.');
+
+                // Preserve the animated "Added ✓" feedback on shop Add to Cart buttons.
+                if (isAddCart && btn) {
+                    btn.classList.add('is-added');
+                    btn.innerHTML = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Added';
+                    setTimeout(() => { btn.innerHTML = original; btn.classList.remove('is-added'); btn.disabled = false; }, 1400);
+                } else if (btn) {
+                    btn.disabled = false;
+                }
             } catch {
                 form.submit(); // no JS / network trouble: fall back to a normal post
-            } finally {
-                btn && (btn.disabled = false);
             }
         });
     });
@@ -714,30 +732,9 @@ function setupShopBag() {
         bindRemove();
     }
 
-    // Add-to-bag forms across the shop → AJAX add, pop the bag open, "Added ✓" feedback.
-    document.querySelectorAll('[data-bag-form]').forEach((form) => {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = form.querySelector('[type="submit"]');
-            const original = btn ? btn.innerHTML : '';
-            if (btn) btn.disabled = true;
-
-            try {
-                const { ok, data } = await post(form);
-                if (!ok) throw new Error('failed');
-                refresh(data);
-                open();
-                if (btn) {
-                    btn.classList.add('is-added');
-                    btn.innerHTML = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> Added';
-                    setTimeout(() => { btn.innerHTML = original; btn.classList.remove('is-added'); btn.disabled = false; }, 1400);
-                }
-                shopToast(data.message || 'Added to your bag.');
-            } catch {
-                form.submit();
-            }
-        });
-    });
+    // Product "Add to Cart" forms are handled by the unified header basket (setupCart),
+    // so nothing else to bind here — the header mini-bag popup was replaced by the
+    // single header basket used for both donations and shop items.
 }
 
 function setupQtyStepper() {

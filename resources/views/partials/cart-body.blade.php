@@ -1,10 +1,12 @@
-{{-- Basket contents. Rendered on page load and re-rendered over AJAX after add/remove. --}}
+{{-- Unified basket: donations + shop items in one panel. Re-rendered over AJAX after add/remove. --}}
 @php
     $cartItems = \App\Support\DonationCart::items();
     $cartSubtotal = \App\Support\DonationCart::subtotal();
+    $bagItems = \App\Support\ProductCart::items();
+    $bagSubtotal = \App\Support\ProductCart::subtotal();
 @endphp
 
-@if (! $cartItems)
+@if (! $cartItems && ! $bagItems)
     <div class="px-5 py-9 text-center">
         <span class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-cream text-brand">
             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -13,54 +15,97 @@
             </svg>
         </span>
         <p class="mt-3 text-sm font-semibold text-navy-dark">Your basket is empty</p>
-        <p class="mt-1 text-xs text-gray-500">Choose a cause and start giving.</p>
-        <a href="{{ route('home') }}" class="btn-brand mt-4 w-full justify-center py-2">Browse causes</a>
+        <p class="mt-1 text-xs text-gray-500">Choose a cause to give, or browse the shop.</p>
+        <div class="mt-4 grid grid-cols-2 gap-2">
+            <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-semibold text-navy transition hover:bg-gray-50">Causes</a>
+            <a href="{{ route('shop') }}" class="btn-brand justify-center py-2">Shop</a>
+        </div>
     </div>
 @else
-    <ul class="max-h-72 divide-y divide-gray-100 overflow-y-auto">
-        @foreach ($cartItems as $item)
-            <li class="flex items-center gap-3 px-4 py-3">
-                <img src="{{ asset($item['image']) }}" alt="" class="h-12 w-12 shrink-0 rounded-md object-cover">
-
-                <div class="min-w-0 flex-1">
-                    <p class="truncate text-sm font-bold text-navy-dark">{{ $item['cause'] }}</p>
-                    <p class="text-xs text-gray-500">
-                        £{{ number_format($item['amount'], 2) }} each
-                        @if (($item['frequency'] ?? 'one-off') === 'monthly')
-                            <span class="font-semibold text-brand">/ monthly</span>
-                        @endif
-                    </p>
-                    <div class="mt-1.5 flex items-center justify-between gap-2">
-                        @include('partials.cart-stepper', ['item' => $item])
-                        <span class="text-sm font-bold text-navy-dark">
-                            £{{ number_format($item['amount'] * $item['qty'], 2) }}
-                        </span>
-                    </div>
+    <div class="max-h-[24rem] overflow-y-auto">
+        {{-- ===== Donations ===== --}}
+        @if ($cartItems)
+            <div class="flex items-center gap-2 px-4 pt-3 pb-1">
+                <span class="text-[11px] font-bold uppercase tracking-wide text-brand">Donations</span>
+                <span class="h-px flex-1 bg-gray-100"></span>
+            </div>
+            <ul class="divide-y divide-gray-100">
+                @foreach ($cartItems as $item)
+                    <li class="flex items-center gap-3 px-4 py-3">
+                        <img src="{{ asset($item['image']) }}" alt="" class="h-12 w-12 shrink-0 rounded-md object-cover">
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate text-sm font-bold text-navy-dark">{{ $item['cause'] }}</p>
+                            <p class="text-xs text-gray-500">
+                                £{{ number_format($item['amount'], 2) }} each
+                                @if (($item['frequency'] ?? 'one-off') === 'monthly')
+                                    <span class="font-semibold text-brand">/ monthly</span>
+                                @endif
+                            </p>
+                            <div class="mt-1.5 flex items-center justify-between gap-2">
+                                @include('partials.cart-stepper', ['item' => $item])
+                                <span class="text-sm font-bold text-navy-dark">£{{ number_format($item['amount'] * $item['qty'], 2) }}</span>
+                            </div>
+                        </div>
+                        <form method="POST" action="{{ route('donate.remove', $item['id']) }}" data-cart-remove class="shrink-0">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" aria-label="Remove {{ $item['cause'] }}"
+                                    class="grid h-7 w-7 place-items-center rounded-full text-gray-400 transition-colors hover:bg-brand/10 hover:text-brand">
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+                            </button>
+                        </form>
+                    </li>
+                @endforeach
+            </ul>
+            <div class="px-4 py-3">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="font-semibold text-gray-600">Donations subtotal</span>
+                    <span class="text-base font-extrabold text-navy-dark">£{{ number_format($cartSubtotal, 2) }}</span>
                 </div>
+                <a href="{{ route('donate.checkout') }}" class="btn-brand mt-2.5 w-full justify-center py-2.5">
+                    Complete Donation
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+        @endif
 
-                <form method="POST" action="{{ route('donate.remove', $item['id']) }}" data-cart-remove class="shrink-0">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" aria-label="Remove {{ $item['cause'] }}"
-                            class="grid h-7 w-7 place-items-center rounded-full text-gray-400 transition-colors hover:bg-brand/10 hover:text-brand">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
-                        </svg>
-                    </button>
-                </form>
-            </li>
-        @endforeach
-    </ul>
-
-    <div class="border-t border-gray-100 px-4 py-4">
-        <div class="flex items-center justify-between text-sm">
-            <span class="font-semibold text-gray-600">Subtotal</span>
-            <span class="text-base font-extrabold text-navy-dark">£{{ number_format($cartSubtotal, 2) }}</span>
-        </div>
-
-        <a href="{{ route('donate.checkout') }}" class="btn-brand mt-3 w-full justify-center py-2.5">
-            Complete Donation
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+        {{-- ===== Shop items ===== --}}
+        @if ($bagItems)
+            <div class="flex items-center gap-2 px-4 pt-3 pb-1 {{ $cartItems ? 'mt-1 border-t border-gray-100' : '' }}">
+                <span class="text-[11px] font-bold uppercase tracking-wide text-navy">Shop items</span>
+                <span class="h-px flex-1 bg-gray-100"></span>
+            </div>
+            <ul class="divide-y divide-gray-100">
+                @foreach ($bagItems as $item)
+                    @php $p = $item['product']; @endphp
+                    <li class="flex items-center gap-3 px-4 py-3">
+                        <img src="{{ asset($p->image) }}" alt="" class="h-12 w-12 shrink-0 rounded-md object-cover">
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate text-sm font-bold text-navy-dark">{{ $p->name }}</p>
+                            <p class="text-xs text-gray-500">£{{ number_format($p->price, 2) }} &times; {{ $item['qty'] }}</p>
+                            <p class="mt-0.5 text-sm font-bold text-navy-dark">£{{ number_format($item['line'], 2) }}</p>
+                        </div>
+                        <form method="POST" action="{{ route('shop.cart.remove', $item['id']) }}" data-cart-remove class="shrink-0">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" aria-label="Remove {{ $p->name }}"
+                                    class="grid h-7 w-7 place-items-center rounded-full text-gray-400 transition-colors hover:bg-brand/10 hover:text-brand">
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+                            </button>
+                        </form>
+                    </li>
+                @endforeach
+            </ul>
+            <div class="px-4 py-3">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="font-semibold text-gray-600">Shop subtotal</span>
+                    <span class="text-base font-extrabold text-navy-dark">£{{ number_format($bagSubtotal, 2) }}</span>
+                </div>
+                <div class="mt-2.5 grid grid-cols-2 gap-2">
+                    <a href="{{ route('shop.cart') }}" class="inline-flex items-center justify-center rounded-md border border-gray-200 px-3 py-2.5 text-sm font-semibold text-navy transition hover:bg-gray-50">View bag</a>
+                    <a href="{{ route('shop.checkout') }}" class="btn-brand justify-center py-2.5">Checkout</a>
+                </div>
+            </div>
+        @endif
     </div>
 @endif

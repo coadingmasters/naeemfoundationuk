@@ -98,7 +98,8 @@ class DonationController extends Controller
     {
         return response()->json([
             'message' => $message,
-            'count' => DonationCart::count(),
+            'count' => DonationCart::count() + \App\Support\ProductCart::count(),
+            'product_count' => \App\Support\ProductCart::count(),
             'subtotal' => DonationCart::subtotal(),
             'html' => view('partials.cart-body')->render(),
         ]);

@@ -27,10 +27,10 @@ class ProductCartController extends Controller
         ProductCart::add((int) $data['product_id'], (int) ($data['qty'] ?? 1));
 
         if ($request->expectsJson()) {
-            return $this->bagJson('Added to your bag.');
+            return $this->bagJson('Added to your basket.');
         }
 
-        return back()->with('success', 'Added to your bag.');
+        return back()->with('success', 'Added to your basket.');
     }
 
     public function update(Request $request, int $id): RedirectResponse|JsonResponse
@@ -42,7 +42,7 @@ class ProductCartController extends Controller
         ProductCart::setQty($id, (int) $data['qty']);
 
         if ($request->expectsJson()) {
-            return $this->bagJson('Bag updated.');
+            return $this->bagJson('Basket updated.');
         }
 
         return back();
@@ -53,19 +53,20 @@ class ProductCartController extends Controller
         ProductCart::remove($id);
 
         if ($request->expectsJson()) {
-            return $this->bagJson('Item removed from your bag.');
+            return $this->bagJson('Item removed from your basket.');
         }
 
-        return back()->with('success', 'Item removed from your bag.');
+        return back()->with('success', 'Item removed from your basket.');
     }
 
-    /** The bag state the header mini-bag needs after each change. */
+    /** The unified basket state the header cart needs after each change. */
     private function bagJson(string $message): JsonResponse
     {
         return response()->json([
             'message' => $message,
-            'count' => ProductCart::count(),
-            'html' => view('partials.shop-bag-body')->render(),
+            'count' => \App\Support\DonationCart::count() + ProductCart::count(),
+            'product_count' => ProductCart::count(),
+            'html' => view('partials.cart-body')->render(),
         ]);
     }
 }

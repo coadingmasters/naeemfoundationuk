@@ -1,6 +1,6 @@
 {{-- Header basket: icon + count badge + dropdown panel. --}}
 @php
-    $cartCount = \App\Support\DonationCart::count();
+    $cartCount = \App\Support\DonationCart::count() + \App\Support\ProductCart::count();
 @endphp
 
 <div class="nf-cart" data-cart>
