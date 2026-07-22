@@ -96,13 +96,6 @@
                             Fill in the form below and a member of our team will get back to you as soon as possible.
                         </p>
 
-                        @if (session('success'))
-                            <div class="mt-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-                                <svg class="mt-0.5 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                <span>{{ session('success') }}</span>
-                            </div>
-                        @endif
-
                         <form method="POST" action="{{ route('contact.store') }}" class="mt-6 space-y-4">
                             @csrf
 

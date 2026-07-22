@@ -51,6 +51,9 @@
     </div>
 </div>
 
+{{-- Shared delete-confirmation popup (used by resource list Delete buttons) --}}
+@include('admin.partials.delete-modal')
+
 <script>
     (function () {
         const root = document.querySelector('[x-admin]');

@@ -2196,6 +2196,19 @@
 .dark select,
 .dark textarea { background-color: #0d1b27 !important; color: #eef2f6 !important; }
 
+/* ---------- Success popup checkmark draw-in ---------- */
+.nf-success-check {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    animation: nf-check-draw 0.5s ease 0.25s forwards;
+}
+@keyframes nf-check-draw {
+    to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .nf-success-check { animation: none; stroke-dashoffset: 0; }
+}
+
 /* ---------- Admin dashboard entrance (keyframe, guaranteed end-state) ---------- */
 @keyframes nf-fade-up {
     from { opacity: 0; transform: translateY(24px); }

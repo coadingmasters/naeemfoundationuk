@@ -226,12 +226,6 @@
                 </p>
             </div>
 
-            @if (session('success'))
-                <div class="mx-auto mt-8 max-w-4xl rounded-xl border border-green-400/30 bg-green-500/15 px-5 py-4 text-sm font-medium text-green-100">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             <div class="mt-10 grid gap-8 lg:grid-cols-2">
                 {{-- Form --}}
                 <div class="rounded-2xl bg-white p-6 shadow-xl sm:p-8">

@@ -89,12 +89,6 @@
                 <h2 class="text-lg font-bold text-navy-dark sm:text-xl">Get in touch</h2>
                 <p class="mt-1 text-xs text-gray-500">Send us a message and we’ll reply within two working days.</p>
 
-                @if (session('success'))
-                    <p class="mt-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-                        {{ session('success') }}
-                    </p>
-                @endif
-
                 @if ($errors->any())
                     <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                         <ul class="list-inside list-disc space-y-1">

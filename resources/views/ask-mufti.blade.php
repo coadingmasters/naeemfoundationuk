@@ -56,12 +56,6 @@
                             challenging, and we are here to offer guidance and insights with care and confidentiality.
                         </p>
 
-                        @if (session('success'))
-                            <div class="mt-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-
                         <form method="POST" action="{{ route('ask-mufti.store') }}" class="mt-6 space-y-4">
                             @csrf
 

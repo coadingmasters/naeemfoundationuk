@@ -9,13 +9,6 @@
         <div class="nf-container">
             <h1 class="text-3xl font-extrabold text-navy-dark sm:text-4xl">Your bag</h1>
 
-            @if (session('success'))
-                <div class="mt-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-                    <svg class="mt-0.5 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>{{ session('success') }}</span>
-                </div>
-            @endif
-
             @if (empty($items))
                 <div class="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-14 text-center">
                     <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-cream text-brand">

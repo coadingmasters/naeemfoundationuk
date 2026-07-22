@@ -66,10 +66,10 @@
                                             Edit
                                         </a>
                                         <form method="POST" action="{{ route('admin.appeals.destroy', $appeal) }}"
-                                              onsubmit="return confirm('Delete this appeal? This cannot be undone.');">
+                                              >
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
+                                            <button type="button" data-admin-delete data-label="{{ \Illuminate\Support\Str::limit($appeal->title, 40) }}"
                                                     class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:border-red-300 hover:bg-red-50">
                                                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 Delete
