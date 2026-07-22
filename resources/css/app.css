@@ -2248,92 +2248,157 @@
     display: grid;
     place-items: center;
     padding: 1rem;
-    background: rgba(18, 45, 60, 0.55);
-    backdrop-filter: blur(6px);
-    animation: nf-region-fade 0.3s ease;
+    background: rgba(10, 22, 34, 0.6);
+    backdrop-filter: blur(8px);
+    animation: nf-region-fade 0.35s ease;
 }
 @keyframes nf-region-fade { from { opacity: 0; } to { opacity: 1; } }
 .nf-region-pop__card {
     width: 100%;
-    max-width: 34rem;
-    border-radius: 1.25rem;
+    max-width: 36rem;
+    overflow: hidden;
+    border-radius: 1.5rem;
     background: #fff;
-    padding: 2rem 1.75rem;
-    box-shadow: 0 40px 90px rgba(18, 45, 60, 0.4);
-    animation: nf-region-pop-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 50px 110px rgba(10, 22, 34, 0.55);
+    animation: nf-region-pop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @keyframes nf-region-pop-in {
-    from { opacity: 0; transform: translateY(24px) scale(0.96); }
+    from { opacity: 0; transform: translateY(28px) scale(0.94); }
     to { opacity: 1; transform: none; }
 }
-.nf-region-pop__badge {
+
+/* Gradient header band */
+.nf-region-pop__head {
+    position: relative;
+    overflow: hidden;
+    padding: 2.25rem 1.75rem 1.75rem;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(135deg, #122d3c 0%, #183b4f 45%, #740a2e 120%);
+}
+.nf-region-pop__orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(28px);
+    pointer-events: none;
+}
+.nf-region-pop__orb--1 { top: -3rem; right: -2rem; height: 11rem; width: 11rem; background: rgba(255, 255, 255, 0.14); }
+.nf-region-pop__orb--2 { bottom: -4rem; left: 20%; height: 10rem; width: 10rem; background: rgba(116, 10, 46, 0.5); }
+.nf-region-pop__globe {
+    position: relative;
     display: inline-grid;
     place-items: center;
-    height: 3.5rem;
-    width: 3.5rem;
+    height: 3.75rem;
+    width: 3.75rem;
     border-radius: 9999px;
-    background: var(--color-cream);
-    font-size: 1.6rem;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    font-size: 1.9rem;
+    animation: nf-float 5s ease-in-out infinite;
 }
+.nf-region-pop__title { position: relative; margin-top: 1rem; font-size: 1.4rem; font-weight: 800; line-height: 1.2; }
+.nf-region-pop__sub { position: relative; margin: 0.5rem auto 0; max-width: 26rem; font-size: 0.85rem; line-height: 1.5; color: rgba(255, 255, 255, 0.78); }
+
+/* Body + tiles */
+.nf-region-pop__body { padding: 1.5rem 1.5rem 1.6rem; }
 .nf-region-pop__tile {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     border: 1.5px solid #ececec;
-    border-radius: 1rem;
-    padding: 1.1rem 0.75rem;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 1.1rem;
+    padding: 1.25rem 0.75rem 1rem;
+    background: #fff;
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
 }
 .nf-region-pop__tile:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
     border-color: var(--color-brand);
-    box-shadow: 0 16px 30px rgba(116, 10, 46, 0.14);
+    box-shadow: 0 18px 34px rgba(116, 10, 46, 0.16);
 }
-.nf-region-pop__flag { font-size: 2.5rem; line-height: 1; }
-.nf-region-pop__go {
-    margin-top: 0.75rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
+.nf-region-pop__flag {
+    display: grid;
+    place-items: center;
+    height: 3.4rem;
+    width: 3.4rem;
+    border-radius: 9999px;
+    background: var(--color-cream);
+    font-size: 2rem;
+    line-height: 1;
+    transition: transform 0.22s ease;
+}
+.nf-region-pop__tile:hover .nf-region-pop__flag { transform: scale(1.08); }
+.nf-region-pop__name { margin-top: 0.7rem; font-size: 1rem; font-weight: 800; color: var(--color-navy-dark); }
+.nf-region-pop__cur {
+    margin-top: 0.15rem;
     font-size: 0.72rem;
     font-weight: 700;
-    color: var(--color-brand);
+    letter-spacing: 0.02em;
+    color: #94a3b8;
+}
+.nf-region-pop__go {
+    margin-top: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 9999px;
+    background: var(--color-brand);
+    padding: 0.32rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #fff;
     opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: translateY(6px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
 }
 .nf-region-pop__tile:hover .nf-region-pop__go { opacity: 1; transform: none; }
+/* Staggered entrance for the region tiles (no inline styles needed). */
+.nf-region-pop__tile:nth-child(1) { animation-delay: 0.24s; }
+.nf-region-pop__tile:nth-child(2) { animation-delay: 0.33s; }
+.nf-region-pop__tile:nth-child(3) { animation-delay: 0.42s; }
+.nf-region-pop__note { margin-top: 1.15rem; text-align: center; font-size: 0.72rem; color: #94a3b8; }
 
 /* ---------- Header region switcher (dropdown in the top bar) ---------- */
 .nf-region { position: relative; }
-.nf-region > summary { list-style: none; cursor: pointer; }
-.nf-region > summary::-webkit-details-marker { display: none; }
+.nf-region [data-region-caret] { transition: transform 0.2s ease; }
+[data-region-toggle][aria-expanded='true'] [data-region-caret] { transform: rotate(180deg); }
+/* Fixed positioning (JS sets top/right) so the topbar's overflow:hidden can't clip it. */
 .nf-region__menu {
-    position: absolute;
-    right: 0;
-    top: calc(100% + 8px);
-    z-index: 60;
-    width: 15rem;
+    position: fixed;
+    z-index: 120;
+    width: 16rem;
     overflow: hidden;
-    border-radius: 0.8rem;
+    border-radius: 0.9rem;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 20px 45px rgba(18, 45, 60, 0.25);
-    animation: nf-region-pop-in 0.18s ease;
+    box-shadow: 0 24px 55px rgba(18, 45, 60, 0.28);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.nf-region__menu.is-open { opacity: 1; transform: none; }
+.nf-region__menu[hidden] { display: none; }
+.nf-region__menu-title {
+    padding: 0.7rem 0.9rem 0.3rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
 }
 .nf-region__opt {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.6rem 0.85rem;
+    gap: 0.7rem;
+    padding: 0.6rem 0.9rem;
     font-size: 0.875rem;
-    font-weight: 600;
     color: #183b4f;
     transition: background 0.15s ease;
 }
 .nf-region__opt:hover { background: var(--color-cream); }
-.nf-region__opt.is-active { background: rgba(116, 10, 46, 0.08); color: var(--color-brand); }
+.nf-region__opt.is-active { background: rgba(116, 10, 46, 0.06); }
 
 @media (prefers-reduced-motion: reduce) {
     .nf-waves__parallax > use,

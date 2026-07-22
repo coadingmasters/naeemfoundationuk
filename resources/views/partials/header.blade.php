@@ -74,22 +74,29 @@
 
             <div class="flex shrink-0 items-center gap-3">
                 {{-- Region / currency switcher --}}
-                <details class="nf-region" data-region-switch>
-                    <summary class="nf-topbar__link inline-flex select-none items-center gap-1.5">
+                <div class="nf-region" data-region-switch>
+                    <button type="button" data-region-toggle aria-haspopup="true" aria-expanded="false"
+                            class="nf-topbar__link inline-flex select-none items-center gap-1.5">
                         <span class="text-sm leading-none">{{ region('flag') }}</span>
                         <span class="font-semibold">{{ region('currency') }}</span>
-                        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </summary>
-                    <div class="nf-region__menu">
+                        <svg class="h-3 w-3" data-region-caret viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <div class="nf-region__menu" data-region-menu hidden>
+                        <p class="nf-region__menu-title">Choose your region</p>
                         @foreach ($regions as $r)
                             <a href="{{ route('region.set', $r['code']) }}" class="nf-region__opt {{ $r['code'] === region('code') ? 'is-active' : '' }}">
-                                <span class="text-base leading-none">{{ $r['flag'] }}</span>
-                                <span class="flex-1">{{ $r['name'] }}</span>
-                                <span class="text-xs font-bold text-gray-400">{{ $r['symbol'] }}</span>
+                                <span class="text-lg leading-none">{{ $r['flag'] }}</span>
+                                <span class="flex-1 leading-tight">
+                                    <span class="block font-semibold">{{ $r['name'] }}</span>
+                                    <span class="block text-[11px] text-gray-400">{{ $r['symbol'] }} {{ $r['currency'] }}</span>
+                                </span>
+                                @if ($r['code'] === region('code'))
+                                    <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                @endif
                             </a>
                         @endforeach
                     </div>
-                </details>
+                </div>
                 <span class="nf-topbar__sep hidden lg:inline-block"></span>
                 <a href="mailto:Contact@naeemfoundation.co.uk" class="nf-topbar__link hidden lg:inline-flex">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>

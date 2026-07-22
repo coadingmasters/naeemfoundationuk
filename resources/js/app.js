@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.NF_REGION = document.body.dataset.region || 'gb';
 
     setupPhoneInputs();
+    setupRegionSwitch();
     setupMobileMenu();
     setupSubnav();
     setupTabs();
@@ -45,6 +46,9 @@ function setupPhoneInputs() {
             initialCountry,
             separateDialCode: true,
             countrySearch: true,
+            // Append the country dropdown to <body> so it isn't clipped or stacked
+            // under other form fields (textarea/buttons).
+            dropdownParent: document.body,
         });
 
         // Keep the wrapper full-width so it matches the form field.
@@ -63,6 +67,34 @@ function setupPhoneInputs() {
             });
         }
     });
+}
+
+/* ---------- Header region / currency switcher ---------- */
+function setupRegionSwitch() {
+    const root = document.querySelector('[data-region-switch]');
+    if (!root) return;
+    const btn = root.querySelector('[data-region-toggle]');
+    const menu = root.querySelector('[data-region-menu]');
+    if (!btn || !menu) return;
+
+    // Move the menu to <body> so the top bar's overflow:hidden + backdrop-filter
+    // (which contains fixed descendants) can't clip it.
+    document.body.appendChild(menu);
+
+    // Fixed-position the menu under the button.
+    const place = () => {
+        const r = btn.getBoundingClientRect();
+        menu.style.top = (r.bottom + 8) + 'px';
+        menu.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+    };
+    const open = () => { place(); menu.hidden = false; requestAnimationFrame(() => menu.classList.add('is-open')); btn.setAttribute('aria-expanded', 'true'); };
+    const close = () => { menu.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); setTimeout(() => { menu.hidden = true; }, 180); };
+
+    btn.addEventListener('click', (e) => { e.stopPropagation(); menu.hidden ? open() : close(); });
+    document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) close(); });
+    window.addEventListener('resize', () => { if (!menu.hidden) place(); });
+    window.addEventListener('scroll', () => { if (!menu.hidden) place(); }, { passive: true });
 }
 
 /* ---------- Custom brand-styled dropdowns (Quick Donate) ---------- */
