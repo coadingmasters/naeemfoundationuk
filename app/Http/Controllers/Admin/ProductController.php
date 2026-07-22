@@ -32,7 +32,7 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $this->validateData($request, true);
+        $data = $this->validateData($request, true, \App\Support\RegionContext::region() ?? 'GB');
         $data['sort_order'] = $request->filled('sort_order')
             ? (int) $request->input('sort_order')
             : $this->nextSortOrder(Product::class);
@@ -53,7 +53,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product): RedirectResponse
     {
-        $data = $this->validateData($request, false);
+        $data = $this->validateData($request, false, $product->region ?? 'GB');
         $data['is_active'] = $request->boolean('is_active');
         $data['in_stock'] = $request->boolean('in_stock');
 
@@ -81,18 +81,28 @@ class ProductController extends Controller
             ->with('success', 'Product deleted successfully.');
     }
 
-    private function validateData(Request $request, bool $imageRequired): array
+    private function validateData(Request $request, bool $imageRequired, string $region): array
     {
-        return $request->validate([
+        // Only the product's own region price is required; the other two are optional.
+        $priceCols = ['GB' => 'price', 'US' => 'price_usd', 'CA' => 'price_cad'];
+        $main = $priceCols[$region] ?? 'price';
+        $priceRule = fn (string $col) => [$col === $main ? 'required' : 'nullable', 'numeric', 'min:0', 'max:100000'];
+
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'category' => ['required', Rule::in(Product::CATEGORIES)],
-            'price' => ['required', 'numeric', 'min:0', 'max:100000'],
-            'price_usd' => ['nullable', 'numeric', 'min:0', 'max:100000'],
-            'price_cad' => ['nullable', 'numeric', 'min:0', 'max:100000'],
+            'price' => $priceRule('price'),
+            'price_usd' => $priceRule('price_usd'),
+            'price_cad' => $priceRule('price_cad'),
             'badge' => ['nullable', 'string', 'max:40'],
             'image' => [$imageRequired ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
+
+        // The base `price` column is NOT NULL — default to 0 when it's not the required field.
+        $data['price'] = $data['price'] ?? 0;
+
+        return $data;
     }
 }

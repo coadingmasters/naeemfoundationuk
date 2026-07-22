@@ -30,24 +30,26 @@
                             @endforeach
                         </select>
                     </div>
-                    <div>
-                        <label for="price" class="mb-1.5 block text-sm font-semibold text-navy-dark">Price — UK (£) <span class="text-red-500">*</span></label>
-                        <input id="price" name="price" type="number" step="0.01" min="0" value="{{ old('price', $product->price) }}" required
-                               placeholder="19.99"
-                               class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    </div>
-                    <div>
-                        <label for="price_usd" class="mb-1.5 block text-sm font-semibold text-navy-dark">Price — US ($) <span class="text-gray-400">(optional)</span></label>
-                        <input id="price_usd" name="price_usd" type="number" step="0.01" min="0" value="{{ old('price_usd', $product->price_usd) }}"
-                               placeholder="Same as UK if empty"
-                               class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    </div>
-                    <div>
-                        <label for="price_cad" class="mb-1.5 block text-sm font-semibold text-navy-dark">Price — Canada (CA$) <span class="text-gray-400">(optional)</span></label>
-                        <input id="price_cad" name="price_cad" type="number" step="0.01" min="0" value="{{ old('price_cad', $product->price_cad) }}"
-                               placeholder="Same as UK if empty"
-                               class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    </div>
+                    @php
+                        $priceCols = ['GB' => 'price', 'US' => 'price_usd', 'CA' => 'price_cad'];
+                        // The product's region (or the region being added to) leads and is required;
+                        // the other two currencies are optional extras.
+                        $activeRegion = $product->exists ? $product->region : ($adminRegion ?? config('countries.default', 'GB'));
+                        $activeRegion = array_key_exists($activeRegion, $priceCols) ? $activeRegion : 'GB';
+                        $orderedRegions = array_merge([$activeRegion], array_values(array_diff(array_keys($priceCols), [$activeRegion])));
+                    @endphp
+                    @foreach ($orderedRegions as $i => $code)
+                        @php $col = $priceCols[$code]; $r = config('countries.list.'.$code); $main = ($i === 0); @endphp
+                        <div>
+                            <label for="{{ $col }}" class="mb-1.5 block text-sm font-semibold text-navy-dark">
+                                Price — {{ $r['short'] }} ({{ $r['symbol'] }})
+                                @if ($main)<span class="text-red-500">*</span>@else<span class="text-gray-400">(optional)</span>@endif
+                            </label>
+                            <input id="{{ $col }}" name="{{ $col }}" type="number" step="0.01" min="0" value="{{ old($col, $product->$col) }}" {{ $main ? 'required' : '' }}
+                                   placeholder="{{ $main ? '19.99' : 'Optional' }}"
+                                   class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
+                        </div>
+                    @endforeach
                 </div>
 
                 <div>

@@ -41,16 +41,24 @@ class Product extends Model
         ];
     }
 
-    /** Price for a region code (US/CA/GB), falling back to the GBP base when unset. */
+    /** Price for a region code — defaults to the product's OWN region (falls back to base). */
     public function priceFor(?string $code = null): float
     {
-        $code = $code ?: \App\Support\Country::code();
+        $code = $code ?: ($this->region ?: \App\Support\Country::code());
 
         return (float) match ($code) {
             'US' => $this->price_usd ?? $this->price,
             'CA' => $this->price_cad ?? $this->price,
             default => $this->price,
         };
+    }
+
+    /** The product's price formatted in its own region's currency (for admin lists etc.). */
+    public function displayPrice(): string
+    {
+        $symbol = config('countries.list.'.$this->region.'.symbol', '£');
+
+        return $symbol.number_format($this->priceFor($this->region), 2);
     }
 
     public function getRouteKeyName(): string

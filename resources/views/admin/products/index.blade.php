@@ -53,7 +53,7 @@
                                     </div>
                                 </td>
                                 <td class="px-5 py-3 text-gray-600">{{ $product->category }}</td>
-                                <td class="px-5 py-3 font-semibold text-navy-dark">£{{ number_format($product->price, 2) }}</td>
+                                <td class="px-5 py-3 font-semibold text-navy-dark">{{ $product->displayPrice() }}</td>
                                 <td class="px-5 py-3">
                                     <div class="flex flex-wrap gap-1.5">
                                         <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold {{ $product->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
