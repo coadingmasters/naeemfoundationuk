@@ -1,8 +1,8 @@
 @php $user = auth()->user(); @endphp
 
-<header class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-gray-200 bg-white/90 px-4 backdrop-blur sm:px-6 lg:px-8">
+<header class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-gray-200 bg-white/90 px-4 backdrop-blur dark:border-white/10 dark:bg-navy-dark/90 sm:px-6 lg:px-8">
     {{-- Mobile menu button --}}
-    <button type="button" data-admin-open class="grid h-10 w-10 place-items-center rounded-md text-navy hover:bg-gray-100 lg:hidden" aria-label="Open menu">
+    <button type="button" data-admin-open class="grid h-10 w-10 place-items-center rounded-md text-navy hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/10 lg:hidden" aria-label="Open menu">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
     </button>
 
@@ -11,6 +11,13 @@
     </div>
 
     <div class="ml-auto flex items-center gap-3">
+        {{-- Dark / light theme toggle --}}
+        <button type="button" data-theme-toggle aria-label="Toggle dark mode"
+                class="grid h-10 w-10 place-items-center rounded-lg text-navy transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/10">
+            <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke-linecap="round"/></svg>
+        </button>
+
         <a href="{{ route('home') }}" target="_blank"
            class="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-navy transition hover:text-brand sm:inline-flex">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 5h5v5m0-5l-8 8M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -19,7 +26,7 @@
 
         {{-- User dropdown --}}
         <div class="relative">
-            <button type="button" data-user-btn class="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-gray-100">
+            <button type="button" data-user-btn class="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-gray-100 dark:hover:bg-white/10">
                 <span class="grid h-9 w-9 place-items-center rounded-full bg-brand text-sm font-bold text-white">
                     {{ strtoupper(substr($user->name ?? 'A', 0, 1)) }}
                 </span>

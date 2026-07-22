@@ -2,72 +2,140 @@
 
 @section('title', 'Dashboard')
 @section('heading', 'Dashboard')
-@section('subheading', 'Overview of your website content.')
+@section('subheading', 'Overview of your website content and activity.')
+
+@php
+    $toneHex = [
+        'brand' => '#740a2e', 'navy' => '#183b4f', 'emerald' => '#059669',
+        'amber' => '#d97706', 'rose' => '#e11d48', 'sky' => '#0284c7',
+    ];
+    $toneBadge = [
+        'brand' => 'bg-brand/10 text-brand', 'navy' => 'bg-navy/10 text-navy',
+        'emerald' => 'bg-emerald-100 text-emerald-600', 'amber' => 'bg-amber-100 text-amber-600',
+        'rose' => 'bg-rose-100 text-rose-600', 'sky' => 'bg-sky-100 text-sky-600',
+    ];
+    $chartMax = max(1, max(array_column($content, 'total')) ?: 1);
+    $livePct = $totals['items'] ? $totals['live'] / $totals['items'] : 0;
+    $circ = 2 * M_PI * 52;
+@endphp
 
 @section('content')
-    @php
-        $toneBg = [
-            'brand' => 'bg-brand',
-            'navy' => 'bg-navy',
-            'emerald' => 'bg-emerald-500',
-            'amber' => 'bg-amber-500',
-            'sky' => 'bg-sky-500',
-        ];
-        $toneText = [
-            'brand' => 'text-brand',
-            'navy' => 'text-navy',
-            'emerald' => 'text-emerald-600',
-            'amber' => 'text-amber-600',
-            'sky' => 'text-sky-600',
-        ];
-    @endphp
 
-    {{-- ===== Greeting banner ===== --}}
-    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-navy via-navy-dark to-brand p-6 text-white sm:p-8">
-        <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/5"></div>
-        <div class="absolute -bottom-20 right-24 h-56 w-56 rounded-full bg-brand/30 blur-3xl"></div>
-
-        <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    {{-- ===== Welcome banner ===== --}}
+    <div class="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-navy-dark via-navy to-brand p-6 text-white shadow-lg sm:p-8">
+        <div class="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-white/10 blur-2xl"></div>
+        <div class="pointer-events-none absolute -bottom-16 left-1/3 h-48 w-48 rounded-full bg-brand/30 blur-2xl"></div>
+        <div class="relative flex flex-wrap items-end justify-between gap-5">
             <div>
                 <p class="text-sm text-white/70">{{ now()->format('l, j F Y') }}</p>
-                <h2 class="mt-1 text-2xl font-bold sm:text-3xl">Welcome back, {{ auth()->user()->name }} 👋</h2>
-                <p class="mt-2 max-w-md text-sm text-white/75">Here's what's currently published across your website.</p>
+                <h2 class="mt-1 text-2xl font-extrabold sm:text-3xl">Welcome back, {{ auth()->user()->name }} <span class="inline-block">👋</span></h2>
+                <p class="mt-1 text-sm text-white/75">Here's what's currently published across your website.</p>
             </div>
-
-            <div class="flex items-center gap-3">
-                <div class="rounded-xl bg-white/10 px-5 py-3 text-center ring-1 ring-white/15">
-                    <p class="text-2xl font-bold leading-none">{{ $totals['items'] }}</p>
-                    <p class="mt-1 text-xs text-white/70">Total items</p>
+            <div class="flex gap-3">
+                <div class="rounded-xl bg-white/10 px-4 py-3 text-center ring-1 ring-white/15">
+                    <p class="text-2xl font-extrabold" data-countup data-value="{{ $totals['items'] }}">0</p>
+                    <p class="text-[11px] uppercase tracking-wide text-white/60">Total items</p>
                 </div>
-                <div class="rounded-xl bg-white/10 px-5 py-3 text-center ring-1 ring-white/15">
-                    <p class="text-2xl font-bold leading-none text-green-300">{{ $totals['live'] }}</p>
-                    <p class="mt-1 text-xs text-white/70">Live</p>
+                <div class="rounded-xl bg-white/10 px-4 py-3 text-center ring-1 ring-white/15">
+                    <p class="text-2xl font-extrabold text-green-300" data-countup data-value="{{ $totals['live'] }}">0</p>
+                    <p class="text-[11px] uppercase tracking-wide text-white/60">Live</p>
                 </div>
-                <div class="rounded-xl bg-white/10 px-5 py-3 text-center ring-1 ring-white/15">
-                    <p class="text-2xl font-bold leading-none text-white/80">{{ $totals['hidden'] }}</p>
-                    <p class="mt-1 text-xs text-white/70">Hidden</p>
+                <div class="rounded-xl bg-white/10 px-4 py-3 text-center ring-1 ring-white/15">
+                    <p class="text-2xl font-extrabold text-white/80" data-countup data-value="{{ $totals['hidden'] }}">0</p>
+                    <p class="text-[11px] uppercase tracking-wide text-white/60">Hidden</p>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- ===== Section stat cards ===== --}}
-    <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        @foreach ($sections as $s)
-            <div class="flex flex-col rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
-                <div class="flex items-start justify-between">
-                    <span class="grid h-12 w-12 place-items-center rounded-xl {{ $toneBg[$s['tone']] }} text-white">
+    {{-- ===== Engagement KPIs ===== --}}
+    <div class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="nf-anim rounded-2xl border border-gray-100 bg-white p-5 shadow-sm" style="animation-delay:0ms">
+            <div class="flex items-center justify-between">
+                <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand/10 text-brand">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <a href="{{ route('admin.orders.index') }}" class="text-xs font-semibold text-brand hover:underline">View</a>
+            </div>
+            <p class="mt-4 text-2xl font-extrabold text-navy-dark" data-countup data-value="{{ $revenue }}" data-money="1">£0.00</p>
+            <p class="text-xs font-medium text-gray-500">Shop revenue</p>
+        </div>
+        @foreach ($engagement as $i => $e)
+            <a href="{{ $e['route'] }}" class="nf-anim group rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="animation-delay:{{ ($i + 1) * 70 }}ms">
+                <div class="flex items-center justify-between">
+                    <span class="grid h-11 w-11 place-items-center rounded-xl {{ $toneBadge[$e['tone']] ?? 'bg-brand/10 text-brand' }}">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">{!! $e['icon'] !!}</svg>
+                    </span>
+                    <svg class="h-4 w-4 text-gray-300 transition group-hover:translate-x-0.5 group-hover:text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <p class="mt-4 text-2xl font-extrabold text-navy-dark" data-countup data-value="{{ $e['value'] }}">0</p>
+                <p class="text-xs font-medium text-gray-500">{{ $e['label'] }} <span class="text-gray-400">· {{ $e['sub'] }}</span></p>
+            </a>
+        @endforeach
+    </div>
+
+    {{-- ===== Charts ===== --}}
+    <div class="mb-6 grid gap-4 lg:grid-cols-3">
+        {{-- Bar chart --}}
+        <div class="nf-anim rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-2" style="animation-delay:0ms">
+            <div class="mb-6 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-navy-dark">Content by section</h3>
+                <span class="text-xs text-gray-400">Items per section</span>
+            </div>
+            <div class="flex items-end gap-3 sm:gap-5">
+                @foreach ($content as $s)
+                    @php $h = round(($s['total'] / $chartMax) * 100); @endphp
+                    <div class="flex flex-1 flex-col items-center">
+                        <span data-countup data-value="{{ $s['total'] }}" class="mb-1.5 text-sm font-bold text-navy-dark">0</span>
+                        <div class="flex h-32 w-full items-end">
+                            <div class="nf-bar mx-auto w-full max-w-[2.75rem]" data-bar-h="{{ $h }}" style="background-color: {{ $toneHex[$s['tone']] ?? '#740a2e' }}"></div>
+                        </div>
+                        <span class="mt-2 text-center text-[10px] font-medium leading-tight text-gray-500">{{ $s['label'] }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Donut --}}
+        <div class="nf-anim rounded-2xl border border-gray-100 bg-white p-6 shadow-sm" style="animation-delay:90ms">
+            <h3 class="text-sm font-bold text-navy-dark">Live vs Hidden</h3>
+            <div class="mt-4 flex flex-col items-center">
+                <div class="relative">
+                    <svg viewBox="0 0 120 120" class="h-40 w-40 -rotate-90">
+                        <circle cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke="currentColor" class="text-gray-100 dark:text-white/10"/>
+                        <circle cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke="#16a34a" stroke-linecap="round"
+                                class="nf-donut__val" data-donut="{{ $livePct }}"
+                                stroke-dasharray="{{ $circ }}" stroke-dashoffset="{{ $circ }}"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-2xl font-extrabold text-navy-dark" data-countup data-value="{{ round($livePct * 100) }}" data-suffix="%">0%</span>
+                        <span class="text-[11px] text-gray-400">Live</span>
+                    </div>
+                </div>
+                <div class="mt-4 flex w-full items-center justify-around text-xs">
+                    <span class="inline-flex items-center gap-1.5 font-medium text-navy-dark"><span class="h-2.5 w-2.5 rounded-full bg-green-600"></span> {{ $totals['live'] }} live</span>
+                    <span class="inline-flex items-center gap-1.5 font-medium text-gray-500"><span class="h-2.5 w-2.5 rounded-full bg-gray-300"></span> {{ $totals['hidden'] }} hidden</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== Content sections ===== --}}
+    <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-gray-400">Manage content</h3>
+    <div class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        @foreach ($content as $i => $s)
+            <div class="nf-anim rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md" style="animation-delay:{{ $i * 60 }}ms">
+                <div class="flex items-center justify-between">
+                    <span class="grid h-11 w-11 place-items-center rounded-xl {{ $toneBadge[$s['tone']] ?? 'bg-brand/10 text-brand' }}">
                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">{!! $s['icon'] !!}</svg>
                     </span>
-                    <span class="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-semibold text-green-700">{{ $s['active'] }} live</span>
+                    <span class="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700">{{ $s['active'] }} live</span>
                 </div>
-
-                <p class="mt-4 text-3xl font-bold leading-none text-navy-dark">{{ $s['total'] }}</p>
-                <p class="mt-1 text-sm text-gray-500">{{ $s['label'] }}</p>
-
-                <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-                    <a href="{{ $s['index'] }}" class="text-sm font-semibold {{ $toneText[$s['tone']] }} hover:underline">Manage</a>
-                    <a href="{{ $s['create'] }}" class="inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition hover:text-navy-dark">
+                <p class="mt-4 text-3xl font-extrabold text-navy-dark" data-countup data-value="{{ $s['total'] }}">0</p>
+                <p class="text-sm text-gray-500">{{ $s['label'] }}</p>
+                <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 text-sm">
+                    <a href="{{ $s['index'] }}" class="font-semibold text-brand hover:underline">Manage</a>
+                    <a href="{{ $s['create'] }}" class="inline-flex items-center gap-1 font-medium text-navy hover:text-brand">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
                         Add
                     </a>
@@ -76,63 +144,70 @@
         @endforeach
     </div>
 
-    {{-- ===== Recent activity + quick actions ===== --}}
-    <div class="mt-6 grid gap-6 lg:grid-cols-3">
-        {{-- Recent --}}
-        <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-2">
-            <div class="mb-4 flex items-center justify-between">
-                <h3 class="text-sm font-semibold text-navy-dark">Recently added</h3>
-                <span class="text-xs text-gray-400">Latest across all sections</span>
+    {{-- ===== Recent activity ===== --}}
+    @if ($recent->isNotEmpty())
+        <div class="nf-anim rounded-2xl border border-gray-100 bg-white shadow-sm" style="animation-delay:0ms">
+            <div class="border-b border-gray-100 px-5 py-4">
+                <h3 class="text-sm font-bold text-navy-dark">Recently added</h3>
             </div>
-
-            @if ($recent->isEmpty())
-                <p class="py-8 text-center text-sm text-gray-400">No content yet — add your first item to get started.</p>
-            @else
-                <div class="divide-y divide-gray-100">
-                    @foreach ($recent as $item)
-                        <a href="{{ $item['edit_url'] }}" class="group flex items-center gap-3 py-3">
-                            <img src="{{ asset($item['image']) }}" alt="" class="h-11 w-16 shrink-0 rounded-lg object-cover ring-1 ring-gray-200">
+            <ul class="divide-y divide-gray-100">
+                @foreach ($recent as $item)
+                    <li>
+                        <a href="{{ $item['edit_url'] }}" class="flex items-center gap-4 px-5 py-3 transition hover:bg-gray-50">
+                            @if ($item['image'])
+                                <img src="{{ asset($item['image']) }}" alt="" class="h-11 w-11 shrink-0 rounded-lg object-cover ring-1 ring-gray-200">
+                            @else
+                                <span class="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-cream text-brand">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
+                                </span>
+                            @endif
                             <div class="min-w-0 flex-1">
-                                <p class="truncate text-sm font-medium text-navy-dark group-hover:text-brand">{{ $item['title'] ?: '—' }}</p>
-                                <p class="text-xs text-gray-400">
-                                    <span class="font-medium text-gray-500">{{ $item['type'] }}</span>
-                                    @if ($item['time']) · {{ $item['time']->diffForHumans() }} @endif
-                                </p>
+                                <p class="truncate text-sm font-semibold text-navy-dark">{{ $item['title'] ?: 'Untitled' }}</p>
+                                <p class="text-xs text-gray-400">{{ $item['type'] }} · {{ $item['time']?->diffForHumans() }}</p>
                             </div>
-                            <span class="shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold {{ $item['is_active'] ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
+                            <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold {{ $item['is_active'] ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
                                 {{ $item['is_active'] ? 'Live' : 'Hidden' }}
                             </span>
                         </a>
-                    @endforeach
-                </div>
-            @endif
+                    </li>
+                @endforeach
+            </ul>
         </div>
+    @endif
 
-        {{-- Quick actions --}}
-        <div class="space-y-6">
-            <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <h3 class="mb-4 text-sm font-semibold text-navy-dark">Quick actions</h3>
-                <div class="space-y-2.5">
-                    @foreach ($sections as $s)
-                        <a href="{{ $s['create'] }}" class="flex items-center gap-3 rounded-xl border border-gray-100 px-3.5 py-2.5 transition hover:border-brand/30 hover:bg-cream/50">
-                            <span class="grid h-8 w-8 place-items-center rounded-lg {{ $toneBg[$s['tone']] }} text-white">
-                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-                            </span>
-                            <span class="text-sm font-medium text-navy-dark">New {{ \Illuminate\Support\Str::singular($s['label']) }}</span>
-                            <svg class="ml-auto h-4 w-4 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="rounded-2xl bg-gradient-to-br from-brand to-brand-dark p-6 text-white shadow-sm">
-                <h3 class="text-base font-bold">Your website is live</h3>
-                <p class="mt-1.5 text-sm text-white/80">Preview how your changes look to visitors.</p>
-                <a href="{{ route('home') }}" target="_blank" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-brand transition hover:bg-cream">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 5h5v5m0-5l-8 8M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    View website
-                </a>
-            </div>
-        </div>
-    </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    // Count-up numbers
+    document.querySelectorAll('[data-countup]').forEach((el) => {
+        const target = parseFloat(el.dataset.value) || 0;
+        const isMoney = el.dataset.money === '1';
+        const suffix = el.dataset.suffix || '';
+        const dur = 950;
+        const start = performance.now();
+        const step = (now) => {
+            const p = Math.min(1, (now - start) / dur);
+            const eased = 1 - Math.pow(1 - p, 3);
+            const val = target * eased;
+            el.textContent = isMoney ? '£' + val.toFixed(2) : Math.round(val).toLocaleString() + suffix;
+            if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    });
+
+    // Grow the bars
+    requestAnimationFrame(() => {
+        document.querySelectorAll('.nf-bar').forEach((b) => { b.style.height = (b.dataset.barH || 0) + '%'; });
+    });
+
+    // Draw the donut
+    document.querySelectorAll('.nf-donut__val').forEach((c) => {
+        const circ = parseFloat(c.getAttribute('stroke-dasharray')) || 0;
+        const pct = parseFloat(c.dataset.donut) || 0;
+        requestAnimationFrame(() => { c.style.strokeDashoffset = String(circ * (1 - pct)); });
+    });
+})();
+</script>
+@endpush

@@ -75,6 +75,12 @@
         });
         document.addEventListener('click', () => userMenu?.classList.add('hidden'));
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { userMenu?.classList.add('hidden'); closeSidebar(); } });
+
+        // Dark / light theme toggle (persisted)
+        root.querySelectorAll('[data-theme-toggle]').forEach((btn) => btn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            try { localStorage.setItem('nf-admin-theme', isDark ? 'dark' : 'light'); } catch (e) {}
+        }));
     })();
 </script>
 @stack('scripts')
