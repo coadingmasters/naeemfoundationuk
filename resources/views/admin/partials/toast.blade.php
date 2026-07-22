@@ -1,10 +1,10 @@
-{{-- Admin success/error flashes as animated toasts (slide in, auto-dismiss). --}}
+{{-- Admin success/error flashes as animated toasts (bottom-right, auto-dismiss). --}}
 @if (session('success') || session('error'))
-    <div class="nf-toast-wrap" data-toast-wrap>
+    <div class="nf-atoast-wrap" data-atoast-wrap>
         @foreach (['success' => 'Success', 'error' => 'Heads up'] as $type => $title)
             @if (session($type))
-                <div class="nf-toast nf-toast--{{ $type }}" data-toast>
-                    <span class="nf-toast__icon">
+                <div class="nf-atoast nf-atoast--{{ $type }}" data-atoast>
+                    <span class="nf-atoast__icon">
                         @if ($type === 'success')
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         @else
@@ -12,13 +12,13 @@
                         @endif
                     </span>
                     <div class="min-w-0 flex-1">
-                        <p class="nf-toast__title">{{ $title }}</p>
-                        <p class="nf-toast__msg">{{ session($type) }}</p>
+                        <p class="nf-atoast__title">{{ $title }}</p>
+                        <p class="nf-atoast__msg">{{ session($type) }}</p>
                     </div>
-                    <button type="button" data-toast-close aria-label="Dismiss" class="nf-toast__close">
+                    <button type="button" data-atoast-close aria-label="Dismiss" class="nf-atoast__close">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
                     </button>
-                    <span class="nf-toast__bar"></span>
+                    <span class="nf-atoast__bar"></span>
                 </div>
             @endif
         @endforeach
@@ -26,9 +26,9 @@
 
     <script>
         (function () {
-            document.querySelectorAll('[data-toast]').forEach((t, i) => {
+            document.querySelectorAll('[data-atoast]').forEach((t, i) => {
                 const hide = () => { t.classList.add('is-out'); setTimeout(() => t.remove(), 450); };
-                t.querySelector('[data-toast-close]')?.addEventListener('click', hide);
+                t.querySelector('[data-atoast-close]')?.addEventListener('click', hide);
                 setTimeout(hide, 4300 + i * 130);
             });
         })();
