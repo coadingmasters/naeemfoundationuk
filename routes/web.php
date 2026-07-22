@@ -169,7 +169,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Super-admin region context switch (All / GB / US / CA).
         Route::get('region/{code}', function (string $code) {
-            abort_unless(auth()->user()->isSuperAdmin(), 403);
+            $user = \Illuminate\Support\Facades\Auth::user();
+            abort_unless($user instanceof \App\Models\User && $user->isSuperAdmin(), 403);
 
             if ($code === 'all') {
                 session()->forget('admin_region');
