@@ -21,34 +21,16 @@
         ]);
     }
 
-    // Latest Appeals are managed in the admin dashboard and passed in by
-    // HomeController. Fall back to a default set if none have been created yet.
+    // Latest Appeals are managed in the admin dashboard, per region. Empty regions
+    // simply hide the section — no default fallback.
     $appeals = ($appeals ?? collect());
-    if ($appeals->isEmpty()) {
-        $appeals = collect([
-            (object) ['image' => 'images/changinslives1.jpg', 'title' => 'Education', 'description' => 'Sadaqah: The Power of Giving. Have you ever felt the true joy of helping a child learn?', 'link' => '#'],
-            (object) ['image' => 'images/changinslives2.jpg', 'title' => 'Food & Sustenance', 'description' => 'Food Support. Our mission to provide for people in need. Donate today.', 'link' => '#'],
-            (object) ['image' => 'images/changinslives3.jpg', 'title' => 'Binoria Water', 'description' => 'Water Crisis Hit Jamia Binoria Hard. Students struggle even for a drop of clean water.', 'link' => '#'],
-            (object) ['image' => 'images/changinslives4.jpg', 'title' => 'Healthcare', 'description' => 'In rural areas, access to healthcare is often limited. We bring care closer.', 'link' => '#'],
-        ]);
-    }
 
     // Group appeals into pages of 4 for the carousel
     $appealPages = $appeals->chunk(4);
 
-    // Causes carousel — managed in the admin dashboard, passed in by
-    // HomeController. Falls back to a default set if none exist yet.
+    // Causes carousel — managed in the admin dashboard, per region. Empty regions
+    // hide the section — no default fallback.
     $causes = ($causes ?? collect());
-    if ($causes->isEmpty()) {
-        $causes = collect([
-            (object) ['image' => 'images/givezakat.png', 'title' => 'Give Zakat', 'description' => 'Purify your wealth and support those most in need.', 'link' => '#'],
-            (object) ['image' => 'images/givesadqa.jpg', 'title' => 'Give Sadaqah', 'description' => 'A voluntary act of charity that brings endless blessings.', 'link' => '#'],
-            (object) ['image' => 'images/supporton.png', 'title' => 'Support an Orphan', 'description' => 'Give an orphan shelter, food and a chance at education.', 'link' => '#'],
-            (object) ['image' => 'images/handpump.jpg', 'title' => 'Water Pump', 'description' => 'Provide clean, safe drinking water to a whole community.', 'link' => '#'],
-            (object) ['image' => 'images/changinslives4.jpg', 'title' => 'Emergency Relief', 'description' => 'Rapid help for families hit by disaster and crisis.', 'link' => '#'],
-            (object) ['image' => 'images/changinslives2.jpg', 'title' => 'Feed the Hungry', 'description' => 'Nutritious food parcels for struggling families.', 'link' => '#'],
-        ]);
-    }
 
     // Impact stats
     $impact = [
@@ -171,6 +153,7 @@
     </section>
 
     {{-- ===================== LATEST APPEALS ===================== --}}
+    @if ($appeals->isNotEmpty())
     <section class="py-14">
         <div class="nf-container grid gap-10 lg:grid-cols-12" data-carousel="appeals">
             {{-- Left intro --}}
@@ -212,8 +195,10 @@
             </div>
         </div>
     </section>
+    @endif
 
     {{-- ===================== CAUSES CAROUSEL ===================== --}}
+    @if ($causes->isNotEmpty())
     <section class="relative overflow-hidden bg-navy py-12" data-carousel="causes">
         <div class="nf-container">
             <div class="overflow-hidden">
@@ -244,6 +229,7 @@
             <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
     </section>
+    @endif
 
     {{-- ===================== OUR IMPACT ===================== --}}
     <section class="py-14">
