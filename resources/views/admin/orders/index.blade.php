@@ -84,7 +84,7 @@
                                     <a href="mailto:{{ $o->email }}" class="text-xs text-gray-400 hover:text-brand">{{ $o->email }}</a>
                                 </td>
                                 <td class="px-5 py-3 text-gray-600">{{ $count }} {{ \Illuminate\Support\Str::plural('item', $count) }}</td>
-                                <td class="px-5 py-3 font-semibold text-navy-dark">£{{ number_format($o->subtotal, 2) }}</td>
+                                <td class="px-5 py-3 font-semibold text-navy-dark">{{ $o->currencySymbol() }}{{ number_format($o->subtotal, 2) }}</td>
                                 <td class="px-5 py-3">
                                     <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold capitalize {{ $statusStyles[$o->status] ?? 'bg-gray-100 text-gray-500' }}">
                                         {{ $o->status }}
@@ -98,7 +98,7 @@
                                                 data-email="{{ $o->email }}"
                                                 data-phone="{{ $o->phone }}"
                                                 data-address="{{ $o->address }}"
-                                                data-total="£{{ number_format($o->subtotal, 2) }}"
+                                                data-total="{{ $o->currencySymbol() }}{{ number_format($o->subtotal, 2) }}"
                                                 data-status="{{ $o->status }}"
                                                 data-status-action="{{ route('admin.orders.status', $o) }}"
                                                 data-items="{{ json_encode($o->items ?? []) }}"

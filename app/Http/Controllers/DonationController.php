@@ -156,7 +156,7 @@ class DonationController extends Controller
             // The transaction fee is decided on the payment step, so start without it.
             'cover_fee' => false,
             'items' => DonationCart::items(),
-            'currency' => 'GBP',
+            'currency' => \App\Support\Country::get('currency', 'GBP'),
             'subtotal' => DonationCart::subtotal(),
             'fee' => 0,
             'total' => DonationCart::subtotal(),
@@ -360,6 +360,7 @@ class DonationController extends Controller
                 fee: (float) $summary['fee'],
                 total: (float) $summary['total'],
                 giftAid: (bool) ($details['gift_aid'] ?? false),
+                currencySymbol: ['GBP' => '£', 'USD' => '$', 'CAD' => 'CA$'][$donation['currency'] ?? 'GBP'] ?? '£',
             ));
         } catch (Throwable $e) {
             // Mail transport unavailable — the donation still completes.

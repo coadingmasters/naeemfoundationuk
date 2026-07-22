@@ -4,7 +4,7 @@
     $navyDark = '#122d3c';
     $cream = '#f4efe6';
     $muted = '#6b7280';
-    $money = fn ($n) => '£' . number_format((float) $n, 2);
+    $money = fn ($n) => ($symbol ?? '£') . number_format((float) $n, 2);
 @endphp
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">

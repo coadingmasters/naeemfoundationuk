@@ -96,16 +96,16 @@
                     <div data-amount-block hidden class="nf-wz-reveal mt-8 border-t border-navy/10 pt-7">
                         <h3 class="text-lg font-bold text-navy-dark">Choose an amount</h3>
                         <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                            <button type="button" data-amount="100" class="nf-choice py-3 text-base">£100</button>
-                            <button type="button" data-amount="200" class="nf-choice py-3 text-base">£200</button>
-                            <button type="button" data-amount="300" class="nf-choice py-3 text-base">£300</button>
+                            <button type="button" data-amount="100" class="nf-choice py-3 text-base">{{ region('symbol') }}100</button>
+                            <button type="button" data-amount="200" class="nf-choice py-3 text-base">{{ region('symbol') }}200</button>
+                            <button type="button" data-amount="300" class="nf-choice py-3 text-base">{{ region('symbol') }}300</button>
                             <button type="button" data-amount="other" class="nf-choice py-3 text-base">Other</button>
                         </div>
 
                         <div data-other-wrap hidden class="mt-4">
-                            <label class="mb-1.5 block text-sm font-semibold text-navy-dark">Enter your amount (£)</label>
+                            <label class="mb-1.5 block text-sm font-semibold text-navy-dark">Enter your amount ({{ region('symbol') }})</label>
                             <div class="relative">
-                                <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-bold text-navy/50">£</span>
+                                <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-bold text-navy/50">{{ region('symbol') }}</span>
                                 <input type="number" min="1" step="0.01" placeholder="e.g. 75" data-other-input
                                        class="h-12 w-full rounded-md border border-gray-300 pl-7 pr-3 text-base text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25">
                             </div>
@@ -131,9 +131,9 @@
                     <div class="mt-6 rounded-xl bg-cream/70 p-6 text-center ring-1 ring-navy/10">
                         <p class="text-sm font-semibold uppercase tracking-wide text-brand">Your gift could become</p>
                         <p class="mt-2 flex items-center justify-center gap-3 text-3xl font-extrabold text-navy-dark sm:text-4xl">
-                            <span data-ga-amount>£0.00</span>
+                            <span data-ga-amount>{{ region('symbol') }}0.00</span>
                             <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            <span class="text-brand" data-ga-plus>£0.00</span>
+                            <span class="text-brand" data-ga-plus>{{ region('symbol') }}0.00</span>
                         </p>
                     </div>
 
@@ -205,7 +205,7 @@
     const gaCheck = root.querySelector('[data-ga-check]');
     const flashEl = root.querySelector('[data-flash]');
 
-    const money = (n) => '£' + (Number(n) || 0).toFixed(2);
+    const money = (n) => (window.NF_CURRENCY || '£') + (Number(n) || 0).toFixed(2);
     let flashTimer;
     function flash(msg) {
         if (!flashEl) return;

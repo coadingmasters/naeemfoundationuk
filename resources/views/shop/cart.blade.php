@@ -32,7 +32,7 @@
                                     <div class="min-w-0 flex-1">
                                         <span class="text-[11px] font-semibold uppercase tracking-wide text-brand">{{ $p->category }}</span>
                                         <h3 class="truncate font-bold text-navy-dark"><a href="{{ route('shop.show', $p) }}" class="hover:text-brand">{{ $p->name }}</a></h3>
-                                        <p class="text-sm text-gray-500">£{{ number_format($p->price, 2) }} each</p>
+                                        <p class="text-sm text-gray-500">{{ money($item['unit']) }} each</p>
 
                                         <div class="mt-2 flex items-center gap-3">
                                             <form method="POST" action="{{ route('shop.cart.update', $item['id']) }}" class="inline-flex h-9 items-center rounded-lg border border-gray-200">
@@ -54,7 +54,7 @@
                                             </form>
                                         </div>
                                     </div>
-                                    <div class="shrink-0 text-right font-extrabold text-navy-dark">£{{ number_format($item['line'], 2) }}</div>
+                                    <div class="shrink-0 text-right font-extrabold text-navy-dark">{{ money($item['line']) }}</div>
                                 </div>
                             @endforeach
                         </div>
@@ -72,7 +72,7 @@
                             <div class="mt-4 space-y-3 text-sm">
                                 <div class="flex justify-between text-gray-600">
                                     <span>Subtotal</span>
-                                    <span class="font-semibold text-navy-dark">£{{ number_format($subtotal, 2) }}</span>
+                                    <span class="font-semibold text-navy-dark">{{ money($subtotal) }}</span>
                                 </div>
                                 <div class="flex justify-between text-gray-600">
                                     <span>Delivery</span>
@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="flex justify-between border-t border-gray-100 pt-3 text-base">
                                     <span class="font-bold text-navy-dark">Total</span>
-                                    <span class="font-extrabold text-navy-dark">£{{ number_format($subtotal, 2) }}</span>
+                                    <span class="font-extrabold text-navy-dark">{{ money($subtotal) }}</span>
                                 </div>
                             </div>
                             <a href="{{ route('shop.checkout') }}" class="btn-brand mt-5 w-full justify-center py-3 text-base">

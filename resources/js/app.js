@@ -1,6 +1,14 @@
 // Naeem Foundation — front-end interactions
 
+import intlTelInput from 'intl-tel-input';
+import 'intl-tel-input/styles';
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Active region (set as data-* on <body> by the layout).
+    window.NF_CURRENCY = document.body.dataset.currency || '£';
+    window.NF_REGION = document.body.dataset.region || 'gb';
+
+    setupPhoneInputs();
     setupMobileMenu();
     setupSubnav();
     setupTabs();
@@ -24,6 +32,38 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSlideCarousel(document.querySelector('[data-carousel="appeals"]'));
     setupTrackCarousel(document.querySelector('[data-carousel="causes"]'));
 });
+
+/* ---------- International phone inputs (flags + dial code) ---------- */
+function setupPhoneInputs() {
+    const inputs = document.querySelectorAll('input[type="tel"][name="phone"]');
+    if (!inputs.length) return;
+
+    const initialCountry = (window.NF_REGION || 'gb').toLowerCase();
+
+    inputs.forEach((input) => {
+        const iti = intlTelInput(input, {
+            initialCountry,
+            separateDialCode: true,
+            countrySearch: true,
+        });
+
+        // Keep the wrapper full-width so it matches the form field.
+        const wrap = input.closest('.iti');
+        if (wrap) wrap.style.width = '100%';
+
+        // Prepend the selected dial code on submit so the backend gets the full number.
+        const form = input.closest('form');
+        if (form) {
+            form.addEventListener('submit', () => {
+                const val = input.value.trim();
+                if (val && !val.startsWith('+')) {
+                    const cc = iti.getSelectedCountryData().dialCode;
+                    if (cc) input.value = '+' + cc + ' ' + val;
+                }
+            });
+        }
+    });
+}
 
 /* ---------- Custom brand-styled dropdowns (Quick Donate) ---------- */
 function setupCustomSelects() {
@@ -130,7 +170,7 @@ function setupRamadanScheduler() {
     let boost = 0;
     let cause = causeBtns.find((b) => b.classList.contains('is-selected'))?.dataset.rgCause ?? '';
 
-    const money = (n) => `£${n.toFixed(2)}`;
+    const money = (n) => `${window.NF_CURRENCY || '£'}${n.toFixed(2)}`;
 
     const render = () => {
         const extra = daily * (boost / 100);
@@ -242,7 +282,7 @@ function setupCoverFee() {
     const subtotal = parseFloat(summary.dataset.subtotal) || 0;
     const fee = parseFloat(summary.dataset.fee) || 0;
 
-    const money = (n) => `£${n.toFixed(2)}`;
+    const money = (n) => `${window.NF_CURRENCY || '£'}${n.toFixed(2)}`;
 
     const update = () => {
         const covered = checkbox.checked;
@@ -612,7 +652,7 @@ function setupFrequencyAmounts() {
             presetBtns.forEach((btn) => {
                 const val = monthly ? btn.dataset.monthly : btn.dataset.oneoff;
                 btn.dataset.value = val;
-                btn.textContent = '£' + val;
+                btn.textContent = (window.NF_CURRENCY || '£') + val;
             });
             // Keep the highlighted preset's price in sync (unless "Other" is active).
             const selected = presetBtns.find((b) => b.classList.contains('is-selected'));

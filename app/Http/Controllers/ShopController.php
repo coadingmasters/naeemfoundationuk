@@ -31,12 +31,20 @@ class ShopController extends Controller
             });
         }
 
-        // Price range
+        // Price expression for the visitor's active region (falls back to GBP base).
+        $priceCol = match (\App\Support\Country::code()) {
+            'US' => 'price_usd',
+            'CA' => 'price_cad',
+            default => 'price',
+        };
+        $priceExpr = $priceCol === 'price' ? 'price' : "COALESCE({$priceCol}, price)";
+
+        // Price range (in the active currency)
         if ($request->filled('min')) {
-            $query->where('price', '>=', (float) $request->query('min'));
+            $query->whereRaw("{$priceExpr} >= ?", [(float) $request->query('min')]);
         }
         if ($request->filled('max')) {
-            $query->where('price', '<=', (float) $request->query('max'));
+            $query->whereRaw("{$priceExpr} <= ?", [(float) $request->query('max')]);
         }
 
         // In-stock only
@@ -46,8 +54,8 @@ class ShopController extends Controller
 
         // Sort
         switch ($request->query('sort')) {
-            case 'price_asc': $query->orderBy('price'); break;
-            case 'price_desc': $query->orderByDesc('price'); break;
+            case 'price_asc': $query->orderByRaw("{$priceExpr} asc"); break;
+            case 'price_desc': $query->orderByRaw("{$priceExpr} desc"); break;
             case 'name': $query->orderBy('name'); break;
             case 'newest': $query->orderByDesc('id'); break;
             default: $query->ordered();
@@ -60,7 +68,7 @@ class ShopController extends Controller
             ->groupBy('category')
             ->pluck('total', 'category');
 
-        $maxPrice = (int) ceil((float) (Product::active()->max('price') ?: 100));
+        $maxPrice = (int) ceil((float) (Product::active()->selectRaw("MAX({$priceExpr}) as m")->value('m') ?: 100));
 
         return view('shop.index', [
             'products' => $products,
@@ -111,11 +119,15 @@ class ShopController extends Controller
             'address' => ['required', 'string', 'max:1000'],
         ]);
 
+        $region = \App\Support\Country::current();
+        $symbol = $region['symbol'];
+        $currency = $region['currency'];
+
         $reference = 'NF-'.strtoupper(Str::random(8));
         $subtotal = ProductCart::subtotal();
         $orderItems = array_map(fn ($i) => [
             'name' => $i['product']->name,
-            'price' => (float) $i['product']->price,
+            'price' => (float) $i['unit'],
             'qty' => $i['qty'],
             'line' => $i['line'],
         ], $items);
@@ -130,6 +142,7 @@ class ShopController extends Controller
                     'address' => $data['address'],
                     'items' => $orderItems,
                     'subtotal' => $subtotal,
+                    'currency' => $currency,
                 ]);
             }
         } catch (Throwable $e) {
@@ -144,6 +157,7 @@ class ShopController extends Controller
                 items: $orderItems,
                 subtotal: $subtotal,
                 address: $data['address'],
+                symbol: $symbol,
             ));
         } catch (Throwable $e) {
             // Never block the confirmation on a mail failure.
@@ -155,6 +169,7 @@ class ShopController extends Controller
             'reference' => $reference,
             'name' => $data['name'],
             'total' => $subtotal,
+            'symbol' => $symbol,
         ]);
     }
 

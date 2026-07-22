@@ -80,7 +80,7 @@
                                     @endif
                                     <button type="button" data-rg-amount="{{ $amount }}"
                                             class="nf-rg-option w-full {{ (float) $amount === $defaultDaily ? 'is-selected' : '' }}">
-                                        £{{ $amount }}
+                                        {{ region('symbol') }}{{ $amount }}
                                     </button>
                                 </div>
                             @endforeach
@@ -91,7 +91,7 @@
                             <span class="flex items-center gap-1.5 border-r border-gray-200 pr-3 text-sm font-semibold text-navy-dark">
                                 🇬🇧 GBP
                             </span>
-                            <span class="text-xl font-bold text-navy-dark">£</span>
+                            <span class="text-xl font-bold text-navy-dark">{{ region('symbol') }}</span>
                             <input type="number" min="1" step="0.01" value="{{ $defaultDaily }}" data-rg-custom
                                    aria-label="Daily amount in pounds"
                                    class="w-full border-0 bg-transparent p-0 text-xl font-bold text-navy-dark focus:outline-none focus:ring-0">
@@ -101,7 +101,7 @@
                         <div class="mt-5 rounded-xl border border-brand/20 bg-brand/5 p-4 text-center">
                             <p class="text-sm font-bold text-navy-dark">Increase my donation on the 27th night</p>
                             <p class="mt-1 text-xs text-gray-600">
-                                Add <span class="font-bold text-brand" data-rg-boost-amount>£0.00</span> for the 27th night
+                                Add <span class="font-bold text-brand" data-rg-boost-amount>{{ region('symbol') }}0.00</span> for the 27th night
                             </p>
 
                             <div class="mt-3 flex flex-wrap justify-center gap-1 rounded-full bg-white p-1">
@@ -145,7 +145,7 @@
 
                     <div class="mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
                         <p class="text-base font-bold text-navy-dark">Total</p>
-                        <p class="text-xl font-extrabold text-brand" data-rg-total>£0.00</p>
+                        <p class="text-xl font-extrabold text-brand" data-rg-total>{{ region('symbol') }}0.00</p>
                     </div>
 
                     {{-- Continue --}}

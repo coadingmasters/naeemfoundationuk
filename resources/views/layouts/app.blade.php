@@ -6,7 +6,8 @@
     <title>@yield('title', config('app.name'))</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="antialiased">
+{{-- Active region drives client-side currency + phone defaults (read by app.js). --}}
+<body class="antialiased" data-currency="{{ region('symbol', '£') }}" data-region="{{ strtolower(region('code', 'GB')) }}">
     {{-- Pages with a light hero opt into a solid header via @section('header-solid', 'yes'). --}}
     @include('partials.header', ['solid' => trim($__env->yieldContent('header-solid')) === 'yes'])
 
@@ -15,6 +16,9 @@
     </main>
 
     @include('partials.footer')
+
+    {{-- First-visit region / currency chooser (UK · US · Canada) --}}
+    @include('partials.country-popup')
 
     {{-- Cookie consent (shows once until the visitor chooses) --}}
     @include('partials.cookie-consent')

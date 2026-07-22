@@ -36,24 +36,24 @@
                                         @endif
                                     </dt>
                                     <dd class="shrink-0 text-sm font-semibold text-navy-dark">
-                                        £{{ number_format($item['amount'] * $item['qty'], 2) }}
+                                        {{ money($item['amount'] * $item['qty']) }}
                                     </dd>
                                 </div>
                             @endforeach
 
                             <div class="flex items-center justify-between border-b border-navy/10 py-3">
                                 <dt class="text-sm text-gray-500">Subtotal</dt>
-                                <dd class="text-sm font-semibold text-navy-dark">£{{ number_format($subtotal, 2) }}</dd>
+                                <dd class="text-sm font-semibold text-navy-dark">{{ money($subtotal) }}</dd>
                             </div>
 
                             <div class="flex items-center justify-between border-b border-navy/10 py-3">
                                 <dt class="text-sm text-gray-500">Transaction fee</dt>
-                                <dd class="text-sm font-semibold text-navy-dark" data-fee-line>£{{ number_format($coverFee ? $feeAmount : 0, 2) }}</dd>
+                                <dd class="text-sm font-semibold text-navy-dark" data-fee-line>{{ money($coverFee ? $feeAmount : 0) }}</dd>
                             </div>
 
                             <div class="flex items-center justify-between py-3">
                                 <dt class="text-base font-bold text-navy-dark">Total</dt>
-                                <dd class="text-lg font-extrabold text-brand" data-total-line>£{{ number_format($total, 2) }}</dd>
+                                <dd class="text-lg font-extrabold text-brand" data-total-line>{{ money($total) }}</dd>
                             </div>
                         </dl>
 
@@ -101,7 +101,7 @@
                                             <input type="hidden" name="redirect" value="payment">
                                             <button type="submit" class="nf-addon">
                                                 <span class="nf-addon__info">
-                                                    <span class="nf-addon__price">£{{ $addon['amount'] }}</span>
+                                                    <span class="nf-addon__price">{{ region('symbol') }}{{ $addon['amount'] }}</span>
                                                     <span class="nf-addon__label">{{ $addon['cause'] }}</span>
                                                 </span>
                                                 <span class="nf-addon__add">Add +</span>
@@ -158,7 +158,7 @@
                                 <span class="text-xs leading-relaxed text-gray-600 sm:text-sm">
                                     We are charged a small fee of 1.4% on every transaction by our payment provider. Would you
                                     like to cover the transaction fee of
-                                    <span class="font-semibold text-navy-dark">£{{ number_format($feeAmount, 2) }}</span>
+                                    <span class="font-semibold text-navy-dark">{{ money($feeAmount) }}</span>
                                     so that we receive your full donation?
                                 </span>
                             </label>

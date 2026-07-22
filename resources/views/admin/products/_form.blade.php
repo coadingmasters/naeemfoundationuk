@@ -31,9 +31,21 @@
                         </select>
                     </div>
                     <div>
-                        <label for="price" class="mb-1.5 block text-sm font-semibold text-navy-dark">Price (£) <span class="text-red-500">*</span></label>
+                        <label for="price" class="mb-1.5 block text-sm font-semibold text-navy-dark">Price — UK (£) <span class="text-red-500">*</span></label>
                         <input id="price" name="price" type="number" step="0.01" min="0" value="{{ old('price', $product->price) }}" required
                                placeholder="19.99"
+                               class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
+                    </div>
+                    <div>
+                        <label for="price_usd" class="mb-1.5 block text-sm font-semibold text-navy-dark">Price — US ($) <span class="text-gray-400">(optional)</span></label>
+                        <input id="price_usd" name="price_usd" type="number" step="0.01" min="0" value="{{ old('price_usd', $product->price_usd) }}"
+                               placeholder="Same as UK if empty"
+                               class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
+                    </div>
+                    <div>
+                        <label for="price_cad" class="mb-1.5 block text-sm font-semibold text-navy-dark">Price — Canada (CA$) <span class="text-gray-400">(optional)</span></label>
+                        <input id="price_cad" name="price_cad" type="number" step="0.01" min="0" value="{{ old('price_cad', $product->price_cad) }}"
+                               placeholder="Same as UK if empty"
                                class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
                     </div>
                 </div>

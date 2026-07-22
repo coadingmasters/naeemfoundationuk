@@ -79,7 +79,7 @@
 
                     {{-- Price --}}
                     <div class="mt-5">
-                        <p class="mb-2 text-xs font-semibold text-gray-500">Price (£)</p>
+                        <p class="mb-2 text-xs font-semibold text-gray-500">Price ({{ region('symbol') }})</p>
                         <div class="flex items-center gap-2">
                             <input type="number" name="min" value="{{ $cur['min'] }}" min="0" max="{{ $maxPrice }}" placeholder="Min"
                                    class="h-10 w-full rounded-lg border border-gray-200 px-3 text-sm text-navy-dark outline-none focus:border-brand focus:ring-2 focus:ring-brand/25">
@@ -164,7 +164,7 @@
                                         <a href="{{ route('shop.show', $product) }}" class="transition-colors hover:text-brand">{{ $product->name }}</a>
                                     </h3>
                                     <div class="mt-2 flex items-baseline gap-2">
-                                        <span class="text-lg font-extrabold text-navy-dark">£{{ number_format($product->price, 2) }}</span>
+                                        <span class="text-lg font-extrabold text-navy-dark">{{ money($product->priceFor()) }}</span>
                                         @unless ($product->in_stock)
                                             <span class="text-xs font-semibold text-gray-400">&middot; Sold out</span>
                                         @endunless

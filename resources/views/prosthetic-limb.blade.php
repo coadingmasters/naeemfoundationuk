@@ -96,8 +96,8 @@
                 <h3 class="mt-8 text-xl font-bold text-navy-dark sm:text-2xl">Donation Details</h3>
                 <p class="mt-2 text-sm font-bold italic text-brand">“Minimum Target: One Limb, Maximum Impact”</p>
                 <p class="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    The cost of <span class="font-bold text-navy-dark">one complete prosthetic limb is £1,200</span>.
-                    Our goal is to raise <span class="font-bold text-navy-dark">£12,000</span>, which will provide
+                    The cost of <span class="font-bold text-navy-dark">one complete prosthetic limb is {{ region('symbol') }}1,200</span>.
+                    Our goal is to raise <span class="font-bold text-navy-dark">{{ region('symbol') }}12,000</span>, which will provide
                     <span class="font-bold text-navy-dark">10 life-changing prosthetic limbs</span>. By contributing, you
                     make a direct and tangible difference in the lives of those in need.
                 </p>

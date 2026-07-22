@@ -46,7 +46,7 @@
                     {{-- Status pill --}}
                     <div class="mt-8 inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-2xl bg-white px-6 py-4 shadow-lg shadow-black/5">
                         <span class="text-sm text-gray-600">
-                            Donation: <span class="font-bold text-navy-dark">£{{ number_format($total, 2) }}</span>
+                            Donation: <span class="font-bold text-navy-dark">{{ money($total) }}</span>
                         </span>
 
                         <span class="hidden h-5 w-px bg-gray-200 sm:block" aria-hidden="true"></span>

@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
 
+        // Share the visitor's active region (currency, phone, charity) with every view.
+        $middleware->web(append: [
+            \App\Http\Middleware\SetCountry::class,
+        ]);
+
         // Send unauthenticated visitors to the admin login, and already
         // authenticated visitors away from the guest-only login page.
         $middleware->redirectGuestsTo(fn () => route('admin.login'));

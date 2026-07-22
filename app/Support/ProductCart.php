@@ -29,11 +29,13 @@ class ProductCart
                 continue;
             }
             $product = $products[$id];
+            $unit = $product->priceFor(); // price in the visitor's active region
             $items[] = [
                 'id' => (int) $id,
                 'product' => $product,
                 'qty' => (int) $qty,
-                'line' => round((float) $product->price * (int) $qty, 2),
+                'unit' => $unit,
+                'line' => round($unit * (int) $qty, 2),
             ];
         }
 

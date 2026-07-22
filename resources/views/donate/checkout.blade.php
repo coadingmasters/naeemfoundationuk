@@ -49,7 +49,7 @@
                                 <div class="min-w-0 flex-1">
                                     <h3 class="truncate text-base font-bold text-navy-dark">{{ $item['cause'] }}</h3>
                                     <p class="text-xs text-gray-500">
-                                        £{{ number_format($item['amount'], 2) }} each
+                                        {{ money($item['amount']) }} each
                                         @if (($item['frequency'] ?? 'one-off') === 'monthly')
                                             <span class="font-semibold text-brand">/ monthly</span>
                                         @endif
@@ -58,7 +58,7 @@
                                     <div class="mt-1.5 flex items-center gap-3">
                                         @include('partials.cart-stepper', ['item' => $item])
                                         <span class="text-sm font-bold text-navy-dark">
-                                            £{{ number_format($item['amount'] * $item['qty'], 2) }}
+                                            {{ money($item['amount'] * $item['qty']) }}
                                         </span>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                     {{-- ===== Total ===== --}}
                     <div class="mt-4 flex items-center justify-between rounded-lg bg-white px-5 py-4">
                         <span class="text-lg font-bold text-navy-dark">Total</span>
-                        <span class="text-lg font-bold text-navy-dark">£{{ number_format($subtotal, 2) }}</span>
+                        <span class="text-lg font-bold text-navy-dark">{{ money($subtotal) }}</span>
                     </div>
                 @endif
 

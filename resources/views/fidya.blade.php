@@ -15,11 +15,12 @@
         ]);
     }
 
+    $sym = region('symbol');
     $donations = [
-        ['amount' => '£6.50 for two meals', 'note' => 'If you miss a single day of fasting for a valid reason.'],
-        ['amount' => '£32.50 for ten meals', 'note' => 'If you miss five days of fasting.'],
-        ['amount' => '£195 for sixty meals', 'note' => 'If you are unable to fast the entire month.'],
-        ['amount' => '£390 for Kaffarah', 'note' => 'To feed 60 individuals as compensation for intentionally not observing a fast.'],
+        ['amount' => $sym.'6.50 for two meals', 'note' => 'If you miss a single day of fasting for a valid reason.'],
+        ['amount' => $sym.'32.50 for ten meals', 'note' => 'If you miss five days of fasting.'],
+        ['amount' => $sym.'195 for sixty meals', 'note' => 'If you are unable to fast the entire month.'],
+        ['amount' => $sym.'390 for Kaffarah', 'note' => 'To feed 60 individuals as compensation for intentionally not observing a fast.'],
     ];
 @endphp
 
@@ -112,8 +113,8 @@
                     <div>
                         <h3 class="text-xl font-bold text-navy-dark">Fidya or Kaffarah</h3>
                         <p class="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
-                            The act of giving Fidya or Kaffarah through Naeem Foundation is straightforward, at £6.50 for
-                            each day you couldn't fast for a legitimate reason, or £390 for each day of fasting missed
+                            The act of giving Fidya or Kaffarah through Naeem Foundation is straightforward, at {{ region('symbol') }}6.50 for
+                            each day you couldn't fast for a legitimate reason, or {{ region('symbol') }}390 for each day of fasting missed
                             intentionally.
                         </p>
                         <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
@@ -128,7 +129,7 @@
                 <div class="mt-8 border-t border-brand/15 pt-6">
                     <h4 class="text-base font-bold text-navy-dark">Donation Options</h4>
                     <ul class="mt-3 space-y-2 text-sm text-gray-600 sm:text-base">
-                        <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Single Donations:</span> Suggested amounts (e.g. £50, £100, £250, £500).</span></li>
+                        <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Single Donations:</span> Suggested amounts (e.g. {{ region('symbol') }}50, {{ region('symbol') }}100, {{ region('symbol') }}250, {{ region('symbol') }}500).</span></li>
                         <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Recurring Donations:</span> Set up a monthly contribution to sustain ongoing projects.</span></li>
                         <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Currency Options:</span> PKR, GBP, USD, CAD, EUR.</span></li>
                     </ul>

@@ -21,6 +21,7 @@ class OrderReceipt extends Mailable
         public array $items,
         public float $subtotal,
         public string $address = '',
+        public string $symbol = '£',
     ) {}
 
     public function envelope(): Envelope

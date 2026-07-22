@@ -119,7 +119,7 @@
                 <div class="mt-8 border-t border-brand/15 pt-6">
                     <h4 class="text-base font-bold text-navy-dark">Donation Options</h4>
                     <ul class="mt-3 space-y-2 text-sm text-gray-600 sm:text-base">
-                        <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Single Donations:</span> Suggested amounts (e.g. £50, £100, £250, £500).</span></li>
+                        <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Single Donations:</span> Suggested amounts (e.g. {{ region('symbol') }}50, {{ region('symbol') }}100, {{ region('symbol') }}250, {{ region('symbol') }}500).</span></li>
                         <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Recurring Donations:</span> Set up a monthly contribution to sustain ongoing projects.</span></li>
                         <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Currency Options:</span> PKR, GBP, USD, CAD, EUR.</span></li>
                     </ul>

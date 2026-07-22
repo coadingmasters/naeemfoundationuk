@@ -35,7 +35,7 @@
                     <h1 class="mt-2 text-3xl font-extrabold leading-tight text-navy-dark sm:text-4xl">{{ $product->name }}</h1>
 
                     <div class="mt-4 flex items-center gap-3">
-                        <span class="text-3xl font-extrabold text-navy-dark">£{{ number_format($product->price, 2) }}</span>
+                        <span class="text-3xl font-extrabold text-navy-dark">{{ money($product->priceFor()) }}</span>
                         @if ($product->in_stock)
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
                                 <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span> In stock
@@ -89,7 +89,7 @@
                                 </a>
                                 <div class="p-4">
                                     <h3 class="truncate font-bold text-navy-dark"><a href="{{ route('shop.show', $r) }}" class="hover:text-brand">{{ $r->name }}</a></h3>
-                                    <p class="mt-1 font-extrabold text-navy-dark">£{{ number_format($r->price, 2) }}</p>
+                                    <p class="mt-1 font-extrabold text-navy-dark">{{ money($r->priceFor()) }}</p>
                                 </div>
                             </div>
                         @endforeach

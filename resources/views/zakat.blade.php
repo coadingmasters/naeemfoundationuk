@@ -52,10 +52,10 @@
 
                     {{-- Amounts --}}
                     <div class="mt-3 grid grid-cols-4 gap-2" data-choice-group>
-                        <button type="button" data-choice data-value="100" data-oneoff="100" data-monthly="25" class="nf-choice py-2">£100</button>
-                        <button type="button" data-choice data-value="240" data-oneoff="240" data-monthly="50" class="nf-choice is-selected py-2">£240</button>
-                        <button type="button" data-choice data-value="500" data-oneoff="500" data-monthly="100" class="nf-choice py-2">£500</button>
-                        <button type="button" data-choice data-value="other" class="nf-choice py-2">£Other</button>
+                        <button type="button" data-choice data-value="100" data-oneoff="100" data-monthly="25" class="nf-choice py-2">{{ region('symbol') }}100</button>
+                        <button type="button" data-choice data-value="240" data-oneoff="240" data-monthly="50" class="nf-choice is-selected py-2">{{ region('symbol') }}240</button>
+                        <button type="button" data-choice data-value="500" data-oneoff="500" data-monthly="100" class="nf-choice py-2">{{ region('symbol') }}500</button>
+                        <button type="button" data-choice data-value="other" class="nf-choice py-2">{{ region('symbol') }}Other</button>
                         <input type="hidden" name="amount" data-choice-input data-amount-input value="240">
                     </div>
 

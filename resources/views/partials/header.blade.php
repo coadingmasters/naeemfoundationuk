@@ -64,15 +64,33 @@
     <div class="nf-topbar" data-topbar>
         <div class="nf-header__bar flex h-9 items-center justify-between gap-3">
             <div class="flex min-w-0 items-center gap-3 sm:gap-4">
-                <a href="tel:+442070788118" class="nf-topbar__link inline-flex shrink-0">
+                <a href="tel:{{ preg_replace('/[^+0-9]/', '', region('phone')) }}" class="nf-topbar__link inline-flex shrink-0">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
-                    <span class="hidden sm:inline">Donation Line:</span> +44 20 7078 8118
+                    <span class="hidden sm:inline">Donation Line:</span> {{ region('phone') }}
                 </a>
                 <span class="nf-topbar__sep hidden md:inline-block"></span>
-                <span class="hidden truncate md:inline">Registered Charity No. <strong class="font-semibold text-white">1199466</strong></span>
+                <span class="hidden truncate md:inline">{{ region('charity_label') }} <strong class="font-semibold text-white">{{ region('charity_no') }}</strong></span>
             </div>
 
             <div class="flex shrink-0 items-center gap-3">
+                {{-- Region / currency switcher --}}
+                <details class="nf-region" data-region-switch>
+                    <summary class="nf-topbar__link inline-flex select-none items-center gap-1.5">
+                        <span class="text-sm leading-none">{{ region('flag') }}</span>
+                        <span class="font-semibold">{{ region('currency') }}</span>
+                        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </summary>
+                    <div class="nf-region__menu">
+                        @foreach ($regions as $r)
+                            <a href="{{ route('region.set', $r['code']) }}" class="nf-region__opt {{ $r['code'] === region('code') ? 'is-active' : '' }}">
+                                <span class="text-base leading-none">{{ $r['flag'] }}</span>
+                                <span class="flex-1">{{ $r['name'] }}</span>
+                                <span class="text-xs font-bold text-gray-400">{{ $r['symbol'] }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </details>
+                <span class="nf-topbar__sep hidden lg:inline-block"></span>
                 <a href="mailto:Contact@naeemfoundation.co.uk" class="nf-topbar__link hidden lg:inline-flex">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
                     Contact@naeemfoundation.co.uk
@@ -276,12 +294,12 @@
 
             {{-- Contact details, since the top bar sheds them on small screens. --}}
             <div class="nf-drawer__row mt-5 border-t border-gray-100 pt-4 text-xs text-gray-500">
-                <a href="tel:+442070788118" class="nf-topbar__link inline-flex font-semibold text-navy hover:text-brand">
+                <a href="tel:{{ preg_replace('/[^+0-9]/', '', region('phone')) }}" class="nf-topbar__link inline-flex font-semibold text-navy hover:text-brand">
                     <svg class="h-3.5 w-3.5 shrink-0 text-brand" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
-                    +44 20 7078 8118
+                    {{ region('phone') }}
                 </a>
                 <a href="mailto:Contact@naeemfoundation.co.uk" class="mt-2 block break-all hover:text-brand">Contact@naeemfoundation.co.uk</a>
-                <p class="mt-2">Registered Charity No. <strong class="text-navy">1199466</strong></p>
+                <p class="mt-2">{{ region('charity_label') }} <strong class="text-navy">{{ region('charity_no') }}</strong></p>
                 <div class="mt-3 flex items-center gap-2">
                     <a href="#" aria-label="Facebook" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.6l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.3-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H8v3h2v8h3Z"/></svg></a>
                     <a href="#" aria-label="Instagram" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>

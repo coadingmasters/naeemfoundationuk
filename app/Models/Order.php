@@ -14,6 +14,7 @@ class Order extends Model
         'address',
         'items',
         'subtotal',
+        'currency',
         'status',
     ];
 
@@ -23,5 +24,11 @@ class Order extends Model
             'items' => 'array',
             'subtotal' => 'decimal:2',
         ];
+    }
+
+    /** Display symbol for the currency this order was placed in. */
+    public function currencySymbol(): string
+    {
+        return ['GBP' => '£', 'USD' => '$', 'CAD' => 'CA$'][$this->currency] ?? '£';
     }
 }

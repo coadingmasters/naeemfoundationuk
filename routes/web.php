@@ -47,6 +47,15 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Region / currency chooser — sets the cookie the whole site reads, then returns.
+Route::get('/region/{code}', function (string $code) {
+    abort_unless(array_key_exists($code, config('countries.list')), 404);
+
+    return redirect()->back()->withCookie(
+        cookie()->forever(\App\Support\Country::COOKIE, $code)
+    );
+})->name('region.set');
+
 // "Who We Are" group
 Route::view('/about', 'about')->name('about');
 Route::view('/history', 'history')->name('history');

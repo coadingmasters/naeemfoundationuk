@@ -88,6 +88,8 @@ class ProductController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
             'category' => ['required', Rule::in(Product::CATEGORIES)],
             'price' => ['required', 'numeric', 'min:0', 'max:100000'],
+            'price_usd' => ['nullable', 'numeric', 'min:0', 'max:100000'],
+            'price_cad' => ['nullable', 'numeric', 'min:0', 'max:100000'],
             'badge' => ['nullable', 'string', 'max:40'],
             'image' => [$imageRequired ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],

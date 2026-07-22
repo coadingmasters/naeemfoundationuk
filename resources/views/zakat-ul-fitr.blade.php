@@ -75,7 +75,7 @@
                 {{-- How much is Fitrana --}}
                 <div class="nf-reveal flex flex-col justify-center rounded-2xl bg-navy px-6 py-8 text-center text-white sm:px-8">
                     <p class="text-sm font-semibold uppercase tracking-wider text-[#e9b9c6]">How much is Fitrana?</p>
-                    <p class="mt-3 text-5xl font-extrabold text-white">£5</p>
+                    <p class="mt-3 text-5xl font-extrabold text-white">{{ region('symbol') }}5</p>
                     <p class="mt-1 text-sm text-white/70">recommended, per person</p>
                     <p class="mt-4 text-sm leading-relaxed text-white/80">
                         Give more to extend your support to more families this Eid.

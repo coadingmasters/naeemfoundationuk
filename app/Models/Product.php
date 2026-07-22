@@ -17,6 +17,8 @@ class Product extends Model
         'description',
         'category',
         'price',
+        'price_usd',
+        'price_cad',
         'image',
         'badge',
         'in_stock',
@@ -28,10 +30,24 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'price_usd' => 'decimal:2',
+            'price_cad' => 'decimal:2',
             'in_stock' => 'boolean',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    /** Price for a region code (US/CA/GB), falling back to the GBP base when unset. */
+    public function priceFor(?string $code = null): float
+    {
+        $code = $code ?: \App\Support\Country::code();
+
+        return (float) match ($code) {
+            'US' => $this->price_usd ?? $this->price,
+            'CA' => $this->price_cad ?? $this->price,
+            default => $this->price,
+        };
     }
 
     public function getRouteKeyName(): string

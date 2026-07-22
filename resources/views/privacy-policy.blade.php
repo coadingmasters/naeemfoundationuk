@@ -80,7 +80,7 @@
                     </p>
                     <ul class="mt-2 list-disc space-y-1 pl-6">
                         <li>Naeem Foundation is a registered charity in the UK.</li>
-                        <li>Donation Line: +44 20 7078 8118</li>
+                        <li>Donation Line: {{ region('phone') }}</li>
                         <li>Our registered address is: 2 Falcon Gate Shire Park Welwyn Garden City, AL7 1TW, United Kingdom.</li>
                         <li>Donation Line: +44 2070788118 or +44 7960185682.</li>
                     </ul>

@@ -40,9 +40,9 @@
         @foreach ($presets as $i => $amount)
             <button type="button" data-choice data-value="{{ $amount }}"
                     data-oneoff="{{ $amount }}" data-monthly="{{ $monthlyPresets[$i] ?? $amount }}"
-                    class="nf-choice py-2 {{ $amount === $defaultAmount ? 'is-selected' : '' }}">£{{ $amount }}</button>
+                    class="nf-choice py-2 {{ $amount === $defaultAmount ? 'is-selected' : '' }}">{{ region('symbol') }}{{ $amount }}</button>
         @endforeach
-        <button type="button" data-choice data-value="other" class="nf-choice py-2">£Other</button>
+        <button type="button" data-choice data-value="other" class="nf-choice py-2">Other</button>
         <input type="hidden" name="amount" data-choice-input data-amount-input value="{{ $defaultAmount }}">
     </div>
 

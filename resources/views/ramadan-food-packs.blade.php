@@ -105,7 +105,7 @@
             </div>
             <div class="mt-8 grid gap-5 sm:grid-cols-3">
                 <div class="rounded-2xl bg-white/5 p-6 text-center ring-1 ring-white/10">
-                    <p class="text-4xl font-extrabold text-white">£40</p>
+                    <p class="text-4xl font-extrabold text-white">{{ region('symbol') }}40</p>
                     <p class="mt-1 text-sm text-white/70">feeds one family for the entire month</p>
                 </div>
                 <div class="rounded-2xl bg-white/5 p-6 text-center ring-1 ring-white/10">

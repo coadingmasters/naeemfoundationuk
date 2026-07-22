@@ -93,7 +93,7 @@
                 </div>
 
                 <div class="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-white/85">
-                    <span>+44 20 7078 8118</span>
+                    <span>{{ region('phone') }}</span>
                     <span>naeemfoundation.co.uk</span>
                 </div>
             </div>

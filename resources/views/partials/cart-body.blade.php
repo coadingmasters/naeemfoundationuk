@@ -36,14 +36,14 @@
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-bold text-navy-dark">{{ $item['cause'] }}</p>
                             <p class="text-xs text-gray-500">
-                                £{{ number_format($item['amount'], 2) }} each
+                                {{ money($item['amount']) }} each
                                 @if (($item['frequency'] ?? 'one-off') === 'monthly')
                                     <span class="font-semibold text-brand">/ monthly</span>
                                 @endif
                             </p>
                             <div class="mt-1.5 flex items-center justify-between gap-2">
                                 @include('partials.cart-stepper', ['item' => $item])
-                                <span class="text-sm font-bold text-navy-dark">£{{ number_format($item['amount'] * $item['qty'], 2) }}</span>
+                                <span class="text-sm font-bold text-navy-dark">{{ money($item['amount'] * $item['qty']) }}</span>
                             </div>
                         </div>
                         <form method="POST" action="{{ route('donate.remove', $item['id']) }}" data-cart-remove class="shrink-0">
@@ -60,7 +60,7 @@
             <div class="px-4 py-3">
                 <div class="flex items-center justify-between text-sm">
                     <span class="font-semibold text-gray-600">Donations subtotal</span>
-                    <span class="text-base font-extrabold text-navy-dark">£{{ number_format($cartSubtotal, 2) }}</span>
+                    <span class="text-base font-extrabold text-navy-dark">{{ money($cartSubtotal) }}</span>
                 </div>
                 <a href="{{ route('donate.checkout') }}" class="btn-brand mt-2.5 w-full justify-center py-2.5">
                     Complete Donation
@@ -82,8 +82,8 @@
                         <img src="{{ asset($p->image) }}" alt="" class="h-12 w-12 shrink-0 rounded-md object-cover">
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-bold text-navy-dark">{{ $p->name }}</p>
-                            <p class="text-xs text-gray-500">£{{ number_format($p->price, 2) }} &times; {{ $item['qty'] }}</p>
-                            <p class="mt-0.5 text-sm font-bold text-navy-dark">£{{ number_format($item['line'], 2) }}</p>
+                            <p class="text-xs text-gray-500">{{ money($item['unit']) }} &times; {{ $item['qty'] }}</p>
+                            <p class="mt-0.5 text-sm font-bold text-navy-dark">{{ money($item['line']) }}</p>
                         </div>
                         <form method="POST" action="{{ route('shop.cart.remove', $item['id']) }}" data-cart-remove class="shrink-0">
                             @csrf
@@ -99,7 +99,7 @@
             <div class="px-4 py-3">
                 <div class="flex items-center justify-between text-sm">
                     <span class="font-semibold text-gray-600">Shop subtotal</span>
-                    <span class="text-base font-extrabold text-navy-dark">£{{ number_format($bagSubtotal, 2) }}</span>
+                    <span class="text-base font-extrabold text-navy-dark">{{ money($bagSubtotal) }}</span>
                 </div>
                 <div class="mt-2.5 grid grid-cols-2 gap-2">
                     <a href="{{ route('shop.cart') }}" class="inline-flex items-center justify-center rounded-md border border-gray-200 px-3 py-2.5 text-sm font-semibold text-navy transition hover:bg-gray-50">View bag</a>

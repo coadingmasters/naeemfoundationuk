@@ -67,13 +67,13 @@
                                         <span class="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-navy text-[10px] font-bold text-white">{{ $item['qty'] }}</span>
                                     </span>
                                     <span class="min-w-0 flex-1 truncate text-sm text-navy-dark">{{ $p->name }}</span>
-                                    <span class="text-sm font-semibold text-navy-dark">£{{ number_format($item['line'], 2) }}</span>
+                                    <span class="text-sm font-semibold text-navy-dark">{{ money($item['line']) }}</span>
                                 </div>
                             @endforeach
                         </div>
                         <div class="mt-4 flex justify-between border-t border-gray-100 pt-4 text-base">
                             <span class="font-bold text-navy-dark">Total</span>
-                            <span class="font-extrabold text-navy-dark">£{{ number_format($subtotal, 2) }}</span>
+                            <span class="font-extrabold text-navy-dark">{{ money($subtotal) }}</span>
                         </div>
                         <button type="submit" class="btn-brand mt-5 w-full justify-center py-3 text-base">
                             Place order
