@@ -54,6 +54,9 @@
 {{-- Shared delete-confirmation popup (used by resource list Delete buttons) --}}
 @include('admin.partials.delete-modal')
 
+{{-- "Choose a region" popup — when a super admin adds content in "all regions" mode --}}
+@include('admin.partials.region-prompt')
+
 <script>
     (function () {
         const root = document.querySelector('[x-admin]');

@@ -45,9 +45,16 @@ class SetAdminRegion
             $name = (string) ($request->route()?->getName() ?? '');
 
             if (in_array($action, ['create', 'store'], true) && ! str_starts_with($name, 'admin.users')) {
-                return redirect()
-                    ->back(fallback: route('admin.dashboard'))
-                    ->with('error', 'Please choose a region from the top bar before adding content.');
+                // Where to continue once they pick a region (the create page they wanted).
+                $to = $request->isMethod('get') ? $request->url() : url()->previous();
+
+                // Land on the resource index (never blocked) and show the region popup there.
+                $indexName = preg_replace('/\.(create|store)$/', '.index', $name);
+                $target = \Illuminate\Support\Facades\Route::has($indexName)
+                    ? route($indexName)
+                    : route('admin.dashboard');
+
+                return redirect($target)->with('region_prompt', $to);
             }
         }
 

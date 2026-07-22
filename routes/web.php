@@ -168,7 +168,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
         // Super-admin region context switch (All / GB / US / CA).
-        Route::get('region/{code}', function (string $code) {
+        Route::get('region/{code}', function (string $code, \Illuminate\Http\Request $request) {
             $user = \Illuminate\Support\Facades\Auth::user();
             abort_unless($user instanceof \App\Models\User && $user->isSuperAdmin(), 403);
 
@@ -176,6 +176,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 session()->forget('admin_region');
             } elseif (array_key_exists($code, config('countries.list', []))) {
                 session(['admin_region' => $code]);
+            }
+
+            // Continue to a requested admin page (e.g. the create page they came from).
+            $to = (string) $request->query('to', '');
+            if ($to !== '' && str_starts_with($to, url('/admin'))) {
+                return redirect($to);
             }
 
             return redirect()->back();
