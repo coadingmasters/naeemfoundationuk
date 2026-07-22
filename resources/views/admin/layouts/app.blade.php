@@ -57,6 +57,9 @@
 {{-- "Choose a region" popup — when a super admin adds content in "all regions" mode --}}
 @include('admin.partials.region-prompt')
 
+{{-- Animated success/error toasts --}}
+@include('admin.partials.toast')
+
 <script>
     (function () {
         const root = document.querySelector('[x-admin]');

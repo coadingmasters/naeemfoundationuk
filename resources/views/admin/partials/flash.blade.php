@@ -1,16 +1,4 @@
-@if (session('success'))
-    <div class="mb-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-        <svg class="mt-0.5 h-5 w-5 shrink-0 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>{{ session('success') }}</span>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-        <svg class="mt-0.5 h-5 w-5 shrink-0 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5m0 3h.01M10.3 3.86l-7.6 13A1.5 1.5 0 0 0 4 19h16a1.5 1.5 0 0 0 1.3-2.14l-7.6-13a1.5 1.5 0 0 0-2.6 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>{{ session('error') }}</span>
-    </div>
-@endif
+{{-- success/error flashes now render as animated toasts (admin.partials.toast). --}}
 
 @if ($errors->any())
     <div class="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
