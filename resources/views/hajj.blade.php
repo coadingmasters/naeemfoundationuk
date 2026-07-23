@@ -274,7 +274,7 @@
 
                         <div>
                             <label for="phone" class="mb-1.5 block text-sm font-semibold text-navy-dark">Contact number with country code <span class="text-red-500">*</span></label>
-                            <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" required placeholder="+44 …"
+                            <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" required
                                    class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
                         </div>
 
@@ -291,14 +291,15 @@
                 </div>
 
                 {{-- Brochure preview + download --}}
-                <div class="rounded-2xl bg-white p-6 shadow-xl sm:p-8">
+                <div class="flex flex-col rounded-2xl bg-white p-6 shadow-xl sm:p-8">
                     <h3 class="text-lg font-bold text-navy-dark">Elite Hajj 2027 Brochure</h3>
                     <p class="mt-1 text-sm text-gray-500">Preview the full package details, inclusions and pricing.</p>
 
-                    <div class="mt-5 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                    {{-- Flexes to match the form card's height, so neither column has empty space. --}}
+                    <div class="mt-5 min-h-[16rem] flex-1 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
                         <object data="{{ $brochure }}#toolbar=0&view=FitH" type="application/pdf"
-                                class="h-[420px] w-full">
-                            <div class="flex h-[420px] flex-col items-center justify-center gap-3 p-6 text-center">
+                                class="h-full min-h-[16rem] w-full">
+                            <div class="flex h-full min-h-[16rem] flex-col items-center justify-center gap-3 p-6 text-center">
                                 <span class="grid h-14 w-14 place-items-center rounded-full bg-cream text-brand">
                                     <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" stroke-linejoin="round"/><path d="M14 3v5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </span>
