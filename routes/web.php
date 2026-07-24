@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AppealController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\HajjRegistrationController as AdminHajjRegistrationController;
 use App\Http\Controllers\Admin\VolunteerController as AdminVolunteerController;
 use App\Http\Controllers\Admin\HajjVideoController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\CambodiaEducationController;
 use App\Http\Controllers\CommunityCentreController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\ProductCartController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\EidGiftsController;
@@ -107,7 +109,7 @@ Route::post('/shop/cart/add', [ProductCartController::class, 'add'])->name('shop
 Route::patch('/shop/cart/{id}', [ProductCartController::class, 'update'])->name('shop.cart.update');
 Route::delete('/shop/cart/{id}', [ProductCartController::class, 'remove'])->name('shop.cart.remove');
 Route::get('/shop/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
-Route::post('/shop/checkout', [ShopController::class, 'placeOrder'])->name('shop.checkout.place');
+// Orders are created only after PayPal confirms payment — see PayPalController.
 Route::get('/shop/order-complete', [ShopController::class, 'orderComplete'])->name('shop.order-complete');
 Route::get('/shop/{product}', [ShopController::class, 'show'])->name('shop.show');
 
@@ -129,8 +131,18 @@ Route::patch('/donate/quantity/{id}', [DonationController::class, 'quantity'])->
 Route::get('/donate/checkout', [DonationController::class, 'checkout'])->name('donate.checkout');
 Route::post('/donate/checkout', [DonationController::class, 'store'])->name('donate.store');
 Route::get('/donate/payment', [DonationController::class, 'payment'])->name('donate.payment');
-Route::post('/donate/payment', [DonationController::class, 'processPayment'])->name('donate.payment.process');
+// Donations are marked paid only after PayPal confirms the capture — see PayPalController.
 Route::get('/donate/thank-you', [DonationController::class, 'thankYou'])->name('donate.thank-you');
+
+// PayPal — Smart Buttons call these over AJAX. The amount is never sent by the
+// browser; it is recalculated server-side from the live basket on every call.
+Route::post('/donate/paypal/order', [PayPalController::class, 'donationOrder'])->name('paypal.donation.order');
+Route::post('/donate/paypal/capture', [PayPalController::class, 'donationCapture'])->name('paypal.donation.capture');
+Route::post('/shop/paypal/order', [PayPalController::class, 'shopOrder'])->name('paypal.shop.order');
+Route::post('/shop/paypal/capture', [PayPalController::class, 'shopCapture'])->name('paypal.shop.capture');
+
+// Server-to-server notification from PayPal (CSRF-exempt, signature-verified).
+Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])->name('paypal.webhook');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
 foreach (config('giving') as $group) {
@@ -202,6 +214,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('products', AdminProductController::class)
             ->except(['show']);
+
+        // Donations taken through the website (read + detail + delete + export).
+        Route::get('donations', [AdminDonationController::class, 'index'])->name('donations.index');
+        Route::get('donations/export', [AdminDonationController::class, 'export'])->name('donations.export');
+        Route::get('donations/{donation}', [AdminDonationController::class, 'show'])->name('donations.show');
+        Route::delete('donations/{donation}', [AdminDonationController::class, 'destroy'])->name('donations.destroy');
 
         // Shop orders placed through checkout (read + status + delete + export).
         Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');

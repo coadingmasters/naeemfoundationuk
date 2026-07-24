@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\DonationReceipt;
 use App\Models\Donation;
 use App\Support\DonationCart;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -23,9 +20,6 @@ class DonationController extends Controller
         ['cause' => 'Gaza Children', 'amount' => 20],
         ['cause' => 'Gaza Children Plus', 'amount' => 25],
     ];
-
-    /** Card fields that must never be flashed back into the session. */
-    private const SENSITIVE = ['card_number', 'cvc'];
 
     /**
      * Add a donation line to the basket.
@@ -226,112 +220,7 @@ class DonationController extends Controller
             'coverFee' => $coverFee,
             'total' => $subtotal + ($coverFee ? $feeAmount : 0),
             'addons' => self::ADDONS,
-            'months' => $this->months(),
-            'years' => range((int) date('Y'), (int) date('Y') + 15),
         ]);
-    }
-
-    /** Totals recalculated from the live basket. */
-    private function summary(bool $coverFee): array
-    {
-        return [
-            'items' => DonationCart::items(),
-            'subtotal' => DonationCart::subtotal(),
-            'fee' => $coverFee ? DonationCart::fee() : 0.0,
-            'total' => DonationCart::total($coverFee),
-        ];
-    }
-
-    /**
-     * Validate the card and complete the donation.
-     *
-     * SECURITY: card details are validated for format only. They are never
-     * persisted, logged, or flashed back to the session. When a real gateway
-     * (Stripe, etc.) is connected, replace the fields with the provider's
-     * hosted elements so raw card data never reaches this server at all.
-     */
-    public function processPayment(Request $request): RedirectResponse
-    {
-        $donation = session('donation');
-
-        if (! $donation) {
-            return redirect()->route('donate.checkout');
-        }
-
-        if (DonationCart::isEmpty()) {
-            return redirect()
-                ->route('donate.checkout')
-                ->withErrors(['cart' => 'Your contribution is empty. Please add a donation first.']);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'card_name' => ['required', 'string', 'max:120'],
-            'card_number' => ['required', 'string'],
-            'expiry_month' => ['required', 'integer', 'min:1', 'max:12'],
-            'expiry_year' => ['required', 'integer', 'min:'.date('Y'), 'max:'.(date('Y') + 20)],
-            'cvc' => ['required', 'digits_between:3,4'],
-        ]);
-
-        $validator->after(function ($validator) use ($request) {
-            $digits = preg_replace('/\D/', '', (string) $request->input('card_number'));
-
-            if (strlen($digits) < 13 || strlen($digits) > 19 || ! $this->passesLuhn($digits)) {
-                $validator->errors()->add('card_number', 'Please enter a valid card number.');
-            }
-
-            $month = (int) $request->input('expiry_month');
-            $year = (int) $request->input('expiry_year');
-
-            if ($year === (int) date('Y') && $month > 0 && $month < (int) date('n')) {
-                $validator->errors()->add('expiry_month', 'This card has expired.');
-            }
-        });
-
-        if ($validator->fails()) {
-            // Never flash the card number or CVC back into the session.
-            return back()
-                ->withErrors($validator)
-                ->withInput($request->except(self::SENSITIVE));
-        }
-
-        // The fee choice is made here on the payment step. Recalculate from the
-        // live basket so a late edit can never be mischarged.
-        $coverFee = $request->boolean('cover_fee');
-        $summary = $this->summary($coverFee);
-
-        // --- Gateway charge would happen here, using a tokenised card. ---
-
-        try {
-            if (Schema::hasTable('donations')) {
-                // Use a model instance so the `items` array cast is applied.
-                Donation::where('reference', $donation['reference'])
-                    ->first()
-                    ?->fill([
-                        'items' => $summary['items'],
-                        'subtotal' => $summary['subtotal'],
-                        'fee' => $summary['fee'],
-                        'total' => $summary['total'],
-                        'cover_fee' => $coverFee,
-                        'status' => 'paid',
-                    ])
-                    ->save();
-            }
-        } catch (Throwable $e) {
-            // Payment confirmation should not fail on a persistence error.
-        }
-
-        // Email the donor a professional receipt (never blocks the flow if it fails).
-        $this->sendReceipt($donation, $summary, $coverFee);
-
-        // Payment succeeded — only now is it safe to empty the basket.
-        DonationCart::clear();
-        session()->forget('donation');
-        session(['donation_completed' => [
-            'reference' => $donation['reference'],
-            'total' => $summary['total'],
-        ]]);
-
-        return redirect()->route('donate.thank-you');
     }
 
     /** Final confirmation screen. */
@@ -344,67 +233,5 @@ class DonationController extends Controller
         }
 
         return view('donate.thank-you', $completed);
-    }
-
-    /** Email the donor their receipt. Failures are swallowed so a mail outage
-     *  never breaks a completed donation. */
-    private function sendReceipt(array $donation, array $summary, bool $coverFee): void
-    {
-        $details = $donation['details'] ?? [];
-        $email = $details['email'] ?? null;
-
-        if (! $email) {
-            return;
-        }
-
-        try {
-            Mail::to($email)->send(new DonationReceipt(
-                reference: $donation['reference'],
-                name: trim(($details['first_name'] ?? '').' '.($details['last_name'] ?? '')),
-                items: $summary['items'],
-                subtotal: (float) $summary['subtotal'],
-                fee: (float) $summary['fee'],
-                total: (float) $summary['total'],
-                giftAid: (bool) ($details['gift_aid'] ?? false),
-                currencySymbol: ['GBP' => '£', 'USD' => '$', 'CAD' => 'CA$'][$donation['currency'] ?? 'GBP'] ?? '£',
-            ));
-        } catch (Throwable $e) {
-            // Mail transport unavailable — the donation still completes.
-        }
-    }
-
-    /** Standard Luhn (mod 10) checksum used by all major card schemes. */
-    private function passesLuhn(string $number): bool
-    {
-        $sum = 0;
-        $double = false;
-
-        for ($i = strlen($number) - 1; $i >= 0; $i--) {
-            $digit = (int) $number[$i];
-
-            if ($double) {
-                $digit *= 2;
-                if ($digit > 9) {
-                    $digit -= 9;
-                }
-            }
-
-            $sum += $digit;
-            $double = ! $double;
-        }
-
-        return $sum % 10 === 0;
-    }
-
-    /** @return array<int, string> */
-    private function months(): array
-    {
-        $months = [];
-
-        foreach (range(1, 12) as $m) {
-            $months[$m] = str_pad((string) $m, 2, '0', STR_PAD_LEFT).' — '.date('F', mktime(0, 0, 0, $m, 1));
-        }
-
-        return $months;
     }
 }

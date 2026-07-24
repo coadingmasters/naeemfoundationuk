@@ -15,7 +15,9 @@
 
             <h1 class="text-3xl font-extrabold text-navy-dark sm:text-4xl">Checkout</h1>
 
-            <form method="POST" action="{{ route('shop.checkout.place') }}" class="mt-8 grid gap-8 lg:grid-cols-3 lg:items-start">
+            {{-- Details are collected here, then sent with the PayPal order.
+                 There is no submit button — payment is the only way forward. --}}
+            <form data-shop-form onsubmit="return false" class="mt-8 grid gap-8 lg:grid-cols-3 lg:items-start">
                 @csrf
 
                 {{-- Details --}}
@@ -51,9 +53,9 @@
                         <div class="mt-6 rounded-xl bg-cream/70 p-4 text-sm text-gray-600 ring-1 ring-navy/10">
                             <p class="flex items-center gap-2 font-semibold text-navy-dark">
                                 <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-                                Card payment
+                                Secure payment
                             </p>
-                            <p class="mt-1 text-xs">Place your order now and our team will confirm the total (incl. delivery) and take secure payment by phone or a payment link.</p>
+                            <p class="mt-1 text-xs">Pay by PayPal or card. Payment is handled entirely by PayPal &mdash; your card details never reach our servers.</p>
                         </div>
                     </div>
                 </div>
@@ -79,10 +81,26 @@
                             <span class="font-bold text-navy-dark">Total</span>
                             <span class="font-extrabold text-navy-dark">{{ money($subtotal) }}</span>
                         </div>
-                        <button type="submit" class="btn-brand mt-5 w-full justify-center py-3 text-base">
-                            Place order
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
+                        {{-- PayPal Smart Buttons --}}
+                        <div class="mt-5"
+                             data-paypal
+                             data-form="[data-shop-form]"
+                             data-order-url="{{ route('paypal.shop.order') }}"
+                             data-capture-url="{{ route('paypal.shop.capture') }}">
+
+                            <div data-paypal-error
+                                 class="mb-3 hidden rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
+
+                            <div data-paypal-buttons class="min-h-[3rem]"></div>
+
+                            <div data-paypal-busy class="mt-3 hidden items-center justify-center gap-2 text-sm font-semibold text-navy">
+                                <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                    <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z"/>
+                                </svg>
+                                Completing your order, please wait...
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -90,3 +108,7 @@
     </section>
 
 @endsection
+
+@push('scripts')
+    @include('partials.paypal-sdk')
+@endpush

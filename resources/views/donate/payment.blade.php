@@ -147,10 +147,7 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('donate.payment.process') }}" class="mt-5" data-payment-form autocomplete="off">
-                            @csrf
-                            <input type="hidden" name="cover_fee_present" value="1">
-
+                        <div class="mt-5">
                             {{-- Cover the transaction fee --}}
                             <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-navy/15 bg-cream/60 p-4">
                                 <input type="checkbox" name="cover_fee" value="1" data-cover-fee @checked($coverFee)
@@ -163,82 +160,32 @@
                                 </span>
                             </label>
 
-                            {{-- Name on card --}}
-                            <div class="mt-6">
-                                <label for="card_name" class="mb-1.5 block text-xs font-bold text-navy">Name on card</label>
-                                <input id="card_name" type="text" name="card_name" value="{{ old('card_name') }}"
-                                       placeholder="Enter your name" autocomplete="cc-name" required class="nf-pay-input">
-                                @error('card_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                            </div>
 
-                            {{-- Card number --}}
-                            <div class="mt-5">
-                                <label for="card_number" class="mb-1.5 block text-xs font-bold text-navy">Card number</label>
-                                <input id="card_number" type="text" name="card_number" inputmode="numeric"
-                                       placeholder="1234 5678 9012 3456" maxlength="23" autocomplete="cc-number"
-                                       required data-card-number class="nf-pay-input">
-                                @error('card_number') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                            </div>
+                            {{-- PayPal Smart Buttons — PayPal hosts the whole
+                                 payment, so card details never touch our server. --}}
+                            <div class="mt-7"
+                                 data-paypal
+                                 data-order-url="{{ route('paypal.donation.order') }}"
+                                 data-capture-url="{{ route('paypal.donation.capture') }}">
 
-                            {{-- Expiry + CVC on one row --}}
-                            <div class="mt-5 grid gap-4 sm:grid-cols-3">
-                                <div class="sm:col-span-2">
-                                    <span class="mb-1.5 block text-xs font-bold text-navy">Expiry date</span>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        {{-- Month --}}
-                                        <div class="nf-cselect h-11 rounded-md border border-navy/20 bg-white" data-cselect>
-                                            <button type="button" class="nf-cselect__btn {{ old('expiry_month') ? '' : 'nf-cselect__btn--placeholder' }}"
-                                                    data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
-                                                <span data-cselect-label>{{ old('expiry_month') ? $months[(int) old('expiry_month')] : 'Month' }}</span>
-                                                <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                            <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
-                                                @foreach ($months as $num => $label)
-                                                    <li class="nf-cselect__opt {{ (int) old('expiry_month') === $num ? 'is-selected' : '' }}" role="option" data-value="{{ $num }}">{{ $label }}</li>
-                                                @endforeach
-                                            </ul>
-                                            <input type="hidden" name="expiry_month" data-cselect-input value="{{ old('expiry_month') }}">
-                                        </div>
+                                <p class="mb-3 text-xs font-bold text-navy">Choose how to pay</p>
 
-                                        {{-- Year --}}
-                                        <div class="nf-cselect h-11 rounded-md border border-navy/20 bg-white" data-cselect>
-                                            <button type="button" class="nf-cselect__btn {{ old('expiry_year') ? '' : 'nf-cselect__btn--placeholder' }}"
-                                                    data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
-                                                <span data-cselect-label>{{ old('expiry_year') ?: 'Year' }}</span>
-                                                <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                            <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
-                                                @foreach ($years as $year)
-                                                    <li class="nf-cselect__opt {{ (int) old('expiry_year') === $year ? 'is-selected' : '' }}" role="option" data-value="{{ $year }}">{{ $year }}</li>
-                                                @endforeach
-                                            </ul>
-                                            <input type="hidden" name="expiry_year" data-cselect-input value="{{ old('expiry_year') }}">
-                                        </div>
-                                    </div>
-                                    @error('expiry_month') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                                    @error('expiry_year') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                                </div>
+                                <div data-paypal-error
+                                     class="mb-3 hidden rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
 
-                                {{-- CVC --}}
-                                <div>
-                                    <label for="cvc" class="mb-1.5 block text-xs font-bold text-navy">Security code</label>
-                                    <input id="cvc" type="text" name="cvc" inputmode="numeric" maxlength="4"
-                                           placeholder="CVC" autocomplete="cc-csc" required data-cvc class="nf-pay-input">
-                                    @error('cvc') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                                </div>
-                            </div>
+                                {{-- PayPal renders its buttons in here --}}
+                                <div data-paypal-buttons class="min-h-[3rem]"></div>
 
-                            {{-- Actions --}}
-                            <div class="mt-8 flex flex-col gap-3 sm:flex-row-reverse sm:items-center">
-                                <button type="submit" data-payment-submit
-                                        class="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-navy px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-navy-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 sm:flex-none">
-                                    <svg data-payment-spinner class="hidden h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                <div data-paypal-busy class="mt-3 hidden items-center justify-center gap-2 text-sm font-semibold text-navy">
+                                    <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                         <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z"/>
                                     </svg>
-                                    <span data-payment-label>Complete Your Donation</span>
-                                </button>
+                                    Completing your donation, please wait...
+                                </div>
+                            </div>
 
+                            <div class="mt-6">
                                 <a href="{{ route('donate.checkout') }}"
                                    class="inline-flex items-center justify-center rounded-md border border-navy/20 px-6 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white">
                                     Cancel
@@ -249,9 +196,9 @@
                                 <svg class="h-4 w-4 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M12 3l7 4v5c0 4.4-3 8.4-7 9-4-.6-7-4.6-7-9V7l7-4z" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
-                                Your payment is encrypted and secure. We never store your card details.
+                                Payment is handled entirely by PayPal. Your card details never reach our servers.
                             </p>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
@@ -260,3 +207,7 @@
     </section>
 
 @endsection
+
+@push('scripts')
+    @include('partials.paypal-sdk')
+@endpush

@@ -2,15 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\OrderReceipt;
-use App\Models\Order;
 use App\Models\Product;
 use App\Support\ProductCart;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use Throwable;
 
 class ShopController extends Controller
 {
@@ -102,76 +96,6 @@ class ShopController extends Controller
         return view('shop.checkout', [
             'items' => $items,
             'subtotal' => ProductCart::subtotal(),
-        ]);
-    }
-
-    public function placeOrder(Request $request)
-    {
-        $items = ProductCart::items();
-        if (empty($items)) {
-            return redirect()->route('shop.cart');
-        }
-
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'phone' => ['required', 'string', 'max:40'],
-            'address' => ['required', 'string', 'max:1000'],
-            'postcode' => ['required', 'string', 'max:20'],
-        ]);
-
-        $region = \App\Support\Country::current();
-        $symbol = $region['symbol'];
-        $currency = $region['currency'];
-
-        $reference = 'NF-'.strtoupper(Str::random(8));
-        $subtotal = ProductCart::subtotal();
-        $orderItems = array_map(fn ($i) => [
-            'name' => $i['product']->name,
-            'price' => (float) $i['unit'],
-            'qty' => $i['qty'],
-            'line' => $i['line'],
-        ], $items);
-
-        try {
-            if (Schema::hasTable('orders')) {
-                Order::create([
-                    'reference' => $reference,
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'phone' => $data['phone'],
-                    'address' => $data['address'],
-                    'postcode' => $data['postcode'],
-                    'items' => $orderItems,
-                    'subtotal' => $subtotal,
-                    'currency' => $currency,
-                ]);
-            }
-        } catch (Throwable $e) {
-            // Never block the confirmation on a storage hiccup.
-        }
-
-        // Confirmation email (same system as the donation receipt).
-        try {
-            Mail::to($data['email'])->send(new OrderReceipt(
-                reference: $reference,
-                name: $data['name'],
-                items: $orderItems,
-                subtotal: $subtotal,
-                address: $data['address'],
-                symbol: $symbol,
-            ));
-        } catch (Throwable $e) {
-            // Never block the confirmation on a mail failure.
-        }
-
-        ProductCart::clear();
-
-        return redirect()->route('shop.order-complete')->with('order', [
-            'reference' => $reference,
-            'name' => $data['name'],
-            'total' => $subtotal,
-            'symbol' => $symbol,
         ]);
     }
 

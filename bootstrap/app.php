@@ -23,6 +23,12 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\SetCountry::class,
         ]);
 
+        // PayPal posts server-to-server and has no CSRF token. The request is
+        // instead proven genuine by verifying its signature against PayPal.
+        $middleware->validateCsrfTokens(except: [
+            'paypal/webhook',
+        ]);
+
         // Send unauthenticated visitors to the admin login, and already
         // authenticated visitors away from the guest-only login page.
         $middleware->redirectGuestsTo(fn () => route('admin.login'));

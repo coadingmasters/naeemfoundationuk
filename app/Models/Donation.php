@@ -28,10 +28,14 @@ class Donation extends Model
         'fee',
         'total',
         'status',
+        'payment_provider',
+        'payment_id',
+        'paid_at',
     ];
 
     protected $casts = [
         'items' => 'array',
+        'paid_at' => 'datetime',
         'gift_aid' => 'boolean',
         'on_behalf_of_organisation' => 'boolean',
         'cover_fee' => 'boolean',

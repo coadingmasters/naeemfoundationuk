@@ -37,6 +37,12 @@
             'icon' => '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/>',
         ],
         [
+            'label' => 'Donations',
+            'route' => 'admin.donations.index',
+            'active' => request()->routeIs('admin.donations.*'),
+            'icon' => '<path d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 22l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
+        [
             'label' => 'Orders',
             'route' => 'admin.orders.index',
             'active' => request()->routeIs('admin.orders.*'),

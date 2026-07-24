@@ -20,6 +20,9 @@ class Order extends Model
         'subtotal',
         'currency',
         'status',
+        'payment_provider',
+        'payment_id',
+        'paid_at',
     ];
 
     protected function casts(): array
@@ -27,6 +30,7 @@ class Order extends Model
         return [
             'items' => 'array',
             'subtotal' => 'decimal:2',
+            'paid_at' => 'datetime',
         ];
     }
 

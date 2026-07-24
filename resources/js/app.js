@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupQtyStepper();
     setupCustomSelects();
     setupPaymentForm();
+    setupPayPal();
     setupRamadanScheduler();
     setupPrintButtons();
     setupHeader();
@@ -374,6 +375,133 @@ function setupCoverFee() {
 
     checkbox.addEventListener('change', update);
     update();
+}
+
+/* ---------- PayPal Smart Buttons ----------
+ * Drives both the donation basket and the shop checkout. The browser never
+ * sends an amount — the server recalculates the total from the live basket on
+ * both the create and the capture call.
+ */
+function setupPayPal() {
+    const root = document.querySelector('[data-paypal]');
+    if (!root) return;
+
+    // The SDK is a plain <script> in the page's script stack. If it hasn't
+    // finished loading yet, come back when it has.
+    if (!window.paypal) {
+        const sdk = document.querySelector('[data-nf-paypal-sdk]');
+        if (sdk) sdk.addEventListener('load', setupPayPal, { once: true });
+        return;
+    }
+
+    const buttons = root.querySelector('[data-paypal-buttons]');
+    const errorBox = root.querySelector('[data-paypal-error]');
+    const busy = root.querySelector('[data-paypal-busy]');
+    if (!buttons) return;
+
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    const { orderUrl, captureUrl, form: formSelector } = root.dataset;
+
+    const showError = (message) => {
+        if (!errorBox) return;
+        errorBox.textContent = message;
+        errorBox.classList.remove('hidden');
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    const clearError = () => {
+        if (!errorBox) return;
+        errorBox.classList.add('hidden');
+        errorBox.textContent = '';
+    };
+
+    const setBusy = (on) => {
+        if (!busy) return;
+        busy.classList.toggle('hidden', !on);
+        busy.classList.toggle('flex', on);
+    };
+
+    const post = async (url, payload) => {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf,
+                'X-Requested-With': 'XMLHttpRequest',
+                Accept: 'application/json',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            throw new Error(data.error || 'Something went wrong. Please try again.');
+        }
+
+        return data;
+    };
+
+    window.paypal
+        .Buttons({
+            style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal', height: 48 },
+
+            createOrder: async () => {
+                clearError();
+
+                const payload = {};
+
+                // Donation page: whether the donor is covering the fee.
+                const coverFee = document.querySelector('[data-cover-fee]');
+                if (coverFee) payload.cover_fee = coverFee.checked ? 1 : 0;
+
+                // Shop page: the delivery details entered above the buttons.
+                if (formSelector) {
+                    const form = document.querySelector(formSelector);
+
+                    // There is no submit button any more, so ask the browser to
+                    // run its own validation before we open PayPal.
+                    if (form && !form.reportValidity()) {
+                        throw new Error('Please complete your delivery details first.');
+                    }
+
+                    if (form) {
+                        new FormData(form).forEach((value, key) => {
+                            if (key !== '_token') payload[key] = value;
+                        });
+                    }
+                }
+
+                try {
+                    const data = await post(orderUrl, payload);
+                    return data.id;
+                } catch (e) {
+                    showError(e.message);
+                    throw e;
+                }
+            },
+
+            onApprove: async (data) => {
+                setBusy(true);
+                buttons.style.pointerEvents = 'none';
+
+                try {
+                    const res = await post(captureUrl, { order_id: data.orderID });
+                    window.location.href = res.redirect;
+                } catch (e) {
+                    setBusy(false);
+                    buttons.style.pointerEvents = '';
+                    showError(e.message);
+                }
+            },
+
+            onCancel: () => clearError(),
+
+            onError: () => showError('PayPal could not be reached. Please try again in a moment.'),
+        })
+        .render(buttons)
+        .catch(() => showError('The payment buttons could not be loaded. Please refresh the page.'));
 }
 
 /* ---------- Print buttons ---------- */
