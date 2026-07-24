@@ -29,6 +29,7 @@ return [
         'heading' => 'Islamic Giving',
         'items' => [
             ['title' => 'Zakat', 'route' => 'zakat'],
+            ['title' => 'Zakat Calculator', 'route' => 'zakat-calculator'],
             ['title' => 'Sadaqah', 'route' => 'sadaqah'],
             ['title' => 'Fidya & Kaffarah', 'route' => 'fidya'],
             ['title' => 'Sehri & Iftar', 'route' => 'sehri-iftar'],

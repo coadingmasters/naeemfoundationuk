@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupPhoneInputs();
     setupRegionSwitch();
+    setupZakatCalc();
     setupMobileMenu();
     setupSubnav();
     setupTabs();
@@ -67,6 +68,55 @@ function setupPhoneInputs() {
             });
         }
     });
+}
+
+/* ---------- Zakat calculator (live 2.5% of net zakatable wealth) ---------- */
+function setupZakatCalc() {
+    const root = document.querySelector('[data-zakat-calc]');
+    if (!root) return;
+
+    const sym = window.NF_CURRENCY || '£';
+    const fmt = (n) => sym + (Number(n) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const val = (el) => { const v = parseFloat(el.value); return isFinite(v) && v > 0 ? v : 0; };
+    const sum = (sel) => Array.from(root.querySelectorAll(sel)).reduce((s, el) => s + val(el), 0);
+
+    const nisabEl = root.querySelector('[data-zakat-nisab]');
+    const out = {
+        total: root.querySelector('[data-zakat-total]'),
+        liab: root.querySelector('[data-zakat-liab]'),
+        net: root.querySelector('[data-zakat-net]'),
+        status: root.querySelector('[data-zakat-status]'),
+        due: root.querySelector('[data-zakat-due]'),
+    };
+    const amountInput = root.querySelector('[data-zakat-amount-input]');
+    const giveBtn = root.querySelector('[data-zakat-give-btn]');
+    const giveLabel = root.querySelector('[data-zakat-give-label]');
+
+    const recalc = () => {
+        const assets = sum('[data-zakat]');
+        const liabilities = sum('[data-zakat-liability]');
+        const net = Math.max(0, assets - liabilities);
+        const nisab = nisabEl ? val(nisabEl) : 0;
+        const above = net > 0 && net >= nisab;
+        const due = above ? net * 0.025 : 0;
+
+        if (out.total) out.total.textContent = fmt(assets);
+        if (out.liab) out.liab.textContent = '−' + fmt(liabilities);
+        if (out.net) out.net.textContent = fmt(net);
+        if (out.due) out.due.textContent = fmt(due);
+        if (out.status) {
+            out.status.textContent = net <= 0
+                ? 'Enter your assets to begin'
+                : (above ? 'Above nisab — Zakat is due' : 'Below nisab — no Zakat due');
+            out.status.classList.toggle('is-due', above);
+        }
+        if (amountInput) amountInput.value = due.toFixed(2);
+        if (giveLabel) giveLabel.textContent = fmt(due);
+        if (giveBtn) giveBtn.disabled = due < 1;
+    };
+
+    root.querySelectorAll('input[type=number]').forEach((el) => el.addEventListener('input', recalc));
+    recalc();
 }
 
 /* ---------- Header region / currency switcher ---------- */

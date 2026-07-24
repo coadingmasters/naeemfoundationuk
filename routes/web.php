@@ -66,6 +66,7 @@ Route::get('/news-and-press/{slug}', [NewsController::class, 'show'])->name('new
 
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
+Route::view('/zakat-calculator', 'zakat-calculator')->name('zakat-calculator');
 Route::get('/fidya-and-kaffarah', [FidyaController::class, 'index'])->name('fidya');
 Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
 Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('sehri-iftar');

@@ -2284,6 +2284,31 @@
     .nf-atoast__bar { animation: none; }
 }
 
+/* ---------- Zakat calculator status badge ---------- */
+.nf-zk-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 9999px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.nf-zk-status::before {
+    content: '';
+    height: 0.45rem;
+    width: 0.45rem;
+    border-radius: 9999px;
+    background: currentColor;
+}
+.nf-zk-status.is-due {
+    background: rgba(22, 163, 74, 0.22);
+    color: #86efac;
+}
+
 /* ---------- Success popup checkmark draw-in ---------- */
 .nf-success-check {
     stroke-dasharray: 30;
