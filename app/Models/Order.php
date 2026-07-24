@@ -15,6 +15,7 @@ class Order extends Model
         'email',
         'phone',
         'address',
+        'postcode',
         'items',
         'subtotal',
         'currency',

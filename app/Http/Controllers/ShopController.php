@@ -117,6 +117,7 @@ class ShopController extends Controller
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:40'],
             'address' => ['required', 'string', 'max:1000'],
+            'postcode' => ['required', 'string', 'max:20'],
         ]);
 
         $region = \App\Support\Country::current();
@@ -140,6 +141,7 @@ class ShopController extends Controller
                     'email' => $data['email'],
                     'phone' => $data['phone'],
                     'address' => $data['address'],
+                    'postcode' => $data['postcode'],
                     'items' => $orderItems,
                     'subtotal' => $subtotal,
                     'currency' => $currency,

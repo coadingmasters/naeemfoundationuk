@@ -40,8 +40,12 @@
                                    class="h-12 w-full rounded-lg border border-gray-200 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25 @error('phone') border-red-300 @enderror">
                         </div>
                         <div class="mt-4">
-                            <textarea name="address" rows="3" required placeholder="Delivery address *"
+                            <textarea name="address" rows="3" required placeholder="Delivery address (house no. & street, town/city) *"
                                       class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25 @error('address') border-red-300 @enderror">{{ old('address') }}</textarea>
+                        </div>
+                        <div class="mt-4">
+                            <input name="postcode" value="{{ old('postcode') }}" required placeholder="{{ region('code') === 'US' ? 'ZIP code *' : 'Postcode *' }}"
+                                   class="h-12 w-full rounded-lg border border-gray-200 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25 @error('postcode') border-red-300 @enderror">
                         </div>
 
                         <div class="mt-6 rounded-xl bg-cream/70 p-4 text-sm text-gray-600 ring-1 ring-navy/10">

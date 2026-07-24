@@ -148,12 +148,28 @@
                         @error('organisation_name') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
 
+                    @php $postLabel = region('code') === 'US' ? 'ZIP Code' : 'Postcode'; @endphp
                     {{-- Billing address --}}
                     <div class="mt-6">
                         <label for="billing_address" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Billing Address</label>
                         <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address', $d['billing_address'] ?? '') }}" required
-                               class="nf-dark-input">
+                               placeholder="House number and street" class="nf-dark-input">
                         @error('billing_address') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="mt-5 grid gap-5 sm:grid-cols-2">
+                        <div>
+                            <label for="city" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Town / City</label>
+                            <input id="city" type="text" name="city" value="{{ old('city', $d['city'] ?? '') }}" required
+                                   class="nf-dark-input">
+                            @error('city') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="postcode" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*{{ $postLabel }}</label>
+                            <input id="postcode" type="text" name="postcode" value="{{ old('postcode', $d['postcode'] ?? '') }}" required
+                                   class="nf-dark-input">
+                            @error('postcode') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        </div>
                     </div>
 
                     <div class="mt-8 flex justify-end">

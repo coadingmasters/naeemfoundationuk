@@ -16,6 +16,8 @@ class Donation extends Model
         'email',
         'phone',
         'billing_address',
+        'city',
+        'postcode',
         'gift_aid',
         'on_behalf_of_organisation',
         'organisation_name',
