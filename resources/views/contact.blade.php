@@ -140,7 +140,7 @@
                         <div class="nf-float pointer-events-none absolute -right-16 -top-10 h-52 w-52 rounded-full bg-brand/30 blur-3xl"></div>
 
                         <div class="relative">
-                            <h3 class="text-xl font-bold sm:text-2xl">Get in touch</h3>
+                            <h3 class="text-xl font-bold sm:text-2xl">Keep in touch</h3>
                             <p class="mt-2 text-sm leading-relaxed text-white/70">
                                 Reach us directly through any of the channels below — we aim to reply within one working day.
                             </p>
