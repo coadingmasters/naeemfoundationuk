@@ -61,6 +61,12 @@
             'icon' => '<circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0" stroke-linecap="round"/><path d="M16 3.2a3 3 0 0 1 0 5.6M17.5 20a5.5 5.5 0 0 0-2.7-4.8" stroke-linecap="round"/>',
         ],
         [
+            'label' => 'Ask a Mufti',
+            'route' => 'admin.mufti-questions.index',
+            'active' => request()->routeIs('admin.mufti-questions.*'),
+            'icon' => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 9a2.5 2.5 0 1 1 3.2 2.4c-.6.2-.9.6-.9 1.1v.5" stroke-linecap="round"/><path d="M12 16h.01" stroke-linecap="round"/>',
+        ],
+        [
             'label' => 'News & Press',
             'route' => 'admin.news.index',
             'active' => request()->routeIs('admin.news.*'),

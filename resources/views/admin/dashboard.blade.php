@@ -63,6 +63,7 @@
                         <div><p class="text-lg font-extrabold text-navy-dark">{{ $rb['symbol'] }}{{ number_format($rb['revenue'], 2) }}</p><p class="text-xs text-gray-500">Revenue</p></div>
                         <div><p class="text-lg font-extrabold text-navy-dark">{{ $rb['orders'] }}</p><p class="text-xs text-gray-500">Orders</p></div>
                         <div><p class="text-lg font-extrabold text-navy-dark">{{ $rb['donations'] }}</p><p class="text-xs text-gray-500">Donations</p></div>
+                        <div><p class="text-lg font-extrabold text-navy-dark">{{ $rb['questions'] }}</p><p class="text-xs text-gray-500">Mufti Q&amp;A</p></div>
                     </div>
                 </div>
             @endforeach

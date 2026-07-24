@@ -9,6 +9,7 @@ use App\Models\Donation;
 use App\Models\HajjRegistration;
 use App\Models\HajjVideo;
 use App\Models\HeroSlide;
+use App\Models\MuftiQuestion;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Project;
@@ -59,6 +60,11 @@ class DashboardController extends Controller
                 'sub' => 'registrations',
                 'icon' => '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1M9 10h6M9 14h6" stroke-linecap="round" stroke-linejoin="round"/>',
             ],
+            [
+                'label' => 'Ask a Mufti', 'value' => MuftiQuestion::count(), 'route' => route('admin.mufti-questions.index'), 'tone' => 'amber',
+                'sub' => MuftiQuestion::where('created_at', '>=', now()->subDays(7))->count().' this week',
+                'icon' => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 9a2.5 2.5 0 1 1 3.2 2.4c-.6.2-.9.6-.9 1.1v.4M12 16h.01" stroke-linecap="round"/>',
+            ],
         ];
 
         $recent = $this->recentFrom(HeroSlide::class, 'Hero Slide', 'admin.hero-slides')
@@ -84,6 +90,7 @@ class DashboardController extends Controller
                     + HajjVideo::forRegion($code)->where('is_active', true)->count(),
                 'orders' => Order::forRegion($code)->count(),
                 'donations' => Donation::forRegion($code)->count(),
+                'questions' => MuftiQuestion::forRegion($code)->count(),
                 'revenue' => (float) Order::forRegion($code)->whereIn('status', ['pending', 'processing', 'completed'])->sum('subtotal'),
             ])->values();
         }

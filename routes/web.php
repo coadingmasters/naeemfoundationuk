@@ -217,6 +217,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('hajj-registrations/export', [AdminHajjRegistrationController::class, 'export'])->name('hajj-registrations.export');
         Route::delete('hajj-registrations/{registration}', [AdminHajjRegistrationController::class, 'destroy'])->name('hajj-registrations.destroy');
 
+        // Ask a Mufti questions submitted through the public form (read + delete + export).
+        Route::get('mufti-questions', [\App\Http\Controllers\Admin\MuftiQuestionController::class, 'index'])->name('mufti-questions.index');
+        Route::get('mufti-questions/export', [\App\Http\Controllers\Admin\MuftiQuestionController::class, 'export'])->name('mufti-questions.export');
+        Route::delete('mufti-questions/{muftiQuestion}', [\App\Http\Controllers\Admin\MuftiQuestionController::class, 'destroy'])->name('mufti-questions.destroy');
+
         // Volunteer sign-ups submitted through the public form (read + delete + export).
         Route::get('volunteers', [AdminVolunteerController::class, 'index'])->name('volunteers.index');
         Route::get('volunteers/export', [AdminVolunteerController::class, 'export'])->name('volunteers.export');
