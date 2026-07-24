@@ -2284,6 +2284,23 @@
     .nf-atoast__bar { animation: none; }
 }
 
+/* ---------- Zakat hero 2.5% pulsing ring ---------- */
+.nf-zk-badge::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 9999px;
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    animation: nf-zk-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes nf-zk-ping {
+    0% { transform: scale(1); opacity: 0.65; }
+    75%, 100% { transform: scale(1.85); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .nf-zk-badge::after { animation: none; opacity: 0; }
+}
+
 /* ---------- Zakat calculator status badge ---------- */
 .nf-zk-status {
     display: inline-flex;

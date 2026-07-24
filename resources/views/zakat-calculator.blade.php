@@ -36,15 +36,22 @@
 @section('content')
 
     {{-- ===================== HERO ===================== --}}
-    <section class="relative overflow-hidden bg-gradient-to-br from-navy via-navy to-navy-dark pb-16 pt-36 text-white sm:pb-20 sm:pt-44">
-        <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
-        <div class="pointer-events-none absolute -left-24 -bottom-16 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
+    <section class="relative overflow-hidden bg-gradient-to-br from-navy via-navy to-navy-dark pb-20 pt-48 text-white sm:pb-24 sm:pt-52">
+        {{-- Animated glows + floating specks --}}
+        <div class="nf-float pointer-events-none absolute -right-20 top-6 h-72 w-72 rounded-full bg-brand/30 blur-3xl"></div>
+        <div class="pointer-events-none absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-white/5 blur-3xl"></div>
+        <span class="nf-float pointer-events-none absolute left-[13%] top-[38%] h-3 w-3 rounded-full bg-brand/60"></span>
+        <span class="nf-float pointer-events-none absolute right-[15%] top-[32%] h-2 w-2 rounded-full bg-white/40" style="animation-delay:-1.5s"></span>
+        <span class="nf-float pointer-events-none absolute right-[22%] bottom-[26%] h-2.5 w-2.5 rounded-full bg-brand/50" style="animation-delay:-2.6s"></span>
+        <span class="nf-float pointer-events-none absolute left-[20%] bottom-[30%] h-2 w-2 rounded-full bg-white/30" style="animation-delay:-3.4s"></span>
+
         <div class="nf-container relative text-center">
-            <span class="nf-reveal inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide ring-1 ring-white/15">
-                <span class="grid h-5 w-5 place-items-center rounded-full bg-brand text-[10px] font-bold">2.5%</span> Purify your wealth
+            <span class="nf-reveal inline-flex items-center gap-2.5 rounded-full bg-white/10 py-1.5 pl-1.5 pr-4 text-xs font-semibold uppercase tracking-wide ring-1 ring-white/15">
+                <span class="nf-zk-badge relative grid h-7 w-7 place-items-center rounded-full bg-brand text-[11px] font-extrabold">2.5%</span>
+                Purify your wealth
             </span>
-            <h1 class="nf-reveal mt-5 text-4xl font-extrabold sm:text-5xl" data-reveal-delay="80">Zakat Calculator</h1>
-            <p class="nf-reveal mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base" data-reveal-delay="140">
+            <h1 class="nf-reveal mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl" data-reveal-delay="90">Zakat Calculator</h1>
+            <p class="nf-reveal mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base" data-reveal-delay="160">
                 Zakat is 2.5% of the wealth you’ve held for a lunar year, once it passes the nisab threshold.
                 Enter your assets below and we’ll work out exactly what’s due.
             </p>
