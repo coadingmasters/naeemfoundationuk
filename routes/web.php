@@ -220,6 +220,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Ask a Mufti questions submitted through the public form (read + delete + export).
         Route::get('mufti-questions', [\App\Http\Controllers\Admin\MuftiQuestionController::class, 'index'])->name('mufti-questions.index');
         Route::get('mufti-questions/export', [\App\Http\Controllers\Admin\MuftiQuestionController::class, 'export'])->name('mufti-questions.export');
+        Route::post('mufti-questions/{muftiQuestion}/reply', [\App\Http\Controllers\Admin\MuftiQuestionController::class, 'reply'])->name('mufti-questions.reply');
         Route::delete('mufti-questions/{muftiQuestion}', [\App\Http\Controllers\Admin\MuftiQuestionController::class, 'destroy'])->name('mufti-questions.destroy');
 
         // Volunteer sign-ups submitted through the public form (read + delete + export).

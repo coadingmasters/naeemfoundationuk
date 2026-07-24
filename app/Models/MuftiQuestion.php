@@ -14,5 +14,11 @@ class MuftiQuestion extends Model
         'email',
         'phone',
         'message',
+        'answer',
+        'answered_at',
+    ];
+
+    protected $casts = [
+        'answered_at' => 'datetime',
     ];
 }

@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\MuftiReply;
 use App\Models\MuftiQuestion;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 class MuftiQuestionController extends Controller
 {
@@ -20,6 +24,33 @@ class MuftiQuestionController extends Controller
         ];
 
         return view('admin.mufti-questions.index', compact('questions', 'stats'));
+    }
+
+    /** Email a scholar's answer straight to the person who asked. */
+    public function reply(Request $request, MuftiQuestion $muftiQuestion): RedirectResponse
+    {
+        $data = $request->validate([
+            'answer' => ['required', 'string', 'max:8000'],
+        ]);
+
+        try {
+            Mail::to($muftiQuestion->email)->send(new MuftiReply(
+                name: $muftiQuestion->name,
+                question: $muftiQuestion->message,
+                answer: $data['answer'],
+            ));
+        } catch (Throwable $e) {
+            return back()->with('error', 'Could not send the email right now. Please try again.');
+        }
+
+        $muftiQuestion->update([
+            'answer' => $data['answer'],
+            'answered_at' => now(),
+        ]);
+
+        return redirect()
+            ->route('admin.mufti-questions.index')
+            ->with('success', 'Reply sent to '.$muftiQuestion->name.' at '.$muftiQuestion->email.'.');
     }
 
     public function destroy(MuftiQuestion $muftiQuestion): RedirectResponse
