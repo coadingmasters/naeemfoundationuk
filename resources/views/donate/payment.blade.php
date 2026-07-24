@@ -161,43 +161,19 @@
                             </label>
 
 
-                            {{-- PayPal Smart Buttons — PayPal hosts the whole
-                                 payment, so card details never touch our server. --}}
-                            <div class="mt-7"
-                                 data-paypal
-                                 data-order-url="{{ route('paypal.donation.order') }}"
-                                 data-capture-url="{{ route('paypal.donation.capture') }}">
-
-                                <p class="mb-3 text-xs font-bold text-navy">Choose how to pay</p>
-
-                                <div data-paypal-error
-                                     class="mb-3 hidden rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
-
-                                {{-- PayPal renders its buttons in here --}}
-                                <div data-paypal-buttons class="min-h-[3rem]"></div>
-
-                                <div data-paypal-busy class="mt-3 hidden items-center justify-center gap-2 text-sm font-semibold text-navy">
-                                    <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                        <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z"/>
-                                    </svg>
-                                    Completing your donation, please wait...
-                                </div>
+                            <div class="mt-7">
+                                <x-paypal-buttons
+                                    :order-url="route('paypal.donation.order')"
+                                    :capture-url="route('paypal.donation.capture')" />
                             </div>
 
-                            <div class="mt-6">
+                            <div class="mt-6 border-t border-navy/10 pt-5">
                                 <a href="{{ route('donate.checkout') }}"
-                                   class="inline-flex items-center justify-center rounded-md border border-navy/20 px-6 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white">
-                                    Cancel
+                                   class="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500 transition-colors hover:text-brand">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    Back to your basket
                                 </a>
                             </div>
-
-                            <p class="mt-5 flex items-center gap-2 text-xs text-gray-500">
-                                <svg class="h-4 w-4 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 3l7 4v5c0 4.4-3 8.4-7 9-4-.6-7-4.6-7-9V7l7-4z" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                Payment is handled entirely by PayPal. Your card details never reach our servers.
-                            </p>
                         </div>
                     </div>
                 </div>

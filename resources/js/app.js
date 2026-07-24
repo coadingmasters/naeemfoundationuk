@@ -405,20 +405,22 @@ function setupPayPal() {
     const showError = (message) => {
         if (!errorBox) return;
         errorBox.textContent = message;
-        errorBox.classList.remove('hidden');
+        errorBox.hidden = false;
+        // Restart the shake so a repeated error still registers visually.
+        errorBox.style.animation = 'none';
+        void errorBox.offsetWidth;
+        errorBox.style.animation = '';
         errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
     const clearError = () => {
         if (!errorBox) return;
-        errorBox.classList.add('hidden');
+        errorBox.hidden = true;
         errorBox.textContent = '';
     };
 
     const setBusy = (on) => {
-        if (!busy) return;
-        busy.classList.toggle('hidden', !on);
-        busy.classList.toggle('flex', on);
+        if (busy) busy.hidden = !on;
     };
 
     const post = async (url, payload) => {
@@ -445,7 +447,15 @@ function setupPayPal() {
 
     window.paypal
         .Buttons({
-            style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal', height: 48 },
+            style: {
+                layout: 'vertical',
+                color: 'gold',
+                shape: 'pill',
+                label: 'paypal',
+                height: 48,
+                // We show our own trust row underneath instead.
+                tagline: false,
+            },
 
             createOrder: async () => {
                 clearError();
@@ -501,7 +511,12 @@ function setupPayPal() {
             onError: () => showError('PayPal could not be reached. Please try again in a moment.'),
         })
         .render(buttons)
-        .catch(() => showError('The payment buttons could not be loaded. Please refresh the page.'));
+        // Drop the shimmer and fade the real buttons in.
+        .then(() => root.classList.add('is-ready'))
+        .catch(() => {
+            root.classList.add('is-ready');
+            showError('The payment buttons could not be loaded. Please refresh the page.');
+        });
 }
 
 /* ---------- Print buttons ---------- */

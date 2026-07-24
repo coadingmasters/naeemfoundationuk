@@ -2528,3 +2528,213 @@
     .nf-cta-pulse { animation: none; }
     .nf-region-pop, .nf-region-pop__card, .nf-region__menu { animation: none; }
 }
+
+/* ==========================================================================
+   PayPal payment block
+   PayPal owns the buttons themselves (cross-origin iframe), so everything
+   around them carries the brand: framed panel, shimmer placeholder while the
+   SDK boots, and a trust row underneath.
+   ========================================================================== */
+.nf-pay {
+    animation: nf-pay-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.nf-pay__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+}
+
+.nf-pay__lock {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border-radius: 0.7rem;
+    background: color-mix(in srgb, var(--color-brand) 10%, transparent);
+    color: var(--color-brand);
+    animation: nf-pay-lock 3.4s ease-in-out infinite;
+}
+
+.nf-pay__lock svg { width: 1.15rem; height: 1.15rem; }
+
+.nf-pay__title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--color-navy-dark);
+    line-height: 1.2;
+}
+
+.nf-pay__sub {
+    margin-top: 0.1rem;
+    font-size: 0.72rem;
+    color: #6b7280;
+}
+
+/* --- Framed area holding the buttons --- */
+.nf-pay__frame {
+    position: relative;
+    border-radius: 1rem;
+    padding: 0.9rem;
+    background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--color-cream) 55%, #fff));
+    border: 1px solid color-mix(in srgb, var(--color-navy) 12%, transparent);
+    box-shadow: 0 1px 2px rgba(18, 45, 60, 0.04);
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.nf-pay__frame:hover {
+    border-color: color-mix(in srgb, var(--color-brand) 28%, transparent);
+    box-shadow: 0 10px 28px -14px rgba(116, 10, 46, 0.35);
+}
+
+/* Buttons fade up once PayPal has drawn them. */
+.nf-pay__buttons {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.nf-pay.is-ready .nf-pay__buttons {
+    opacity: 1;
+    transform: none;
+}
+
+/* --- Shimmer placeholder --- */
+.nf-pay__skeleton {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.nf-pay__bar {
+    display: block;
+    height: 3rem;
+    border-radius: 0.6rem;
+    background: linear-gradient(
+        90deg,
+        rgba(18, 45, 60, 0.06) 25%,
+        rgba(18, 45, 60, 0.12) 37%,
+        rgba(18, 45, 60, 0.06) 63%
+    );
+    background-size: 400% 100%;
+    animation: nf-pay-shimmer 1.5s ease-in-out infinite;
+}
+
+.nf-pay__bar:nth-child(2) { animation-delay: 0.18s; }
+
+.nf-pay.is-ready .nf-pay__skeleton { display: none; }
+
+/* --- Trust row --- */
+.nf-pay__trust {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-top: 0.85rem;
+    opacity: 0;
+    animation: nf-pay-in 0.5s ease 0.25s both;
+}
+
+.nf-pay__cards {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.nf-pay__cards svg {
+    width: 2.15rem;
+    height: 1.4rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 2px rgba(18, 45, 60, 0.14);
+    transition: transform 0.25s ease;
+}
+
+.nf-pay__cards svg:hover { transform: translateY(-2px); }
+
+.nf-pay__powered {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+.nf-pay__powered svg { width: 0.95rem; height: 0.95rem; color: #16a34a; }
+
+/* --- Error --- */
+.nf-pay__error {
+    margin-bottom: 0.75rem;
+    border-radius: 0.7rem;
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.82rem;
+    color: #b91c1c;
+    animation: nf-pay-shake 0.4s ease both;
+}
+
+.nf-pay__error[hidden] { display: none; }
+
+/* --- Busy state while capturing --- */
+.nf-pay__busy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin-top: 0.9rem;
+    border-radius: 0.7rem;
+    background: color-mix(in srgb, var(--color-navy) 6%, transparent);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-navy);
+}
+
+.nf-pay__busy[hidden] { display: none; }
+
+.nf-pay__spinner {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--color-navy) 25%, transparent);
+    border-top-color: var(--color-brand);
+    animation: nf-pay-spin 0.7s linear infinite;
+}
+
+@keyframes nf-pay-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes nf-pay-shimmer {
+    from { background-position: 100% 50%; }
+    to { background-position: 0 50%; }
+}
+
+@keyframes nf-pay-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes nf-pay-lock {
+    0%, 88%, 100% { transform: none; }
+    92% { transform: translateY(-2px) rotate(-6deg); }
+    96% { transform: translateY(-2px) rotate(6deg); }
+}
+
+@keyframes nf-pay-shake {
+    0%, 100% { transform: none; }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nf-pay,
+    .nf-pay__trust,
+    .nf-pay__lock,
+    .nf-pay__error { animation: none; opacity: 1; }
+    .nf-pay__bar { animation-duration: 3s; }
+}

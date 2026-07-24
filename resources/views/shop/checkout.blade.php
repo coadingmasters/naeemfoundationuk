@@ -81,25 +81,11 @@
                             <span class="font-bold text-navy-dark">Total</span>
                             <span class="font-extrabold text-navy-dark">{{ money($subtotal) }}</span>
                         </div>
-                        {{-- PayPal Smart Buttons --}}
-                        <div class="mt-5"
-                             data-paypal
-                             data-form="[data-shop-form]"
-                             data-order-url="{{ route('paypal.shop.order') }}"
-                             data-capture-url="{{ route('paypal.shop.capture') }}">
-
-                            <div data-paypal-error
-                                 class="mb-3 hidden rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
-
-                            <div data-paypal-buttons class="min-h-[3rem]"></div>
-
-                            <div data-paypal-busy class="mt-3 hidden items-center justify-center gap-2 text-sm font-semibold text-navy">
-                                <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                    <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z"/>
-                                </svg>
-                                Completing your order, please wait...
-                            </div>
+                        <div class="mt-5">
+                            <x-paypal-buttons
+                                form="[data-shop-form]"
+                                :order-url="route('paypal.shop.order')"
+                                :capture-url="route('paypal.shop.capture')" />
                         </div>
                     </div>
                 </div>
