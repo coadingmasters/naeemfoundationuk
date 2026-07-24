@@ -26,6 +26,11 @@ class MuftiQuestionController extends Controller
         return view('admin.mufti-questions.index', compact('questions', 'stats'));
     }
 
+    public function show(MuftiQuestion $muftiQuestion)
+    {
+        return view('admin.mufti-questions.show', ['question' => $muftiQuestion]);
+    }
+
     /** Email a scholar's answer straight to the person who asked. */
     public function reply(Request $request, MuftiQuestion $muftiQuestion): RedirectResponse
     {
@@ -49,7 +54,7 @@ class MuftiQuestionController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.mufti-questions.index')
+            ->route('admin.mufti-questions.show', $muftiQuestion)
             ->with('success', 'Reply sent to '.$muftiQuestion->name.' at '.$muftiQuestion->email.'.');
     }
 

@@ -86,19 +86,11 @@
                                 </td>
                                 <td class="px-5 py-3">
                                     <div class="flex items-center justify-end gap-1">
-                                        <button type="button" data-mq-view
-                                                data-name="{{ $q->name }}"
-                                                data-email="{{ $q->email }}"
-                                                data-phone="{{ $q->phone }}"
-                                                data-message="{{ $q->message }}"
-                                                data-date="{{ $q->created_at?->format('d M Y · g:i a') }}"
-                                                data-reply-action="{{ route('admin.mufti-questions.reply', $q) }}"
-                                                data-answer="{{ $q->answer }}"
-                                                data-answered="{{ $q->answered_at?->format('d M Y') }}"
-                                                class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-navy transition hover:border-brand hover:text-brand">
+                                        <a href="{{ route('admin.mufti-questions.show', $q) }}"
+                                           class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-navy transition hover:border-brand hover:text-brand">
                                             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            Read
-                                        </button>
+                                            Read &amp; reply
+                                        </a>
                                         <form method="POST" action="{{ route('admin.mufti-questions.destroy', $q) }}">
                                             @csrf
                                             @method('DELETE')
@@ -122,102 +114,10 @@
         @endif
     @endif
 
-    {{-- ===== Read + reply modal ===== --}}
-    <div class="nf-modal" data-mq-modal hidden>
-        <div class="nf-modal__backdrop" data-mq-close></div>
-        <div class="nf-modal__card" role="dialog" aria-modal="true" aria-label="Question">
-            <button type="button" class="nf-modal__close" data-mq-close aria-label="Close">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
-            </button>
-
-            {{-- Who asked --}}
-            <div class="flex items-start gap-3 pr-8">
-                <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand/10 text-sm font-bold uppercase text-brand" data-mq-initials>?</span>
-                <div class="min-w-0">
-                    <h3 class="text-lg font-bold leading-tight text-navy-dark" data-mq-name>—</h3>
-                    <div class="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-400">
-                        <a class="hover:text-brand" data-mq-email></a>
-                        <span data-mq-phone></span>
-                        <span data-mq-date></span>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Question --}}
-            <p class="mt-5 text-[11px] font-bold uppercase tracking-wide text-brand">The question</p>
-            <div class="mt-1.5 max-h-40 overflow-y-auto rounded-xl border-l-2 border-brand bg-cream/60 p-4 text-sm leading-relaxed text-navy-dark" data-mq-message></div>
-
-            {{-- Reply — sent straight to their email --}}
-            <form method="POST" data-mq-reply-form class="mt-5">
-                @csrf
-                <div class="flex items-center justify-between">
-                    <label for="mq-answer" class="text-[11px] font-bold uppercase tracking-wide text-navy">Your answer</label>
-                    <span class="hidden rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700" data-mq-answered-note></span>
-                </div>
-                <textarea id="mq-answer" name="answer" rows="5" required placeholder="Write the scholar’s answer here — it’s emailed straight to them…" data-mq-answer
-                          class="mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm leading-relaxed text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"></textarea>
-                <p class="mt-1.5 flex items-center gap-1.5 text-xs text-gray-400">
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    Sent to <span class="font-semibold text-navy-dark" data-mq-toemail></span> from a professional template.
-                </p>
-                <div class="mt-4 flex items-center justify-end gap-3">
-                    <button type="button" data-mq-close class="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-semibold text-navy transition hover:bg-gray-50">Cancel</button>
-                    <button type="submit" data-mq-send class="inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        Send reply
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
 @endsection
 
 @push('scripts')
 <script>
-(function () {
-    const modal = document.querySelector('[data-mq-modal]');
-    if (!modal) return;
-    const form = modal.querySelector('[data-mq-reply-form]');
-    const answer = modal.querySelector('[data-mq-answer]');
-    const note = modal.querySelector('[data-mq-answered-note]');
-    const sendBtn = modal.querySelector('[data-mq-send]');
-
-    const open = () => { modal.hidden = false; requestAnimationFrame(() => modal.classList.add('is-open')); };
-    const close = () => { modal.classList.remove('is-open'); setTimeout(() => { modal.hidden = true; }, 320); };
-
-    const set = (sel, text) => { const el = modal.querySelector(sel); if (el) el.textContent = text || ''; };
-
-    document.querySelectorAll('[data-mq-view]').forEach((btn) => btn.addEventListener('click', () => {
-        const d = btn.dataset;
-        set('[data-mq-name]', d.name || '—');
-        set('[data-mq-initials]', (d.name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '?');
-        const email = modal.querySelector('[data-mq-email]');
-        email.textContent = d.email || ''; email.href = 'mailto:' + (d.email || '');
-        set('[data-mq-phone]', d.phone ? '·  ' + d.phone : '');
-        set('[data-mq-date]', d.date ? '·  ' + d.date : '');
-        set('[data-mq-message]', d.message || '');
-        set('[data-mq-toemail]', d.email || '');
-        form.action = d.replyAction || '#';
-        answer.value = d.answer || '';
-        if (d.answered) {
-            note.textContent = 'Replied ' + d.answered;
-            note.classList.remove('hidden');
-            sendBtn.lastChild.textContent = ' Send again';
-        } else {
-            note.classList.add('hidden');
-        }
-        open();
-        setTimeout(() => answer.focus(), 350);
-    }));
-
-    // Prevent accidental double-send.
-    form.addEventListener('submit', () => { sendBtn.disabled = true; });
-
-    modal.querySelectorAll('[data-mq-close]').forEach((el) => el.addEventListener('click', close));
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) close(); });
-
     document.querySelectorAll('.nf-adm-row').forEach((row, i) => setTimeout(() => row.classList.add('in'), 40 + i * 45));
-})();
 </script>
 @endpush
