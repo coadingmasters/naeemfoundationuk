@@ -1393,7 +1393,17 @@
 
 /* Thank-you page: warm gold → slate blue backdrop */
 .nf-thankyou-bg {
-    background: linear-gradient(115deg, #c9a24d 0%, #c4ac87 32%, #8e9aab 68%, #4a5f76 100%);
+    /* Professional charity photo behind the card, with a navy→brand wash so the
+       cream card stays crisp and readable on top. */
+    background:
+        linear-gradient(120deg, rgba(18, 45, 60, 0.90) 0%, rgba(18, 45, 60, 0.72) 45%, rgba(116, 10, 46, 0.72) 100%),
+        url('/images/changinslives1.jpg') center / cover no-repeat;
+}
+@media (min-width: 1024px) {
+    /* Subtle parallax on desktop for a premium feel. */
+    .nf-thankyou-bg {
+        background-attachment: fixed, fixed;
+    }
 }
 
 /* Gently floating heart above the illustration */
@@ -2756,7 +2766,7 @@ input[type="radio"] {
     right: 0;
     bottom: 0;
     z-index: 200;
-    background: var(--color-navy);
+    background: var(--color-brand);
     box-shadow: 0 -8px 28px rgba(18, 45, 60, 0.28);
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);

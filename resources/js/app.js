@@ -611,20 +611,27 @@ function setupQuickbar() {
     if (!bar) return;
 
     const footer = document.querySelector('footer');
+    const main = document.querySelector('main');
 
-    const position = () => {
+    const sync = () => {
+        // Reserve the bar's own height (+ a small gap) before the footer so the
+        // parked bar sits in that space and never covers the last section. Height
+        // is measured live, so it also works when the bar stacks tall on mobile.
+        const barHeight = bar.offsetHeight;
+        if (main) main.style.paddingBottom = (barHeight + 24) + 'px';
+
         if (!footer) return;
-        // How far the footer pokes into the viewport (0 when it's still below).
+        // Lift the bar to rest on the footer's top edge once it scrolls in.
         const overlap = window.innerHeight - footer.getBoundingClientRect().top;
         bar.style.bottom = (overlap > 0 ? overlap : 0) + 'px';
     };
 
-    position();
+    sync();
     // Slide it up into view after the first paint.
     requestAnimationFrame(() => bar.classList.add('is-ready'));
 
-    window.addEventListener('scroll', position, { passive: true });
-    window.addEventListener('resize', position);
+    window.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
 }
 
 /* ---------- Cookie consent ---------- */
