@@ -66,14 +66,18 @@
                                class="h-11 w-full rounded-md border border-gray-300 px-3 text-sm text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30">
                     </div>
 
-                    {{-- Donate --}}
-                    <button type="submit" class="btn-navy mt-5 w-full py-3">
+                    {{-- Donate — opens the "choose a cause" popup, pre-filled from this card. --}}
+                    <button type="button" data-donate-open class="btn-navy mt-5 w-full py-3">
                         Donate Now
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
 
                     @include('partials.payment-icons')
                 </form>
+
+                @once
+                    @include('partials.donate-modal', ['cause' => 'Zakat', 'widgetImage' => 'images/zakathero.png'])
+                @endonce
             </div>
         </div>
     </section>
