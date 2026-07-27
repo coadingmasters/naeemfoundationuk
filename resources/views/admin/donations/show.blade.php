@@ -147,6 +147,25 @@
                             {{ config('countries.list.'.$donation->region.'.name', $donation->region) }}
                         </dd>
                     </div>
+                    <div>
+                        <dt class="text-xs font-medium text-gray-400">Keep in touch</dt>
+                        <dd class="mt-1 flex flex-wrap gap-1.5">
+                            @php
+                                $consent = $donation->contact_consent ?? [];
+                                $channels = collect(['email' => 'Email', 'phone' => 'Phone', 'sms' => 'SMS'])
+                                    ->filter(fn ($label, $key) => ! empty($consent[$key]));
+                            @endphp
+                            @if ($channels->isNotEmpty())
+                                @foreach ($channels as $label)
+                                    <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-[11px] font-semibold text-green-700">{{ $label }}</span>
+                                @endforeach
+                            @elseif ($donation->contact_consent !== null)
+                                <span class="text-sm font-semibold text-navy-dark">Opted out of all contact</span>
+                            @else
+                                <span class="text-sm text-gray-400">Not asked</span>
+                            @endif
+                        </dd>
+                    </div>
                 </dl>
 
                 <form method="POST" action="{{ route('admin.donations.destroy', $donation) }}" class="mt-5 border-t border-gray-100 pt-4">

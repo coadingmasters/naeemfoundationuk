@@ -22,11 +22,12 @@
 <form method="POST" action="{{ route('donate.add') }}" data-donate-form
       class="rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6">
     @csrf
-    <input type="hidden" name="cause" value="{{ $cause }}">
     <input type="hidden" name="image" value="{{ $widgetImage }}">
 
     <p class="text-center text-sm font-bold uppercase tracking-wide text-brand">{{ $widgetTitle }}</p>
-    <p class="mt-1 text-center text-xs text-gray-500">Supporting <span class="font-semibold text-navy-dark">{{ $cause }}</span></p>
+
+    {{-- Cause dropdown — the donor can give to any cause from here. --}}
+    @include('partials.cause-select', ['selectedCause' => $cause])
 
     {{-- Frequency --}}
     <div class="mt-4 grid grid-cols-2 gap-3" data-choice-group>
@@ -53,16 +54,11 @@
                class="h-11 w-full rounded-md border border-gray-300 px-3 text-sm text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30">
     </div>
 
-    {{-- Donate — opens the "choose a cause" popup, pre-filled from this widget. --}}
-    <button type="button" data-donate-open class="btn-navy mt-5 w-full py-3">
+    {{-- Donate --}}
+    <button type="submit" class="btn-navy mt-5 w-full py-3">
         Donate Now
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
 
     @include('partials.payment-icons')
 </form>
-
-{{-- One shared popup per page, even if the widget appears more than once. --}}
-@once
-    @include('partials.donate-modal', ['cause' => $cause, 'widgetImage' => $widgetImage])
-@endonce

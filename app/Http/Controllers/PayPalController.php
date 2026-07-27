@@ -141,7 +141,7 @@ class PayPalController extends Controller
 
         // Paid — only now is it safe to empty the basket.
         DonationCart::clear();
-        session()->forget('donation');
+        session()->forget(['donation', 'donation_consent']);
         session(['donation_completed' => [
             'reference' => $donation['reference'],
             'total' => $summary['total'],

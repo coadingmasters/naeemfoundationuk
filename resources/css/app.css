@@ -2738,3 +2738,9 @@
     .nf-pay__error { animation: none; opacity: 1; }
     .nf-pay__bar { animation-duration: 3s; }
 }
+
+/* Brand-tint every native checkbox/radio so ticks match the site (not browser blue). */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--color-brand);
+}

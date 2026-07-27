@@ -19,6 +19,7 @@ class Donation extends Model
         'city',
         'postcode',
         'gift_aid',
+        'contact_consent',
         'on_behalf_of_organisation',
         'organisation_name',
         'cover_fee',
@@ -35,6 +36,7 @@ class Donation extends Model
 
     protected $casts = [
         'items' => 'array',
+        'contact_consent' => 'array',
         'paid_at' => 'datetime',
         'gift_aid' => 'boolean',
         'on_behalf_of_organisation' => 'boolean',

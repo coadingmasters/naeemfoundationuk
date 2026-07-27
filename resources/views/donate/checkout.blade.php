@@ -92,7 +92,7 @@
                     {{-- Gift Aid --}}
                     <h3 class="mt-6 text-lg font-semibold italic text-white/90">Gift Aid</h3>
                     <label class="mt-2 flex cursor-pointer items-start gap-3">
-                        <input type="checkbox" name="gift_aid" value="1" @checked(old('gift_aid', $d['gift_aid'] ?? true))
+                        <input type="checkbox" name="gift_aid" value="1" @checked(old('gift_aid', $d['gift_aid'] ?? false))
                                class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/40 bg-white/10 text-brand focus:ring-2 focus:ring-white/40">
                         <span class="text-xs leading-relaxed text-white/85 sm:text-sm">
                             I am a UK taxpayer, donating as an individual and would like Naeem Foundation to claim Gift Aid

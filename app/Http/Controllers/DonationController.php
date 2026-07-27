@@ -45,6 +45,17 @@ class DonationController extends Controller
             'image' => $data['image'] ?? 'images/changinslives1.jpg',
         ]);
 
+        // "Keep in touch" consent from the donation wizard is donor-level, so it
+        // is kept in the session (separate from the basket) until the donation is
+        // saved at checkout. Only overwrite when the wizard actually sent it.
+        if ($request->hasAny(['contact_email', 'contact_phone', 'contact_sms'])) {
+            session(['donation_consent' => [
+                'email' => $request->boolean('contact_email'),
+                'phone' => $request->boolean('contact_phone'),
+                'sms' => $request->boolean('contact_sms'),
+            ]]);
+        }
+
         if ($request->expectsJson()) {
             return $this->cartJson($data['cause'].' added to your basket.');
         }
@@ -149,6 +160,8 @@ class DonationController extends Controller
             'city' => $data['city'],
             'postcode' => $data['postcode'],
             'gift_aid' => $request->boolean('gift_aid'),
+            // "Keep in touch" consent gathered on the donation wizard (may be null).
+            'contact_consent' => session('donation_consent'),
             'on_behalf_of_organisation' => $onBehalf,
             'organisation_name' => $onBehalf ? $data['organisation_name'] : null,
             // The transaction fee is decided on the payment step, so start without it.
@@ -210,7 +223,8 @@ class DonationController extends Controller
         $subtotal = DonationCart::subtotal();
         $feeAmount = DonationCart::fee();
         // Default to covering the fee; preserve the donor's choice across validation errors.
-        $coverFee = old('cover_fee_present') ? (bool) old('cover_fee') : true;
+        // Donor opts in to covering the fee themselves — never ticked by default.
+        $coverFee = old('cover_fee_present') ? (bool) old('cover_fee') : false;
 
         return view('donate.payment', [
             'reference' => $donation['reference'],

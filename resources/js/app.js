@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCookieConsent();
     setupVideoCards();
     setupAddonsModal();
-    setupDonateModal();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -450,7 +449,10 @@ function setupPayPal() {
         .Buttons({
             style: {
                 layout: 'vertical',
-                color: 'gold',
+                // Black reads as sleek + professional and sits with the navy/maroon
+                // site far better than PayPal's default gold. (PayPal only permits
+                // its own palette — gold/blue/silver/white/black — for its button.)
+                color: 'black',
                 shape: 'pill',
                 label: 'paypal',
                 height: 48,
@@ -599,69 +601,6 @@ function setupAddonsModal() {
 
     // Re-open automatically after an add so the donor can keep adding.
     if (modal.hasAttribute('data-open')) open();
-}
-
-/* ---------- Donate "choose a cause" popup ----------
- * The hero widget's Donate button opens this animated popup, pre-filled with
- * whatever frequency/amount the donor already picked on the card. The popup adds
- * a cause dropdown so they can give to any cause, then feeds the shared basket
- * through the same add-to-basket handler as everything else.
- */
-function setupDonateModal() {
-    const modal = document.querySelector('[data-donate-modal]');
-    if (!modal) return;
-
-    const form = modal.querySelector('[data-donate-modal-form]');
-
-    const open = () => {
-        modal.hidden = false;
-        requestAnimationFrame(() => modal.classList.add('is-open'));
-    };
-    const close = () => {
-        modal.classList.remove('is-open');
-        setTimeout(() => { modal.hidden = true; }, 320);
-    };
-
-    // Copy the donor's card selection into the popup so nothing is lost.
-    const prefill = (source) => {
-        if (!source || !form) return;
-
-        const freq = source.querySelector('input[name="frequency"]')?.value;
-        if (freq) form.querySelector(`[data-choice][data-value="${freq}"]`)?.click();
-
-        // Read the amount after the frequency swap has updated the presets.
-        const amount = source.querySelector('[data-amount-input]')?.value;
-        if (!amount) return;
-
-        const preset = form.querySelector(`[data-choice][data-oneoff][data-value="${amount}"]`);
-        if (preset) {
-            preset.click();
-        } else {
-            form.querySelector('[data-choice][data-value="other"]')?.click();
-            const custom = form.querySelector('[data-custom-amount-input]');
-            if (custom) {
-                custom.value = amount;
-                custom.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        }
-    };
-
-    document.querySelectorAll('[data-donate-open]').forEach((btn) =>
-        btn.addEventListener('click', () => {
-            prefill(btn.closest('[data-donate-form]'));
-            open();
-        })
-    );
-
-    modal.querySelectorAll('[data-donate-close]').forEach((el) => el.addEventListener('click', close));
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) close(); });
-
-    // The shared basket handler does the AJAX add + toast + mini-cart. We just
-    // close the popup once a valid amount has been submitted.
-    form?.addEventListener('submit', () => {
-        const amount = parseFloat(form.querySelector('[data-amount-input]')?.value || '0');
-        if (amount >= 1) setTimeout(close, 250);
-    });
 }
 
 /* ---------- Cookie consent ---------- */

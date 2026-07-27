@@ -68,7 +68,7 @@
 
             {{-- Progress --}}
             <ol class="nf-wz-steps mb-9 sm:mb-11">
-                @foreach (['Start', 'Donation', 'Gift Aid', 'Details', 'Payment'] as $i => $label)
+                @foreach (['Start', 'Donation', 'Gift Aid', 'Keep in touch', 'Details', 'Payment'] as $i => $label)
                     <li class="nf-wz-step {{ $i === 0 ? 'is-done' : '' }} {{ $i === 1 ? 'is-active' : '' }}" data-step="{{ $i + 1 }}">
                         <span class="nf-wz-step__num">{{ $i + 1 }}</span>
                         <span class="nf-wz-step__label">{{ $label }}</span>
@@ -151,6 +151,48 @@
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Back
                         </button>
+                        <button type="button" data-next="4" class="btn-brand px-7 py-3 text-base">
+                            Continue {!! $arrow !!}
+                        </button>
+                    </div>
+                </div>
+
+                {{-- ===== STEP 4 · Keep in touch ===== --}}
+                <div class="nf-wz-panel" data-panel="4" hidden>
+                    <h2 class="text-2xl font-extrabold text-navy-dark sm:text-3xl">Keep in touch</h2>
+                    <p class="mt-1.5 text-sm leading-relaxed text-navy/70">
+                        We&rsquo;d love to keep you updated on how your donation is changing lives, and on the
+                        appeals that need you most. We&rsquo;ll always treat your details with the utmost care,
+                        never share them, and you can opt out at any time.
+                    </p>
+
+                    <p class="mt-6 text-sm font-semibold text-brand">I&rsquo;m happy for Naeem Foundation to contact me via:</p>
+                    @php
+                        $consentOptions = [
+                            ['key' => 'email', 'label' => 'Email', 'icon' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/>'],
+                            ['key' => 'phone', 'label' => 'Telephone', 'icon' => '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z" stroke-linecap="round" stroke-linejoin="round"/>'],
+                            ['key' => 'sms', 'label' => 'SMS', 'icon' => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/>'],
+                        ];
+                    @endphp
+                    <div class="mt-3 grid gap-3 sm:grid-cols-3">
+                        @foreach ($consentOptions as $opt)
+                            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-navy/10 p-4 transition-colors hover:border-brand has-[:checked]:border-brand has-[:checked]:bg-brand/5">
+                                <input type="checkbox" data-consent="{{ $opt['key'] }}"
+                                       class="h-5 w-5 shrink-0 rounded border-gray-300 text-brand focus:ring-2 focus:ring-brand/30">
+                                <span class="inline-flex items-center gap-2 text-sm font-semibold text-navy-dark">
+                                    <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">{!! $opt['icon'] !!}</svg>
+                                    {{ $opt['label'] }}
+                                </span>
+                            </label>
+                        @endforeach
+                    </div>
+                    <p class="mt-3 text-xs text-navy/50">Prefer not to hear from us? Just leave these unticked &mdash; your donation still goes through.</p>
+
+                    <div class="mt-8 flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                        <button type="button" data-back="3" class="nf-wz-nav-back">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Back
+                        </button>
                         <button type="button" data-submit class="btn-brand justify-center whitespace-nowrap px-7 py-3 text-base">
                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/></svg>
                             Donate Now
@@ -175,6 +217,10 @@
     <input type="hidden" name="cause" id="wz-cause">
     <input type="hidden" name="amount" id="wz-amount">
     <input type="hidden" name="frequency" id="wz-frequency">
+    {{-- "Keep in touch" marketing consent, carried through to the donation record. --}}
+    <input type="hidden" name="contact_email" id="wz-c-email">
+    <input type="hidden" name="contact_phone" id="wz-c-phone">
+    <input type="hidden" name="contact_sms" id="wz-c-sms">
     <input type="hidden" name="image" value="images/changinslives1.jpg">
 </form>
 
@@ -203,6 +249,7 @@
     const gaAmount = root.querySelector('[data-ga-amount]');
     const gaPlus = root.querySelector('[data-ga-plus]');
     const gaCheck = root.querySelector('[data-ga-check]');
+    const consentBoxes = Array.from(root.querySelectorAll('[data-consent]'));
     const flashEl = root.querySelector('[data-flash]');
 
     const money = (n) => (window.NF_CURRENCY || '£') + (Number(n) || 0).toFixed(2);
@@ -292,6 +339,14 @@
         gaCheck.addEventListener('change', () => { state.giftAid = gaCheck.checked; save(); });
     }
 
+    // ---- Keep in touch (marketing consent) ----
+    state.consent = state.consent || {};
+    consentBoxes.forEach((box) => {
+        const key = box.dataset.consent;
+        box.checked = !!state.consent[key];
+        box.addEventListener('change', () => { state.consent[key] = box.checked; save(); });
+    });
+
     // ---- Next / Back ----
     root.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => {
         const to = Number(b.dataset.next);
@@ -315,6 +370,11 @@
         document.getElementById('wz-cause').value = state.fund;
         document.getElementById('wz-amount').value = state.amount;
         document.getElementById('wz-frequency').value = state.frequency || 'one-off';
+        // Marketing consent from the "Keep in touch" step.
+        const consent = state.consent || {};
+        document.getElementById('wz-c-email').value = consent.email ? 1 : '';
+        document.getElementById('wz-c-phone').value = consent.phone ? 1 : '';
+        document.getElementById('wz-c-sms').value = consent.sms ? 1 : '';
         // requestSubmit() fires the submit *event*, so the global /donate/add
         // handler in app.js runs — it AJAX-adds the gift and pops the header
         // mini-cart open, just like the widget on every other page. (Plain
