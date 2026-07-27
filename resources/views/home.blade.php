@@ -105,15 +105,29 @@
 
     {{-- ===================== QUICK DONATE BAR (sticky, bottom) ===================== --}}
     <section class="nf-quickbar" data-quickbar>
-        <div class="nf-container py-4">
-            <form method="POST" action="{{ route('donate.add') }}"
-                  class="flex flex-col items-stretch gap-3 lg:flex-row lg:items-center">
+        <div class="nf-container py-3 lg:py-4">
+
+            {{-- Mobile: slim collapsed header that expands the form (hidden on desktop) --}}
+            <button type="button" data-quickbar-toggle aria-expanded="false"
+                    class="flex w-full items-center justify-between gap-3 lg:hidden">
+                <span class="inline-flex items-center gap-2 text-base font-semibold text-white">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z"/></svg>
+                    Quick Donate
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-brand">
+                    Give now
+                    <svg class="h-4 w-4 transition-transform duration-300" data-quickbar-chevron viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+            </button>
+
+            <form method="POST" action="{{ route('donate.add') }}" data-quickbar-form
+                  class="nf-quickbar__form flex-col items-stretch gap-3 lg:flex-row lg:items-center lg:gap-3">
                 @csrf
                 <input type="hidden" name="image" value="images/givezakat.png">
-                <span class="text-lg font-semibold text-white lg:mr-2">Quick Donate</span>
+                <span class="hidden text-lg font-semibold text-white lg:mr-2 lg:inline">Quick Donate</span>
 
                 {{-- Frequency (custom dropdown — opens upward in the bottom bar) --}}
-                <div class="nf-cselect nf-cselect--up h-11 flex-1" data-cselect>
+                <div class="nf-cselect nf-cselect--up h-11 lg:flex-1" data-cselect>
                     <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
                         <span data-cselect-label>One-Off-Donation</span>
                         <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -126,7 +140,7 @@
                 </div>
 
                 {{-- Cause (custom dropdown — opens upward in the bottom bar) --}}
-                <div class="nf-cselect nf-cselect--up h-11 flex-1" data-cselect>
+                <div class="nf-cselect nf-cselect--up h-11 lg:flex-1" data-cselect>
                     <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
                         <span data-cselect-label>Where Most Needed</span>
                         <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -154,12 +168,13 @@
 
     {{-- ===================== LATEST APPEALS ===================== --}}
     @if ($appeals->isNotEmpty())
-    <section class="py-14">
-        <div class="nf-container grid gap-10 lg:grid-cols-12" data-carousel="appeals">
+    <section class="py-16 sm:py-20 lg:py-24">
+        <div class="nf-container grid items-center gap-10 lg:grid-cols-12 lg:gap-12" data-carousel="appeals">
             {{-- Left intro --}}
             <div class="lg:col-span-4">
                 <p class="mb-2 inline-block border-b-2 border-brand pb-1 text-sm font-semibold text-navy">Latest Appeals</p>
-                <h2 class="text-3xl font-bold leading-tight text-brand">Changing Lives through these Initiatives</h2>
+                <h2 class="text-3xl font-bold leading-tight text-brand sm:text-4xl">Changing Lives through these Initiatives</h2>
+                <p class="mt-4 max-w-sm text-sm leading-relaxed text-gray-500">Support the causes that need you most &mdash; every gift brings real, lasting change to families in need.</p>
                 <div class="mt-5 flex gap-3">
                     <button type="button" data-prev class="nf-arrow" aria-label="Previous">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -176,14 +191,22 @@
                     <div class="nf-track flex" data-track>
                         @foreach ($appealPages as $page)
                             <div class="w-full shrink-0" data-slide>
-                                <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <div class="grid gap-6 sm:grid-cols-2 lg:gap-7">
                                     @foreach ($page as $appeal)
-                                        <a href="{{ isset($appeal->id) ? route('appeals.show', $appeal) : $donateLink($appeal->link) }}" class="group flex gap-4">
-                                            <img src="{{ asset($appeal->image) }}" alt="{{ $appeal->title }}"
-                                                 class="h-16 w-20 shrink-0 rounded object-cover">
-                                            <div>
-                                                <h3 class="font-semibold text-navy-dark group-hover:text-brand">{{ $appeal->title }}</h3>
-                                                <p class="mt-1 text-sm text-gray-500">{{ $appeal->description }}</p>
+                                        <a href="{{ isset($appeal->id) ? route('appeals.show', $appeal) : $donateLink($appeal->link) }}"
+                                           class="group flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-navy/10 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-navy/15">
+                                            <div class="relative h-52 overflow-hidden sm:h-56">
+                                                <img src="{{ asset($appeal->image) }}" alt="{{ $appeal->title }}"
+                                                     class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                                                <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-dark/35 to-transparent"></span>
+                                            </div>
+                                            <div class="flex flex-1 flex-col p-5 sm:p-6">
+                                                <h3 class="text-lg font-bold text-navy-dark transition-colors group-hover:text-brand sm:text-xl">{{ $appeal->title }}</h3>
+                                                <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-500">{{ $appeal->description }}</p>
+                                                <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
+                                                    Donate now
+                                                    <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </span>
                                             </div>
                                         </a>
                                     @endforeach

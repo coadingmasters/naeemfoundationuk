@@ -2776,6 +2776,26 @@ input[type="radio"] {
     transform: translateY(0);
 }
 
+/* Collapsible form: hidden/slide on mobile, always an inline row on desktop. */
+.nf-quickbar__form {
+    display: flex;
+}
+@media (max-width: 1023px) {
+    .nf-quickbar__form {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        padding-top: 0;
+        transition: max-height 0.35s ease, opacity 0.3s ease, padding-top 0.35s ease;
+    }
+    .nf-quickbar__form.is-open {
+        max-height: 26rem;
+        overflow: visible;   /* let the upward dropdowns escape once open */
+        opacity: 1;
+        padding-top: 0.85rem;
+    }
+}
+
 /* Its dropdowns must open UPWARD — a downward menu would fall off-screen. */
 .nf-cselect--up .nf-cselect__menu {
     top: auto;

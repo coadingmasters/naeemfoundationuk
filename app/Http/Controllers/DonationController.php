@@ -17,8 +17,15 @@ class DonationController extends Controller
     public const ADDONS = [
         ['cause' => 'Orphan Cloth', 'amount' => 5],
         ['cause' => 'Family Meal', 'amount' => 10],
-        ['cause' => 'Gaza Children', 'amount' => 20],
-        ['cause' => 'Gaza Children Plus', 'amount' => 25],
+        ['cause' => 'Hot Meals for 10 People', 'amount' => 20],
+        ['cause' => 'Clean Water for a Family', 'amount' => 25],
+        ['cause' => 'Emergency Food Pack', 'amount' => 35],
+        ['cause' => 'Gaza Emergency Relief', 'amount' => 50],
+        ['cause' => 'Orphan Sponsorship (1 Month)', 'amount' => 75],
+        ['cause' => 'Water Handpump Share', 'amount' => 100],
+        ['cause' => 'Ramadan Food Packs (x3)', 'amount' => 150],
+        ['cause' => 'Feed a Village (50 People)', 'amount' => 250],
+        ['cause' => 'Build a Well (Share)', 'amount' => 500],
     ];
 
     /**

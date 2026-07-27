@@ -91,24 +91,27 @@
                                 <h3 class="text-xl font-extrabold text-navy-dark sm:text-2xl">Add more to your donation</h3>
                                 <p class="mt-1.5 text-sm text-gray-500">Boost your impact — add an extra gift before you pay.</p>
 
-                                <div class="mt-5 flex flex-col gap-3">
-                                    @foreach ($addons as $addon)
-                                        <form method="POST" action="{{ route('donate.add') }}" data-cart-skip>
-                                            @csrf
-                                            <input type="hidden" name="cause" value="{{ $addon['cause'] }}">
-                                            <input type="hidden" name="amount" value="{{ $addon['amount'] }}">
-                                            <input type="hidden" name="frequency" value="one-off">
-                                            <input type="hidden" name="redirect" value="payment">
-                                            <button type="submit" class="nf-addon">
-                                                <span class="nf-addon__info">
-                                                    <span class="nf-addon__price">{{ region('symbol') }}{{ $addon['amount'] }}</span>
-                                                    <span class="nf-addon__label">{{ $addon['cause'] }}</span>
-                                                </span>
-                                                <span class="nf-addon__add">Add +</span>
-                                            </button>
-                                        </form>
-                                    @endforeach
-                                </div>
+                                {{-- Pick any gift from the list and add it to the basket. --}}
+                                <form method="POST" action="{{ route('donate.add') }}" data-cart-skip data-addon-form class="mt-5">
+                                    @csrf
+                                    <input type="hidden" name="frequency" value="one-off">
+                                    <input type="hidden" name="redirect" value="payment">
+                                    <input type="hidden" name="cause" data-addon-cause value="{{ $addons[0]['cause'] }}">
+                                    <input type="hidden" name="amount" data-addon-amount value="{{ $addons[0]['amount'] }}">
+
+                                    <label for="addon-select" class="mb-1.5 block text-xs font-bold uppercase tracking-wide text-navy">Choose a gift</label>
+                                    <select id="addon-select" data-addon-select
+                                            class="h-12 w-full rounded-lg border border-navy/20 bg-white px-3 text-sm font-semibold text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25">
+                                        @foreach ($addons as $addon)
+                                            <option value="{{ $addon['cause'] }}|{{ $addon['amount'] }}">{{ $addon['cause'] }} ({{ region('symbol') }}{{ number_format($addon['amount']) }})</option>
+                                        @endforeach
+                                    </select>
+
+                                    <button type="submit" class="btn-brand mt-4 w-full justify-center py-3">
+                                        Add to cart
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+                                </form>
 
                                 {{-- Dismiss without adding anything. --}}
                                 <button type="button" data-addons-close

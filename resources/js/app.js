@@ -592,6 +592,22 @@ function setupAddonsModal() {
         setTimeout(() => { modal.hidden = true; }, 320);
     };
 
+    // The add-on dropdown carries "cause|amount" in each option; mirror the
+    // chosen one into the hidden fields the form actually submits.
+    const addonForm = modal.querySelector('[data-addon-form]');
+    const addonSelect = modal.querySelector('[data-addon-select]');
+    if (addonForm && addonSelect) {
+        const causeInput = addonForm.querySelector('[data-addon-cause]');
+        const amountInput = addonForm.querySelector('[data-addon-amount]');
+        const syncAddon = () => {
+            const [cause, amount] = (addonSelect.value || '').split('|');
+            if (causeInput) causeInput.value = cause || '';
+            if (amountInput) amountInput.value = amount || '';
+        };
+        addonSelect.addEventListener('change', syncAddon);
+        syncAddon();
+    }
+
     document.querySelectorAll('[data-addons-open]').forEach((btn) => btn.addEventListener('click', open));
     modal.querySelectorAll('[data-addons-close]').forEach((btn) => btn.addEventListener('click', close));
     document.addEventListener('keydown', (e) => {
@@ -632,6 +648,21 @@ function setupQuickbar() {
 
     window.addEventListener('scroll', sync, { passive: true });
     window.addEventListener('resize', sync);
+
+    // Mobile: the slim header expands/collapses the form. Re-measure as it opens
+    // so the reserved space and footer-parking stay correct.
+    const toggle = bar.querySelector('[data-quickbar-toggle]');
+    const form = bar.querySelector('[data-quickbar-form]');
+    const chevron = bar.querySelector('[data-quickbar-chevron]');
+    if (toggle && form) {
+        toggle.addEventListener('click', () => {
+            const open = form.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', String(open));
+            if (chevron) chevron.style.transform = open ? 'rotate(180deg)' : '';
+            sync();
+        });
+        form.addEventListener('transitionend', sync);
+    }
 }
 
 /* ---------- Cookie consent ---------- */
