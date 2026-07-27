@@ -4,15 +4,22 @@
     $nfPaypal = app(\App\Services\PayPal::class);
     $nfCurrency = region('currency', 'GBP');
     $nfSubscription = $paypalSubscription ?? false;
-    // Subscriptions need intent=subscription + vaulting; one-off uses capture.
+    // One-off adds the Apple Pay + Google Pay components; subscriptions can't use
+    // those wallets (they need vaulting) so they stay on buttons only.
+    $nfComponents = $nfSubscription ? 'buttons' : 'buttons,applepay,googlepay';
     $nfSdkParams = $nfSubscription
         ? 'vault=true&intent=subscription'
         : 'intent=capture&disable-funding=paylater,credit';
 @endphp
 
 @if ($nfPaypal->isConfigured())
-    <script src="https://www.paypal.com/sdk/js?client-id={{ $nfPaypal->clientId() }}&currency={{ $nfCurrency }}&components=buttons&{{ $nfSdkParams }}"
+    <script src="https://www.paypal.com/sdk/js?client-id={{ $nfPaypal->clientId() }}&currency={{ $nfCurrency }}&components={{ $nfComponents }}&{{ $nfSdkParams }}"
             data-nf-paypal-sdk></script>
+    @unless ($nfSubscription)
+        {{-- Google Pay's own JS (needed by the PayPal googlepay component). --}}
+        <script src="https://pay.google.com/gp/p/js/pay.js" data-nf-googlepay-sdk></script>
+        <script>window.NF_APP_NAME = @json(config('app.name'));</script>
+    @endunless
 @else
     {{-- No credentials configured — tell the visitor rather than showing dead buttons. --}}
     <script>

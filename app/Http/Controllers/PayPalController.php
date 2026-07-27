@@ -65,7 +65,12 @@ class PayPalController extends Controller
             'currency' => $currency,
         ]]);
 
-        return response()->json(['id' => $orderId]);
+        // amount + currency let the Apple/Google Pay sheets show the right total.
+        return response()->json([
+            'id' => $orderId,
+            'amount' => number_format($total, 2, '.', ''),
+            'currency' => $currency,
+        ]);
     }
 
     /** Capture an approved donation payment and complete the donation. */
@@ -317,7 +322,11 @@ class PayPalController extends Controller
             ],
         ]);
 
-        return response()->json(['id' => $orderId]);
+        return response()->json([
+            'id' => $orderId,
+            'amount' => number_format($total, 2, '.', ''),
+            'currency' => $currency,
+        ]);
     }
 
     /** Capture an approved shop payment and record the order. */

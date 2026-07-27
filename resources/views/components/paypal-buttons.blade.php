@@ -41,6 +41,13 @@
             <span class="nf-pay__bar"></span>
         </div>
 
+        @if ($mode !== 'subscription')
+            {{-- Apple Pay / Google Pay render here, but only on a device + browser
+                 that supports them (Safari/iOS, Chrome/Android). Hidden otherwise. --}}
+            <div data-applepay-button class="nf-pay__wallet" hidden></div>
+            <div data-googlepay-button class="nf-pay__wallet" hidden></div>
+        @endif
+
         {{-- PayPal renders here. --}}
         <div data-paypal-buttons class="nf-pay__buttons"></div>
     </div>

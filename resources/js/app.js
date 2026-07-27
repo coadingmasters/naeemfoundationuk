@@ -533,6 +533,152 @@ function setupPayPal() {
             root.classList.add('is-ready');
             showError('The payment buttons could not be loaded. Please refresh the page.');
         });
+
+    // Apple Pay / Google Pay (one-off only). They render only on a supporting
+    // device + browser; otherwise the containers stay hidden.
+    if (!isSubscription) {
+        initWalletPay({ root, post, buildPayload, finish, showError, clearError, orderUrl });
+    }
+}
+
+/* ---------- Apple Pay & Google Pay (via PayPal wallet components) ----------
+ * Both reuse the same server order-create + capture endpoints as the buttons —
+ * the wallet just replaces the PayPal approval popup. They only ever appear on
+ * a device that supports them (Safari/iOS, Chrome/Android with a saved card).
+ */
+function initWalletPay(ctx) {
+    initGooglePay(ctx, ctx.root.querySelector('[data-googlepay-button]'));
+    initApplePay(ctx, ctx.root.querySelector('[data-applepay-button]'));
+}
+
+async function initGooglePay(ctx, container) {
+    if (!container || !window.paypal?.Googlepay || !window.google?.payments?.api) return;
+
+    let config;
+    try {
+        config = await window.paypal.Googlepay().config();
+    } catch {
+        return;
+    }
+    if (!config || !config.isEligible) return;
+
+    const client = new google.payments.api.PaymentsClient({ environment: config.environment || 'TEST' });
+    const ready = await client
+        .isReadyToPay({ apiVersion: 2, apiVersionMinor: 0, allowedPaymentMethods: config.allowedPaymentMethods })
+        .catch(() => null);
+    if (!ready || !ready.result) return;
+
+    const button = client.createButton({
+        buttonType: 'donate',
+        buttonSizeMode: 'fill',
+        onClick: () => onGooglePay(ctx, config, client),
+    });
+    container.appendChild(button);
+    container.hidden = false;
+}
+
+async function onGooglePay(ctx, config, client) {
+    ctx.clearError();
+    try {
+        const order = await ctx.post(ctx.orderUrl, ctx.buildPayload());
+
+        const paymentData = await client.loadPaymentData({
+            apiVersion: 2,
+            apiVersionMinor: 0,
+            allowedPaymentMethods: config.allowedPaymentMethods,
+            merchantInfo: config.merchantInfo,
+            transactionInfo: {
+                countryCode: config.countryCode || 'GB',
+                currencyCode: order.currency,
+                totalPriceStatus: 'FINAL',
+                totalPrice: order.amount,
+            },
+        });
+
+        const confirm = await window.paypal.Googlepay().confirmOrder({
+            orderId: order.id,
+            paymentMethodData: paymentData.paymentMethodData,
+        });
+
+        if (confirm.status === 'APPROVED' || confirm.status === 'PAYER_ACTION_REQUIRED') {
+            await ctx.finish({ order_id: order.id });
+        } else {
+            ctx.showError('Google Pay could not complete the payment.');
+        }
+    } catch (e) {
+        if (e && e.statusCode === 'CANCELED') return; // donor closed the sheet
+        ctx.showError('Google Pay could not complete the payment. Please try another method.');
+    }
+}
+
+async function initApplePay(ctx, container) {
+    if (!container || !window.paypal?.Applepay) return;
+    if (!window.ApplePaySession || !ApplePaySession.supportsVersion(4) || !ApplePaySession.canMakePayments()) return;
+
+    let config;
+    try {
+        config = await window.paypal.Applepay().config();
+    } catch {
+        return;
+    }
+    if (!config || !config.isEligible) return;
+
+    const button = document.createElement('div');
+    button.className = 'nf-applepay-btn';
+    button.setAttribute('role', 'button');
+    button.setAttribute('tabindex', '0');
+    button.setAttribute('aria-label', 'Pay with Apple Pay');
+    button.addEventListener('click', () => onApplePay(ctx, config));
+    container.appendChild(button);
+    container.hidden = false;
+}
+
+async function onApplePay(ctx, config) {
+    ctx.clearError();
+
+    let order;
+    try {
+        order = await ctx.post(ctx.orderUrl, ctx.buildPayload());
+    } catch (e) {
+        ctx.showError(e.message);
+        return;
+    }
+
+    const session = new ApplePaySession(4, {
+        countryCode: config.countryCode || 'GB',
+        currencyCode: order.currency,
+        merchantCapabilities: config.merchantCapabilities || ['supports3DS'],
+        supportedNetworks: config.supportedNetworks || ['visa', 'masterCard', 'amex', 'discover'],
+        requiredBillingContactFields: ['name', 'postalAddress'],
+        total: { label: window.NF_APP_NAME || 'Donation', amount: order.amount },
+    });
+
+    session.onvalidatemerchant = async (event) => {
+        try {
+            const payload = await window.paypal.Applepay().validateMerchant({ validationUrl: event.validationURL });
+            session.completeMerchantValidation(payload.merchantSession);
+        } catch {
+            session.abort();
+            ctx.showError('Apple Pay could not be verified. Please try another method.');
+        }
+    };
+
+    session.onpaymentauthorized = async (event) => {
+        try {
+            await window.paypal.Applepay().confirmOrder({
+                orderId: order.id,
+                token: event.payment.token,
+                billingContact: event.payment.billingContact,
+            });
+            session.completePayment(ApplePaySession.STATUS_SUCCESS);
+            await ctx.finish({ order_id: order.id });
+        } catch {
+            session.completePayment(ApplePaySession.STATUS_FAILURE);
+            ctx.showError('Apple Pay could not complete the payment. Please try another method.');
+        }
+    };
+
+    session.begin();
 }
 
 /* ---------- Print buttons ---------- */

@@ -2805,3 +2805,22 @@ input[type="radio"] {
 .nf-cselect--up.is-open .nf-cselect__menu {
     transform: translateY(0);
 }
+
+/* Apple Pay / Google Pay wallet buttons inside the payment panel. */
+.nf-pay__wallet {
+    margin-bottom: 0.6rem;
+}
+.nf-pay__wallet[hidden] {
+    display: none;
+}
+/* Native Apple Pay button — only renders on Safari/iOS. */
+.nf-applepay-btn {
+    -webkit-appearance: -apple-pay-button;
+    appearance: -apple-pay-button;
+    -apple-pay-button-type: donate;
+    -apple-pay-button-style: black;
+    height: 48px;
+    width: 100%;
+    border-radius: 9999px;
+    cursor: pointer;
+}
