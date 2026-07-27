@@ -149,6 +149,126 @@ class PayPal
         return $res->json();
     }
 
+    // ------------------------------------------------------------ subscriptions
+
+    /**
+     * The reusable catalog product every donation plan hangs off. Created once
+     * per mode and cached, so we don't make a new product on every plan.
+     */
+    public function ensureProduct(): string
+    {
+        $key = 'paypal:product:'.$this->mode().':'.md5((string) $this->cfg['client_id']);
+
+        return Cache::rememberForever($key, function () {
+            $res = $this->request()->post($this->cfg['base_url'].'/v1/catalogs/products', [
+                'name' => (string) config('paypal.brand_name').' Donation',
+                'description' => 'Recurring charitable donation',
+                'type' => 'SERVICE',
+                'category' => 'CHARITY',
+            ]);
+
+            if (! $res->successful()) {
+                $this->logFailure('create product', $res);
+                throw new RuntimeException('Could not set up recurring giving.');
+            }
+
+            return (string) $res->json('id');
+        });
+    }
+
+    /**
+     * Find or create a monthly billing plan for this exact amount + currency,
+     * so the donor is charged the same amount every month. Plans are cached in
+     * the paypal_plans table (scoped by mode) and reused.
+     */
+    public function ensureMonthlyPlan(float $amount, string $currency): string
+    {
+        $amount = round($amount, 2);
+
+        $existing = \App\Models\PayPalPlan::query()
+            ->where('mode', $this->mode())
+            ->where('currency', $currency)
+            ->where('amount', $amount)
+            ->first();
+
+        if ($existing) {
+            return $existing->plan_id;
+        }
+
+        $productId = $this->ensureProduct();
+
+        $res = $this->request()->post($this->cfg['base_url'].'/v1/billing/plans', [
+            'product_id' => $productId,
+            'name' => 'Monthly gift '.$currency.' '.number_format($amount, 2),
+            'description' => 'Monthly recurring donation of '.$currency.' '.number_format($amount, 2),
+            'status' => 'ACTIVE',
+            'billing_cycles' => [[
+                'frequency' => ['interval_unit' => 'MONTH', 'interval_count' => 1],
+                'tenure_type' => 'REGULAR',
+                'sequence' => 1,
+                'total_cycles' => 0, // 0 = until cancelled
+                'pricing_scheme' => [
+                    'fixed_price' => [
+                        'value' => number_format($amount, 2, '.', ''),
+                        'currency_code' => $currency,
+                    ],
+                ],
+            ]],
+            'payment_preferences' => [
+                'auto_bill_outstanding' => true,
+                'setup_fee_failure_action' => 'CONTINUE',
+                'payment_failure_threshold' => 3,
+            ],
+        ]);
+
+        if (! $res->successful()) {
+            $this->logFailure('create plan', $res);
+            throw new RuntimeException('Could not set up the monthly plan.');
+        }
+
+        $planId = (string) $res->json('id');
+
+        \App\Models\PayPalPlan::create([
+            'mode' => $this->mode(),
+            'currency' => $currency,
+            'amount' => $amount,
+            'product_id' => $productId,
+            'plan_id' => $planId,
+        ]);
+
+        return $planId;
+    }
+
+    /** Read a subscription back from PayPal (to verify + record it). */
+    public function getSubscription(string $subscriptionId): array
+    {
+        $res = $this->request()->get($this->cfg['base_url']."/v1/billing/subscriptions/{$subscriptionId}");
+
+        if (! $res->successful()) {
+            $this->logFailure('get subscription', $res);
+            throw new RuntimeException('Could not read the PayPal subscription.');
+        }
+
+        return $res->json();
+    }
+
+    /** Cancel an active subscription (admin action). Returns true on success. */
+    public function cancelSubscription(string $subscriptionId, string $reason = 'Cancelled by the charity'): bool
+    {
+        $res = $this->request()->post(
+            $this->cfg['base_url']."/v1/billing/subscriptions/{$subscriptionId}/cancel",
+            ['reason' => mb_substr($reason, 0, 127)]
+        );
+
+        if (! $res->successful()) {
+            $this->logFailure('cancel subscription', $res);
+
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Verify a webhook really came from PayPal.
      *

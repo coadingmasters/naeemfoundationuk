@@ -164,10 +164,25 @@
                             </label>
 
 
+                            @if ($isMonthly)
+                                <div class="mt-5 flex items-start gap-2 rounded-xl border border-brand/25 bg-brand/5 p-4 text-sm text-navy-dark">
+                                    <svg class="mt-0.5 h-5 w-5 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2l4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    <span>You&rsquo;re setting up a <strong>monthly gift of {{ money($total) }}</strong>. PayPal will
+                                    automatically take this each month until you cancel — you can cancel any time.</span>
+                                </div>
+                            @endif
+
                             <div class="mt-7">
-                                <x-paypal-buttons
-                                    :order-url="route('paypal.donation.order')"
-                                    :capture-url="route('paypal.donation.capture')" />
+                                @if ($isMonthly)
+                                    <x-paypal-buttons
+                                        mode="subscription"
+                                        :order-url="route('paypal.subscription.plan')"
+                                        :capture-url="route('paypal.subscription.record')" />
+                                @else
+                                    <x-paypal-buttons
+                                        :order-url="route('paypal.donation.order')"
+                                        :capture-url="route('paypal.donation.capture')" />
+                                @endif
                             </div>
 
                             <div class="mt-6 border-t border-navy/10 pt-5">
@@ -188,5 +203,5 @@
 @endsection
 
 @push('scripts')
-    @include('partials.paypal-sdk')
+    @include('partials.paypal-sdk', ['paypalSubscription' => $isMonthly])
 @endpush

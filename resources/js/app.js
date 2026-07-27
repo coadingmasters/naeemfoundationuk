@@ -401,7 +401,8 @@ function setupPayPal() {
     if (!buttons) return;
 
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
-    const { orderUrl, captureUrl, form: formSelector } = root.dataset;
+    const { orderUrl, captureUrl, form: formSelector, paypalMode } = root.dataset;
+    const isSubscription = paypalMode === 'subscription';
 
     const showError = (message) => {
         if (!errorBox) return;
@@ -446,72 +447,85 @@ function setupPayPal() {
         return data;
     };
 
+    // Build the payload our create endpoint needs (fee choice + any details form).
+    const buildPayload = () => {
+        const payload = {};
+
+        const coverFee = document.querySelector('[data-cover-fee]');
+        if (coverFee) payload.cover_fee = coverFee.checked ? 1 : 0;
+
+        if (formSelector) {
+            const form = document.querySelector(formSelector);
+            if (form && !form.reportValidity()) {
+                throw new Error('Please complete your delivery details first.');
+            }
+            if (form) {
+                new FormData(form).forEach((value, key) => {
+                    if (key !== '_token') payload[key] = value;
+                });
+            }
+        }
+
+        return payload;
+    };
+
+    const finish = async (finalPayload) => {
+        setBusy(true);
+        buttons.style.pointerEvents = 'none';
+        try {
+            const res = await post(captureUrl, finalPayload);
+            window.location.href = res.redirect;
+        } catch (e) {
+            setBusy(false);
+            buttons.style.pointerEvents = '';
+            showError(e.message);
+        }
+    };
+
+    const config = {
+        style: {
+            layout: 'vertical',
+            color: 'gold', // PayPal's most recognisable, best-converting button
+            shape: 'pill',
+            label: isSubscription ? 'subscribe' : 'paypal',
+            height: 48,
+            tagline: false, // we show our own trust row instead
+        },
+        onCancel: () => clearError(),
+        onError: () => showError('PayPal could not be reached. Please try again in a moment.'),
+    };
+
+    if (isSubscription) {
+        // Monthly: create (or reuse) a plan server-side, then start a subscription.
+        config.createSubscription = async (data, actions) => {
+            clearError();
+            let plan;
+            try {
+                plan = await post(orderUrl, buildPayload());
+            } catch (e) {
+                showError(e.message);
+                throw e;
+            }
+            return actions.subscription.create({ plan_id: plan.plan_id, custom_id: plan.reference });
+        };
+        config.onApprove = (data) => finish({ subscription_id: data.subscriptionID });
+    } else {
+        // One-off: create an order, then capture it.
+        config.createOrder = async () => {
+            clearError();
+            try {
+                const data = await post(orderUrl, buildPayload());
+                return data.id;
+            } catch (e) {
+                showError(e.message);
+                throw e;
+            }
+        };
+        config.onApprove = (data) => finish({ order_id: data.orderID });
+    }
+
     window.paypal
-        .Buttons({
-            style: {
-                layout: 'vertical',
-                // Gold is PayPal's most recognisable, best-converting button.
-                color: 'gold',
-                shape: 'pill',
-                label: 'paypal',
-                height: 48,
-                // We show our own trust row underneath instead.
-                tagline: false,
-            },
-
-            createOrder: async () => {
-                clearError();
-
-                const payload = {};
-
-                // Donation page: whether the donor is covering the fee.
-                const coverFee = document.querySelector('[data-cover-fee]');
-                if (coverFee) payload.cover_fee = coverFee.checked ? 1 : 0;
-
-                // Shop page: the delivery details entered above the buttons.
-                if (formSelector) {
-                    const form = document.querySelector(formSelector);
-
-                    // There is no submit button any more, so ask the browser to
-                    // run its own validation before we open PayPal.
-                    if (form && !form.reportValidity()) {
-                        throw new Error('Please complete your delivery details first.');
-                    }
-
-                    if (form) {
-                        new FormData(form).forEach((value, key) => {
-                            if (key !== '_token') payload[key] = value;
-                        });
-                    }
-                }
-
-                try {
-                    const data = await post(orderUrl, payload);
-                    return data.id;
-                } catch (e) {
-                    showError(e.message);
-                    throw e;
-                }
-            },
-
-            onApprove: async (data) => {
-                setBusy(true);
-                buttons.style.pointerEvents = 'none';
-
-                try {
-                    const res = await post(captureUrl, { order_id: data.orderID });
-                    window.location.href = res.redirect;
-                } catch (e) {
-                    setBusy(false);
-                    buttons.style.pointerEvents = '';
-                    showError(e.message);
-                }
-            },
-
-            onCancel: () => clearError(),
-
-            onError: () => showError('PayPal could not be reached. Please try again in a moment.'),
-        })
+        .Buttons(config)
         .render(buttons)
         // Drop the shimmer and fade the real buttons in.
         .then(() => root.classList.add('is-ready'))

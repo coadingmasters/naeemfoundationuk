@@ -173,6 +173,7 @@ class DonationController extends Controller
             'organisation_name' => $onBehalf ? $data['organisation_name'] : null,
             // The transaction fee is decided on the payment step, so start without it.
             'cover_fee' => false,
+            'frequency' => DonationCart::isMonthly() ? 'monthly' : 'one-off',
             'items' => DonationCart::items(),
             'currency' => \App\Support\Country::get('currency', 'GBP'),
             'subtotal' => DonationCart::subtotal(),
@@ -241,6 +242,8 @@ class DonationController extends Controller
             'coverFee' => $coverFee,
             'total' => $subtotal + ($coverFee ? $feeAmount : 0),
             'addons' => self::ADDONS,
+            // Monthly gifts become a PayPal subscription (auto-deducts each month).
+            'isMonthly' => DonationCart::isMonthly(),
         ]);
     }
 

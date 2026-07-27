@@ -150,6 +150,123 @@ class PayPalController extends Controller
         return response()->json(['redirect' => route('donate.thank-you')]);
     }
 
+    // ----------------------------------------------------------- subscriptions
+
+    /**
+     * Create (or reuse) a monthly PayPal plan for the current gift and return
+     * its plan ID. The Smart Button uses this to start a subscription for the
+     * exact monthly amount the donor chose.
+     */
+    public function subscriptionPlan(Request $request): JsonResponse
+    {
+        $donation = session('donation');
+
+        if (! $donation || DonationCart::isEmpty()) {
+            return response()->json(['error' => 'Your basket has expired. Please start again.'], 422);
+        }
+
+        $coverFee = $request->boolean('cover_fee');
+        $amount = DonationCart::total($coverFee);
+        $currency = (string) Country::get('currency', 'GBP');
+
+        try {
+            $planId = $this->paypal->ensureMonthlyPlan($amount, $currency);
+        } catch (Throwable $e) {
+            return response()->json(['error' => 'Could not set up monthly giving. Please try again.'], 502);
+        }
+
+        session(['donation.pending_subscription' => [
+            'plan_id' => $planId,
+            'cover_fee' => $coverFee,
+            'amount' => $amount,
+            'currency' => $currency,
+        ]]);
+
+        return response()->json([
+            'plan_id' => $planId,
+            'reference' => $donation['reference'],
+        ]);
+    }
+
+    /** Record an approved monthly subscription and complete the donation. */
+    public function subscriptionRecord(Request $request): JsonResponse
+    {
+        $donation = session('donation');
+        $pending = session('donation.pending_subscription');
+
+        if (! $donation || ! $pending) {
+            return response()->json(['error' => 'Your session has expired. Please start again.'], 422);
+        }
+
+        $subscriptionId = (string) $request->input('subscription_id');
+
+        if ($subscriptionId === '') {
+            return response()->json(['error' => 'This subscription could not be verified.'], 422);
+        }
+
+        try {
+            $sub = $this->paypal->getSubscription($subscriptionId);
+        } catch (Throwable $e) {
+            return response()->json(['error' => 'Could not confirm your monthly gift.'], 502);
+        }
+
+        // Must belong to the plan we just created, and be live (not cancelled).
+        $planId = $sub['plan_id'] ?? null;
+        $status = (string) ($sub['status'] ?? '');
+
+        if ($planId !== ($pending['plan_id'] ?? null) || ! in_array($status, ['ACTIVE', 'APPROVAL_PENDING', 'APPROVED'], true)) {
+            Log::error('PayPal subscription verify failed', ['reference' => $donation['reference'], 'status' => $status]);
+
+            return response()->json(['error' => 'Your monthly gift could not be verified. Please contact us.'], 422);
+        }
+
+        $coverFee = (bool) $pending['cover_fee'];
+        $summary = [
+            'items' => DonationCart::items(),
+            'subtotal' => DonationCart::subtotal(),
+            'fee' => $coverFee ? DonationCart::fee() : 0.0,
+            'total' => (float) $pending['amount'],
+        ];
+        $nextBilling = $sub['billing_info']['next_billing_time'] ?? null;
+
+        try {
+            if (Schema::hasTable('donations')) {
+                Donation::withoutGlobalScope('region')
+                    ->where('reference', $donation['reference'])
+                    ->first()
+                    ?->fill([
+                        'items' => $summary['items'],
+                        'subtotal' => $summary['subtotal'],
+                        'fee' => $summary['fee'],
+                        'total' => $summary['total'],
+                        'cover_fee' => $coverFee,
+                        'frequency' => 'monthly',
+                        'status' => 'active',
+                        'payment_provider' => 'paypal',
+                        'subscription_id' => $subscriptionId,
+                        'subscription_status' => $status,
+                        'next_billing_at' => $nextBilling ? \Illuminate\Support\Carbon::parse($nextBilling) : null,
+                        'paid_at' => now(),
+                    ])
+                    ->save();
+            }
+        } catch (Throwable $e) {
+            Log::error('PayPal subscription save failed', ['reference' => $donation['reference'], 'error' => $e->getMessage()]);
+        }
+
+        $this->sendDonationReceipt($donation, $summary, (string) $pending['currency']);
+
+        DonationCart::clear();
+        session()->forget(['donation', 'donation_consent']);
+        session(['donation_completed' => [
+            'reference' => $donation['reference'],
+            'total' => $summary['total'],
+            'monthly' => true,
+        ]]);
+
+        return response()->json(['redirect' => route('donate.thank-you')]);
+    }
+
     // -------------------------------------------------------------------- shop
 
     /** Validate the shopper's details, then create a PayPal order for the cart. */
@@ -324,7 +441,39 @@ class PayPalController extends Controller
             $this->markPaidFromWebhook($reference, $captureId);
         }
 
+        // Recurring-gift lifecycle: keep our record's status in step with PayPal.
+        if (str_starts_with($event, 'BILLING.SUBSCRIPTION.')) {
+            $subId = (string) $request->input('resource.id');
+            $status = (string) $request->input('resource.status');
+            $nextBilling = $request->input('resource.billing_info.next_billing_time');
+
+            $this->updateSubscriptionFromWebhook($subId, $status, $nextBilling);
+        }
+
         return response()->json(['status' => 'ok']);
+    }
+
+    /** Sync a subscription's status (activated / cancelled / suspended) from PayPal. */
+    private function updateSubscriptionFromWebhook(string $subscriptionId, string $status, ?string $nextBilling): void
+    {
+        if ($subscriptionId === '') {
+            return;
+        }
+
+        try {
+            $donation = Donation::withoutGlobalScope('region')->where('subscription_id', $subscriptionId)->first();
+
+            if ($donation) {
+                $donation->fill([
+                    'subscription_status' => $status ?: $donation->subscription_status,
+                    // A cancelled/expired subscription is no longer an active gift.
+                    'status' => in_array($status, ['CANCELLED', 'EXPIRED', 'SUSPENDED'], true) ? 'cancelled' : $donation->status,
+                    'next_billing_at' => $nextBilling ? \Illuminate\Support\Carbon::parse($nextBilling) : $donation->next_billing_at,
+                ])->save();
+            }
+        } catch (Throwable $e) {
+            Log::error('PayPal subscription webhook update failed', ['subscription' => $subscriptionId, 'error' => $e->getMessage()]);
+        }
     }
 
     /** Mark a pending row paid if the in-browser capture never got the chance. */

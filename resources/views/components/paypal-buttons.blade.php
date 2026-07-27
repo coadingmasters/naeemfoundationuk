@@ -5,14 +5,16 @@
     fixed — everything around them is ours: the framed panel, the shimmer that
     holds the space while the SDK loads, and the trust row underneath.
 
-    @param string $orderUrl     Route that creates the PayPal order
-    @param string $captureUrl   Route that captures it
+    @param string $orderUrl     Route that starts the payment (order, or subscription plan)
+    @param string $captureUrl   Route that finalises it (capture, or subscription record)
     @param string|null $form    Optional selector of a details form to send
+    @param string $mode         'order' (one-off) or 'subscription' (monthly)
 --}}
-@props(['orderUrl', 'captureUrl', 'form' => null])
+@props(['orderUrl', 'captureUrl', 'form' => null, 'mode' => 'order'])
 
 <div class="nf-pay"
      data-paypal
+     data-paypal-mode="{{ $mode }}"
      @if ($form) data-form="{{ $form }}" @endif
      data-order-url="{{ $orderUrl }}"
      data-capture-url="{{ $captureUrl }}">
@@ -25,8 +27,8 @@
             </svg>
         </span>
         <div>
-            <p class="nf-pay__title">Choose how to pay</p>
-            <p class="nf-pay__sub">Secure checkout &mdash; takes a few seconds</p>
+            <p class="nf-pay__title">{{ $mode === 'subscription' ? 'Set up your monthly gift' : 'Choose how to pay' }}</p>
+            <p class="nf-pay__sub">{{ $mode === 'subscription' ? 'Auto-renews each month · cancel anytime' : 'Secure checkout — takes a few seconds' }}</p>
         </div>
     </div>
 

@@ -83,6 +83,19 @@
                 <h3 class="text-base font-bold text-navy-dark">Payment</h3>
                 <dl class="mt-4 grid gap-4 sm:grid-cols-2">
                     <div>
+                        <dt class="text-xs font-medium text-gray-400">Type</dt>
+                        <dd>
+                            @if ($donation->frequency === 'monthly')
+                                <span class="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-bold text-brand">
+                                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M17 2l4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    Monthly {{ $m($donation->total) }}/mo
+                                </span>
+                            @else
+                                <span class="font-semibold text-navy-dark">One-off</span>
+                            @endif
+                        </dd>
+                    </div>
+                    <div>
                         <dt class="text-xs font-medium text-gray-400">Method</dt>
                         <dd class="font-semibold text-navy-dark">{{ $donation->payment_provider ? ucfirst($donation->payment_provider) : '—' }}</dd>
                     </div>
@@ -106,6 +119,42 @@
                         <dd class="font-semibold text-navy-dark">{{ $donation->created_at?->format('d M Y · g:i a') }}</dd>
                     </div>
                 </dl>
+
+                {{-- Recurring subscription controls --}}
+                @if ($donation->subscription_id)
+                    @php $active = ! in_array($donation->subscription_status, ['CANCELLED', 'EXPIRED', 'SUSPENDED'], true); @endphp
+                    <div class="mt-5 rounded-xl border {{ $active ? 'border-brand/20 bg-brand/5' : 'border-gray-200 bg-gray-50' }} p-4">
+                        <p class="text-sm font-bold text-navy-dark">Monthly subscription</p>
+                        <dl class="mt-2 grid gap-3 sm:grid-cols-2 text-sm">
+                            <div>
+                                <dt class="text-xs font-medium text-gray-400">Subscription status</dt>
+                                <dd class="font-semibold {{ $active ? 'text-green-700' : 'text-red-600' }}">{{ $donation->subscription_status ?: '—' }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs font-medium text-gray-400">Next payment</dt>
+                                <dd class="font-semibold text-navy-dark">{{ $donation->next_billing_at?->format('d M Y') ?: '—' }}</dd>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <dt class="text-xs font-medium text-gray-400">Subscription ID</dt>
+                                <dd class="break-all font-mono text-xs text-navy-dark">{{ $donation->subscription_id }}</dd>
+                            </div>
+                        </dl>
+
+                        @if ($active)
+                            <form method="POST" action="{{ route('admin.donations.cancel-subscription', $donation) }}" class="mt-3">
+                                @csrf
+                                <button type="button" data-admin-delete data-label="the monthly subscription for {{ $donation->reference }}"
+                                        data-confirm="Cancel this monthly subscription? No further payments will be taken."
+                                        class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6" stroke-linecap="round"/></svg>
+                                    Cancel subscription
+                                </button>
+                            </form>
+                        @else
+                            <p class="mt-2 text-xs font-semibold text-red-600">This subscription is no longer active — no further payments will be taken.</p>
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
 

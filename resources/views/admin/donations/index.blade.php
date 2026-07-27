@@ -134,7 +134,12 @@
                                     @endif
                                 </td>
                                 <td class="px-5 py-3">
-                                    <p class="font-bold text-navy-dark">{{ $symbol }}{{ number_format((float) $d->total, 2) }}</p>
+                                    <p class="font-bold text-navy-dark">
+                                        {{ $symbol }}{{ number_format((float) $d->total, 2) }}
+                                        @if ($d->frequency === 'monthly')
+                                            <span class="ml-0.5 rounded-full bg-brand/10 px-1.5 py-0.5 text-[10px] font-bold text-brand">/mo</span>
+                                        @endif
+                                    </p>
                                     @if ((float) $d->fee > 0)
                                         <p class="text-xs text-gray-400">incl. {{ $symbol }}{{ number_format((float) $d->fee, 2) }} fee</p>
                                     @endif
@@ -144,6 +149,10 @@
                                         <span class="inline-block rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700">
                                             {{ $d->payment_provider ? ucfirst($d->payment_provider) : 'Paid' }}
                                         </span>
+                                    @elseif ($d->status === 'active')
+                                        <span class="inline-block rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700">Active</span>
+                                    @elseif ($d->status === 'cancelled')
+                                        <span class="inline-block rounded-full bg-gray-200 px-2 py-0.5 text-[11px] font-semibold text-gray-600">Cancelled</span>
                                     @else
                                         <span class="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">Not completed</span>
                                     @endif

@@ -23,6 +23,7 @@ class Donation extends Model
         'on_behalf_of_organisation',
         'organisation_name',
         'cover_fee',
+        'frequency',
         'items',
         'currency',
         'subtotal',
@@ -31,6 +32,9 @@ class Donation extends Model
         'status',
         'payment_provider',
         'payment_id',
+        'subscription_id',
+        'subscription_status',
+        'next_billing_at',
         'paid_at',
     ];
 
@@ -38,6 +42,7 @@ class Donation extends Model
         'items' => 'array',
         'contact_consent' => 'array',
         'paid_at' => 'datetime',
+        'next_billing_at' => 'datetime',
         'gift_aid' => 'boolean',
         'on_behalf_of_organisation' => 'boolean',
         'cover_fee' => 'boolean',

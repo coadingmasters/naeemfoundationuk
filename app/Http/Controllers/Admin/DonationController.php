@@ -30,9 +30,9 @@ class DonationController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        // Only completed payments count towards money raised. Totals are grouped
-        // by currency — GBP, USD and CAD must never be added together.
-        $paid = Donation::where('status', 'paid');
+        // Money received counts one-off payments AND active monthly gifts (their
+        // first payment). Totals are grouped by currency — never added together.
+        $paid = Donation::whereIn('status', ['paid', 'active']);
 
         $stats = [
             'raised' => $this->totalsByCurrency((clone $paid)),
@@ -43,7 +43,7 @@ class DonationController extends Controller
         ];
 
         // Where the money is coming from — top cities for completed donations.
-        $cities = Donation::where('status', 'paid')
+        $cities = Donation::whereIn('status', ['paid', 'active'])
             ->whereNotNull('city')
             ->selectRaw('city, currency, COUNT(*) as donations, SUM(total) as amount')
             ->groupBy('city', 'currency')
@@ -77,6 +77,24 @@ class DonationController extends Controller
     public function show(Donation $donation)
     {
         return view('admin.donations.show', ['donation' => $donation]);
+    }
+
+    /** Cancel an active monthly subscription on PayPal, then mark it cancelled here. */
+    public function cancelSubscription(Donation $donation): RedirectResponse
+    {
+        if (! $donation->subscription_id) {
+            return back()->with('error', 'This donation is not a monthly subscription.');
+        }
+
+        $ok = app(\App\Services\PayPal::class)->cancelSubscription($donation->subscription_id, 'Cancelled by the charity admin.');
+
+        if (! $ok) {
+            return back()->with('error', 'PayPal could not cancel this subscription. Please try again.');
+        }
+
+        $donation->update(['subscription_status' => 'CANCELLED', 'status' => 'cancelled']);
+
+        return back()->with('success', 'Monthly subscription cancelled. No further payments will be taken.');
     }
 
     public function destroy(Donation $donation): RedirectResponse

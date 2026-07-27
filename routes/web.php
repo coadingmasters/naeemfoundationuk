@@ -138,6 +138,9 @@ Route::get('/donate/thank-you', [DonationController::class, 'thankYou'])->name('
 // browser; it is recalculated server-side from the live basket on every call.
 Route::post('/donate/paypal/order', [PayPalController::class, 'donationOrder'])->name('paypal.donation.order');
 Route::post('/donate/paypal/capture', [PayPalController::class, 'donationCapture'])->name('paypal.donation.capture');
+// Monthly recurring gifts (PayPal subscriptions).
+Route::post('/donate/paypal/subscription/plan', [PayPalController::class, 'subscriptionPlan'])->name('paypal.subscription.plan');
+Route::post('/donate/paypal/subscription/record', [PayPalController::class, 'subscriptionRecord'])->name('paypal.subscription.record');
 Route::post('/shop/paypal/order', [PayPalController::class, 'shopOrder'])->name('paypal.shop.order');
 Route::post('/shop/paypal/capture', [PayPalController::class, 'shopCapture'])->name('paypal.shop.capture');
 
@@ -219,6 +222,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('donations', [AdminDonationController::class, 'index'])->name('donations.index');
         Route::get('donations/export', [AdminDonationController::class, 'export'])->name('donations.export');
         Route::get('donations/{donation}', [AdminDonationController::class, 'show'])->name('donations.show');
+        Route::post('donations/{donation}/cancel-subscription', [AdminDonationController::class, 'cancelSubscription'])->name('donations.cancel-subscription');
         Route::delete('donations/{donation}', [AdminDonationController::class, 'destroy'])->name('donations.destroy');
 
         // Shop orders placed through checkout (read + status + delete + export).

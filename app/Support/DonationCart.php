@@ -115,4 +115,16 @@ class DonationCart
     {
         return self::items() === [];
     }
+
+    /** Is this a recurring (monthly) gift? True when any line is monthly. */
+    public static function isMonthly(): bool
+    {
+        foreach (self::items() as $item) {
+            if (($item['frequency'] ?? 'one-off') === 'monthly') {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
