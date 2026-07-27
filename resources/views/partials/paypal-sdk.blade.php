@@ -5,7 +5,9 @@
 @endphp
 
 @if ($nfPaypal->isConfigured())
-    <script src="https://www.paypal.com/sdk/js?client-id={{ $nfPaypal->clientId() }}&currency={{ $nfCurrency }}&intent=capture&components=buttons"
+    {{-- disable-funding drops "Pay Later" and PayPal Credit, leaving just
+         PayPal (Pay now) and the Debit/Credit Card button. --}}
+    <script src="https://www.paypal.com/sdk/js?client-id={{ $nfPaypal->clientId() }}&currency={{ $nfCurrency }}&intent=capture&components=buttons&disable-funding=paylater,credit"
             data-nf-paypal-sdk></script>
 @else
     {{-- No credentials configured — tell the visitor rather than showing dead buttons. --}}

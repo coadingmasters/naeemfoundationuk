@@ -2744,3 +2744,34 @@ input[type="checkbox"],
 input[type="radio"] {
     accent-color: var(--color-brand);
 }
+
+/* ==========================================================================
+   Sticky Quick Donate bar (home)
+   Fixed to the bottom of the viewport; JS lifts it to rest just above the
+   footer once the footer scrolls into view, so it never covers the footer.
+   ========================================================================== */
+.nf-quickbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+    background: var(--color-navy);
+    box-shadow: 0 -8px 28px rgba(18, 45, 60, 0.28);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Revealed shortly after load so it slides up into view. */
+.nf-quickbar.is-ready {
+    transform: translateY(0);
+}
+
+/* Its dropdowns must open UPWARD — a downward menu would fall off-screen. */
+.nf-cselect--up .nf-cselect__menu {
+    top: auto;
+    bottom: calc(100% + 0.4rem);
+    transform: translateY(6px);
+}
+.nf-cselect--up.is-open .nf-cselect__menu {
+    transform: translateY(0);
+}

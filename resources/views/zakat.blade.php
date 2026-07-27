@@ -18,14 +18,6 @@
                      class="absolute inset-0 h-full w-full object-cover">
                 {{-- Blend image into the navy panel --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-navy"></div>
-
-                {{-- Floating trust badge --}}
-                <div class="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 shadow-lg backdrop-blur sm:bottom-6 sm:left-6">
-                    <span class="grid h-7 w-7 place-items-center rounded-full bg-brand text-white">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </span>
-                    <span class="text-xs font-bold text-navy-dark">100% Zakat Policy</span>
-                </div>
             </div>
 
             {{-- Donate widget (extra top padding on desktop so it clears the fixed header) --}}
@@ -120,6 +112,42 @@
                     compassion, detachment from material wealth, and a commitment to helping others, making Zakat a
                     transformative act both spiritually and socially.
                 </p>
+            </div>
+        </div>
+    </section>
+
+    {{-- ===================== CALCULATE YOUR ZAKAT (SEO + calculator link) ===================== --}}
+    <section class="pt-12">
+        <div class="nf-container">
+            <div class="grid items-center gap-8 rounded-2xl bg-cream/60 p-6 ring-1 ring-navy/10 sm:p-8 lg:grid-cols-5 lg:gap-10 lg:p-10">
+                <div class="lg:col-span-3">
+                    <p class="mb-2 inline-block border-b-2 border-brand pb-1 text-xs font-bold uppercase tracking-wide text-brand">Calculate your Zakat</p>
+                    <h2 class="text-2xl font-bold text-navy-dark sm:text-3xl">Work out exactly how much Zakat you owe</h2>
+                    <p class="mt-3 text-sm leading-relaxed text-gray-700 sm:text-base">
+                        Zakat is one of the five pillars of Islam &mdash; an obligatory charity of <strong>2.5%</strong> on the
+                        qualifying wealth every eligible Muslim has held for one lunar year above the <strong>nisab</strong>
+                        threshold. Working it out by hand across cash, gold, silver, savings and investments can be confusing.
+                    </p>
+                    <p class="mt-3 text-sm leading-relaxed text-gray-700 sm:text-base">
+                        Our free <strong>Zakat calculator</strong> makes it simple: enter your assets and liabilities and it
+                        instantly shows your nisab status and the exact amount of Zakat due in your local currency &mdash; so
+                        you can give with confidence and fulfil your obligation accurately, every year.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <div class="rounded-xl bg-white p-6 text-center shadow-lg shadow-navy/10">
+                        <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-brand/10 text-brand">
+                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4" stroke-linecap="round"/></svg>
+                        </span>
+                        <p class="mt-4 text-lg font-bold text-navy-dark">Zakat Calculator</p>
+                        <p class="mt-1 text-sm text-gray-500">Free, instant and accurate &mdash; takes under a minute.</p>
+                        <a href="{{ route('zakat-calculator') }}" class="btn-brand mt-5 w-full justify-center py-3">
+                            Calculate my Zakat
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

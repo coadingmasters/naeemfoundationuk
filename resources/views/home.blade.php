@@ -103,17 +103,17 @@
         <div class="absolute inset-x-0 bottom-5 flex justify-center gap-2" data-dots></div>
     </section>
 
-    {{-- ===================== QUICK DONATE BAR ===================== --}}
-    <section class="bg-navy">
-        <div class="nf-container py-5">
+    {{-- ===================== QUICK DONATE BAR (sticky, bottom) ===================== --}}
+    <section class="nf-quickbar" data-quickbar>
+        <div class="nf-container py-4">
             <form method="POST" action="{{ route('donate.add') }}"
                   class="flex flex-col items-stretch gap-3 lg:flex-row lg:items-center">
                 @csrf
                 <input type="hidden" name="image" value="images/givezakat.png">
                 <span class="text-lg font-semibold text-white lg:mr-2">Quick Donate</span>
 
-                {{-- Frequency (custom dropdown) --}}
-                <div class="nf-cselect h-11 flex-1" data-cselect>
+                {{-- Frequency (custom dropdown — opens upward in the bottom bar) --}}
+                <div class="nf-cselect nf-cselect--up h-11 flex-1" data-cselect>
                     <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
                         <span data-cselect-label>One-Off-Donation</span>
                         <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -125,8 +125,8 @@
                     <input type="hidden" name="frequency" data-cselect-input value="one-off">
                 </div>
 
-                {{-- Cause (custom dropdown) --}}
-                <div class="nf-cselect h-11 flex-1" data-cselect>
+                {{-- Cause (custom dropdown — opens upward in the bottom bar) --}}
+                <div class="nf-cselect nf-cselect--up h-11 flex-1" data-cselect>
                     <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
                         <span data-cselect-label>Where Most Needed</span>
                         <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>

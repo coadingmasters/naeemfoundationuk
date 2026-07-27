@@ -334,18 +334,22 @@
         gaAmount.textContent = money(a);
         gaPlus.textContent = money(a * 1.25);
     }
+    // Gift Aid and marketing consent are a fresh, active choice on every
+    // donation — never restored from a previous session's localStorage.
     if (gaCheck) {
-        gaCheck.checked = !!state.giftAid;
+        state.giftAid = false;
+        gaCheck.checked = false;
         gaCheck.addEventListener('change', () => { state.giftAid = gaCheck.checked; save(); });
     }
 
     // ---- Keep in touch (marketing consent) ----
-    state.consent = state.consent || {};
+    state.consent = {};
     consentBoxes.forEach((box) => {
         const key = box.dataset.consent;
-        box.checked = !!state.consent[key];
+        box.checked = false;
         box.addEventListener('change', () => { state.consent[key] = box.checked; save(); });
     });
+    save();
 
     // ---- Next / Back ----
     root.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => {

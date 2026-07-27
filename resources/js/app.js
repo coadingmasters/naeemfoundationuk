@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCookieConsent();
     setupVideoCards();
     setupAddonsModal();
+    setupQuickbar();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -449,10 +450,8 @@ function setupPayPal() {
         .Buttons({
             style: {
                 layout: 'vertical',
-                // Black reads as sleek + professional and sits with the navy/maroon
-                // site far better than PayPal's default gold. (PayPal only permits
-                // its own palette — gold/blue/silver/white/black — for its button.)
-                color: 'black',
+                // Gold is PayPal's most recognisable, best-converting button.
+                color: 'gold',
                 shape: 'pill',
                 label: 'paypal',
                 height: 48,
@@ -601,6 +600,31 @@ function setupAddonsModal() {
 
     // Re-open automatically after an add so the donor can keep adding.
     if (modal.hasAttribute('data-open')) open();
+}
+
+/* ---------- Sticky Quick Donate bar (home) ----------
+ * Fixed to the bottom of the viewport, but never over the footer: as the footer
+ * scrolls into view the bar lifts to rest exactly on the footer's top edge.
+ */
+function setupQuickbar() {
+    const bar = document.querySelector('[data-quickbar]');
+    if (!bar) return;
+
+    const footer = document.querySelector('footer');
+
+    const position = () => {
+        if (!footer) return;
+        // How far the footer pokes into the viewport (0 when it's still below).
+        const overlap = window.innerHeight - footer.getBoundingClientRect().top;
+        bar.style.bottom = (overlap > 0 ? overlap : 0) + 'px';
+    };
+
+    position();
+    // Slide it up into view after the first paint.
+    requestAnimationFrame(() => bar.classList.add('is-ready'));
+
+    window.addEventListener('scroll', position, { passive: true });
+    window.addEventListener('resize', position);
 }
 
 /* ---------- Cookie consent ---------- */
