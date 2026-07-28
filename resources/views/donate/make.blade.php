@@ -289,6 +289,9 @@
         startScreen.hidden = true;
         stepsScreen.hidden = false;
         showStep(2);
+        // If a fund was already chosen (e.g. via a cause "Donate" deep-link),
+        // reveal the amount straight away so the donor only picks an amount.
+        if (state.fund) reveal(amountBlock);
         stepsScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     freqBtns.forEach((b) => b.addEventListener('click', () => enterWizard(b.dataset.freq)));
@@ -304,12 +307,34 @@
     });
 
     // ---- Fund select -> reveal amount + scroll ----
-    fundBtns.forEach((b) => b.addEventListener('click', () => {
-        state.fund = b.dataset.fund; save();
-        fundBtns.forEach((x) => x.classList.toggle('is-selected', x === b));
+    function selectFund(btn) {
+        state.fund = btn.dataset.fund; save();
+        fundBtns.forEach((x) => x.classList.toggle('is-selected', x === btn));
         reveal(amountBlock);
         setTimeout(() => amountBlock.scrollIntoView({ behavior: 'smooth', block: 'center' }), 140);
-    }));
+    }
+    fundBtns.forEach((b) => b.addEventListener('click', () => selectFund(b)));
+
+    // ---- Deep-link: a cause "Donate" button pre-selects its fund via ?fund= ----
+    (function () {
+        const preFund = new URLSearchParams(window.location.search).get('fund');
+        if (!preFund) return;
+
+        state.fund = preFund; save();
+        let btn = fundBtns.find((b) => b.dataset.fund === preFund);
+
+        // The cause may not be one of the standard funds — add it at the top.
+        if (!btn && fundBtns[0]) {
+            btn = fundBtns[0].cloneNode(true);
+            btn.dataset.fund = preFund;
+            btn.childNodes[0].textContent = preFund + ' ';
+            fundBtns[0].parentElement.prepend(btn);
+            btn.addEventListener('click', () => selectFund(btn));
+            fundBtns.unshift(btn);
+        }
+
+        if (btn) btn.classList.add('is-selected');
+    })();
 
     // ---- Amount select ----
     amountBtns.forEach((b) => b.addEventListener('click', () => {

@@ -234,7 +234,9 @@
                                 <div class="flex flex-1 flex-col items-center p-5 text-center">
                                     <h3 class="text-base font-bold text-navy-dark">{{ $cause->title }}</h3>
                                     <p class="mt-1.5 line-clamp-1 text-xs text-gray-400">{{ $cause->description }}</p>
-                                    <a href="{{ $donateLink($cause->link) }}" class="btn-brand mt-4 px-9">Donate</a>
+                                    {{-- Carry the cause straight into the donation flow (fund pre-selected). --}}
+                                    <a href="{{ filled($cause->link) && $cause->link !== '#' ? $cause->link : route('donate.make', ['fund' => $cause->title]) }}"
+                                       class="btn-brand mt-4 px-9">Donate</a>
                                 </div>
                             </div>
                         </div>
