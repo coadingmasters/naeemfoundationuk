@@ -61,7 +61,7 @@
             <div>
                 <h2 class="mb-4 text-xl font-bold text-navy sm:text-2xl">To exercise these rights, please contact us:</h2>
                 <div class="text-sm leading-relaxed text-gray-700 sm:text-base">
-                    <p>Email: <a href="mailto:Contact@naeemfoundation.co.uk" class="font-medium text-navy underline hover:text-brand">Contact@naeemfoundation.co.uk</a></p>
+                    <p>Email: <a href="mailto:donate@naeemfoundation.co.uk" class="font-medium text-navy underline hover:text-brand">donate@naeemfoundation.co.uk</a></p>
                     <ul class="mt-2 list-disc space-y-1 pl-6">
                         <li><span class="font-semibold">Security:</span> We take all reasonable steps to secure your information and use industry-standard practices for data protection.</li>
                         <li><span class="font-semibold">Cookies:</span> Our website uses cookies to improve your experience. You can control cookies through your browser settings.</li>
@@ -76,7 +76,7 @@
                 <div class="text-sm leading-relaxed text-gray-700 sm:text-base">
                     <p>
                         If you have any questions about this policy, please contact us at
-                        <a href="mailto:Contact@naeemfoundation.co.uk" class="font-medium text-navy underline hover:text-brand">Contact@naeemfoundation.co.uk</a>
+                        <a href="mailto:donate@naeemfoundation.co.uk" class="font-medium text-navy underline hover:text-brand">donate@naeemfoundation.co.uk</a>
                     </p>
                     <ul class="mt-2 list-disc space-y-1 pl-6">
                         <li>Naeem Foundation is a registered charity in the UK.</li>

@@ -154,7 +154,7 @@
                 Our press team can provide interviews, imagery, case studies and data. We aim to respond to all media
                 enquiries within one working day.
             </p>
-            <a href="mailto:Contact@naeemfoundation.co.uk" class="btn-brand mt-7 px-7 py-3">
+            <a href="mailto:donate@naeemfoundation.co.uk" class="btn-brand mt-7 px-7 py-3">
                 Contact the press team
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>

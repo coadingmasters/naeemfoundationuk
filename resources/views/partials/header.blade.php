@@ -98,9 +98,9 @@
                     </div>
                 </div>
                 <span class="nf-topbar__sep hidden lg:inline-block"></span>
-                <a href="mailto:Contact@naeemfoundation.co.uk" class="nf-topbar__link hidden lg:inline-flex">
+                <a href="mailto:donate@naeemfoundation.co.uk" class="nf-topbar__link hidden lg:inline-flex">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
-                    Contact@naeemfoundation.co.uk
+                    donate@naeemfoundation.co.uk
                 </a>
                 <span class="nf-topbar__sep hidden lg:inline-block"></span>
                 {{-- Socials are the first thing to go when width is tight. --}}
@@ -305,7 +305,7 @@
                     <svg class="h-3.5 w-3.5 shrink-0 text-brand" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
                     {{ region('phone') }}
                 </a>
-                <a href="mailto:Contact@naeemfoundation.co.uk" class="mt-2 block break-all hover:text-brand">Contact@naeemfoundation.co.uk</a>
+                <a href="mailto:donate@naeemfoundation.co.uk" class="mt-2 block break-all hover:text-brand">donate@naeemfoundation.co.uk</a>
                 <p class="mt-2">{{ region('charity_label') }} <strong class="text-navy">{{ region('charity_no') }}</strong></p>
                 <div class="mt-3 flex items-center gap-2">
                     <a href="#" aria-label="Facebook" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.6l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.3-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H8v3h2v8h3Z"/></svg></a>

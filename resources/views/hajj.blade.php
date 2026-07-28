@@ -204,7 +204,7 @@
                 </p>
                 <div class="mt-6 rounded-xl border border-brand/15 bg-cream/60 p-4 text-sm text-gray-700">
                     <p>For Hajj-e-Badal, contact us:</p>
-                    <p class="mt-1"><span class="font-semibold text-navy-dark">Email:</span> contact@naeemfoundation.co.uk</p>
+                    <p class="mt-1"><span class="font-semibold text-navy-dark">Email:</span> donate@naeemfoundation.co.uk</p>
                     <p><span class="font-semibold text-navy-dark">Phone:</span> +44 2070788118 · +44 7960185682</p>
                 </div>
             </div>

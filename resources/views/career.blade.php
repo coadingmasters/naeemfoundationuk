@@ -186,7 +186,7 @@
                             <h3 class="text-sm font-bold text-navy-dark">How to Apply</h3>
                             <p class="mt-1.5 text-sm leading-relaxed text-gray-600">
                                 Submit your resume and a cover letter outlining your suitability for the role to
-                                <a href="mailto:contact@naeemfoundation.co.uk" class="font-semibold text-brand underline">contact@naeemfoundation.co.uk</a>,
+                                <a href="mailto:donate@naeemfoundation.co.uk" class="font-semibold text-brand underline">donate@naeemfoundation.co.uk</a>,
                                 or fill out the form below.
                             </p>
                         </div>

@@ -129,7 +129,7 @@
                             </p>
                             <p style="margin:0; font-size:14px; line-height:1.65; color:{{ $navyDark }};">
                                 If you have any questions, reply to this email or contact us at
-                                <a href="mailto:Contact@naeemfoundation.co.uk" style="color:{{ $brand }}; font-weight:600;">Contact@naeemfoundation.co.uk</a>.
+                                <a href="mailto:donate@naeemfoundation.co.uk" style="color:{{ $brand }}; font-weight:600;">donate@naeemfoundation.co.uk</a>.
                             </p>
                         </td>
                     </tr>

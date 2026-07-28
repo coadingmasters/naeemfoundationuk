@@ -56,7 +56,7 @@
         $quick = [
             ['title' => 'Call us', 'value' => region('phone'), 'href' => 'tel:'.preg_replace('/[^+0-9]/', '', region('phone')),
              'icon' => '<path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/>'],
-            ['title' => 'Email us', 'value' => 'Contact@naeemfoundation.co.uk', 'href' => 'mailto:Contact@naeemfoundation.co.uk',
+            ['title' => 'Email us', 'value' => 'donate@naeemfoundation.co.uk', 'href' => 'mailto:donate@naeemfoundation.co.uk',
              'icon' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/>'],
             ['title' => 'Office hours', 'value' => 'Mon – Fri · 9am – 6pm', 'href' => null,
              'icon' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/>'],
@@ -161,7 +161,7 @@
                                     </span>
                                     <span class="min-w-0">
                                         <span class="block text-xs uppercase tracking-wide text-white/50">Email</span>
-                                        <a href="mailto:Contact@naeemfoundation.co.uk" class="mt-0.5 block break-words font-semibold transition-colors hover:text-brand">Contact@naeemfoundation.co.uk</a>
+                                        <a href="mailto:donate@naeemfoundation.co.uk" class="mt-0.5 block break-words font-semibold transition-colors hover:text-brand">donate@naeemfoundation.co.uk</a>
                                     </span>
                                 </li>
                                 <li class="nf-reveal flex items-start gap-5">
