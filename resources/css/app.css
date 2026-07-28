@@ -8,52 +8,25 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------- Geogrotesque (self-hosted, licensed) ----------
-   Drop the licensed font files into  public/fonts/geogrotesque/
-   using the filenames below. Until then the site falls back to
-   Instrument Sans, so nothing ever looks broken. */
+   DISABLED: the licensed font files were never added to
+   public/fonts/geogrotesque/, so these @font-face rules only produced 404s in
+   the console. The site renders in Hanken Grotesk (loaded below) either way.
+
+   To enable Geogrotesque: drop the licensed files into
+   public/fonts/geogrotesque/ (geogrotesque-400.woff2 … 800.woff2 + .woff) and
+   restore the @font-face blocks — the --font-sans below already lists it first.
+
 @font-face {
     font-family: 'Geogrotesque';
-    font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('/fonts/geogrotesque/geogrotesque-400.woff2') format('woff2'),
-         url('/fonts/geogrotesque/geogrotesque-400.woff') format('woff');
+    src: url('/fonts/geogrotesque/geogrotesque-400.woff2') format('woff2');
 }
-@font-face {
-    font-family: 'Geogrotesque';
-    font-style: normal;
-    font-weight: 500;
-    font-display: swap;
-    src: url('/fonts/geogrotesque/geogrotesque-500.woff2') format('woff2'),
-         url('/fonts/geogrotesque/geogrotesque-500.woff') format('woff');
-}
-@font-face {
-    font-family: 'Geogrotesque';
-    font-style: normal;
-    font-weight: 600;
-    font-display: swap;
-    src: url('/fonts/geogrotesque/geogrotesque-600.woff2') format('woff2'),
-         url('/fonts/geogrotesque/geogrotesque-600.woff') format('woff');
-}
-@font-face {
-    font-family: 'Geogrotesque';
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url('/fonts/geogrotesque/geogrotesque-700.woff2') format('woff2'),
-         url('/fonts/geogrotesque/geogrotesque-700.woff') format('woff');
-}
-@font-face {
-    font-family: 'Geogrotesque';
-    font-style: normal;
-    font-weight: 800;
-    font-display: swap;
-    src: url('/fonts/geogrotesque/geogrotesque-800.woff2') format('woff2'),
-         url('/fonts/geogrotesque/geogrotesque-800.woff') format('woff');
-}
+… (weights 500 / 600 / 700 / 800) …
+*/
 
 @theme {
-    --font-sans: 'Geogrotesque', 'Hanken Grotesk', sans-serif;
+    --font-sans: 'Hanken Grotesk', sans-serif;
 
     /* Brand colors */
     --color-brand: #740a2e;
