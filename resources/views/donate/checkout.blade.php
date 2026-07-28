@@ -149,27 +149,42 @@
                     </div>
 
                     @php $postLabel = region('code') === 'US' ? 'ZIP Code' : 'Postcode'; @endphp
-                    {{-- Billing address --}}
-                    <div class="mt-6">
+
+                    {{-- Postcode finder: enter a {{ $postLabel }}, search, then pick your
+                         address. The fields below auto-fill and stay editable. --}}
+                    <div class="mt-6" data-address-finder>
+                        <label for="postcode" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*{{ $postLabel }}</label>
+                        <div class="flex gap-2">
+                            <input id="postcode" type="text" name="postcode" value="{{ old('postcode', $d['postcode'] ?? '') }}" required
+                                   data-address-postcode placeholder="Enter your {{ $postLabel }}" class="nf-dark-input">
+                            <button type="button" data-address-find
+                                    class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white px-4 text-sm font-bold text-navy-dark transition hover:bg-cream disabled:opacity-60">
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/></svg>
+                                <span data-address-find-label>Find address</span>
+                            </button>
+                        </div>
+                        @error('postcode') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+
+                        <div data-address-results class="mt-3 hidden">
+                            <label class="mb-1.5 block text-xs font-semibold text-white/90">Select your address</label>
+                            <select data-address-select class="nf-dark-input"></select>
+                        </div>
+                        <p data-address-msg class="mt-2 hidden text-xs"></p>
+                    </div>
+
+                    {{-- Billing address (auto-filled by the finder, always editable) --}}
+                    <div class="mt-5">
                         <label for="billing_address" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Billing Address</label>
                         <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address', $d['billing_address'] ?? '') }}" required
-                               placeholder="House number and street" class="nf-dark-input">
+                               placeholder="House number and street" data-address-line1 class="nf-dark-input">
                         @error('billing_address') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="mt-5 grid gap-5 sm:grid-cols-2">
-                        <div>
-                            <label for="city" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Town / City</label>
-                            <input id="city" type="text" name="city" value="{{ old('city', $d['city'] ?? '') }}" required
-                                   class="nf-dark-input">
-                            @error('city') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                        </div>
-                        <div>
-                            <label for="postcode" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*{{ $postLabel }}</label>
-                            <input id="postcode" type="text" name="postcode" value="{{ old('postcode', $d['postcode'] ?? '') }}" required
-                                   class="nf-dark-input">
-                            @error('postcode') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                        </div>
+                    <div class="mt-5">
+                        <label for="city" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Town / City</label>
+                        <input id="city" type="text" name="city" value="{{ old('city', $d['city'] ?? '') }}" required
+                               data-address-city class="nf-dark-input">
+                        @error('city') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mt-8 flex justify-end">

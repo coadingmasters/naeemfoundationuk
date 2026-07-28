@@ -128,6 +128,16 @@ Route::get('/appeals/{appeal}', function (\App\Models\Appeal $appeal) {
 Route::post('/donate/add', [DonationController::class, 'add'])->name('donate.add');
 Route::delete('/donate/remove/{id}', [DonationController::class, 'remove'])->name('donate.remove');
 Route::patch('/donate/quantity/{id}', [DonationController::class, 'quantity'])->name('donate.quantity');
+// Postcode -> address lookup (region-aware, free providers). Used by checkout.
+Route::get('/address-lookup', function (\Illuminate\Http\Request $request) {
+    return response()->json([
+        'results' => \App\Support\AddressLookup::search(
+            \App\Support\Country::code(),
+            (string) $request->query('postcode', '')
+        ),
+    ]);
+})->middleware('throttle:30,1')->name('address.lookup');
+
 Route::get('/donate/checkout', [DonationController::class, 'checkout'])->name('donate.checkout');
 Route::post('/donate/checkout', [DonationController::class, 'store'])->name('donate.store');
 Route::get('/donate/payment', [DonationController::class, 'payment'])->name('donate.payment');

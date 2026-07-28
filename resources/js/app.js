@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAddonsModal();
     setupQuickbar();
     setupWholeNumberInputs();
+    setupAddressLookup();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -777,6 +778,94 @@ function setupAddonsModal() {
 
     // Re-open automatically after an add so the donor can keep adding.
     if (modal.hasAttribute('data-open')) open();
+}
+
+/* ---------- Postcode -> address finder ----------
+ * Region-aware: the donor enters a postcode/ZIP, we look it up server-side
+ * (free providers), and they pick their address. Fields auto-fill but stay
+ * editable, and manual entry always works if nothing is found.
+ */
+function setupAddressLookup() {
+    document.querySelectorAll('[data-address-finder]').forEach((root) => {
+        const postcode = root.querySelector('[data-address-postcode]');
+        const findBtn = root.querySelector('[data-address-find]');
+        const findLabel = root.querySelector('[data-address-find-label]');
+        const resultsWrap = root.querySelector('[data-address-results]');
+        const select = root.querySelector('[data-address-select]');
+        const msg = root.querySelector('[data-address-msg]');
+        // The fields to fill live anywhere in the same form.
+        const form = root.closest('form') || document;
+        const line1 = form.querySelector('[data-address-line1]');
+        const city = form.querySelector('[data-address-city]');
+        if (!postcode || !findBtn) return;
+
+        let results = [];
+
+        const showMsg = (text, ok) => {
+            if (!msg) return;
+            msg.textContent = text;
+            msg.hidden = !text;
+            msg.classList.toggle('text-green-300', !!ok);
+            msg.classList.toggle('text-white/80', !ok);
+        };
+
+        const apply = (r) => {
+            if (!r) return;
+            if (r.line1 && line1) line1.value = r.line1;
+            if (r.city && city) city.value = r.city;
+            if (r.postcode) postcode.value = r.postcode;
+        };
+
+        const find = async () => {
+            const pc = (postcode.value || '').trim();
+            if (!pc) { showMsg('Please enter your postcode first.', false); return; }
+
+            findBtn.disabled = true;
+            if (findLabel) findLabel.textContent = 'Searching…';
+            if (resultsWrap) resultsWrap.hidden = true;
+            showMsg('', false);
+
+            try {
+                const res = await fetch(`/address-lookup?postcode=${encodeURIComponent(pc)}`, {
+                    headers: { Accept: 'application/json' }, credentials: 'same-origin',
+                });
+                const data = await res.json().catch(() => ({}));
+                results = Array.isArray(data.results) ? data.results : [];
+
+                if (!results.length) {
+                    showMsg('No match for that postcode — please enter your address below.', false);
+                    return;
+                }
+
+                // A single locality (no street) → just fill the town + confirm.
+                if (results.length === 1 && !results[0].line1) {
+                    apply(results[0]);
+                    showMsg('✓ Postcode found — please add your house number & street above.', true);
+                    if (line1) line1.focus();
+                    return;
+                }
+
+                // Otherwise let the donor pick from the list.
+                select.innerHTML = '<option value="">Select your address…</option>'
+                    + results.map((r, i) => `<option value="${i}">${(r.label || r.city || '').replace(/</g, '&lt;')}</option>`).join('');
+                if (resultsWrap) resultsWrap.hidden = false;
+            } catch (e) {
+                showMsg('Address lookup is unavailable right now — please enter it below.', false);
+            } finally {
+                findBtn.disabled = false;
+                if (findLabel) findLabel.textContent = 'Find address';
+            }
+        };
+
+        findBtn.addEventListener('click', find);
+        postcode.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); find(); }
+        });
+        if (select) select.addEventListener('change', () => {
+            const idx = parseInt(select.value, 10);
+            if (!Number.isNaN(idx)) apply(results[idx]);
+        });
+    });
 }
 
 /* ---------- Whole-number donation amounts ----------
