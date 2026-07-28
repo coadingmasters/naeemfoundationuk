@@ -116,15 +116,32 @@ class DonationCart
         return self::items() === [];
     }
 
-    /** Is this a recurring (monthly) gift? True when any line is monthly. */
-    public static function isMonthly(): bool
+    /** The recurring frequency of the basket: 'monthly', 'weekly', or 'one-off'. */
+    public static function frequency(): string
     {
         foreach (self::items() as $item) {
-            if (($item['frequency'] ?? 'one-off') === 'monthly') {
-                return true;
+            $f = $item['frequency'] ?? 'one-off';
+            if ($f === 'monthly' || $f === 'weekly') {
+                return $f;
             }
         }
 
-        return false;
+        return 'one-off';
+    }
+
+    /** Is this a recurring (monthly or weekly) gift? */
+    public static function isRecurring(): bool
+    {
+        return self::frequency() !== 'one-off';
+    }
+
+    /** The PayPal interval unit for the basket, or null for a one-off. */
+    public static function intervalUnit(): ?string
+    {
+        return match (self::frequency()) {
+            'weekly' => 'WEEK',
+            'monthly' => 'MONTH',
+            default => null,
+        };
     }
 }

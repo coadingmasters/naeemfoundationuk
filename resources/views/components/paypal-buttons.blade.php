@@ -27,8 +27,8 @@
             </svg>
         </span>
         <div>
-            <p class="nf-pay__title">{{ $mode === 'subscription' ? 'Set up your monthly gift' : 'Choose how to pay' }}</p>
-            <p class="nf-pay__sub">{{ $mode === 'subscription' ? 'Auto-renews each month · cancel anytime' : 'Secure checkout — takes a few seconds' }}</p>
+            <p class="nf-pay__title">{{ $mode === 'subscription' ? 'Set up your recurring gift' : 'Choose how to pay' }}</p>
+            <p class="nf-pay__sub">{{ $mode === 'subscription' ? 'Auto-renews · cancel anytime' : 'Secure checkout — takes a few seconds' }}</p>
         </div>
     </div>
 

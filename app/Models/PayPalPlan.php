@@ -16,6 +16,7 @@ class PayPalPlan extends Model
         'mode',
         'currency',
         'amount',
+        'interval',
         'product_id',
         'plan_id',
     ];

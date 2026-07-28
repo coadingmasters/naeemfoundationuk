@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupVideoCards();
     setupAddonsModal();
     setupQuickbar();
+    setupWholeNumberInputs();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -776,6 +777,24 @@ function setupAddonsModal() {
 
     // Re-open automatically after an add so the donor can keep adding.
     if (modal.hasAttribute('data-open')) open();
+}
+
+/* ---------- Whole-number donation amounts ----------
+ * Donation "value" fields accept whole numbers only (e.g. 25, 100, 234) — no
+ * decimals like 1.1 or 2.4. Non-digits are stripped as the donor types.
+ */
+function setupWholeNumberInputs() {
+    document.querySelectorAll('[data-whole-number]').forEach((input) => {
+        const clean = () => {
+            const digits = input.value.replace(/[^\d]/g, '').replace(/^0+(?=\d)/, '');
+            if (input.value !== digits) input.value = digits;
+        };
+        input.addEventListener('input', clean);
+        // Block the keys that would enter a decimal or exponent.
+        input.addEventListener('keydown', (e) => {
+            if (['.', ',', 'e', 'E', '+', '-'].includes(e.key)) e.preventDefault();
+        });
+    });
 }
 
 /* ---------- Sticky Quick Donate bar (home) ----------

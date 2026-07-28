@@ -85,10 +85,10 @@
                     <div>
                         <dt class="text-xs font-medium text-gray-400">Type</dt>
                         <dd>
-                            @if ($donation->frequency === 'monthly')
+                            @if (in_array($donation->frequency, ['monthly', 'weekly'], true))
                                 <span class="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-bold text-brand">
                                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M17 2l4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    Monthly {{ $m($donation->total) }}/mo
+                                    {{ ucfirst($donation->frequency) }} {{ $m($donation->total) }}{{ $donation->frequency === 'weekly' ? '/wk' : '/mo' }}
                                 </span>
                             @else
                                 <span class="font-semibold text-navy-dark">One-off</span>
@@ -124,7 +124,7 @@
                 @if ($donation->subscription_id)
                     @php $active = ! in_array($donation->subscription_status, ['CANCELLED', 'EXPIRED', 'SUSPENDED'], true); @endphp
                     <div class="mt-5 rounded-xl border {{ $active ? 'border-brand/20 bg-brand/5' : 'border-gray-200 bg-gray-50' }} p-4">
-                        <p class="text-sm font-bold text-navy-dark">Monthly subscription</p>
+                        <p class="text-sm font-bold text-navy-dark">{{ ucfirst($donation->frequency) }} subscription</p>
                         <dl class="mt-2 grid gap-3 sm:grid-cols-2 text-sm">
                             <div>
                                 <dt class="text-xs font-medium text-gray-400">Subscription status</dt>
@@ -143,8 +143,8 @@
                         @if ($active)
                             <form method="POST" action="{{ route('admin.donations.cancel-subscription', $donation) }}" class="mt-3">
                                 @csrf
-                                <button type="button" data-admin-delete data-label="the monthly subscription for {{ $donation->reference }}"
-                                        data-confirm="Cancel this monthly subscription? No further payments will be taken."
+                                <button type="button" data-admin-delete data-label="the {{ $donation->frequency }} subscription for {{ $donation->reference }}"
+                                        data-confirm="Cancel this {{ $donation->frequency }} subscription? No further payments will be taken."
                                         class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50">
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6" stroke-linecap="round"/></svg>
                                     Cancel subscription

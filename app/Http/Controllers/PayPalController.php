@@ -173,11 +173,12 @@ class PayPalController extends Controller
         $coverFee = $request->boolean('cover_fee');
         $amount = DonationCart::total($coverFee);
         $currency = (string) Country::get('currency', 'GBP');
+        $interval = DonationCart::intervalUnit() ?? 'MONTH'; // WEEK or MONTH
 
         try {
-            $planId = $this->paypal->ensureMonthlyPlan($amount, $currency);
+            $planId = $this->paypal->ensureRecurringPlan($amount, $currency, $interval);
         } catch (Throwable $e) {
-            return response()->json(['error' => 'Could not set up monthly giving. Please try again.'], 502);
+            return response()->json(['error' => 'Could not set up recurring giving. Please try again.'], 502);
         }
 
         session(['donation.pending_subscription' => [
@@ -185,6 +186,7 @@ class PayPalController extends Controller
             'cover_fee' => $coverFee,
             'amount' => $amount,
             'currency' => $currency,
+            'frequency' => DonationCart::frequency(),
         ]]);
 
         return response()->json([
@@ -245,7 +247,7 @@ class PayPalController extends Controller
                         'fee' => $summary['fee'],
                         'total' => $summary['total'],
                         'cover_fee' => $coverFee,
-                        'frequency' => 'monthly',
+                        'frequency' => $pending['frequency'] ?? 'monthly',
                         'status' => 'active',
                         'payment_provider' => 'paypal',
                         'subscription_id' => $subscriptionId,
@@ -266,7 +268,8 @@ class PayPalController extends Controller
         session(['donation_completed' => [
             'reference' => $donation['reference'],
             'total' => $summary['total'],
-            'monthly' => true,
+            'recurring' => true,
+            'frequency' => $pending['frequency'] ?? 'monthly',
         ]]);
 
         return response()->json(['redirect' => route('donate.thank-you')]);

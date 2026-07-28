@@ -39,7 +39,7 @@ class DonationController extends Controller
         $data = $request->validate([
             'cause' => ['required', 'string', 'max:120'],
             'amount' => ['required', 'numeric', 'min:1', 'max:1000000'],
-            'frequency' => ['nullable', 'in:one-off,monthly'],
+            'frequency' => ['nullable', 'in:one-off,monthly,weekly'],
             'currency' => ['nullable', 'string', 'max:8'],
             'image' => ['nullable', 'string', 'max:255'],
         ]);
@@ -173,7 +173,7 @@ class DonationController extends Controller
             'organisation_name' => $onBehalf ? $data['organisation_name'] : null,
             // The transaction fee is decided on the payment step, so start without it.
             'cover_fee' => false,
-            'frequency' => DonationCart::isMonthly() ? 'monthly' : 'one-off',
+            'frequency' => DonationCart::frequency(),
             'items' => DonationCart::items(),
             'currency' => \App\Support\Country::get('currency', 'GBP'),
             'subtotal' => DonationCart::subtotal(),
@@ -242,8 +242,9 @@ class DonationController extends Controller
             'coverFee' => $coverFee,
             'total' => $subtotal + ($coverFee ? $feeAmount : 0),
             'addons' => self::ADDONS,
-            // Monthly gifts become a PayPal subscription (auto-deducts each month).
-            'isMonthly' => DonationCart::isMonthly(),
+            // Recurring gifts (monthly/weekly) become a PayPal subscription.
+            'isRecurring' => DonationCart::isRecurring(),
+            'recurFrequency' => DonationCart::frequency(), // 'monthly' | 'weekly' | 'one-off'
         ]);
     }
 

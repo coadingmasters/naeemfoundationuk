@@ -106,7 +106,7 @@
                             <label class="mb-1.5 block text-sm font-semibold text-navy-dark">Enter your amount ({{ region('symbol') }})</label>
                             <div class="relative">
                                 <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-bold text-navy/50">{{ region('symbol') }}</span>
-                                <input type="number" min="1" step="0.01" placeholder="e.g. 75" data-other-input
+                                <input type="number" min="1" step="1" inputmode="numeric" data-whole-number placeholder="e.g. 75" data-other-input
                                        class="h-12 w-full rounded-md border border-gray-300 pl-7 pr-3 text-base text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25">
                             </div>
                         </div>

@@ -39,10 +39,15 @@
                     <h1 class="mt-7 text-3xl font-extrabold leading-tight text-navy-dark sm:text-4xl lg:text-5xl">
                         Thank You for Your Support <span role="img" aria-label="yellow heart">💛</span>
                     </h1>
-                    @php $monthly = $monthly ?? false; @endphp
+                    @php
+                        $recurring = $recurring ?? false;
+                        $frequency = $frequency ?? 'monthly';
+                        $recurWord = $frequency === 'weekly' ? 'week' : 'month';
+                        $recurShort = $frequency === 'weekly' ? '/wk' : '/mo';
+                    @endphp
                     <p class="mt-3 text-base text-gray-600 sm:text-lg">
-                        @if ($monthly)
-                            Your monthly gift is now set up — thank you for your ongoing support.
+                        @if ($recurring)
+                            Your {{ $frequency }} gift is now set up — thank you for your ongoing support.
                         @else
                             Your contribution is making a real difference.
                         @endif
@@ -51,8 +56,8 @@
                     {{-- Status pill --}}
                     <div class="mt-8 inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-2xl bg-white px-6 py-4 shadow-lg shadow-black/5">
                         <span class="text-sm text-gray-600">
-                            {{ $monthly ? 'Monthly gift:' : 'Donation:' }}
-                            <span class="font-bold text-navy-dark">{{ money($total) }}{{ $monthly ? '/mo' : '' }}</span>
+                            {{ $recurring ? ucfirst($frequency).' gift:' : 'Donation:' }}
+                            <span class="font-bold text-navy-dark">{{ money($total) }}{{ $recurring ? $recurShort : '' }}</span>
                         </span>
 
                         <span class="hidden h-5 w-px bg-gray-200 sm:block" aria-hidden="true"></span>
@@ -60,7 +65,7 @@
                         <span class="text-sm text-gray-600">
                             Status:
                             <span class="ml-1 inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-0.5 font-semibold text-green-700">
-                                {{ $monthly ? 'Active' : 'Successful' }}
+                                {{ $recurring ? 'Active' : 'Successful' }}
                                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                     <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
@@ -68,9 +73,9 @@
                         </span>
                     </div>
 
-                    @if ($monthly)
+                    @if ($recurring)
                         <p class="mx-auto mt-4 max-w-md text-xs leading-relaxed text-gray-500">
-                            PayPal will automatically take this amount each month. You can cancel any time from your PayPal account or by contacting us.
+                            PayPal will automatically take this amount each {{ $recurWord }}. You can cancel any time from your PayPal account or by contacting us.
                         </p>
                     @endif
 

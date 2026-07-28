@@ -83,7 +83,7 @@ class DonationController extends Controller
     public function cancelSubscription(Donation $donation): RedirectResponse
     {
         if (! $donation->subscription_id) {
-            return back()->with('error', 'This donation is not a monthly subscription.');
+            return back()->with('error', 'This donation is not a recurring subscription.');
         }
 
         $ok = app(\App\Services\PayPal::class)->cancelSubscription($donation->subscription_id, 'Cancelled by the charity admin.');
@@ -94,7 +94,7 @@ class DonationController extends Controller
 
         $donation->update(['subscription_status' => 'CANCELLED', 'status' => 'cancelled']);
 
-        return back()->with('success', 'Monthly subscription cancelled. No further payments will be taken.');
+        return back()->with('success', 'Subscription cancelled. No further payments will be taken.');
     }
 
     public function destroy(Donation $donation): RedirectResponse

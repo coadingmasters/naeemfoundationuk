@@ -134,28 +134,34 @@
                     </button>
                     <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
                         <li class="nf-cselect__opt is-selected" role="option" data-value="one-off">One-Off-Donation</li>
+                        <li class="nf-cselect__opt" role="option" data-value="weekly">Weekly Donation</li>
                         <li class="nf-cselect__opt" role="option" data-value="monthly">Monthly Donation</li>
                     </ul>
                     <input type="hidden" name="frequency" data-cselect-input value="one-off">
                 </div>
 
                 {{-- Cause (custom dropdown — opens upward in the bottom bar) --}}
+                @php
+                    $quickCauses = [
+                        'Where Most Needed', 'Sadaqah', 'Zakat', 'Lillah', 'Orphan Support', 'Water Pump',
+                        'Food for Students', 'Education', 'Prosthetic Limb', 'Healthcare', 'Sustainable Livelihood',
+                        'Community Centre', 'Widows Support', 'Food for Needy', 'Women Empowerment',
+                    ];
+                @endphp
                 <div class="nf-cselect nf-cselect--up h-11 lg:flex-1" data-cselect>
                     <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
                         <span data-cselect-label>Where Most Needed</span>
                         <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                     <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
-                        <li class="nf-cselect__opt is-selected" role="option" data-value="Where Most Needed">Where Most Needed</li>
-                        <li class="nf-cselect__opt" role="option" data-value="Zakat">Zakat</li>
-                        <li class="nf-cselect__opt" role="option" data-value="Sadaqah">Sadaqah</li>
-                        <li class="nf-cselect__opt" role="option" data-value="Orphan Support">Orphan Support</li>
-                        <li class="nf-cselect__opt" role="option" data-value="Water Pump">Water Pump</li>
+                        @foreach ($quickCauses as $qc)
+                            <li class="nf-cselect__opt {{ $loop->first ? 'is-selected' : '' }}" role="option" data-value="{{ $qc }}">{{ $qc }}</li>
+                        @endforeach
                     </ul>
                     <input type="hidden" name="cause" data-cselect-input value="Where Most Needed">
                 </div>
 
-                <input type="number" name="amount" min="1" step="0.01" placeholder="Value" required
+                <input type="number" name="amount" min="1" step="1" inputmode="numeric" data-whole-number placeholder="Value" required
                        aria-label="Donation amount"
                        class="h-11 w-full rounded-md border-0 bg-white px-3 text-sm text-navy-dark focus:ring-2 focus:ring-brand lg:w-32">
                 <button type="submit" class="btn-white h-11">

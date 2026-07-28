@@ -56,7 +56,7 @@
                     {{-- Custom amount (revealed when "Other" is chosen) --}}
                     <div data-custom-amount class="mt-3 hidden">
                         <label class="mb-1.5 block text-sm font-semibold text-navy-dark">Enter your amount</label>
-                        <input type="number" min="1" step="0.01" placeholder="e.g. 75" data-custom-amount-input
+                        <input type="number" min="1" step="1" inputmode="numeric" data-whole-number placeholder="e.g. 75" data-custom-amount-input
                                class="h-11 w-full rounded-md border border-gray-300 px-3 text-sm text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30">
                     </div>
 

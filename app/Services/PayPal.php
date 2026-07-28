@@ -177,18 +177,21 @@ class PayPal
     }
 
     /**
-     * Find or create a monthly billing plan for this exact amount + currency,
-     * so the donor is charged the same amount every month. Plans are cached in
-     * the paypal_plans table (scoped by mode) and reused.
+     * Find or create a recurring billing plan for this exact amount + currency +
+     * interval (WEEK or MONTH), so the donor is charged the same amount every
+     * period. Plans are cached in paypal_plans (scoped by mode) and reused.
      */
-    public function ensureMonthlyPlan(float $amount, string $currency): string
+    public function ensureRecurringPlan(float $amount, string $currency, string $interval = 'MONTH'): string
     {
         $amount = round($amount, 2);
+        $interval = strtoupper($interval) === 'WEEK' ? 'WEEK' : 'MONTH';
+        $word = $interval === 'WEEK' ? 'Weekly' : 'Monthly';
 
         $existing = \App\Models\PayPalPlan::query()
             ->where('mode', $this->mode())
             ->where('currency', $currency)
             ->where('amount', $amount)
+            ->where('interval', $interval)
             ->first();
 
         if ($existing) {
@@ -199,11 +202,11 @@ class PayPal
 
         $res = $this->request()->post($this->cfg['base_url'].'/v1/billing/plans', [
             'product_id' => $productId,
-            'name' => 'Monthly gift '.$currency.' '.number_format($amount, 2),
-            'description' => 'Monthly recurring donation of '.$currency.' '.number_format($amount, 2),
+            'name' => $word.' gift '.$currency.' '.number_format($amount, 2),
+            'description' => $word.' recurring donation of '.$currency.' '.number_format($amount, 2),
             'status' => 'ACTIVE',
             'billing_cycles' => [[
-                'frequency' => ['interval_unit' => 'MONTH', 'interval_count' => 1],
+                'frequency' => ['interval_unit' => $interval, 'interval_count' => 1],
                 'tenure_type' => 'REGULAR',
                 'sequence' => 1,
                 'total_cycles' => 0, // 0 = until cancelled
@@ -223,7 +226,7 @@ class PayPal
 
         if (! $res->successful()) {
             $this->logFailure('create plan', $res);
-            throw new RuntimeException('Could not set up the monthly plan.');
+            throw new RuntimeException('Could not set up the recurring plan.');
         }
 
         $planId = (string) $res->json('id');
@@ -232,6 +235,7 @@ class PayPal
             'mode' => $this->mode(),
             'currency' => $currency,
             'amount' => $amount,
+            'interval' => $interval,
             'product_id' => $productId,
             'plan_id' => $planId,
         ]);
