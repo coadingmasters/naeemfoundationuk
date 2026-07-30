@@ -17,9 +17,9 @@ return [
     'projects' => [
         'heading' => 'Projects',
         'items' => [
-            ['title' => 'Education Sponsorships', 'slug' => 'education-sponsorships'],
+            ['title' => 'Education Sponsorships', 'route' => 'education-sponsorships'],
             ['title' => 'Food & Sustenance', 'route' => 'food-sustenance'],
-            ['title' => 'Hostel for Students / Orphans', 'slug' => 'hostel-for-students-orphans'],
+            ['title' => 'Hostel for Students / Orphans', 'route' => 'hostel-for-students-orphans'],
             ['title' => 'Prosthetic Limb', 'route' => 'prosthetic-limb'],
             ['title' => 'Community Centre', 'route' => 'community-centre'],
             ['title' => 'Clean Water', 'slug' => 'clean-water'],

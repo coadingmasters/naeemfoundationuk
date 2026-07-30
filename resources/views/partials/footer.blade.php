@@ -21,11 +21,10 @@
     ];
 
     $bankDetails = [
-        'Account Details' => 'Metro Bank',
+        'Account Details' => 'Lloyds Bank',
         'Account Name' => 'Naeem Foundation',
-        'Account Number' => '46502817',
-        'Sort Code' => '230580',
-        'IBAN Number' => 'GB80MYMB23058046502817',
+        'Account Number' => '13783063',
+        'Sort Code' => '30-54-66',
     ];
 @endphp
 
