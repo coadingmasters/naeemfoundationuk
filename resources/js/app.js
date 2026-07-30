@@ -899,12 +899,59 @@ function setupAddressLookup() {
 
         findBtn.addEventListener('click', find);
         postcode.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') { e.preventDefault(); find(); }
+            if (e.key === 'Enter') { e.preventDefault(); hideSuggest(); find(); }
+            if (e.key === 'Escape') hideSuggest();
         });
         if (select) select.addEventListener('change', () => {
             const idx = parseInt(select.value, 10);
             if (!Number.isNaN(idx)) apply(results[idx]);
         });
+
+        // ---- Live postcode suggestions as the donor types (free, UK) ----
+        const suggestEl = root.querySelector('[data-address-suggest]');
+        const hideSuggest = () => { if (suggestEl) { suggestEl.hidden = true; suggestEl.innerHTML = ''; } };
+
+        if (suggestEl) {
+            let suggestTimer;
+
+            postcode.addEventListener('input', () => {
+                const q = (postcode.value || '').trim();
+                clearTimeout(suggestTimer);
+                if (q.length < 2) { hideSuggest(); return; }
+
+                suggestTimer = setTimeout(async () => {
+                    try {
+                        const res = await fetch(`/address-suggest?q=${encodeURIComponent(q)}`, {
+                            headers: { Accept: 'application/json' }, credentials: 'same-origin',
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        const list = Array.isArray(data.suggestions) ? data.suggestions : [];
+
+                        if (!list.length) { hideSuggest(); return; }
+
+                        suggestEl.innerHTML = list.map((pc) =>
+                            `<li><button type="button" data-pc="${pc.replace(/"/g, '&quot;')}"
+                                 class="block w-full px-4 py-2 text-left hover:bg-cream">${pc.replace(/</g, '&lt;')}</button></li>`
+                        ).join('');
+                        suggestEl.hidden = false;
+                    } catch { hideSuggest(); }
+                }, 250);
+            });
+
+            // Pick a suggestion → fill the postcode and look up the town.
+            suggestEl.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-pc]');
+                if (!btn) return;
+                postcode.value = btn.dataset.pc;
+                hideSuggest();
+                find();
+            });
+
+            // Close the list when clicking elsewhere.
+            document.addEventListener('click', (e) => {
+                if (!root.contains(e.target)) hideSuggest();
+            });
+        }
     });
 }
 

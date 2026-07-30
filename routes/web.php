@@ -148,6 +148,16 @@ Route::get('/address-lookup', function (\Illuminate\Http\Request $request) {
     ]);
 })->middleware('throttle:30,1')->name('address.lookup');
 
+// Real-time postcode suggestions as the visitor types (free, UK only).
+Route::get('/address-suggest', function (\Illuminate\Http\Request $request) {
+    return response()->json([
+        'suggestions' => \App\Support\AddressLookup::suggest(
+            \App\Support\Country::code(),
+            (string) $request->query('q', '')
+        ),
+    ]);
+})->middleware('throttle:90,1')->name('address.suggest');
+
 Route::get('/donate/checkout', [DonationController::class, 'checkout'])->name('donate.checkout');
 Route::post('/donate/checkout', [DonationController::class, 'store'])->name('donate.store');
 Route::get('/donate/payment', [DonationController::class, 'payment'])->name('donate.payment');

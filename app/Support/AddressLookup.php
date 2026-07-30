@@ -20,6 +20,32 @@ use Throwable;
  */
 class AddressLookup
 {
+    /**
+     * Real-time postcode suggestions as the visitor types (free, no key).
+     * UK only — postcodes.io has a free autocomplete endpoint. Other regions
+     * return nothing (they use the on-demand "Find" button instead).
+     */
+    public static function suggest(string $region, string $query): array
+    {
+        $query = trim($query);
+
+        if (strtoupper($region) !== 'GB' || strlen($query) < 2) {
+            return [];
+        }
+
+        try {
+            $res = Http::timeout(4)->get('https://api.postcodes.io/postcodes/'.rawurlencode($query).'/autocomplete');
+
+            if (! $res->ok()) {
+                return [];
+            }
+
+            return collect($res->json('result') ?? [])->take(8)->values()->all();
+        } catch (Throwable $e) {
+            return [];
+        }
+    }
+
     public static function search(string $region, string $postcode): array
     {
         $region = strtoupper($region);
@@ -102,7 +128,7 @@ class AddressLookup
     private static function getAddress(string $postcode): array
     {
         try {
-            $res = Http::timeout(6)->get('https://api.getaddress.io/find/'.urlencode($postcode), [
+            $res = Http::timeout(6)->get('https://api.getaddress.io/find/'.rawurlencode($postcode), [
                 'api-key' => config('address.getaddress_key'),
                 'expand' => 'true',
             ]);

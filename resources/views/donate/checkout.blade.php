@@ -155,8 +155,13 @@
                     <div class="mt-6" data-address-finder>
                         <label for="postcode" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*{{ $postLabel }}</label>
                         <div class="flex gap-2">
-                            <input id="postcode" type="text" name="postcode" value="{{ old('postcode', $d['postcode'] ?? '') }}" required
-                                   data-address-postcode placeholder="Enter your {{ $postLabel }}" class="nf-dark-input">
+                            <div class="relative flex-1">
+                                <input id="postcode" type="text" name="postcode" value="{{ old('postcode', $d['postcode'] ?? '') }}" required
+                                       data-address-postcode autocomplete="off" placeholder="Start typing your {{ $postLabel }}…" class="nf-dark-input w-full">
+                                {{-- Live postcode suggestions (free, appear as you type) --}}
+                                <ul data-address-suggest
+                                    class="absolute left-0 right-0 top-full z-30 mt-1 hidden max-h-60 overflow-auto rounded-lg bg-white py-1 text-sm text-navy-dark shadow-2xl ring-1 ring-black/5"></ul>
+                            </div>
                             <button type="button" data-address-find
                                     class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white px-4 text-sm font-bold text-navy-dark transition hover:bg-cream disabled:opacity-60">
                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/></svg>
@@ -164,6 +169,7 @@
                             </button>
                         </div>
                         @error('postcode') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        <p class="mt-1.5 text-xs text-white/60">Type your {{ $postLabel }} to see suggestions, or enter your full address manually below.</p>
 
                         <div data-address-results class="mt-3 hidden">
                             <label class="mb-1.5 block text-xs font-semibold text-white/90">Select your address</label>
