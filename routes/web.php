@@ -158,9 +158,12 @@ Route::post('/shop/paypal/capture', [PayPalController::class, 'shopCapture'])->n
 Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])->name('paypal.webhook');
 
 // "Giving" group — auto-generate a placeholder page for every slug-based item.
+// A slug may appear in more than one menu (e.g. Kaffarah), so register once.
+$givingRegistered = [];
 foreach (config('giving') as $group) {
     foreach (array_merge($group['items'], $group['featured'] ?? []) as $item) {
-        if (! empty($item['slug'])) {
+        if (! empty($item['slug']) && ! in_array($item['slug'], $givingRegistered, true)) {
+            $givingRegistered[] = $item['slug'];
             Route::view('/give/'.$item['slug'], 'placeholder', [
                 'pageTag' => 'Giving',
                 'pageTitle' => $item['title'],

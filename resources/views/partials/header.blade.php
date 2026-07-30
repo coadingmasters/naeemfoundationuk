@@ -38,11 +38,12 @@
     // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
     $givingUrl = fn ($item) => ! empty($item['route']) ? route($item['route']) : route('give.'.$item['slug']);
 
-    // Giving mega-menu: three link columns + a promo image card.
+    // Giving mega-menu: four link columns (Projects, Appeals, Islamic Giving, Ramadan).
     $megaColumns = [
+        ['heading' => config('giving.projects.heading'), 'items' => config('giving.projects.items')],
         ['heading' => config('giving.appeals.heading'), 'items' => config('giving.appeals.items')],
         ['heading' => config('giving.islamic.heading'), 'items' => config('giving.islamic.items')],
-        ['heading' => 'This Ramadan', 'items' => config('giving.islamic.featured', [])],
+        ['heading' => config('giving.ramadan.heading'), 'items' => config('giving.ramadan.items')],
     ];
     $megaPromo = [
         'image' => 'images/zakatcenter.png',
@@ -146,20 +147,6 @@
                                             </div>
                                         </div>
                                     @endforeach
-
-                                    {{-- Promo image card --}}
-                                    <a href="{{ $megaPromo['url'] }}" class="nf-mega__promo group">
-                                        <span class="nf-mega__promo-media">
-                                            <img src="{{ asset($megaPromo['image']) }}" alt="">
-                                        </span>
-                                        <span class="nf-mega__promo-band">
-                                            <span class="nf-mega__promo-eyebrow">{{ $megaPromo['eyebrow'] }}</span>
-                                            <span class="nf-mega__promo-title">
-                                                {{ $megaPromo['title'] }}
-                                                <svg class="nf-mega__promo-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </span>
-                                        </span>
-                                    </a>
                                 </div>
                             </div>
                         </div>

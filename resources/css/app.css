@@ -1591,7 +1591,7 @@
     left: 0;
     right: 0;
     margin-inline: auto;
-    width: min(70rem, calc(100vw - 2rem));
+    width: min(78rem, calc(100vw - 2rem));
     transform: translateY(12px);
     padding: 1.75rem;
     border-radius: 1.1rem;
@@ -1617,8 +1617,8 @@
 }
 .nf-mega__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 15rem;
-    gap: 2rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.75rem;
     align-items: start;
 }
 .nf-mega__col {
