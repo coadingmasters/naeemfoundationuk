@@ -22,7 +22,7 @@ return [
             ['title' => 'Hostel for Students / Orphans', 'route' => 'hostel-for-students-orphans'],
             ['title' => 'Prosthetic Limb', 'route' => 'prosthetic-limb'],
             ['title' => 'Community Centre', 'route' => 'community-centre'],
-            ['title' => 'Clean Water', 'slug' => 'clean-water'],
+            ['title' => 'Clean Water', 'route' => 'clean-water'],
             ['title' => 'Orphans Sponsorships', 'slug' => 'orphans-sponsorships'],
             ['title' => 'Cambodia Education & Welfare', 'route' => 'cambodia-education-welfare'],
         ],

@@ -77,6 +77,7 @@ Route::get('/healthcare', [HealthcareController::class, 'index'])->name('healthc
 Route::get('/food-and-sustenance', [FoodSustenanceController::class, 'index'])->name('food-sustenance');
 Route::view('/education-sponsorships', 'education-sponsorships')->name('education-sponsorships');
 Route::view('/hostel-for-students-orphans', 'hostel-for-students-orphans')->name('hostel-for-students-orphans');
+Route::view('/clean-water', 'clean-water')->name('clean-water');
 Route::get('/sustainable-livelihood', [SustainableLivelihoodController::class, 'index'])->name('sustainable-livelihood');
 Route::get('/cambodia-education-welfare', [CambodiaEducationController::class, 'index'])->name('cambodia-education-welfare');
 Route::get('/prosthetic-limb', [ProstheticLimbController::class, 'index'])->name('prosthetic-limb');

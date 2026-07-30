@@ -40,17 +40,27 @@
         'widgetCauses' => ['Education Sponsorship', 'Orphan Education', 'Where Most Needed'],
     ])
 
-    {{-- ===================== INTRO QUOTE ===================== --}}
+    {{-- ===================== INTRO + VIDEO ===================== --}}
     <section class="py-14 sm:py-16">
-        <div class="nf-container nf-reveal mx-auto max-w-3xl text-center">
-            <p class="text-lg font-bold italic text-brand sm:text-xl">&ldquo;Education is the bridge to a better tomorrow.&rdquo;</p>
-            <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-                Education is more than just learning; it is the key that opens doors to a brighter future. For countless
-                children, education can break the chains of poverty and give them the tools to build a better life. At
-                Naeem Foundation, we believe every child &mdash; regardless of background &mdash; deserves the chance to
-                dream and grow through quality education, and to become the next generation of leaders, thinkers and
-                changemakers who will shape a brighter tomorrow.
-            </p>
+        <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            {{-- Left: text --}}
+            <div class="nf-reveal">
+                <p class="text-lg font-bold italic text-brand sm:text-xl">&ldquo;Education is the bridge to a better tomorrow.&rdquo;</p>
+                <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    Education is more than just learning; it is the key that opens doors to a brighter future. For
+                    countless children, education can break the chains of poverty and give them the tools to build a
+                    better life.
+                </p>
+                <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    At Naeem Foundation, we believe every child &mdash; regardless of background &mdash; deserves the
+                    chance to dream and grow through quality education, and to become the next generation of leaders,
+                    thinkers and changemakers who will shape a brighter tomorrow.
+                </p>
+            </div>
+            {{-- Right: animated video --}}
+            <div class="nf-reveal" data-reveal-delay="120">
+                @include('partials.video-card', ['videoKey' => 'education-sponsorships'])
+            </div>
         </div>
     </section>
 

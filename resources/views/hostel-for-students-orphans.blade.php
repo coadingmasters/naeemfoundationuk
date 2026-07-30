@@ -43,17 +43,26 @@
         'widgetCauses' => ['Hostel Sponsorship', 'Orphan Care', 'Where Most Needed'],
     ])
 
-    {{-- ===================== INTRO QUOTE ===================== --}}
+    {{-- ===================== INTRO + VIDEO ===================== --}}
     <section class="py-14 sm:py-16">
-        <div class="nf-container nf-reveal mx-auto max-w-3xl text-center">
-            <p class="text-lg font-bold italic text-brand sm:text-xl">&ldquo;A safe home is the foundation of a bright future.&rdquo;</p>
-            <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-                For many orphans and students, the biggest barrier to learning isn&rsquo;t ability &mdash; it&rsquo;s having
-                nowhere safe to stay. Children from distant villages are often forced to abandon their studies simply
-                because there is no home near their school or madrasah. At Naeem Foundation, our hostels remove that
-                barrier: a warm bed, wholesome food, a place to study and caring guardianship, so every child can stay,
-                learn and flourish.
-            </p>
+        <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            {{-- Left: text --}}
+            <div class="nf-reveal">
+                <p class="text-lg font-bold italic text-brand sm:text-xl">&ldquo;A safe home is the foundation of a bright future.&rdquo;</p>
+                <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    For many orphans and students, the biggest barrier to learning isn&rsquo;t ability &mdash; it&rsquo;s
+                    having nowhere safe to stay. Children from distant villages are often forced to abandon their studies
+                    simply because there is no home near their school or madrasah.
+                </p>
+                <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    At Naeem Foundation, our hostels remove that barrier: a warm bed, wholesome food, a place to study
+                    and caring guardianship, so every child can stay, learn and flourish.
+                </p>
+            </div>
+            {{-- Right: animated video --}}
+            <div class="nf-reveal" data-reveal-delay="120">
+                @include('partials.video-card', ['videoKey' => 'hostel-for-students-orphans'])
+            </div>
         </div>
     </section>
 

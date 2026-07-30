@@ -91,6 +91,21 @@ return [
         'poster' => 'images/handpump.jpg',
         'title' => 'Clean water, changed lives',
     ],
+    'education-sponsorships' => [
+        'url' => $sample,
+        'poster' => 'images/changinslives1.jpg',
+        'title' => 'Empowering the next generation',
+    ],
+    'hostel-for-students-orphans' => [
+        'url' => $sample,
+        'poster' => 'images/changinslives4.jpg',
+        'title' => 'A safe home to learn and grow',
+    ],
+    'clean-water' => [
+        'url' => $sample,
+        'poster' => 'images/handpump.jpg',
+        'title' => 'Clean water, changed lives',
+    ],
     'prosthetic-limb' => [
         'url' => $sample,
         'poster' => 'images/changinslives4.jpg',
