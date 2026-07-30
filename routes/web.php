@@ -78,6 +78,13 @@ Route::get('/food-and-sustenance', [FoodSustenanceController::class, 'index'])->
 Route::view('/education-sponsorships', 'education-sponsorships')->name('education-sponsorships');
 Route::view('/hostel-for-students-orphans', 'hostel-for-students-orphans')->name('hostel-for-students-orphans');
 Route::view('/clean-water', 'clean-water')->name('clean-water');
+Route::get('/orphans-sponsorships', [\App\Http\Controllers\OrphanController::class, 'index'])->name('orphans-sponsorships');
+Route::view('/food-appeal', 'food-appeal')->name('food-appeal');
+Route::view('/widows', 'widows')->name('widows');
+Route::view('/sadaqah-jariyah', 'sadaqah-jariyah')->name('sadaqah-jariyah');
+Route::view('/lillah', 'lillah')->name('lillah');
+Route::view('/aqiqah', 'aqiqah')->name('aqiqah');
+Route::view('/kaffarah', 'kaffarah')->name('kaffarah');
 Route::get('/sustainable-livelihood', [SustainableLivelihoodController::class, 'index'])->name('sustainable-livelihood');
 Route::get('/cambodia-education-welfare', [CambodiaEducationController::class, 'index'])->name('cambodia-education-welfare');
 Route::get('/prosthetic-limb', [ProstheticLimbController::class, 'index'])->name('prosthetic-limb');

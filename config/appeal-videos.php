@@ -106,6 +106,41 @@ return [
         'poster' => 'images/handpump.jpg',
         'title' => 'Clean water, changed lives',
     ],
+    'orphans-sponsorships' => [
+        'url' => $sample,
+        'poster' => 'images/supporton.png',
+        'title' => 'Change an orphan’s life',
+    ],
+    'food-appeal' => [
+        'url' => $sample,
+        'poster' => 'images/changinslives2.jpg',
+        'title' => 'Feeding families in need',
+    ],
+    'widows' => [
+        'url' => $sample,
+        'poster' => 'images/supporton.png',
+        'title' => 'Standing with widows',
+    ],
+    'sadaqah-jariyah' => [
+        'url' => $sample,
+        'poster' => 'images/handpump.jpg',
+        'title' => 'A gift that never stops giving',
+    ],
+    'lillah' => [
+        'url' => $sample,
+        'poster' => 'images/changinslives1.jpg',
+        'title' => 'Giving for the sake of Allah',
+    ],
+    'aqiqah' => [
+        'url' => $sample,
+        'poster' => 'images/changinslives2.jpg',
+        'title' => 'Celebrating new life',
+    ],
+    'kaffarah' => [
+        'url' => $sample,
+        'poster' => 'images/changinslives2.jpg',
+        'title' => 'Fulfilling your Kaffarah',
+    ],
     'prosthetic-limb' => [
         'url' => $sample,
         'poster' => 'images/changinslives4.jpg',

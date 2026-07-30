@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupQuickbar();
     setupWholeNumberInputs();
     setupAddressLookup();
+    setupAjaxPagination();
     setupCart();
     setupScrollTop();
     setupSlideCarousel(document.querySelector('[data-carousel="hero"]'), 5000);
@@ -778,6 +779,45 @@ function setupAddonsModal() {
 
     // Re-open automatically after an add so the donor can keep adding.
     if (modal.hasAttribute('data-open')) open();
+}
+
+/* ---------- AJAX pagination ----------
+ * Any pagination links inside a [data-ajax-pagination] region load the next
+ * page in place (no full reload). Uses event delegation, so freshly-swapped
+ * pagination links keep working.
+ */
+function setupAjaxPagination() {
+    document.querySelectorAll('[data-ajax-pagination]').forEach((root) => {
+        const container = root.querySelector('[data-orphan-list]') || root;
+
+        root.addEventListener('click', async (e) => {
+            const link = e.target.closest('a[href]');
+            if (!link || !root.contains(link)) return;
+
+            let url;
+            try { url = new URL(link.href, window.location.origin); } catch { return; }
+            if (!url.searchParams.has('page')) return; // pagination links only
+
+            e.preventDefault();
+            container.style.opacity = '0.5';
+            container.style.pointerEvents = 'none';
+
+            try {
+                const res = await fetch(url.href, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'text/html' },
+                    credentials: 'same-origin',
+                });
+                container.innerHTML = await res.text();
+                history.replaceState(null, '', url.href);
+                root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (err) {
+                window.location.href = url.href; // fall back to a normal load
+            } finally {
+                container.style.opacity = '';
+                container.style.pointerEvents = '';
+            }
+        });
+    });
 }
 
 /* ---------- Postcode -> address finder ----------
