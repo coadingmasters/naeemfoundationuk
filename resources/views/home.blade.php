@@ -25,8 +25,8 @@
     // simply hide the section — no default fallback.
     $appeals = ($appeals ?? collect());
 
-    // Group appeals into pages of 4 for the carousel
-    $appealPages = $appeals->chunk(4);
+    // Group appeals into pages of 3 — one clean row of cards per slide.
+    $appealPages = $appeals->chunk(3);
 
     // Causes carousel — managed in the admin dashboard, per region. Empty regions
     // hide the section — no default fallback.
@@ -197,19 +197,19 @@
                     <div class="nf-track flex" data-track>
                         @foreach ($appealPages as $page)
                             <div class="w-full shrink-0" data-slide>
-                                <div class="grid gap-6 sm:grid-cols-2 lg:gap-7">
+                                <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
                                     @foreach ($page as $appeal)
                                         <a href="{{ isset($appeal->id) ? route('appeals.show', $appeal) : $donateLink($appeal->link) }}"
                                            class="group flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-navy/10 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-navy/15">
-                                            <div class="relative h-52 overflow-hidden sm:h-56">
+                                            <div class="relative h-40 overflow-hidden sm:h-44">
                                                 <img src="{{ asset($appeal->image) }}" alt="{{ $appeal->title }}"
                                                      class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
                                                 <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-dark/35 to-transparent"></span>
                                             </div>
-                                            <div class="flex flex-1 flex-col p-5 sm:p-6">
-                                                <h3 class="text-lg font-bold text-navy-dark transition-colors group-hover:text-brand sm:text-xl">{{ $appeal->title }}</h3>
-                                                <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-500">{{ $appeal->description }}</p>
-                                                <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
+                                            <div class="flex flex-1 flex-col p-4 sm:p-5">
+                                                <h3 class="text-base font-bold text-navy-dark transition-colors group-hover:text-brand sm:text-lg">{{ $appeal->title }}</h3>
+                                                <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-500">{{ $appeal->description }}</p>
+                                                <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
                                                     Donate now
                                                     <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 </span>

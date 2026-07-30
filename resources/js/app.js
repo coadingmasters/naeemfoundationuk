@@ -711,9 +711,10 @@ function showToast(message, isError = false) {
 function setupVideoCards() {
     document.querySelectorAll('[data-video-card]').forEach((card) => {
         const btn = card.querySelector('[data-video-play]');
-        if (!btn) return;
 
-        btn.addEventListener('click', () => {
+        // Start the video. `muted` is required for browsers to allow autoplay
+        // without a user gesture — on a manual click we play with sound.
+        const start = (muted) => {
             if (card.classList.contains('is-playing')) return;
 
             const src = card.dataset.src;
@@ -722,8 +723,12 @@ function setupVideoCards() {
 
             let player;
             if (isEmbed) {
+                let url = src;
+                if (muted) {
+                    url += (url.includes('?') ? '&' : '?') + 'mute=1&playsinline=1';
+                }
                 player = document.createElement('iframe');
-                player.src = src;
+                player.src = url;
                 player.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
                 player.setAttribute('allowfullscreen', '');
                 player.loading = 'lazy';
@@ -733,11 +738,31 @@ function setupVideoCards() {
                 player.controls = true;
                 player.autoplay = true;
                 player.playsInline = true;
+                player.muted = !!muted;
             }
 
             card.appendChild(player);
             card.classList.add('is-playing');
-        });
+        };
+
+        // Manual play (with sound) via the poster's play button.
+        if (btn) btn.addEventListener('click', () => start(false));
+
+        // Auto-play (muted) the first time the card scrolls into view — the
+        // visitor still gets the controls to unmute or restart.
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        start(true);
+                        io.disconnect();
+                    }
+                });
+            }, { threshold: 0.45 });
+            io.observe(card);
+        } else {
+            start(true);
+        }
     });
 }
 
