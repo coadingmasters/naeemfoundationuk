@@ -31,6 +31,12 @@
             'icon' => '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
         [
+            'label' => 'Orphans',
+            'route' => 'admin.orphans.index',
+            'active' => request()->routeIs('admin.orphans.*'),
+            'icon' => '<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0" stroke-linecap="round"/>',
+        ],
+        [
             'label' => 'Shop Products',
             'route' => 'admin.products.index',
             'active' => request()->routeIs('admin.products.*'),

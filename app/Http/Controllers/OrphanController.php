@@ -2,34 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Orphan;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class OrphanController extends Controller
 {
-    private const PER_PAGE = 12;
-
-    /**
-     * The "Sponsor an Orphan" page. Paginates the orphan list; on an AJAX
-     * request it returns only the grid + pagination so the page never reloads.
-     */
+    /** The "Sponsor an Orphan" grid, with AJAX pagination. */
     public function index(Request $request)
     {
-        $all = collect(config('orphans', []));
-        $page = LengthAwarePaginator::resolveCurrentPage();
+        $orphans = Orphan::active()->ordered()->paginate(12);
 
-        $orphans = new LengthAwarePaginator(
-            $all->forPage($page, self::PER_PAGE)->values(),
-            $all->count(),
-            self::PER_PAGE,
-            $page,
-            ['path' => route('orphans-sponsorships')]
-        );
-
+        // AJAX page changes only need the swapped-in grid, not the whole page.
         if ($request->ajax() || $request->wantsJson()) {
             return view('partials.orphan-list', compact('orphans'));
         }
 
         return view('orphans-sponsorships', compact('orphans'));
+    }
+
+    /** A single orphan's profile + a donation widget scoped to them. */
+    public function show(Orphan $orphan)
+    {
+        abort_unless($orphan->is_active, 404);
+
+        return view('orphans.show', compact('orphan'));
     }
 }

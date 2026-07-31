@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\NewsPostController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\OrphanController as AdminOrphanController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\AnnualReportController;
@@ -79,6 +80,7 @@ Route::view('/education-sponsorships', 'education-sponsorships')->name('educatio
 Route::view('/hostel-for-students-orphans', 'hostel-for-students-orphans')->name('hostel-for-students-orphans');
 Route::view('/clean-water', 'clean-water')->name('clean-water');
 Route::get('/orphans-sponsorships', [\App\Http\Controllers\OrphanController::class, 'index'])->name('orphans-sponsorships');
+Route::get('/orphans/{orphan}', [\App\Http\Controllers\OrphanController::class, 'show'])->name('orphans.show');
 Route::view('/food-appeal', 'food-appeal')->name('food-appeal');
 Route::view('/widows', 'widows')->name('widows');
 Route::view('/sadaqah-jariyah', 'sadaqah-jariyah')->name('sadaqah-jariyah');
@@ -246,6 +248,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->except(['show']);
 
         Route::resource('projects', ProjectController::class)
+            ->except(['show']);
+
+        Route::resource('orphans', AdminOrphanController::class)
             ->except(['show']);
 
         Route::resource('products', AdminProductController::class)

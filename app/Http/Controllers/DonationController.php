@@ -42,15 +42,19 @@ class DonationController extends Controller
             'frequency' => ['nullable', 'in:one-off,monthly,weekly'],
             'currency' => ['nullable', 'string', 'max:8'],
             'image' => ['nullable', 'string', 'max:255'],
+            // Set when donating from an orphan's profile — tags the line so admins
+            // can see which child received the money.
+            'orphan_id' => ['nullable', 'integer'],
         ]);
 
-        DonationCart::add([
+        DonationCart::add(array_filter([
             'cause' => $data['cause'],
             'amount' => round((float) $data['amount'], 2),
             'qty' => 1,
             'frequency' => $data['frequency'] ?? 'one-off',
             'image' => $data['image'] ?? 'images/changinslives1.jpg',
-        ]);
+            'orphan_id' => $data['orphan_id'] ?? null,
+        ], fn ($v) => $v !== null));
 
         // "Keep in touch" consent from the donation wizard is donor-level, so it
         // is kept in the session (separate from the basket) until the donation is

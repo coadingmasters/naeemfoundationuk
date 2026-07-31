@@ -7,6 +7,9 @@
 @php
     $widgetCauses = $widgetCauses ?? ['Where Most Needed'];
     $widgetImage = $widgetImage ?? 'images/changinslives1.jpg';
+    // When set, the donation line is tagged with this orphan so admins can see
+    // exactly which child received the money.
+    $orphanId = $orphanId ?? null;
     $widgetAmounts = $widgetAmounts ?? [50, 100, 250];
     // Smaller presets shown when the donor switches to a Monthly gift.
     $widgetMonthlyAmounts = $widgetMonthlyAmounts ?? [10, 25, 50];
@@ -23,6 +26,9 @@
       class="rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6">
     @csrf
     <input type="hidden" name="image" value="{{ $widgetImage }}">
+    @if ($orphanId)
+        <input type="hidden" name="orphan_id" value="{{ $orphanId }}">
+    @endif
 
     <p class="text-center text-sm font-bold uppercase tracking-wide text-brand">{{ $widgetTitle }}</p>
 

@@ -89,16 +89,18 @@
 
                     <h2 class="text-xl font-bold text-white sm:text-2xl">Enter Your Details</h2>
 
-                    {{-- Gift Aid --}}
-                    <h3 class="mt-6 text-lg font-semibold italic text-white/90">Gift Aid</h3>
-                    <label class="mt-2 flex cursor-pointer items-start gap-3">
-                        <input type="checkbox" name="gift_aid" value="1" @checked(old('gift_aid', $d['gift_aid'] ?? false))
-                               class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/40 bg-white/10 text-brand focus:ring-2 focus:ring-white/40">
-                        <span class="text-xs leading-relaxed text-white/85 sm:text-sm">
-                            I am a UK taxpayer, donating as an individual and would like Naeem Foundation to claim Gift Aid
-                            on my donation <span class="text-brand">*</span>
-                        </span>
-                    </label>
+                    {{-- Gift Aid — a UK-only tax relief, so it's hidden outside the UK. --}}
+                    @if (region('code') === 'GB')
+                        <h3 class="mt-6 text-lg font-semibold italic text-white/90">Gift Aid</h3>
+                        <label class="mt-2 flex cursor-pointer items-start gap-3">
+                            <input type="checkbox" name="gift_aid" value="1" @checked(old('gift_aid', $d['gift_aid'] ?? false))
+                                   class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/40 bg-white/10 text-brand focus:ring-2 focus:ring-white/40">
+                            <span class="text-xs leading-relaxed text-white/85 sm:text-sm">
+                                I am a UK taxpayer, donating as an individual and would like Naeem Foundation to claim Gift Aid
+                                on my donation <span class="text-brand">*</span>
+                            </span>
+                        </label>
+                    @endif
 
                     {{-- Name --}}
                     <div class="mt-6 grid gap-5 sm:grid-cols-2">

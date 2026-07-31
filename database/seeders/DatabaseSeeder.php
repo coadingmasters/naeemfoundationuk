@@ -7,6 +7,7 @@ use App\Models\Appeal;
 use App\Models\Cause;
 use App\Models\HeroSlide;
 use App\Models\NewsPost;
+use App\Models\Orphan;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -194,6 +195,24 @@ class DatabaseSeeder extends Seeder
                     'sort_order' => $i + 1,
                     'is_active' => true,
                 ]));
+            }
+        }
+
+        // Sponsor-an-Orphan children — seeded from config/orphans.php only when
+        // the table is empty, so admin-added orphans are never touched.
+        if (Orphan::count() === 0) {
+            foreach (config('orphans', []) as $i => $o) {
+                Orphan::create([
+                    // Events are muted here (WithoutModelEvents), so set the slug
+                    // explicitly rather than relying on the model's saving hook.
+                    'slug' => Orphan::uniqueSlug($o['name']),
+                    'name' => $o['name'],
+                    'location' => $o['location'] ?? null,
+                    'grade' => $o['grade'] ?? null,
+                    'photo' => $o['photo'] ?? null,
+                    'sort_order' => $i,
+                    'is_active' => true,
+                ]);
             }
         }
     }

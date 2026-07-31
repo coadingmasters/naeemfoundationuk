@@ -66,12 +66,25 @@
     <section data-screen="steps" hidden class="nf-wz-screen bg-cream py-10 sm:py-14">
         <div class="nf-container">
 
-            {{-- Progress --}}
+            {{-- Progress. Gift Aid is a UK-only tax relief, so that step is dropped
+                 outside the UK. `data-step` stays tied to the panel number, while the
+                 shown number is sequential — so highlighting stays correct either way. --}}
+            @php
+                $isUK = region('code') === 'GB';
+                $wizardSteps = array_values(array_filter([
+                    ['step' => 1, 'label' => 'Start'],
+                    ['step' => 2, 'label' => 'Donation'],
+                    $isUK ? ['step' => 3, 'label' => 'Gift Aid'] : null,
+                    ['step' => 4, 'label' => 'Keep in touch'],
+                    ['step' => 5, 'label' => 'Details'],
+                    ['step' => 6, 'label' => 'Payment'],
+                ]));
+            @endphp
             <ol class="nf-wz-steps mb-9 sm:mb-11">
-                @foreach (['Start', 'Donation', 'Gift Aid', 'Keep in touch', 'Details', 'Payment'] as $i => $label)
-                    <li class="nf-wz-step {{ $i === 0 ? 'is-done' : '' }} {{ $i === 1 ? 'is-active' : '' }}" data-step="{{ $i + 1 }}">
+                @foreach ($wizardSteps as $i => $s)
+                    <li class="nf-wz-step {{ $s['step'] === 1 ? 'is-done' : '' }} {{ $s['step'] === 2 ? 'is-active' : '' }}" data-step="{{ $s['step'] }}">
                         <span class="nf-wz-step__num">{{ $i + 1 }}</span>
-                        <span class="nf-wz-step__label">{{ $label }}</span>
+                        <span class="nf-wz-step__label">{{ $s['label'] }}</span>
                     </li>
                 @endforeach
             </ol>
@@ -117,13 +130,14 @@
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Back
                         </button>
-                        <button type="button" data-next="3" class="btn-brand px-7 py-3 text-base">
+                        <button type="button" data-next="{{ $isUK ? 3 : 4 }}" data-validate="amount" class="btn-brand px-7 py-3 text-base">
                             Continue {!! $arrow !!}
                         </button>
                     </div>
                 </div>
 
-                {{-- ===== STEP 3 · Gift Aid ===== --}}
+                {{-- ===== STEP 3 · Gift Aid (UK only) ===== --}}
+                @if ($isUK)
                 <div class="nf-wz-panel" data-panel="3" hidden>
                     <h2 class="text-2xl font-extrabold text-navy-dark sm:text-3xl">Boost your donation with Gift Aid</h2>
                     <p class="mt-1.5 text-sm text-navy/70">If you&rsquo;re a UK taxpayer, add 25% at no extra cost to you.</p>
@@ -157,6 +171,8 @@
                     </div>
                 </div>
 
+                @endif
+
                 {{-- ===== STEP 4 · Keep in touch ===== --}}
                 <div class="nf-wz-panel" data-panel="4" hidden>
                     <h2 class="text-2xl font-extrabold text-navy-dark sm:text-3xl">Keep in touch</h2>
@@ -189,7 +205,7 @@
                     <p class="mt-3 text-xs text-navy/50">Prefer not to hear from us? Just leave these unticked &mdash; your donation still goes through.</p>
 
                     <div class="mt-8 flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <button type="button" data-back="3" class="nf-wz-nav-back">
+                        <button type="button" data-back="{{ $isUK ? 3 : 2 }}" class="nf-wz-nav-back">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Back
                         </button>
@@ -379,11 +395,13 @@
     // ---- Next / Back ----
     root.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => {
         const to = Number(b.dataset.next);
-        if (to === 3) {
+        // The step-2 "Continue" carries data-validate; it may go to step 3 (UK,
+        // Gift Aid) or straight to step 4 (non-UK, Gift Aid step removed).
+        if (b.dataset.validate === 'amount') {
             if (!state.fund) { flash('Please choose a fund first.'); return; }
             if (!state.amount || state.amount < 1) { flash('Please choose or enter an amount.'); return; }
-            updateGiftAid();
         }
+        if (to === 3) updateGiftAid(); // only when the Gift Aid step is present
         showStep(to);
         stepsScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
