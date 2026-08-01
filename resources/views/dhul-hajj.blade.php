@@ -5,7 +5,7 @@
 @section('header-solid', 'yes')
 
 @section('content')
-    {{-- ===================== HERO + DONATE ===================== -->
+    {{-- ===================== HERO + DONATE ===================== --}}
     @include('partials.donate-hero', [
         'heroImage' => 'images/changinslives1.jpg',
         'heroEyebrow' => 'Islamic Giving',
@@ -14,7 +14,7 @@
         'widgetCauses' => ['Dhul Hajj'],
     ])
 
-    {{-- ===================== INTRO SECTION ===================== -->
+    {{-- ===================== INTRO SECTION ===================== --}}
     <section class="py-16 sm:py-20">
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <div>
@@ -38,7 +38,7 @@
         </div>
     </section>
 
-    {{-- ===================== IMPACT SECTION ===================== -->
+    {{-- ===================== IMPACT SECTION ===================== --}}
     <section class="pb-16 sm:pb-20">
         <div class="nf-container">
             <div class="text-center">
@@ -63,7 +63,7 @@
         </div>
     </section>
 
-    {{-- ===================== CTA SECTION ===================== -->
+    {{-- ===================== CTA SECTION ===================== --}}
     <section class="pb-16 sm:pb-20">
         <div class="nf-container">
             <div class="rounded-3xl bg-navy px-6 py-10 text-center text-white sm:px-10 lg:px-12">
