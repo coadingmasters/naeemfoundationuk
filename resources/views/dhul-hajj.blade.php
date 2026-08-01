@@ -63,6 +63,61 @@
         </div>
     </section>
 
+    {{-- ===================== STORY SECTION ===================== --}}
+    <section class="pb-16 sm:pb-20">
+        <div class="nf-container grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div class="rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
+                <p class="text-sm font-semibold uppercase tracking-wider text-brand">A season of meaning</p>
+                <h3 class="mt-3 text-2xl font-bold text-navy-dark sm:text-3xl">Every donation becomes a blessing shared</h3>
+                <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    When families are struggling, even the smallest act of kindness can bring stability, comfort and renewed hope. Our work ensures that your support reaches those who need it most with dignity and care.
+                </p>
+                <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    During Dhul Hajj, this message is even more powerful — a reminder that generosity is not only an act of giving, but also an act of worship and connection.
+                </p>
+            </div>
+            <div class="rounded-3xl bg-cream p-8 shadow-sm">
+                <h3 class="text-xl font-bold text-navy-dark">What your support can provide</h3>
+                <ul class="mt-4 space-y-3 text-sm text-gray-700">
+                    <li class="flex gap-3"><span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-brand"></span>Daily meals and food essentials</li>
+                    <li class="flex gap-3"><span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-brand"></span>Safe shelter and practical care</li>
+                    <li class="flex gap-3"><span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-brand"></span>Long-term support for vulnerable households</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    {{-- ===================== CHECKLIST SECTION ===================== --}}
+    <section class="pb-16 sm:pb-20">
+        <div class="nf-container rounded-3xl border border-gray-100 bg-white p-8 shadow-sm sm:p-10">
+            <div class="max-w-3xl">
+                <p class="text-sm font-semibold uppercase tracking-wider text-brand">Why this cause matters</p>
+                <h3 class="mt-3 text-2xl font-bold text-navy-dark sm:text-3xl">A giving opportunity that carries lasting value</h3>
+                <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    This page is built for those who want to turn their generosity into meaningful relief for families in need. It is a simple and direct way to support the most vulnerable during a period of deep spiritual significance.
+                </p>
+            </div>
+            <div class="mt-8 grid gap-4 md:grid-cols-2">
+                <div class="rounded-2xl bg-cream/70 p-5">
+                    <h4 class="font-semibold text-navy-dark">Immediate impact</h4>
+                    <p class="mt-2 text-sm leading-relaxed text-gray-600">You can help meet urgent needs right away with practical support.</p>
+                </div>
+                <div class="rounded-2xl bg-cream/70 p-5">
+                    <h4 class="font-semibold text-navy-dark">Sustainable care</h4>
+                    <p class="mt-2 text-sm leading-relaxed text-gray-600">Your contribution supports ongoing work that protects dignity and stability.</p>
+                </div>
+                <div class="rounded-2xl bg-cream/70 p-5">
+                    <h4 class="font-semibold text-navy-dark">Meaningful giving</h4>
+                    <p class="mt-2 text-sm leading-relaxed text-gray-600">A chance to give with intention, compassion and purpose during Dhul Hajj.</p>
+                </div>
+                <div class="rounded-2xl bg-cream/70 p-5">
+                    <h4 class="font-semibold text-navy-dark">Community connection</h4>
+                    <p class="mt-2 text-sm leading-relaxed text-gray-600">Your support strengthens the wider community and nourishes hope.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- ===================== CTA SECTION ===================== --}}
     <section class="pb-16 sm:pb-20">
         <div class="nf-container">
