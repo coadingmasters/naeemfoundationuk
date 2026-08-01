@@ -163,16 +163,8 @@
     "file": "assets/hanken-grotesk-800-normal-rhXM_bnk.woff2",
     "src": "_hanken-grotesk-800-normal-rhXM_bnk.woff2"
   },
-  "node_modules/intl-tel-input/dist/img/flags.webp": {
-    "file": "assets/flags-DjVgN9ag.webp",
-    "src": "node_modules/intl-tel-input/dist/img/flags.webp"
-  },
-  "node_modules/intl-tel-input/dist/img/flags@2x.webp": {
-    "file": "assets/flags@2x-QBzdwbZ8.webp",
-    "src": "node_modules/intl-tel-input/dist/img/flags@2x.webp"
-  },
   "resources/css/app.css": {
-    "file": "assets/app-DBjSaeY1.css",
+    "file": "assets/app-D-Jeu5pQ.css",
     "name": "app",
     "names": [
       "app.css"
@@ -181,16 +173,9 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-CnJtUwJA.js",
+    "file": "assets/app-3h3BZZqo.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true,
-    "css": [
-      "assets/app-cBCDYZb0.css"
-    ],
-    "assets": [
-      "assets/flags-DjVgN9ag.webp",
-      "assets/flags@2x-QBzdwbZ8.webp"
-    ]
+    "isEntry": true
   }
 }

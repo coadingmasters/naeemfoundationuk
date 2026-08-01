@@ -70,6 +70,7 @@ Route::get('/news-and-press/{slug}', [NewsController::class, 'show'])->name('new
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
 Route::view('/zakat-calculator', 'zakat-calculator')->name('zakat-calculator');
+Route::view('/dhul-hajj', 'dhul-hajj')->name('dhul-hajj');
 Route::get('/fidya-and-kaffarah', [FidyaController::class, 'index'])->name('fidya');
 Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
 Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('sehri-iftar');
@@ -184,13 +185,13 @@ Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])->name('payp
 $givingRegistered = [];
 foreach (config('giving') as $group) {
     foreach (array_merge($group['items'], $group['featured'] ?? []) as $item) {
-        if (! empty($item['slug']) && ! in_array($item['slug'], $givingRegistered, true)) {
+        if (!empty($item['slug']) && !in_array($item['slug'], $givingRegistered, true)) {
             $givingRegistered[] = $item['slug'];
-            Route::view('/give/'.$item['slug'], 'placeholder', [
+            Route::view('/give/' . $item['slug'], 'placeholder', [
                 'pageTag' => 'Giving',
                 'pageTitle' => $item['title'],
-                'pageText' => 'Support our '.$item['title'].' programme — this page is being prepared. Thank you for your generosity.',
-            ])->name('give.'.$item['slug']);
+                'pageText' => 'Support our ' . $item['title'] . ' programme — this page is being prepared. Thank you for your generosity.',
+            ])->name('give.' . $item['slug']);
         }
     }
 }

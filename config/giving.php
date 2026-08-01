@@ -46,6 +46,7 @@ return [
             ['title' => 'Zakat', 'route' => 'zakat'],
             ['title' => 'Sadaqah Jariyah', 'route' => 'sadaqah-jariyah'],
             ['title' => 'Lillah', 'route' => 'lillah'],
+            ['title' => 'Dhul Hajj', 'route' => 'dhul-hajj'],
             ['title' => 'Aqiqah', 'route' => 'aqiqah'],
             ['title' => 'Kaffarah', 'route' => 'kaffarah'],
         ],
