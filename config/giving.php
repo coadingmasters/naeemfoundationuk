@@ -46,7 +46,6 @@ return [
             ['title' => 'Zakat', 'route' => 'zakat'],
             ['title' => 'Sadaqah Jariyah', 'route' => 'sadaqah-jariyah'],
             ['title' => 'Lillah', 'route' => 'lillah'],
-            ['title' => 'Dhul Hajj', 'route' => 'dhul-hajj'],
             ['title' => 'Aqiqah', 'route' => 'aqiqah'],
             ['title' => 'Kaffarah', 'route' => 'kaffarah'],
         ],
@@ -64,6 +63,14 @@ return [
             ['title' => 'Zakat ul Fitr', 'route' => 'zakat-ul-fitr'],
             ['title' => 'Eid Gifts', 'route' => 'eid-gifts'],
             ['title' => 'Zakat Calculator', 'route' => 'zakat-calculator'],
+        ],
+    ],
+
+    'qurbani' => [
+        'heading' => 'Qurbani',
+        'items' => [
+            ['title' => 'Qurbani', 'route' => 'qurbani'],
+            ['title' => 'Dhul Hajj', 'route' => 'dhul-hajj'],
         ],
     ],
 

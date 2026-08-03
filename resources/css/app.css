@@ -1617,8 +1617,8 @@
 }
 .nf-mega__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 1.5fr;
-    gap: 2rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) 1.3fr;
+    gap: 1.5rem;
     align-items: stretch;
     max-width: 120rem;
     margin-inline: auto;
@@ -1641,6 +1641,8 @@
 .nf-dd--mega:focus-within .nf-mega__col:nth-child(3) { transition-delay: 0.1s; }
 .nf-dd--mega:hover .nf-mega__col:nth-child(4),
 .nf-dd--mega:focus-within .nf-mega__col:nth-child(4) { transition-delay: 0.14s; }
+.nf-dd--mega:hover .nf-mega__col:nth-child(5),
+.nf-dd--mega:focus-within .nf-mega__col:nth-child(5) { transition-delay: 0.18s; }
 
 /* Underlined section heading (reference style) */
 .nf-mega__head {

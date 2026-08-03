@@ -71,6 +71,7 @@ Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
 Route::view('/zakat-calculator', 'zakat-calculator')->name('zakat-calculator');
 Route::view('/dhul-hajj', 'dhul-hajj')->name('dhul-hajj');
+Route::view('/qurbani', 'qurbani')->name('qurbani');
 Route::get('/fidya-and-kaffarah', [FidyaController::class, 'index'])->name('fidya');
 Route::get('/sadaqah', [SadaqahController::class, 'index'])->name('sadaqah');
 Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('sehri-iftar');
