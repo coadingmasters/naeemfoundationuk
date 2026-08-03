@@ -2,7 +2,8 @@
 
 @section('title', 'Dhul Hajj — ' . config('app.name'))
 
-@section('header-solid', 'yes')
+{{-- Image hero (donate-hero) below, so the header stays a transparent overlay
+     that fades to solid on scroll — matching every other Giving page. --}}
 
 @php
     // "Our Projects" carousel — real admin projects when present, else these defaults.
