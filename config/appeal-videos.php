@@ -141,6 +141,11 @@ return [
         'poster' => 'images/changinslives2.jpg',
         'title' => 'Fulfilling your Kaffarah',
     ],
+    'dhul-hajj' => [
+        'url' => $sample,
+        'poster' => 'images/changinslives1.jpg',
+        'title' => 'The blessings of Dhul Hajj',
+    ],
     'prosthetic-limb' => [
         'url' => $sample,
         'poster' => 'images/changinslives4.jpg',
