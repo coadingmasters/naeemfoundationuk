@@ -47,14 +47,6 @@ class DonationController extends Controller
             'orphan_id' => ['nullable', 'integer'],
         ]);
 
-        // A Gift Aid choice made on a page's donation panel (UK only) is carried
-        // forward so the checkout step is pre-filled with it.
-        if ($request->has('gift_aid')) {
-            $details = session('donation.details', []);
-            $details['gift_aid'] = $request->boolean('gift_aid');
-            session(['donation.details' => $details]);
-        }
-
         DonationCart::add(array_filter([
             'cause' => $data['cause'],
             'amount' => round((float) $data['amount'], 2),

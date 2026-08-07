@@ -101,22 +101,7 @@
         </div>
     </div>
 
-    {{-- Gift Aid — a UK-only tax relief. --}}
-    @if (region('gift_aid'))
-        <div class="mt-5 rounded-xl bg-brand p-5 text-white">
-            <h4 class="text-base font-bold">Gift Aid</h4>
-            <p class="mt-1.5 text-xs leading-relaxed text-white/85">
-                As a UK taxpayer, you can increase the impact of your donation by 25% at no extra cost.
-                Simply check the Gift Aid box when you donate.
-            </p>
-            <label class="mt-3 flex cursor-pointer items-start gap-2.5">
-                <input type="checkbox" name="gift_aid" value="1"
-                       class="mt-0.5 h-5 w-5 shrink-0 rounded border-white/40 bg-white/10 text-white focus:ring-2 focus:ring-white/40">
-                <span class="text-xs leading-relaxed text-white/90">Yes, I am a UK taxpayer and want Naeem Foundation to claim Gift Aid on my donation.</span>
-            </label>
-            <p class="mt-3 text-xs font-semibold text-white/90">Let’s make a bigger difference together.</p>
-        </div>
-    @endif
+    {{-- Gift Aid isn't collected here — it's handled on the checkout step. --}}
 
     <button type="submit" class="btn-navy mt-5 w-full py-3">
         Donate Now
