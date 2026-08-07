@@ -863,7 +863,19 @@ function setupAddressLookup() {
         const form = root.closest('form') || document;
         const line1 = form.querySelector('[data-address-line1]');
         const city = form.querySelector('[data-address-city]');
+        const addressFields = form.querySelector('[data-address-fields]');
         if (!postcode || !findBtn) return;
+
+        // The address fields start hidden; reveal them once there's an address to
+        // fill (found or being entered manually). `required` is applied only when
+        // visible, so a hidden field can never silently block the submit.
+        const revealFields = () => {
+            if (addressFields) addressFields.classList.remove('hidden');
+            if (line1) line1.setAttribute('required', '');
+            if (city) city.setAttribute('required', '');
+        };
+        // Already visible (e.g. a validation error re-rendered them) → make required.
+        if (addressFields && !addressFields.classList.contains('hidden')) revealFields();
 
         let results = [];
 
@@ -891,6 +903,7 @@ function setupAddressLookup() {
             if (r.line1 && line1) line1.value = r.line1;
             if (r.city && city) city.value = r.city;
             if (r.postcode) postcode.value = r.postcode;
+            revealFields();
         };
 
         const find = async () => {
@@ -936,6 +949,7 @@ function setupAddressLookup() {
                 select.innerHTML = '<option value="">Select your address…</option>'
                     + results.map((r, i) => `<option value="${i}">${(r.label || r.city || '').replace(/</g, '&lt;')}</option>`).join('');
                 if (resultsWrap) resultsWrap.hidden = false;
+                revealFields();
             } catch (e) {
                 showMsg('Address lookup is unavailable right now — please enter it manually below.', 'error');
             } finally {
@@ -949,6 +963,7 @@ function setupAddressLookup() {
         // "Enter address manually" jumps the donor to the editable address fields.
         const manualBtn = root.querySelector('[data-address-manual]');
         if (manualBtn) manualBtn.addEventListener('click', () => {
+            revealFields();
             if (line1) { line1.focus(); line1.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
         });
 

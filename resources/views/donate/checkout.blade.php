@@ -191,19 +191,30 @@
                         </button>
                     </div>
 
-                    {{-- Billing address (auto-filled by the finder, always editable) --}}
-                    <div class="mt-5">
-                        <label for="billing_address" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Billing Address</label>
-                        <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address', $d['billing_address'] ?? '') }}" required
-                               placeholder="House number and street" data-address-line1 class="nf-dark-input">
-                        @error('billing_address') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                    </div>
+                    {{-- Address fields — hidden until a postcode is found (then auto-filled)
+                         or "Enter address manually" is clicked. Kept visible on a
+                         validation error / when re-editing, so nothing is missed. --}}
+                    @php
+                        $showAddrFields = $errors->has('billing_address') || $errors->has('city')
+                            || old('billing_address', $d['billing_address'] ?? '') !== ''
+                            || old('city', $d['city'] ?? '') !== '';
+                    @endphp
+                    <div data-address-fields class="{{ $showAddrFields ? '' : 'hidden' }}">
+                        {{-- `required` is added by JS when these are revealed — a hidden
+                             required field would silently block the form submit. --}}
+                        <div class="mt-5">
+                            <label for="billing_address" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Billing Address</label>
+                            <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address', $d['billing_address'] ?? '') }}"
+                                   placeholder="House number and street" data-address-line1 class="nf-dark-input">
+                            @error('billing_address') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        </div>
 
-                    <div class="mt-5">
-                        <label for="city" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Town / City</label>
-                        <input id="city" type="text" name="city" value="{{ old('city', $d['city'] ?? '') }}" required
-                               data-address-city class="nf-dark-input">
-                        @error('city') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        <div class="mt-5">
+                            <label for="city" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Town / City</label>
+                            <input id="city" type="text" name="city" value="{{ old('city', $d['city'] ?? '') }}"
+                                   data-address-city class="nf-dark-input">
+                            @error('city') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        </div>
                     </div>
 
                     <div class="mt-8 flex justify-end">
