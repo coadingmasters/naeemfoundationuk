@@ -2804,3 +2804,7 @@ input[type="radio"] {
     border-radius: 9999px;
     cursor: pointer;
 }
+
+/* Currency dropdown (details) — hide the default disclosure marker. */
+.nf-ccy summary::-webkit-details-marker { display: none; }
+.nf-ccy summary::marker { content: ''; }

@@ -39,13 +39,21 @@ class DonationController extends Controller
         $data = $request->validate([
             'cause' => ['required', 'string', 'max:120'],
             'amount' => ['required', 'numeric', 'min:1', 'max:1000000'],
-            'frequency' => ['nullable', 'in:one-off,monthly,weekly'],
+            'frequency' => ['nullable', 'in:one-off,monthly,weekly,yearly'],
             'currency' => ['nullable', 'string', 'max:8'],
             'image' => ['nullable', 'string', 'max:255'],
             // Set when donating from an orphan's profile — tags the line so admins
             // can see which child received the money.
             'orphan_id' => ['nullable', 'integer'],
         ]);
+
+        // A Gift Aid choice made on a page's donation panel (UK only) is carried
+        // forward so the checkout step is pre-filled with it.
+        if ($request->has('gift_aid')) {
+            $details = session('donation.details', []);
+            $details['gift_aid'] = $request->boolean('gift_aid');
+            session(['donation.details' => $details]);
+        }
 
         DonationCart::add(array_filter([
             'cause' => $data['cause'],

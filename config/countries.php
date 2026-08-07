@@ -42,7 +42,7 @@ return [
             'phone' => '+1 (212) 555-0100',
             'charity_no' => '00-0000000',
             'charity_label' => 'EIN',
-            'gift_aid' => true,
+            'gift_aid' => false, // Gift Aid is a UK-only tax relief.
         ],
         'CA' => [
             'code' => 'CA',
@@ -56,7 +56,7 @@ return [
             'phone' => '+1 (416) 555-0100',
             'charity_no' => '00000 0000 RR0001',
             'charity_label' => 'Charity Reg. No.',
-            'gift_aid' => true,
+            'gift_aid' => false, // Gift Aid is a UK-only tax relief.
         ],
     ],
 ];

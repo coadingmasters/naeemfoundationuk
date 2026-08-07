@@ -184,8 +184,8 @@ class PayPal
     public function ensureRecurringPlan(float $amount, string $currency, string $interval = 'MONTH'): string
     {
         $amount = round($amount, 2);
-        $interval = strtoupper($interval) === 'WEEK' ? 'WEEK' : 'MONTH';
-        $word = $interval === 'WEEK' ? 'Weekly' : 'Monthly';
+        $interval = in_array(strtoupper($interval), ['WEEK', 'MONTH', 'YEAR'], true) ? strtoupper($interval) : 'MONTH';
+        $word = match ($interval) { 'WEEK' => 'Weekly', 'YEAR' => 'Yearly', default => 'Monthly' };
 
         $existing = \App\Models\PayPalPlan::query()
             ->where('mode', $this->mode())

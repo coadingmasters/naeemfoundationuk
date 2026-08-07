@@ -3,10 +3,8 @@
 @section('title', $orphan->name . ' — Sponsor an Orphan — ' . config('app.name'))
 
 @php
-    // Monthly presets lead with the orphan's suggested amount when one is set.
-    $monthly = $orphan->monthly_amount ?: 25;
-    $monthlyPresets = array_values(array_unique([$monthly, $monthly * 2, $monthly * 4]));
-    while (count($monthlyPresets) < 3) { $monthlyPresets[] = end($monthlyPresets) + $monthly; }
+    // Suggested recurring amounts (fall back to a sensible default).
+    $monthly = $orphan->monthly_amount ?: 30;
 
     $facts = array_filter([
         'DOB' => $orphan->dob,
@@ -75,15 +73,16 @@
                     </div>
                 </div>
 
-                {{-- Right: donation widget scoped to this orphan --}}
+                {{-- Right: reference-style donation panel, scoped to this orphan --}}
                 <div class="nf-reveal" data-reveal-delay="120">
-                    @include('partials.donate-widget', [
-                        'widgetCauses' => [$orphan->causeLabel()],
-                        'widgetImage' => filled($orphan->photo) ? $orphan->photo : 'images/changinslives1.jpg',
-                        'widgetTitle' => 'Sponsor ' . $orphan->name,
-                        'widgetAmounts' => [20, 50, 100],
-                        'widgetMonthlyAmounts' => $monthlyPresets,
+                    @include('partials.donate-panel', [
+                        'panelTitle' => $orphan->name,
+                        'causes' => ['Sadaqah', 'Zakat', 'Lillah'],
+                        'oneOffAmounts' => [20, 50, 100],
+                        'monthlyDefault' => $monthly,
+                        'yearlyDefault' => $monthly * 12,
                         'orphanId' => $orphan->id,
+                        'image' => filled($orphan->photo) ? $orphan->photo : 'images/changinslives1.jpg',
                     ])
                 </div>
             </div>

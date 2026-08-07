@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAddonsModal();
     setupQuickbar();
     setupWholeNumberInputs();
+    setupDonatePanel();
     setupAddressLookup();
     setupAjaxPagination();
     setupCart();
@@ -1353,6 +1354,72 @@ function setupCustomAmount() {
         custom.addEventListener('input', () => {
             amount.value = custom.value;
         });
+    });
+}
+
+/* ---------- Reference-style donation panel (One-Off / Monthly / Yearly) ---------- */
+function setupDonatePanel() {
+    document.querySelectorAll('[data-donate-panel]').forEach((panel) => {
+        const freqBtns = [...panel.querySelectorAll('[data-freq]')];
+        const freqInput = panel.querySelector('[data-freq-input]');
+        const amtInput = panel.querySelector('[data-amt-input]');
+        const oneoffWrap = panel.querySelector('[data-amt-oneoff]');
+        const oneoffBtns = [...panel.querySelectorAll('[data-amt]')];
+        const customWrap = panel.querySelector('[data-amt-custom]');
+        const customInput = panel.querySelector('[data-amt-custom-input]');
+        const recurringWrap = panel.querySelector('[data-amt-recurring]');
+        const recurringInput = panel.querySelector('[data-amt-recurring-input]');
+        const monthly = panel.dataset.monthly || '30';
+        const yearly = panel.dataset.yearly || String((parseInt(monthly, 10) || 30) * 12);
+        if (!freqInput || !amtInput) return;
+
+        const setAmount = (v) => { amtInput.value = v; };
+
+        // One-off: show the preset boxes; the amount follows the selected box
+        // (or the typed "Other" value).
+        function showOneOff() {
+            oneoffWrap.classList.remove('hidden');
+            recurringWrap.classList.add('hidden');
+            const sel = oneoffBtns.find((b) => b.classList.contains('is-selected'));
+            if (sel && sel.dataset.amt === 'other') {
+                customWrap.classList.remove('hidden');
+                setAmount(customInput.value || '');
+            } else {
+                customWrap.classList.add('hidden');
+                setAmount(sel ? sel.dataset.amt : amtInput.value);
+            }
+        }
+        // Monthly / Yearly: a single amount field, pre-filled with the default.
+        function showRecurring(freq) {
+            oneoffWrap.classList.add('hidden');
+            customWrap.classList.add('hidden');
+            recurringWrap.classList.remove('hidden');
+            recurringInput.value = freq === 'yearly' ? yearly : monthly;
+            setAmount(recurringInput.value);
+        }
+
+        freqBtns.forEach((b) => b.addEventListener('click', () => {
+            const freq = b.dataset.freq;
+            freqInput.value = freq;
+            freqBtns.forEach((x) => x.classList.toggle('is-selected', x === b));
+            if (freq === 'one-off') showOneOff();
+            else showRecurring(freq);
+        }));
+
+        oneoffBtns.forEach((b) => b.addEventListener('click', () => {
+            oneoffBtns.forEach((x) => x.classList.toggle('is-selected', x === b));
+            if (b.dataset.amt === 'other') {
+                customWrap.classList.remove('hidden');
+                customInput.focus();
+                setAmount(customInput.value || '');
+            } else {
+                customWrap.classList.add('hidden');
+                setAmount(b.dataset.amt);
+            }
+        }));
+
+        if (customInput) customInput.addEventListener('input', () => setAmount(customInput.value || ''));
+        if (recurringInput) recurringInput.addEventListener('input', () => setAmount(recurringInput.value || ''));
     });
 }
 

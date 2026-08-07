@@ -37,7 +37,13 @@
         'heroEyebrow' => 'Projects',
         'heroTitle' => "Empowering Tomorrow's <span class=\"text-cream\">Leaders</span> Today",
         'heroSubtitle' => 'We believe education is the key to unlocking a world of possibilities — giving every deserving student access to quality learning, whatever their circumstances.',
-        'widgetCauses' => ['Education Sponsorship', 'Orphan Education', 'Where Most Needed'],
+        'panel' => [
+            'panelTitle' => 'Support Education',
+            'causes' => ['Sadaqah', 'Zakat', 'Sponsor a Hafiz', 'Sponsor a Hafiza', 'Sponsor an Alim', 'Sponsor an Alima', 'Sponsor a Mufti', 'Sponsor a Muftia'],
+            'oneOffAmounts' => [30, 50, 100],
+            'monthlyDefault' => 53,
+            'yearlyDefault' => 636,
+        ],
     ])
 
     {{-- ===================== INTRO + VIDEO ===================== --}}

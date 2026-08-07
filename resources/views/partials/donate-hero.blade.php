@@ -35,10 +35,15 @@
              Capped width keeps the card compact and gives the photo more space. --}}
         <div class="flex flex-col justify-center px-5 py-8 sm:px-8 lg:px-10 lg:pb-12 lg:pt-40">
             <div class="w-full lg:mx-auto lg:max-w-[28rem]">
-                @include('partials.donate-widget', [
-                    'widgetCauses' => $widgetCauses ?? ['Where Most Needed'],
-                    'widgetImage' => $heroImage,
-                ])
+                @if (! empty($panel))
+                    {{-- Reference-style panel (One-Off/Monthly/Yearly + cause dropdown). --}}
+                    @include('partials.donate-panel', array_merge(['image' => $heroImage], $panel))
+                @else
+                    @include('partials.donate-widget', [
+                        'widgetCauses' => $widgetCauses ?? ['Where Most Needed'],
+                        'widgetImage' => $heroImage,
+                    ])
+                @endif
             </div>
         </div>
     </div>
