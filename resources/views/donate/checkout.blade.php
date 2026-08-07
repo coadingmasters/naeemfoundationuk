@@ -150,12 +150,15 @@
                         @error('organisation_name') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
 
-                    @php $postLabel = region('code') === 'US' ? 'ZIP Code' : 'Postcode'; @endphp
+                    @php
+                        $postLabel = region('code') === 'US' ? 'ZIP Code' : 'Postcode';
+                        $countryName = region('name');
+                    @endphp
 
                     {{-- Postcode finder: enter a {{ $postLabel }}, search, then pick your
                          address. The fields below auto-fill and stay editable. --}}
-                    <div class="mt-6" data-address-finder>
-                        <label for="postcode" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*{{ $postLabel }}</label>
+                    <div class="mt-6" data-address-finder data-address-region="{{ region('code') }}">
+                        <label for="postcode" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">Find {{ $countryName }} address <span class="text-brand">*</span></label>
                         <div class="flex gap-2">
                             <div class="relative flex-1">
                                 <input id="postcode" type="text" name="postcode" value="{{ old('postcode', $d['postcode'] ?? '') }}" required
@@ -171,13 +174,21 @@
                             </button>
                         </div>
                         @error('postcode') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                        <p class="mt-1.5 text-xs text-white/60">Type your {{ $postLabel }} to see suggestions, or enter your full address manually below.</p>
+                        <p class="mt-1.5 text-xs text-white/60">The {{ $postLabel }} search works for {{ $countryName }} addresses only. If your billing address is outside {{ $countryName }}, enter it manually below.</p>
 
+                        {{-- Result message (invalid / found) --}}
+                        <p data-address-msg class="mt-2 hidden text-xs"></p>
+
+                        {{-- Address picker — populated when the lookup returns addresses --}}
                         <div data-address-results class="mt-3 hidden">
                             <label class="mb-1.5 block text-xs font-semibold text-white/90">Select your address</label>
                             <select data-address-select class="nf-dark-input"></select>
                         </div>
-                        <p data-address-msg class="mt-2 hidden text-xs"></p>
+
+                        <button type="button" data-address-manual
+                                class="mt-2 text-xs font-semibold text-white underline underline-offset-2 transition-colors hover:text-cream">
+                            Enter address manually
+                        </button>
                     </div>
 
                     {{-- Billing address (auto-filled by the finder, always editable) --}}

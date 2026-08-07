@@ -867,12 +867,23 @@ function setupAddressLookup() {
 
         let results = [];
 
-        const showMsg = (text, ok) => {
+        // Region drives the expected postcode / ZIP format for instant validation.
+        const addrRegion = (root.dataset.addressRegion || window.NF_REGION || 'GB').toUpperCase();
+        const FORMATS = {
+            GB: /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/,
+            US: /^\d{5}(-\d{4})?$/,
+            CA: /^[A-Za-z]\d[A-Za-z]\s*\d[A-Za-z]\d$/,
+        };
+
+        // type: 'ok' (green) | 'error' (red) | 'info' (muted)
+        const showMsg = (text, type = 'info') => {
             if (!msg) return;
             msg.textContent = text;
             msg.hidden = !text;
-            msg.classList.toggle('text-green-300', !!ok);
-            msg.classList.toggle('text-white/80', !ok);
+            msg.classList.toggle('text-green-300', type === 'ok');
+            msg.classList.toggle('text-red-300', type === 'error');
+            msg.classList.toggle('font-semibold', type === 'error');
+            msg.classList.toggle('text-white/80', type === 'info');
         };
 
         const apply = (r) => {
@@ -884,12 +895,22 @@ function setupAddressLookup() {
 
         const find = async () => {
             const pc = (postcode.value || '').trim();
-            if (!pc) { showMsg('Please enter your postcode first.', false); return; }
+            const label = addrRegion === 'US' ? 'ZIP code' : 'postcode';
+            if (!pc) { showMsg('Please enter your ' + label + ' first.', 'error'); return; }
+
+            // Instant format check — reject an obviously wrong postcode (e.g. a
+            // non-UK format) straight away, without hitting the lookup.
+            const fmt = FORMATS[addrRegion];
+            if (fmt && !fmt.test(pc)) {
+                if (resultsWrap) resultsWrap.hidden = true;
+                showMsg('Invalid postcode. Please check the postcode or enter your address manually.', 'error');
+                return;
+            }
 
             findBtn.disabled = true;
             if (findLabel) findLabel.textContent = 'Searching…';
             if (resultsWrap) resultsWrap.hidden = true;
-            showMsg('', false);
+            showMsg('', 'info');
 
             try {
                 const res = await fetch(`/address-lookup?postcode=${encodeURIComponent(pc)}`, {
@@ -899,24 +920,24 @@ function setupAddressLookup() {
                 results = Array.isArray(data.results) ? data.results : [];
 
                 if (!results.length) {
-                    showMsg('No match for that postcode — please enter your address below.', false);
+                    showMsg('Invalid postcode. Please check the postcode or enter your address manually.', 'error');
                     return;
                 }
 
                 // A single locality (no street) → just fill the town + confirm.
                 if (results.length === 1 && !results[0].line1) {
                     apply(results[0]);
-                    showMsg('✓ Postcode found — please add your house number & street above.', true);
+                    showMsg('✓ Found — please add your house number & street above.', 'ok');
                     if (line1) line1.focus();
                     return;
                 }
 
-                // Otherwise let the donor pick from the list.
+                // Full addresses returned → let the donor pick from the list.
                 select.innerHTML = '<option value="">Select your address…</option>'
                     + results.map((r, i) => `<option value="${i}">${(r.label || r.city || '').replace(/</g, '&lt;')}</option>`).join('');
                 if (resultsWrap) resultsWrap.hidden = false;
             } catch (e) {
-                showMsg('Address lookup is unavailable right now — please enter it below.', false);
+                showMsg('Address lookup is unavailable right now — please enter it manually below.', 'error');
             } finally {
                 findBtn.disabled = false;
                 if (findLabel) findLabel.textContent = 'Find address';
@@ -924,6 +945,13 @@ function setupAddressLookup() {
         };
 
         findBtn.addEventListener('click', find);
+
+        // "Enter address manually" jumps the donor to the editable address fields.
+        const manualBtn = root.querySelector('[data-address-manual]');
+        if (manualBtn) manualBtn.addEventListener('click', () => {
+            if (line1) { line1.focus(); line1.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+        });
+
         postcode.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); hideSuggest(); find(); }
             if (e.key === 'Escape') hideSuggest();
