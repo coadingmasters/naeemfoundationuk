@@ -141,9 +141,10 @@
                 <div class="space-y-4">
                     @foreach ($valuesLeft as $value)
                         <div data-faq-item>
+                            {{-- Colour strictly alternates per row (navy, brand, navy…). --}}
                             <button type="button" data-faq-toggle aria-expanded="false"
                                     class="flex w-full items-center justify-between gap-3 rounded-md px-5 py-3 text-left text-sm font-semibold text-white
-                                    {{ $value['color'] === 'brand' ? 'bg-brand' : 'bg-navy' }}">
+                                    {{ $loop->index % 2 === 0 ? 'bg-navy' : 'bg-brand' }}">
                                 <span class="underline underline-offset-2">{{ $value['label'] }}</span>
                                 <svg class="nf-vfaq__icon h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
@@ -159,9 +160,10 @@
                 <div class="space-y-4">
                     @foreach ($valuesRight as $value)
                         <div data-faq-item>
+                            {{-- Offset from the left column so the two form a red/blue checkerboard. --}}
                             <button type="button" data-faq-toggle aria-expanded="false"
                                     class="flex w-full items-center justify-between gap-3 rounded-md px-5 py-3 text-left text-sm font-semibold text-white
-                                    {{ $value['color'] === 'brand' ? 'bg-brand' : 'bg-navy' }}">
+                                    {{ $loop->index % 2 === 0 ? 'bg-brand' : 'bg-navy' }}">
                                 <span class="underline underline-offset-2">{{ $value['label'] }}</span>
                                 <svg class="nf-vfaq__icon h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
@@ -197,10 +199,11 @@
                 @foreach ($team as $i => $member)
                     <div class="nf-reveal group" data-reveal-delay="{{ $i * 120 }}">
                         <div class="overflow-hidden rounded-xl shadow-sm ring-1 ring-black/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl">
-                            {{-- Photo + name band --}}
-                            <div class="relative overflow-hidden">
+                            {{-- Photo + name band. Portrait box matches the photo ratio so the
+                                 whole face shows (object-top keeps heads from being cut). --}}
+                            <div class="relative aspect-[5/7] overflow-hidden bg-cream">
                                 <img src="{{ asset($member['image']) }}" alt="{{ $member['name'] }}"
-                                     class="h-64 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+                                     class="h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-110">
 
                                 {{-- Darkening overlay on hover --}}
                                 <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-dark/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
