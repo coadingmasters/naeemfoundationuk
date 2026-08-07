@@ -20,8 +20,13 @@
 @section('content')
 
     {{-- ===================== HERO: content + video ===================== --}}
-    <section class="bg-cream/40 pb-12 pt-32 sm:pt-36 lg:pb-16 lg:pt-40">
-        <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+    {{-- TEMP banner background — swap 'images/changinslives1.jpg' for the real
+         orphan banner when it's ready. --}}
+    <section class="relative overflow-hidden pb-12 pt-32 sm:pt-36 lg:pb-16 lg:pt-40">
+        <img src="{{ asset('images/changinslives1.jpg') }}" alt="" class="absolute inset-0 h-full w-full object-cover object-center">
+        {{-- Light overlay keeps the navy text readable over the banner. --}}
+        <div class="absolute inset-0 bg-gradient-to-r from-cream via-cream/90 to-cream/70"></div>
+        <div class="nf-container relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             {{-- Left: content --}}
             <div class="nf-reveal">
                 <span class="inline-flex items-center gap-2 rounded-full bg-brand/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-brand">
