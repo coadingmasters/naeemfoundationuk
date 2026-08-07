@@ -42,25 +42,6 @@
         <input type="hidden" name="frequency" data-freq-input value="one-off">
     </div>
 
-    {{-- Currency selector --}}
-    <div class="mt-5 flex items-center justify-center gap-3">
-        <span class="text-sm font-bold text-brand sm:text-base">Select Your Currency</span>
-        <details class="nf-ccy relative">
-            <summary class="flex cursor-pointer list-none items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-bold text-white">
-                {{ region('currency') }} {{ $sym }}
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </summary>
-            <div class="absolute right-0 z-30 mt-1 w-40 overflow-hidden rounded-lg bg-white py-1 text-sm shadow-2xl ring-1 ring-black/10">
-                @foreach ($regions as $r)
-                    <a href="{{ route('region.set', $r['code']) }}"
-                       class="flex items-center gap-2 px-3 py-2 text-navy-dark hover:bg-cream {{ $r['code'] === region('code') ? 'font-bold text-brand' : '' }}">
-                        <span>{{ $r['flag'] }}</span> {{ $r['currency'] }} {{ $r['symbol'] }}
-                    </a>
-                @endforeach
-            </div>
-        </details>
-    </div>
-
     {{-- Amount — one-off boxes --}}
     <div class="mt-4 grid grid-cols-4 gap-2" data-amt-oneoff>
         @foreach ($oneOffAmounts as $a)
