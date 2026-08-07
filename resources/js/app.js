@@ -937,19 +937,24 @@ function setupAddressLookup() {
                     return;
                 }
 
-                // A single locality (no street) → just fill the town + confirm.
-                if (results.length === 1 && !results[0].line1) {
-                    apply(results[0]);
-                    showMsg('✓ Found — please add your house number & street above.', 'ok');
-                    if (line1) line1.focus();
-                    return;
-                }
-
-                // Full addresses returned → let the donor pick from the list.
+                // Always offer the "Select your address" dropdown so the donor can
+                // pick their address — or just type it in the field below.
                 select.innerHTML = '<option value="">Select your address…</option>'
                     + results.map((r, i) => `<option value="${i}">${(r.label || r.city || '').replace(/</g, '&lt;')}</option>`).join('');
                 if (resultsWrap) resultsWrap.hidden = false;
                 revealFields();
+
+                const hasStreets = results.some((r) => r.line1);
+
+                if (results.length === 1) {
+                    // Only one match — select it automatically so its details fill in.
+                    select.value = '0';
+                    apply(results[0]);
+                }
+
+                showMsg(hasStreets
+                    ? '✓ Addresses found — select yours from the list, or type it below.'
+                    : '✓ Postcode found — select it above, or add your house number & street below.', 'ok');
             } catch (e) {
                 showMsg('Address lookup is unavailable right now — please enter it manually below.', 'error');
             } finally {
