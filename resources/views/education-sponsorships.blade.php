@@ -39,7 +39,8 @@
         'heroSubtitle' => 'We believe education is the key to unlocking a world of possibilities — giving every deserving student access to quality learning, whatever their circumstances.',
         'panel' => [
             'panelTitle' => 'Support Education',
-            'causes' => ['Sadaqah', 'Zakat', 'Sponsor a Hafiz', 'Sponsor a Hafiza', 'Sponsor an Alim', 'Sponsor an Alima', 'Sponsor a Mufti', 'Sponsor a Muftia'],
+            'causes' => ['Alim', 'Hafiz', 'Mufti'],
+            'causeStyle' => 'buttons',
             'oneOffAmounts' => [30, 50, 100],
             'monthlyDefault' => 53,
             'yearlyDefault' => 636,

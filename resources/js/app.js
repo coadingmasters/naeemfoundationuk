@@ -1420,6 +1420,14 @@ function setupDonatePanel() {
 
         if (customInput) customInput.addEventListener('input', () => setAmount(customInput.value || ''));
         if (recurringInput) recurringInput.addEventListener('input', () => setAmount(recurringInput.value || ''));
+
+        // Cause chosen via buttons (instead of the dropdown).
+        const causeInput = panel.querySelector('[data-cause-input]');
+        const causeBtns = [...panel.querySelectorAll('[data-cause]')];
+        causeBtns.forEach((b) => b.addEventListener('click', () => {
+            causeBtns.forEach((x) => x.classList.toggle('is-selected', x === b));
+            if (causeInput) causeInput.value = b.dataset.cause;
+        }));
     });
 }
 

@@ -11,6 +11,8 @@
        $image         (string)  basket thumbnail --}}
 @php
     $causes = $causes ?? ['Where Most Needed'];
+    // 'dropdown' (default) or 'buttons' — how the cause is chosen.
+    $causeStyle = $causeStyle ?? 'dropdown';
     $oneOffAmounts = array_slice(array_values($oneOffAmounts ?? [20, 50, 100]), 0, 3);
     $monthlyDefault = $monthlyDefault ?? 30;
     $yearlyDefault = $yearlyDefault ?? ($monthlyDefault * 12);
@@ -84,21 +86,30 @@
 
     <input type="hidden" name="amount" data-amt-input value="{{ $defaultAmount }}">
 
-    {{-- Cause dropdown (reuses the site's nf-cselect component + JS) --}}
+    {{-- Cause — either a dropdown or a row of selectable buttons. --}}
     <div class="mt-5 text-left">
         <label class="mb-1.5 block text-sm font-bold text-navy-dark">Select Cause</label>
-        <div class="nf-cselect h-12 rounded-lg border border-navy/20 bg-white" data-cselect>
-            <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
-                <span data-cselect-label>{{ $causes[0] }}</span>
-                <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
+        @if ($causeStyle === 'buttons')
+            <div class="grid gap-2 {{ count($causes) === 2 ? 'grid-cols-2' : 'grid-cols-3' }}" data-cause-group>
                 @foreach ($causes as $option)
-                    <li class="nf-cselect__opt {{ $loop->first ? 'is-selected' : '' }}" role="option" data-value="{{ $option }}">{{ $option }}</li>
+                    <button type="button" data-cause="{{ $option }}" class="nf-choice py-2.5 {{ $loop->first ? 'is-selected' : '' }}">{{ $option }}</button>
                 @endforeach
-            </ul>
-            <input type="hidden" name="cause" data-cselect-input value="{{ $causes[0] }}">
-        </div>
+                <input type="hidden" name="cause" data-cause-input value="{{ $causes[0] }}">
+            </div>
+        @else
+            <div class="nf-cselect h-12 rounded-lg border border-navy/20 bg-white" data-cselect>
+                <button type="button" class="nf-cselect__btn" data-cselect-btn aria-haspopup="listbox" aria-expanded="false">
+                    <span data-cselect-label>{{ $causes[0] }}</span>
+                    <svg class="nf-cselect__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="nf-cselect__menu" role="listbox" data-cselect-menu>
+                    @foreach ($causes as $option)
+                        <li class="nf-cselect__opt {{ $loop->first ? 'is-selected' : '' }}" role="option" data-value="{{ $option }}">{{ $option }}</li>
+                    @endforeach
+                </ul>
+                <input type="hidden" name="cause" data-cselect-input value="{{ $causes[0] }}">
+            </div>
+        @endif
     </div>
 
     {{-- Gift Aid isn't collected here — it's handled on the checkout step. --}}
