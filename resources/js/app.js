@@ -879,6 +879,15 @@ function setupAddressLookup() {
 
         let results = [];
 
+        // These elements are hidden in the markup with Tailwind's `hidden` CLASS
+        // (display:none), so setting only the `hidden` property leaves the class
+        // in place and the element never appears. Always toggle both.
+        const setHidden = (el, hide) => {
+            if (!el) return;
+            el.hidden = hide;
+            el.classList.toggle('hidden', hide);
+        };
+
         // Region drives the expected postcode / ZIP format for instant validation.
         const addrRegion = (root.dataset.addressRegion || window.NF_REGION || 'GB').toUpperCase();
         const FORMATS = {
@@ -891,7 +900,7 @@ function setupAddressLookup() {
         const showMsg = (text, type = 'info') => {
             if (!msg) return;
             msg.textContent = text;
-            msg.hidden = !text;
+            setHidden(msg, !text);
             msg.classList.toggle('text-green-300', type === 'ok');
             msg.classList.toggle('text-red-300', type === 'error');
             msg.classList.toggle('font-semibold', type === 'error');
@@ -915,14 +924,14 @@ function setupAddressLookup() {
             // non-UK format) straight away, without hitting the lookup.
             const fmt = FORMATS[addrRegion];
             if (fmt && !fmt.test(pc)) {
-                if (resultsWrap) resultsWrap.hidden = true;
-                showMsg('Invalid postcode. Please check the postcode or enter your address manually.', 'error');
+                setHidden(resultsWrap, true);
+                showMsg('Invalid ' + label + '. Please check it, or enter your address manually.', 'error');
                 return;
             }
 
             findBtn.disabled = true;
             if (findLabel) findLabel.textContent = 'Searching…';
-            if (resultsWrap) resultsWrap.hidden = true;
+            setHidden(resultsWrap, true);
             showMsg('', 'info');
 
             try {
@@ -932,8 +941,8 @@ function setupAddressLookup() {
                 const data = await res.json().catch(() => ({}));
                 results = Array.isArray(data.results) ? data.results : [];
 
-                if (!results.length) {
-                    showMsg('Invalid postcode. Please check the postcode or enter your address manually.', 'error');
+                if (!res.ok || !results.length) {
+                    showMsg('No address found for that ' + label + '. Please check it, or enter your address manually.', 'error');
                     return;
                 }
 
@@ -941,7 +950,7 @@ function setupAddressLookup() {
                 // pick their address — or just type it in the field below.
                 select.innerHTML = '<option value="">Select your address…</option>'
                     + results.map((r, i) => `<option value="${i}">${(r.label || r.city || '').replace(/</g, '&lt;')}</option>`).join('');
-                if (resultsWrap) resultsWrap.hidden = false;
+                setHidden(resultsWrap, false);
                 revealFields();
 
                 const hasStreets = results.some((r) => r.line1);
@@ -983,7 +992,7 @@ function setupAddressLookup() {
 
         // ---- Live postcode suggestions as the donor types (free, UK) ----
         const suggestEl = root.querySelector('[data-address-suggest]');
-        const hideSuggest = () => { if (suggestEl) { suggestEl.hidden = true; suggestEl.innerHTML = ''; } };
+        const hideSuggest = () => { if (suggestEl) { setHidden(suggestEl, true); suggestEl.innerHTML = ''; } };
 
         if (suggestEl) {
             let suggestTimer;
@@ -1007,7 +1016,7 @@ function setupAddressLookup() {
                             `<li><button type="button" data-pc="${pc.replace(/"/g, '&quot;')}"
                                  class="block w-full px-4 py-2 text-left hover:bg-cream">${pc.replace(/</g, '&lt;')}</button></li>`
                         ).join('');
-                        suggestEl.hidden = false;
+                        setHidden(suggestEl, false);
                     } catch { hideSuggest(); }
                 }, 250);
             });
