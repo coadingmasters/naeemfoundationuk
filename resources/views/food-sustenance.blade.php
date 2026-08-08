@@ -71,8 +71,9 @@
 
     {{-- ===================== FEED A FAMILY CARD ===================== --}}
     @php
-        // One figure drives the copy, the tile and the submitted amount.
+        // Preset amounts. The full month's ration is the default selection.
         $familyCost = 150;
+        $familyAmounts = [30, 50, $familyCost];
 
         // Currencies come from the region config so this list can never claim
         // something the region switcher and PayPal don't actually support.
@@ -97,19 +98,24 @@
                             @csrf
                             <input type="hidden" name="cause" value="Food & Sustenance">
                             <input type="hidden" name="image" value="images/changinslives2.jpg">
-                            <input type="hidden" name="amount" value="{{ $familyCost }}">
+                            <input type="hidden" name="amount" value="{{ $familyCost }}" data-family-amount-input>
                             <input type="hidden" name="frequency" value="one-off" data-family-freq>
 
-                            {{-- The single amount, stated plainly. --}}
-                            <div class="flex items-center gap-4 rounded-2xl bg-white/10 p-4 ring-1 ring-white/15 sm:p-5">
-                                <span class="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-brand text-lg font-extrabold text-white shadow-lg shadow-brand/40 sm:h-20 sm:w-20 sm:text-2xl">
-                                    {{ money($familyCost, 0) }}
-                                </span>
-                                <div>
-                                    <p class="text-base font-bold text-white sm:text-lg">Feeds one family for a month</p>
-                                    <p class="mt-1 text-xs leading-relaxed text-white/65 sm:text-sm">A full ration pack — flour, rice, pulses, oil and essentials.</p>
-                                </div>
+                            {{-- Amount --}}
+                            <p class="text-xs font-semibold uppercase tracking-wider text-white/70">Choose an amount</p>
+                            <div class="mt-3 grid grid-cols-3 gap-2 sm:max-w-md">
+                                @foreach ($familyAmounts as $a)
+                                    <button type="button" data-family-amount="{{ $a }}"
+                                            class="nf-limb-choice {{ $a === $familyCost ? 'is-selected' : '' }}">{{ money($a, 0) }}</button>
+                                @endforeach
                             </div>
+
+                            {{-- The month-long claim belongs to the top amount only, so
+                                 it stays tied to that figure rather than the selection. --}}
+                            <p class="mt-3 flex items-start gap-2 text-xs leading-relaxed text-white/65 sm:text-sm">
+                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-[#e9b9c6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-linecap="round"/></svg>
+                                <span>{{ money($familyCost, 0) }} provides a full ration pack &mdash; flour, rice, pulses, oil and essentials &mdash; feeding one family for a month.</span>
+                            </p>
 
                             {{-- Give once, or every month (the recurring option below). --}}
                             <p class="mt-6 text-xs font-semibold uppercase tracking-wider text-white/70">How often?</p>
@@ -119,7 +125,7 @@
                             </div>
 
                             <button type="submit" class="btn-brand group mt-6 w-full justify-center py-3.5 text-base sm:w-auto sm:px-9">
-                                Donate {{ money($familyCost, 0) }}
+                                Donate <span data-family-total>{{ money($familyCost, 0) }}</span>
                                 <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
                         </form>
@@ -129,7 +135,7 @@
                             <h3 class="text-base font-bold text-white">Donation Options</h3>
                             <ul class="mt-3 space-y-2.5 text-sm text-white/75">
                                 @foreach ([
-                                    ['Single Donations:', 'Give '.money($familyCost, 0).' once and feed a family for a full month.'],
+                                    ['Single Donations:', 'Suggested amounts '.implode(', ', array_map(fn ($a) => money($a, 0), $familyAmounts)).'.'],
                                     ['Recurring Donations:', 'Set up a monthly contribution to feed a family every month.'],
                                     ['Currency Options:', $currencies.' — set by your region at the top of the page.'],
                                 ] as $j => $opt)
@@ -190,17 +196,27 @@
 
 @push('scripts')
 <script>
-    // Feed a Family card — the amount is fixed, so this only switches the
-    // frequency between a one-off gift and a monthly one.
+    // Feed a Family card — amount presets plus the one-off / monthly switch.
+    // The submitted value always comes from the hidden input, never a label.
     (function () {
         const form = document.querySelector('[data-family-form]');
         if (!form) return;
 
         const freq = form.querySelector('[data-family-freq]');
-        const choices = [...form.querySelectorAll('[data-family-choice]')];
+        const amountInput = form.querySelector('[data-family-amount-input]');
+        const total = form.querySelector('[data-family-total]');
+        const amounts = [...form.querySelectorAll('[data-family-amount]')];
+        const freqBtns = [...form.querySelectorAll('[data-family-choice]')];
 
-        choices.forEach((btn) => btn.addEventListener('click', () => {
-            choices.forEach((b) => b.classList.toggle('is-selected', b === btn));
+        amounts.forEach((btn) => btn.addEventListener('click', () => {
+            amounts.forEach((b) => b.classList.toggle('is-selected', b === btn));
+            amountInput.value = btn.dataset.familyAmount;
+            // Mirror the chosen amount on the button so it always agrees.
+            if (total) total.textContent = btn.textContent.trim();
+        }));
+
+        freqBtns.forEach((btn) => btn.addEventListener('click', () => {
+            freqBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
             freq.value = btn.dataset.familyChoice;
         }));
     })();

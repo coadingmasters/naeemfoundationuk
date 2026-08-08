@@ -15,10 +15,11 @@
     }
 
     // Monthly sponsorship levels (currency follows the visitor's region).
+    // Course lengths confirmed by Naeem Foundation.
     $levels = [
-        ['amount' => 53, 'label' => 'Hafiz / Hafiza', 'note' => 'Sponsor a student memorising the Holy Qur’an.'],
-        ['amount' => 63, 'label' => 'Alim / Alima', 'note' => 'Sponsor an Islamic scholar in training.'],
-        ['amount' => 72, 'label' => 'Mufti / Muftia', 'note' => 'Sponsor advanced Islamic jurisprudence study.'],
+        ['amount' => 53, 'label' => 'Hafiz / Hafiza', 'duration' => '2.5-year course', 'note' => 'Sponsor a student memorising the Holy Qur’an.'],
+        ['amount' => 63, 'label' => 'Alim / Alima', 'duration' => '8-year course', 'note' => 'Sponsor an Islamic scholar in training.'],
+        ['amount' => 72, 'label' => 'Mufti / Muftia', 'duration' => '2-year specialisation', 'note' => 'Sponsor advanced Islamic jurisprudence study.'],
     ];
 
     $focus = [
@@ -89,12 +90,19 @@
                 </p>
 
                 <div class="mt-5 space-y-3">
-                    @foreach ($levels as $l)
-                        <div class="flex items-center gap-4 rounded-xl border border-brand/15 bg-cream/50 p-4 transition-colors hover:border-brand/40">
-                            <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand text-sm font-extrabold text-white">{{ money($l['amount'], 0) }}</span>
-                            <div>
+                    @foreach ($levels as $i => $l)
+                        <div class="nf-reveal group flex items-center gap-4 rounded-xl border border-brand/15 bg-cream/50 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md"
+                             data-reveal-delay="{{ $i * 90 }}">
+                            <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand text-sm font-extrabold text-white transition-transform duration-300 group-hover:scale-105">{{ money($l['amount'], 0) }}</span>
+                            <div class="min-w-0">
                                 <p class="font-bold text-navy-dark">{{ $l['label'] }} <span class="text-xs font-medium text-gray-400">/ month</span></p>
-                                <p class="text-xs leading-relaxed text-gray-500">{{ $l['note'] }}</p>
+                                {{-- How long the course runs, so a sponsor knows what
+                                     they are committing to before they choose. --}}
+                                <p class="mt-1 inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-bold text-brand">
+                                    <svg class="h-3 w-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    {{ $l['duration'] }}
+                                </p>
+                                <p class="mt-1.5 text-xs leading-relaxed text-gray-500">{{ $l['note'] }}</p>
                             </div>
                         </div>
                     @endforeach

@@ -153,12 +153,24 @@
                     @php
                         $postLabel = region('code') === 'US' ? 'ZIP Code' : 'Postcode';
                         $countryName = region('name');
+
+                        // Until a full house-by-house provider is configured, lead with
+                        // manual entry: the address fields are visible and required from
+                        // the start, and the lookup is an optional shortcut rather than
+                        // the only way in. Add GETADDRESS_KEY (and set
+                        // ADDRESS_UK_PROVIDER=getaddress) and this flips itself back to
+                        // the find-first flow — no template change needed.
+                        $manualAddress = ! (config('address.uk_provider') === 'getaddress'
+                            && filled(config('address.getaddress_key')));
                     @endphp
 
                     {{-- Postcode finder: enter a {{ $postLabel }}, search, then pick your
                          address. The fields below auto-fill and stay editable. --}}
                     <div class="mt-6" data-address-finder data-address-region="{{ region('code') }}">
-                        <label for="postcode" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">Find {{ $countryName }} address <span class="text-brand">*</span></label>
+                        <label for="postcode" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">
+                            {{ $manualAddress ? '*'.$postLabel : 'Find '.$countryName.' address' }}
+                            @unless ($manualAddress) <span class="text-brand">*</span> @endunless
+                        </label>
                         <div class="flex gap-2">
                             <div class="relative flex-1">
                                 <input id="postcode" type="text" name="postcode" value="{{ old('postcode', $d['postcode'] ?? '') }}" required
@@ -174,28 +186,40 @@
                             </button>
                         </div>
                         @error('postcode') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                        <p class="mt-1.5 text-xs text-white/60">The {{ $postLabel }} search works for {{ $countryName }} addresses only. If your billing address is outside {{ $countryName }}, enter it manually below.</p>
+                        <p class="mt-1.5 text-xs text-white/60">
+                            @if ($manualAddress)
+                                Just type your address in the boxes below. &ldquo;Find address&rdquo; is optional &mdash; it fills in your town for you ({{ $countryName }} only).
+                            @else
+                                The {{ $postLabel }} search works for {{ $countryName }} addresses only. If your billing address is outside {{ $countryName }}, enter it manually below.
+                            @endif
+                        </p>
 
                         {{-- Result message (invalid / found) --}}
                         <p data-address-msg class="mt-2 hidden text-xs"></p>
 
-                        <button type="button" data-address-manual
-                                class="mt-2 text-xs font-semibold text-white underline underline-offset-2 transition-colors hover:text-cream">
-                            Enter address manually
-                        </button>
+                        {{-- Pointless when the fields are already on screen. --}}
+                        @unless ($manualAddress)
+                            <button type="button" data-address-manual
+                                    class="mt-2 text-xs font-semibold text-white underline underline-offset-2 transition-colors hover:text-cream">
+                                Enter address manually
+                            </button>
+                        @endunless
                     </div>
 
-                    {{-- Address fields — hidden until a postcode is found (then auto-filled)
-                         or "Enter address manually" is clicked. Kept visible on a
-                         validation error / when re-editing, so nothing is missed. --}}
+                    {{-- Address fields. In manual mode they're on screen from the start.
+                         Otherwise they stay hidden until a postcode is found (then
+                         auto-filled) or "Enter address manually" is clicked — and are
+                         always shown on a validation error so nothing is missed. --}}
                     @php
-                        $showAddrFields = $errors->has('billing_address') || $errors->has('city')
+                        $showAddrFields = $manualAddress
+                            || $errors->has('billing_address') || $errors->has('city')
                             || old('billing_address', $d['billing_address'] ?? '') !== ''
                             || old('city', $d['city'] ?? '') !== '';
                     @endphp
                     <div data-address-fields class="{{ $showAddrFields ? '' : 'hidden' }}">
-                        {{-- `required` is added by JS when these are revealed — a hidden
-                             required field would silently block the form submit. --}}
+                        {{-- Marked required here when they're already visible; the script
+                             adds it later if they get revealed. A hidden required field
+                             would silently block the submit, which is why it's conditional. --}}
                         {{-- One field, two ways in: pick a found address from the list
                              that drops down here, or just type it. There is no separate
                              "select your address" box. --}}
@@ -203,8 +227,8 @@
                             <label for="billing_address" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Billing Address</label>
                             <div class="relative">
                                 <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address', $d['billing_address'] ?? '') }}"
-                                       placeholder="House number and street" data-address-line1 autocomplete="off"
-                                       role="combobox" aria-expanded="false" aria-autocomplete="list"
+                                       placeholder="House number and street" data-address-line1 autocomplete="street-address"
+                                       role="combobox" aria-expanded="false" aria-autocomplete="list" @required($showAddrFields)
                                        class="nf-dark-input w-full">
 
                                 {{-- Chevron — reopens the found-address list. Hidden until
@@ -223,7 +247,8 @@
                         <div class="mt-5">
                             <label for="city" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Town / City</label>
                             <input id="city" type="text" name="city" value="{{ old('city', $d['city'] ?? '') }}"
-                                   data-address-city class="nf-dark-input">
+                                   placeholder="Town or city" data-address-city autocomplete="address-level2"
+                                   @required($showAddrFields) class="nf-dark-input">
                             @error('city') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                         </div>
                     </div>
