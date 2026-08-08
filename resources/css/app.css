@@ -1316,6 +1316,17 @@
 .nf-cookie[hidden] {
     display: none;
 }
+/* The homepage pins a quick-donate bar to the bottom of the viewport. Lift the
+   cookie card clear of it so the two never physically overlap — the z-index
+   above only decides which wins, not whether they collide. */
+body:has(.nf-quickbar) .nf-cookie {
+    bottom: 5.75rem;
+}
+@media (min-width: 1024px) {
+    body:has(.nf-quickbar) .nf-cookie {
+        bottom: 7rem;
+    }
+}
 .nf-cookie__card {
     pointer-events: auto;
     width: 100%;
@@ -2857,7 +2868,11 @@ input[type="radio"] {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 200;
+    /* Below the cookie banner (80), the success modal (90) and the region
+       chooser (100) — it's a persistent page bar, not an overlay. At its old
+       z-index of 200 it covered all three, which is why the cookie consent
+       was unreachable on the homepage. Still above the scroll-to-top (60). */
+    z-index: 70;
     background: var(--color-brand);
     box-shadow: 0 -8px 28px rgba(18, 45, 60, 0.28);
     transform: translateY(100%);

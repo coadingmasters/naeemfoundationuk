@@ -4,7 +4,7 @@
 
 @php
     // Treat an empty or placeholder '#' link as "no link" so donate buttons still work.
-    $donateLink = fn ($link) => filled($link) && $link !== '#' ? $link : route('donate.checkout');
+    $donateLink = fn ($link) => filled($link) && $link !== '#' ? $link : route('donate.make');
 
     // Hero slides are managed in the admin dashboard and passed in by HomeController.
     // Fall back to a single default slide if none have been created yet.
@@ -37,7 +37,7 @@
             return $appeal->link;
         }
 
-        return isset($appeal->id) ? route('appeals.show', $appeal) : route('donate.checkout');
+        return isset($appeal->id) ? route('appeals.show', $appeal) : route('donate.make');
     };
 
     // Causes carousel — managed in the admin dashboard, per region. Empty regions

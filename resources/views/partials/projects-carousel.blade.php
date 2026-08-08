@@ -2,7 +2,7 @@
 @php
     $projects = $projects ?? collect();
     // Treat an empty or placeholder '#' link as "no link" so the button still works.
-    $donateLink = fn ($link) => filled($link) && $link !== '#' ? $link : route('donate.checkout');
+    $donateLink = fn ($link) => filled($link) && $link !== '#' ? $link : route('donate.make');
     // Duplicate the list so the loop is seamless; scale speed to the count.
     $loopProjects = $projects->concat($projects);
     $duration = max(20, $projects->count() * 6);

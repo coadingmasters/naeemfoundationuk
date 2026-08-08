@@ -379,7 +379,7 @@
                 </p>
 
                 <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                    <a href="{{ route('donate.checkout') }}" class="btn-brand group w-full px-7 py-3 sm:w-auto">
+                    <a href="{{ route('donate.make') }}" class="btn-brand group w-full px-7 py-3 sm:w-auto">
                         Make a Donation
                         <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
