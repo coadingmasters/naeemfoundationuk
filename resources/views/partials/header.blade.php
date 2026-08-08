@@ -19,7 +19,7 @@
                  'icon' => '<path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" stroke-linejoin="round"/><path d="M17 9h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2M8 9h6M8 13h6M8 17h3" stroke-linecap="round" stroke-linejoin="round"/>'],
             ],
         ],
-        ['label' => 'Giving', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well', 'dhul-hajj', 'qurbani')],
+        ['label' => 'Givings', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well', 'dhul-hajj', 'qurbani')],
         ['label' => 'Community Centre', 'url' => route('community-centre'), 'active' => request()->routeIs('community-centre')],
         ['label' => 'Hajj 2027', 'url' => route('hajj'), 'active' => request()->routeIs('hajj')],
         ['label' => 'Shop', 'url' => route('shop'), 'active' => request()->routeIs('shop', 'shop.*')],
@@ -28,7 +28,8 @@
     // Top-level icons, used by the mobile drawer.
     $navIcons = [
         'Who We Are' => '<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0" stroke-linecap="round"/>',
-        'Giving' => '<path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z" stroke-linejoin="round"/>',
+        // Keys must match the nav labels above — the drawer looks icons up by label.
+        'Givings' => '<path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z" stroke-linejoin="round"/>',
         'Community Centre' => '<path d="M3 10.5 12 4l9 6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" stroke-linecap="round" stroke-linejoin="round"/>',
         // Kaaba — deliberately distinct from the Community Centre house.
         'Hajj 2027' => '<rect x="5" y="7" width="14" height="13" rx="1"/><path d="M5 11h14" stroke-linecap="round"/><path d="M12 3v4M9.5 4.5h5" stroke-linecap="round"/>',
@@ -50,7 +51,9 @@
         'image' => 'images/zakatcenter.png',
         'eyebrow' => 'Not sure where to give?',
         'title' => 'Where Most Needed',
-        'url' => route('donate.checkout'),
+        // Lands on the donation picker, not straight into checkout — the donor
+        // chooses a cause and amount first, then follows the normal flow.
+        'url' => route('donate.make'),
     ];
 
     $arrowSvg = '<svg class="nf-mega__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
