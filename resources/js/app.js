@@ -1472,10 +1472,36 @@ function setupDonatePanel() {
         // Cause chosen via buttons (instead of the dropdown).
         const causeInput = panel.querySelector('[data-cause-input]');
         const causeBtns = [...panel.querySelectorAll('[data-cause]')];
+
+        // Optional second dropdown (Sadaqah / Zakat / Lillah). The basket holds
+        // one cause string per line, so the two choices are combined into it as
+        // "<cause> (<fund>)" — see the note in partials/donate-panel.blade.php.
+        const fundInput = panel.querySelector('[data-fund-input]');
+
+        const syncCause = () => {
+            if (!causeInput) return;
+            const sel = causeBtns.find((x) => x.classList.contains('is-selected'));
+            const base = sel ? sel.dataset.cause : causeInput.dataset.base || '';
+            const fund = fundInput ? fundInput.value : '';
+            causeInput.value = fund ? `${base} (${fund})` : base;
+        };
+
         causeBtns.forEach((b) => b.addEventListener('click', () => {
             causeBtns.forEach((x) => x.classList.toggle('is-selected', x === b));
-            if (causeInput) causeInput.value = b.dataset.cause;
+            syncCause();
         }));
+
+        if (fundInput) {
+            // Set the value here too rather than reading what setupCustomSelects
+            // wrote, so this doesn't depend on which listener runs first.
+            const fundRoot = fundInput.closest('[data-cselect]');
+            fundRoot?.querySelectorAll('.nf-cselect__opt').forEach((opt) => {
+                opt.addEventListener('click', () => {
+                    fundInput.value = opt.getAttribute('data-value') || opt.textContent.trim();
+                    syncCause();
+                });
+            });
+        }
     });
 }
 

@@ -4,7 +4,7 @@
 
 @php
     // Suggested recurring amounts (fall back to a sensible default).
-    $monthly = $orphan->monthly_amount ?: 30;
+    $monthly = $orphan->monthly_amount ?: 53;
 
     $facts = array_filter([
         'DOB' => $orphan->dob,
@@ -99,19 +99,50 @@
 
             <div class="mt-10 grid gap-6 sm:grid-cols-3">
                 @php
+                    // What the sponsorship covers. A card renders 'items' as a ticked
+                    // checklist, or falls back to 'd' for a plain description.
                     $impacts = [
-                        ['t' => 'Education', 'd' => 'School fees, books and learning materials so they can build a future.', 'i' => '<path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c0 1 3 2 6 2s6-1 6-2v-5" stroke-linecap="round" stroke-linejoin="round"/>'],
-                        ['t' => 'Daily Care', 'd' => 'Nutritious meals, clothing and a safe place to live and grow.', 'i' => '<path d="M12 21s-7-4.35-9-8.5C1.5 9 3.5 6 6.5 6 9 6 12 9 12 9s3-3 5.5-3C20.5 6 22.5 9 21 12.5 19 16.65 12 21 12 21z" stroke-linecap="round" stroke-linejoin="round"/>'],
-                        ['t' => 'Healthcare', 'd' => 'Regular check-ups and medical treatment whenever it is needed.', 'i' => '<path d="M12 5v14M5 12h14" stroke-linecap="round"/><rect x="3" y="3" width="18" height="18" rx="4"/>'],
+                        [
+                            't' => 'Education',
+                            'items' => ['Education', 'Books', 'Computer Lab'],
+                            'i' => '<path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c0 1 3 2 6 2s6-1 6-2v-5" stroke-linecap="round" stroke-linejoin="round"/>',
+                        ],
+                        [
+                            't' => 'Daily Care',
+                            'items' => ['3 Nutritious Meals a Day', 'Safe Hostel to live & grow'],
+                            'i' => '<path d="M12 21s-7-4.35-9-8.5C1.5 9 3.5 6 6.5 6 9 6 12 9 12 9s3-3 5.5-3C20.5 6 22.5 9 21 12.5 19 16.65 12 21 12 21z" stroke-linecap="round" stroke-linejoin="round"/>',
+                        ],
+                        [
+                            't' => 'Healthcare',
+                            'd' => 'Regular check-ups and medical treatment whenever it is needed.',
+                            'i' => '<path d="M12 5v14M5 12h14" stroke-linecap="round"/><rect x="3" y="3" width="18" height="18" rx="4"/>',
+                        ],
                     ];
                 @endphp
-                @foreach ($impacts as $card)
-                    <div class="nf-reveal rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-sm">
-                        <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-brand/10 text-brand">
-                            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">{!! $card['i'] !!}</svg>
+                @foreach ($impacts as $i => $card)
+                    <div class="nf-reveal group flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-brand/25 hover:shadow-xl"
+                         data-reveal-delay="{{ $i * 120 }}">
+                        <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand/10 text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-white">
+                            <svg class="h-7 w-7 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">{!! $card['i'] !!}</svg>
                         </span>
-                        <h3 class="mt-4 text-lg font-bold text-navy-dark">{{ $card['t'] }}</h3>
-                        <p class="mt-2 text-sm leading-relaxed text-gray-500">{{ $card['d'] }}</p>
+
+                        <h3 class="mt-4 text-lg font-bold text-navy-dark transition-colors duration-300 group-hover:text-brand">{{ $card['t'] }}</h3>
+
+                        @if (! empty($card['items']))
+                            {{-- Each line reveals just after its card, so the list ticks in. --}}
+                            <ul class="mt-3 space-y-2.5">
+                                @foreach ($card['items'] as $j => $item)
+                                    <li class="nf-reveal flex items-start gap-2.5" data-reveal-delay="{{ $i * 120 + $j * 90 + 160 }}">
+                                        <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-brand/10 text-brand">
+                                            <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </span>
+                                        <span class="text-sm font-medium leading-relaxed text-gray-600">{{ $item }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="mt-3 text-sm leading-relaxed text-gray-500">{{ $card['d'] }}</p>
+                        @endif
                     </div>
                 @endforeach
             </div>

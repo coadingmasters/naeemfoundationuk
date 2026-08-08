@@ -49,6 +49,59 @@
         ['label' => 'Partnerships for the Goals', 'color' => 'brand', 'answer' => 'We believe lasting change is only possible together, so we collaborate closely with donors, local partners and institutions to multiply our impact.'],
     ];
 
+    // What We Do — our live programme areas. Each links to its real page, so
+    // this section doubles as a route into the giving pages (see config/giving.php).
+    $programmes = [
+        [
+            'route' => 'education-sponsorships',
+            'title' => 'Education Sponsorships',
+            'text' => 'Scholarships, school resources and learning support so children can stay in education.',
+            'icon' => 'M12 5.5 2.5 10 12 14.5 21.5 10 12 5.5Z M6 11.6V16c0 1.4 2.7 2.6 6 2.6s6-1.2 6-2.6v-4.4',
+        ],
+        [
+            'route' => 'food-sustenance',
+            'title' => 'Food & Sustenance',
+            'text' => 'Regular food distributions and nutrition support for families facing hunger.',
+            'icon' => 'M7 3v6a2 2 0 0 0 4 0V3 M9 9v12 M17.5 3c-1.3 1.6-2 3.5-2 5.4V13h4V8.4c0-1.9-.7-3.8-2-5.4Z M17.5 13v8',
+        ],
+        [
+            'route' => 'clean-water',
+            'title' => 'Clean Water',
+            'text' => 'Wells and hand pumps bringing safe drinking water within reach of whole villages.',
+            'icon' => 'M12 3s6 6.4 6 10.5a6 6 0 0 1-12 0C6 9.4 12 3 12 3Z',
+        ],
+        [
+            'route' => 'healthcare',
+            'title' => 'Healthcare',
+            'text' => 'Medical camps and essential treatment for communities with no access to care.',
+            'icon' => 'M4 8.5h16a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1Z M9 8.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v2.5 M12 11.5v5 M9.5 14h5',
+        ],
+        [
+            'route' => 'orphans-sponsorships',
+            'title' => 'Orphans Sponsorships',
+            'text' => 'Monthly sponsorship covering an orphaned child’s food, schooling and healthcare.',
+            'icon' => 'M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 21.5l7.1-7.1 1.7-1.7a5 5 0 0 0 0-7.1Z',
+        ],
+        [
+            'route' => 'hostel-for-students-orphans',
+            'title' => 'Hostel for Students',
+            'text' => 'Safe, supervised accommodation so students and orphans can study without worry.',
+            'icon' => 'M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9.5Z M9.5 21v-6h5v6',
+        ],
+        [
+            'route' => 'prosthetic-limb',
+            'title' => 'Prosthetic Limb',
+            'text' => 'Fitted limbs and rehabilitation that restore independence, mobility and dignity.',
+            'icon' => 'M12 4.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2Z M12 6.4v6.6 M8.2 8.4 12 9.4l3.8-1 M9.3 21.5 12 13l2.7 8.5',
+        ],
+        [
+            'route' => 'community-centre',
+            'title' => 'Community Centre',
+            'text' => 'Shared spaces for learning, worship and support at the heart of the community.',
+            'icon' => 'M16.5 20v-1.6a3.2 3.2 0 0 0-3.2-3.2H6.7a3.2 3.2 0 0 0-3.2 3.2V20 M10 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M20.5 20v-1.6a3.2 3.2 0 0 0-2.4-3.1 M15.5 5.2a3.2 3.2 0 0 1 0 6.2',
+        ],
+    ];
+
     // Team
     $team = [
         ['image' => 'images/burhan ahmad.png', 'name' => 'Burhan Ahmed', 'role' => 'Chairman'],
@@ -179,6 +232,49 @@
         </div>
     </section>
 
+    {{-- ===================== WHAT WE DO ===================== --}}
+    <section class="mt-14 bg-cream py-16">
+        <div class="nf-container">
+            <div class="nf-reveal max-w-3xl">
+                <p class="text-sm font-semibold uppercase tracking-wider text-brand">What we do</p>
+                <h2 class="mt-2 text-3xl font-bold text-navy-dark sm:text-4xl">
+                    Our work, from relief today to change that lasts
+                </h2>
+                <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    Our values only mean something once they reach a family. These are the programmes
+                    they turn into — each one run with local partners, monitored on the ground and
+                    reported back to the donors who make it possible.
+                </p>
+            </div>
+
+            <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ($programmes as $i => $programme)
+                    <a href="{{ route($programme['route']) }}"
+                       class="nf-reveal group flex h-full flex-col rounded-xl bg-white p-6 shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:ring-brand/20"
+                       data-reveal-delay="{{ $i * 90 }}">
+                        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-white">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="{{ $programme['icon'] }}"/>
+                            </svg>
+                        </span>
+
+                        <h3 class="mt-5 text-base font-bold text-navy-dark transition-colors duration-300 group-hover:text-brand">
+                            {{ $programme['title'] }}
+                        </h3>
+                        <p class="mt-2 flex-1 text-sm leading-relaxed text-gray-600">{{ $programme['text'] }}</p>
+
+                        <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
+                            Learn more
+                            <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
     {{-- ===================== TEAM ===================== --}}
     <section class="pt-14">
         <div class="nf-container">
@@ -260,6 +356,41 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ===================== GET INVOLVED CTA ===================== --}}
+    {{-- Navy band: the footer below is bg-brand, so navy keeps the two distinct. --}}
+    <section class="relative overflow-hidden bg-navy">
+        {{-- Soft decorative glows, purely visual. --}}
+        <span class="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-brand/25 blur-3xl" aria-hidden="true"></span>
+        <span class="pointer-events-none absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-brand/20 blur-3xl" aria-hidden="true"></span>
+
+        <div class="nf-container relative py-16 text-center sm:py-20">
+            <div class="nf-reveal">
+                <p class="text-sm font-semibold uppercase tracking-wider text-[#e9b9c6]">Get involved</p>
+                <h2 class="mx-auto mt-2 max-w-xl text-2xl font-bold leading-snug text-white sm:text-3xl">
+                    Join thousands of others across the country
+                </h2>
+                <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base">
+                    Giving your time means helping to give those most vulnerable a chance at the future they deserve.
+                </p>
+
+                <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                    <a href="{{ route('donate.checkout') }}" class="btn-brand group w-full px-7 py-3 sm:w-auto">
+                        Make a Donation
+                        <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="{{ route('volunteer') }}" class="btn-white group w-full px-7 py-3 sm:w-auto">
+                        Become a Volunteer
+                        <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>

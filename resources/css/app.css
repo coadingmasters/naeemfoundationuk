@@ -1056,6 +1056,54 @@
     object-fit: cover;
 }
 
+/* ---------- Full-bleed background film for a hero ----------
+   Used by the Orphan Sponsorship hero: the film fills the whole section and
+   the copy sits on top of it, over a darkening "layer mix" gradient. */
+.nf-herovideo {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: var(--color-navy-dark);
+}
+
+/* The poster paints instantly and stays put underneath as the fallback for
+   when autoplay is refused (iOS Low Power Mode, data saver, reduced motion).
+   The player simply layers over it once it starts. */
+.nf-herovideo__poster,
+.nf-herovideo__media {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* An iframe's contents can't be cropped with object-fit, so the frame itself
+   is scaled to cover: at least 16:9 measured off the width AND off the height,
+   then centred so the overflow is trimmed evenly on every side. The hero is
+   always shorter than the viewport, so the vh-based minimums never under-fill. */
+.nf-herovideo__frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 56.25vw;      /* 16:9 derived from the width  */
+    min-width: 177.78vh;  /* 16:9 derived from the height */
+    min-height: 100vh;
+    transform: translate(-50%, -50%);
+    border: 0;
+    pointer-events: none; /* clicks belong to the hero copy, not the player */
+}
+
+/* Ambient motion is purely decorative here — hold the still poster instead. */
+@media (prefers-reduced-motion: reduce) {
+    .nf-herovideo__frame,
+    .nf-herovideo__media {
+        display: none;
+    }
+}
+
 /* ---------- Generic modal (add-ons popup) ---------- */
 .nf-modal {
     position: fixed;

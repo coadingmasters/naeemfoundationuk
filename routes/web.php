@@ -49,8 +49,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Region / currency chooser — sets the cookie the whole site reads, then returns.
 Route::get('/region/{code}', function (string $code) {
     abort_unless(array_key_exists($code, config('countries.list')), 404);
 
@@ -58,15 +56,12 @@ Route::get('/region/{code}', function (string $code) {
         cookie()->forever(\App\Support\Country::COOKIE, $code)
     );
 })->name('region.set');
-
-// "Who We Are" group
 Route::view('/about', 'about')->name('about');
 Route::view('/history', 'history')->name('history');
 Route::view('/careers', 'career')->name('careers');
 Route::get('/annual-report', [AnnualReportController::class, 'index'])->name('annual-report');
 Route::get('/news-and-press', [NewsController::class, 'index'])->name('news');
 Route::get('/news-and-press/{slug}', [NewsController::class, 'show'])->name('news.show');
-
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 Route::view('/zakat', 'zakat')->name('zakat');
 Route::view('/zakat-calculator', 'zakat-calculator')->name('zakat-calculator');
@@ -97,52 +92,32 @@ Route::get('/schedule-ramadan-giving', [RamadanTimetableController::class, 'inde
 Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
 Route::get('/eid-gifts-for-children', [EidGiftsController::class, 'index'])->name('eid-gifts');
 Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])->name('ramadan-food-packs');
-
 Route::get('/hajj-2027', [HajjController::class, 'index'])->name('hajj');
 Route::post('/hajj-2027/register', [HajjController::class, 'register'])->name('hajj.register');
-
 Route::get('/community-centre', [CommunityCentreController::class, 'index'])->name('community-centre');
 Route::post('/community-centre/enquiry', [CommunityCentreController::class, 'enquire'])->name('community-centre.enquire');
-
 Route::get('/ask-a-mufti', [AskMuftiController::class, 'index'])->name('ask-mufti');
 Route::post('/ask-a-mufti', [AskMuftiController::class, 'store'])->name('ask-mufti.store');
-
-// Contact Us — animated page with a working message form.
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-
-// Volunteer — animated sign-up page with a working registration form.
 Route::get('/volunteer', [VolunteerController::class, 'index'])->name('volunteer');
 Route::post('/volunteer', [VolunteerController::class, 'store'])->name('volunteer.store');
-
-// Shop / store — product listing, cart and product detail.
-// (cart route declared before {product} so "cart" isn't matched as a slug)
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 Route::get('/shop/cart', [ProductCartController::class, 'index'])->name('shop.cart');
 Route::post('/shop/cart/add', [ProductCartController::class, 'add'])->name('shop.cart.add');
 Route::patch('/shop/cart/{id}', [ProductCartController::class, 'update'])->name('shop.cart.update');
 Route::delete('/shop/cart/{id}', [ProductCartController::class, 'remove'])->name('shop.cart.remove');
 Route::get('/shop/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
-// Orders are created only after PayPal confirms payment — see PayPalController.
 Route::get('/shop/order-complete', [ShopController::class, 'orderComplete'])->name('shop.order-complete');
 Route::get('/shop/{product}', [ShopController::class, 'show'])->name('shop.show');
-
-// "Make a donation" landing page — the header Donate CTA lands here, then the
-// donor picks a cause/amount which flows into the existing basket + checkout.
 Route::view('/make-a-donation', 'donate.make')->name('donate.make');
-
-// Appeal detail page — each "Latest Appeals" card opens its own dynamic page.
 Route::get('/appeals/{appeal}', function (\App\Models\Appeal $appeal) {
     abort_unless($appeal->is_active, 404);
-
     return view('appeals.show', ['appeal' => $appeal]);
 })->name('appeals.show');
-
-// Donation basket + checkout
 Route::post('/donate/add', [DonationController::class, 'add'])->name('donate.add');
 Route::delete('/donate/remove/{id}', [DonationController::class, 'remove'])->name('donate.remove');
 Route::patch('/donate/quantity/{id}', [DonationController::class, 'quantity'])->name('donate.quantity');
-// Postcode -> address lookup (region-aware, free providers). Used by checkout.
 Route::get('/address-lookup', function (\Illuminate\Http\Request $request) {
     return response()->json([
         'results' => \App\Support\AddressLookup::search(
@@ -151,8 +126,6 @@ Route::get('/address-lookup', function (\Illuminate\Http\Request $request) {
         ),
     ]);
 })->middleware('throttle:30,1')->name('address.lookup');
-
-// Real-time postcode suggestions as the visitor types (free, UK only).
 Route::get('/address-suggest', function (\Illuminate\Http\Request $request) {
     return response()->json([
         'suggestions' => \App\Support\AddressLookup::suggest(
@@ -161,28 +134,17 @@ Route::get('/address-suggest', function (\Illuminate\Http\Request $request) {
         ),
     ]);
 })->middleware('throttle:90,1')->name('address.suggest');
-
 Route::get('/donate/checkout', [DonationController::class, 'checkout'])->name('donate.checkout');
 Route::post('/donate/checkout', [DonationController::class, 'store'])->name('donate.store');
 Route::get('/donate/payment', [DonationController::class, 'payment'])->name('donate.payment');
-// Donations are marked paid only after PayPal confirms the capture — see PayPalController.
 Route::get('/donate/thank-you', [DonationController::class, 'thankYou'])->name('donate.thank-you');
-
-// PayPal — Smart Buttons call these over AJAX. The amount is never sent by the
-// browser; it is recalculated server-side from the live basket on every call.
 Route::post('/donate/paypal/order', [PayPalController::class, 'donationOrder'])->name('paypal.donation.order');
 Route::post('/donate/paypal/capture', [PayPalController::class, 'donationCapture'])->name('paypal.donation.capture');
-// Monthly recurring gifts (PayPal subscriptions).
 Route::post('/donate/paypal/subscription/plan', [PayPalController::class, 'subscriptionPlan'])->name('paypal.subscription.plan');
 Route::post('/donate/paypal/subscription/record', [PayPalController::class, 'subscriptionRecord'])->name('paypal.subscription.record');
 Route::post('/shop/paypal/order', [PayPalController::class, 'shopOrder'])->name('paypal.shop.order');
 Route::post('/shop/paypal/capture', [PayPalController::class, 'shopCapture'])->name('paypal.shop.capture');
-
-// Server-to-server notification from PayPal (CSRF-exempt, signature-verified).
 Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])->name('paypal.webhook');
-
-// "Giving" group — auto-generate a placeholder page for every slug-based item.
-// A slug may appear in more than one menu (e.g. Kaffarah), so register once.
 $givingRegistered = [];
 foreach (config('giving') as $group) {
     foreach (array_merge($group['items'], $group['featured'] ?? []) as $item) {

@@ -44,6 +44,11 @@
             'oneOffAmounts' => [30, 50, 100],
             'monthlyDefault' => 53,
             'yearlyDefault' => 636,
+            // Sponsorship is an ongoing commitment, so the panel opens on Monthly.
+            'defaultFreq' => 'monthly',
+            // Which giving type the sponsorship is paid from. Sadaqah leads: it is
+            // unrestricted, whereas Zakat has strict eligibility rules.
+            'fundOptions' => ['Sadaqah', 'Zakat', 'Lillah'],
         ],
     ])
 
