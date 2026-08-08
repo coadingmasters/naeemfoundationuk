@@ -285,17 +285,29 @@
         <div class="nf-container">
             <div class="mb-6 flex items-center justify-between">
                 <h2 class="text-2xl font-bold text-brand">Latest News</h2>
-                <a href="#" class="text-sm font-semibold text-navy underline hover:text-brand">View all</a>
+                <a href="{{ route('news') }}" class="text-sm font-semibold text-navy underline hover:text-brand">View all</a>
             </div>
             <div class="grid gap-6 md:grid-cols-3">
-                @foreach ($news as $item)
+                @php
+                    // Real published articles when there are any, otherwise the
+                    // placeholder cards below (which link to the news index).
+                    $newsCards = ($newsPosts ?? collect())->isNotEmpty()
+                        ? ($newsPosts)->map(fn ($p) => [
+                            'image' => $p->image ?: 'images/latestnews.png',
+                            'tag' => $p->category,
+                            'title' => $p->title,
+                            'url' => route('news.show', $p->slug),
+                        ])
+                        : collect($news)->map(fn ($n) => $n + ['url' => route('news')]);
+                @endphp
+                @foreach ($newsCards as $item)
                     <article class="group relative overflow-hidden rounded-lg">
                         <img src="{{ asset($item['image']) }}" alt="{{ $item['title'] }}"
-                             class="h-56 w-full object-cover">
+                             class="h-56 w-full object-cover transition duration-500 group-hover:scale-105">
                         <span class="absolute right-0 top-3 bg-brand px-3 py-1 text-xs font-semibold text-white">{{ $item['tag'] }}</span>
                         <div class="absolute inset-x-0 bottom-0 bg-navy/85 p-4">
                             <h3 class="text-sm font-semibold leading-snug text-white">{{ $item['title'] }}</h3>
-                            <a href="#" class="mt-2 inline-block text-xs font-semibold text-white underline">Read more</a>
+                            <a href="{{ $item['url'] }}" class="mt-2 inline-block text-xs font-semibold text-white underline">Read more</a>
                         </div>
                     </article>
                 @endforeach
@@ -346,7 +358,7 @@
                         Join our community and create a great profile to make the most of our services. Join our community
                         and create a great profile to make the most of our services.
                     </p>
-                    <a href="#" class="btn-navy mt-5 self-start">
+                    <a href="{{ route('volunteer') }}" class="btn-navy mt-5 self-start">
                         Get Involved
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>

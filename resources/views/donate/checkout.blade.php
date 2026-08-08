@@ -179,12 +179,6 @@
                         {{-- Result message (invalid / found) --}}
                         <p data-address-msg class="mt-2 hidden text-xs"></p>
 
-                        {{-- Address picker — populated when the lookup returns addresses --}}
-                        <div data-address-results class="mt-3 hidden">
-                            <label class="mb-1.5 block text-xs font-semibold text-white/90">Select your address</label>
-                            <select data-address-select class="nf-dark-input"></select>
-                        </div>
-
                         <button type="button" data-address-manual
                                 class="mt-2 text-xs font-semibold text-white underline underline-offset-2 transition-colors hover:text-cream">
                             Enter address manually
@@ -202,10 +196,27 @@
                     <div data-address-fields class="{{ $showAddrFields ? '' : 'hidden' }}">
                         {{-- `required` is added by JS when these are revealed — a hidden
                              required field would silently block the form submit. --}}
+                        {{-- One field, two ways in: pick a found address from the list
+                             that drops down here, or just type it. There is no separate
+                             "select your address" box. --}}
                         <div class="mt-5">
                             <label for="billing_address" class="mb-1.5 block text-xs font-semibold text-white sm:text-sm">*Billing Address</label>
-                            <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address', $d['billing_address'] ?? '') }}"
-                                   placeholder="House number and street" data-address-line1 class="nf-dark-input">
+                            <div class="relative">
+                                <input id="billing_address" type="text" name="billing_address" value="{{ old('billing_address', $d['billing_address'] ?? '') }}"
+                                       placeholder="House number and street" data-address-line1 autocomplete="off"
+                                       role="combobox" aria-expanded="false" aria-autocomplete="list"
+                                       class="nf-dark-input w-full">
+
+                                {{-- Chevron — reopens the found-address list. Hidden until
+                                     a lookup actually returns street-level addresses. --}}
+                                <button type="button" data-address-options-toggle hidden aria-label="Show found addresses"
+                                        class="absolute right-2 top-1/2 z-10 hidden -translate-y-1/2 rounded p-1.5 text-white/70 transition-colors hover:text-white">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+
+                                <ul data-address-options role="listbox"
+                                    class="absolute left-0 right-0 top-full z-30 mt-1 hidden max-h-60 overflow-auto rounded-lg bg-white py-1 text-sm text-navy-dark shadow-2xl ring-1 ring-black/5"></ul>
+                            </div>
                             @error('billing_address') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                         </div>
 

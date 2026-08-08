@@ -109,11 +109,15 @@
                 </a>
                 <span class="nf-topbar__sep hidden lg:inline-block"></span>
                 {{-- Socials are the first thing to go when width is tight. --}}
-                <div class="hidden items-center gap-1.5 sm:flex">
-                    <a href="#" aria-label="Facebook" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.6l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.3-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H8v3h2v8h3Z"/></svg></a>
-                    <a href="#" aria-label="Instagram" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-                    <a href="#" aria-label="TikTok" class="nf-topbar__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a5 5 0 0 0 5 5v3a8 8 0 0 1-5-1.8V15a6 6 0 1 1-6-6c.3 0 .7 0 1 .1v3.2A2.8 2.8 0 1 0 13 15V3h3Z"/></svg></a>
-                </div>
+                @if (socials())
+                    <div class="hidden items-center gap-1.5 sm:flex">
+                        @foreach (socials() as $s)
+                            <a href="{{ $s['url'] }}" aria-label="{{ $s['name'] }}" target="_blank" rel="noopener noreferrer" class="nf-topbar__social">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="{{ $s['fill'] }}" stroke="{{ $s['stroke'] }}" stroke-width="2">{!! $s['icon'] !!}</svg>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -312,11 +316,15 @@
                 </a>
                 <a href="mailto:donate@naeemfoundation.co.uk" class="mt-2 block break-all hover:text-brand">donate@naeemfoundation.co.uk</a>
                 <p class="mt-2">{{ region('charity_label') }} <strong class="text-navy">{{ region('charity_no') }}</strong></p>
-                <div class="mt-3 flex items-center gap-2">
-                    <a href="#" aria-label="Facebook" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.6l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V5c-.3 0-1.3-.1-2.3-.1-2.3 0-3.7 1.3-3.7 3.8V11H8v3h2v8h3Z"/></svg></a>
-                    <a href="#" aria-label="Instagram" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-                    <a href="#" aria-label="TikTok" class="nf-drawer__social"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a5 5 0 0 0 5 5v3a8 8 0 0 1-5-1.8V15a6 6 0 1 1-6-6c.3 0 .7 0 1 .1v3.2A2.8 2.8 0 1 0 13 15V3h3Z"/></svg></a>
-                </div>
+                @if (socials())
+                    <div class="mt-3 flex items-center gap-2">
+                        @foreach (socials() as $s)
+                            <a href="{{ $s['url'] }}" aria-label="{{ $s['name'] }}" target="_blank" rel="noopener noreferrer" class="nf-drawer__social">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="{{ $s['fill'] }}" stroke="{{ $s['stroke'] }}" stroke-width="2">{!! $s['icon'] !!}</svg>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </nav>

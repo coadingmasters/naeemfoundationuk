@@ -856,13 +856,15 @@ function setupAddressLookup() {
         const postcode = root.querySelector('[data-address-postcode]');
         const findBtn = root.querySelector('[data-address-find]');
         const findLabel = root.querySelector('[data-address-find-label]');
-        const resultsWrap = root.querySelector('[data-address-results]');
-        const select = root.querySelector('[data-address-select]');
         const msg = root.querySelector('[data-address-msg]');
         // The fields to fill live anywhere in the same form.
         const form = root.closest('form') || document;
         const line1 = form.querySelector('[data-address-line1]');
         const city = form.querySelector('[data-address-city]');
+        // The found addresses drop down from the Billing Address field itself,
+        // so there is one field the donor can either pick from or type into.
+        const optionsEl = form.querySelector('[data-address-options]');
+        const optionsToggle = form.querySelector('[data-address-options-toggle]');
         const addressFields = form.querySelector('[data-address-fields]');
         if (!postcode || !findBtn) return;
 
@@ -915,6 +917,60 @@ function setupAddressLookup() {
             revealFields();
         };
 
+        // ---- Found-address list, shown under the Billing Address field ----
+        const closeOptions = () => {
+            setHidden(optionsEl, true);
+            if (line1) line1.setAttribute('aria-expanded', 'false');
+        };
+        const openOptions = () => {
+            if (!optionsEl || !optionsEl.children.length) return;
+            setHidden(optionsEl, false);
+            if (line1) line1.setAttribute('aria-expanded', 'true');
+        };
+
+        // Only offer a list when the provider actually returned street-level
+        // addresses. postcodes.io returns the town only, so there would be
+        // nothing meaningful to pick — the donor just types instead.
+        const buildOptions = (list) => {
+            if (!optionsEl) return;
+            optionsEl.innerHTML = list.map((r, i) =>
+                `<li role="option"><button type="button" data-idx="${i}"
+                     class="block w-full px-4 py-2 text-left hover:bg-cream">${(r.line1 || r.label || '').replace(/</g, '&lt;')}</button></li>`
+            ).join('');
+            setHidden(optionsToggle, false);
+            optionsToggle?.classList.remove('hidden');
+            openOptions();
+        };
+
+        if (optionsEl) {
+            optionsEl.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-idx]');
+                if (!btn) return;
+                apply(results[parseInt(btn.dataset.idx, 10)]);
+                closeOptions();
+                line1?.focus();
+            });
+        }
+
+        if (optionsToggle) {
+            optionsToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (optionsEl && optionsEl.classList.contains('hidden')) openOptions();
+                else closeOptions();
+            });
+        }
+
+        if (line1) {
+            // Typing means they're entering it themselves — get out of the way.
+            line1.addEventListener('input', closeOptions);
+            line1.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOptions(); });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!optionsEl) return;
+            if (!optionsEl.contains(e.target) && e.target !== line1 && e.target !== optionsToggle) closeOptions();
+        });
+
         const find = async () => {
             const pc = (postcode.value || '').trim();
             const label = addrRegion === 'US' ? 'ZIP code' : 'postcode';
@@ -924,14 +980,14 @@ function setupAddressLookup() {
             // non-UK format) straight away, without hitting the lookup.
             const fmt = FORMATS[addrRegion];
             if (fmt && !fmt.test(pc)) {
-                setHidden(resultsWrap, true);
+                closeOptions();
                 showMsg('Invalid ' + label + '. Please check it, or enter your address manually.', 'error');
                 return;
             }
 
             findBtn.disabled = true;
             if (findLabel) findLabel.textContent = 'Searching…';
-            setHidden(resultsWrap, true);
+            closeOptions();
             showMsg('', 'info');
 
             try {
@@ -946,24 +1002,23 @@ function setupAddressLookup() {
                     return;
                 }
 
-                // Always offer the "Select your address" dropdown so the donor can
-                // pick their address — or just type it in the field below.
-                select.innerHTML = '<option value="">Select your address…</option>'
-                    + results.map((r, i) => `<option value="${i}">${(r.label || r.city || '').replace(/</g, '&lt;')}</option>`).join('');
-                setHidden(resultsWrap, false);
                 revealFields();
 
                 const hasStreets = results.some((r) => r.line1);
 
-                if (results.length === 1) {
-                    // Only one match — select it automatically so its details fill in.
-                    select.value = '0';
+                if (hasStreets) {
+                    // Street-level results — drop them down under Billing Address
+                    // so the donor picks one there, or overtypes it.
+                    buildOptions(results);
+                    showMsg('✓ Addresses found — choose yours in the Billing Address box, or type it.', 'ok');
+                } else {
+                    // Town-level only (postcodes.io): nothing worth picking, so fill
+                    // what we know and let them type the house number and street.
                     apply(results[0]);
+                    showMsg('✓ ' + label.charAt(0).toUpperCase() + label.slice(1)
+                        + ' found — now add your house number & street in Billing Address.', 'ok');
+                    line1?.focus();
                 }
-
-                showMsg(hasStreets
-                    ? '✓ Addresses found — select yours from the list, or type it below.'
-                    : '✓ Postcode found — select it above, or add your house number & street below.', 'ok');
             } catch (e) {
                 showMsg('Address lookup is unavailable right now — please enter it manually below.', 'error');
             } finally {
