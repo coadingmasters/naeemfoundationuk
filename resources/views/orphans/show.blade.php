@@ -81,6 +81,8 @@
                         'oneOffAmounts' => [20, 50, 100],
                         'monthlyDefault' => $monthly,
                         'yearlyDefault' => $monthly * 12,
+                        // Sponsorship is an ongoing commitment, so open on Monthly.
+                        'defaultFreq' => 'monthly',
                         'orphanId' => $orphan->id,
                         'image' => filled($orphan->photo) ? $orphan->photo : 'images/changinslives1.jpg',
                     ])
