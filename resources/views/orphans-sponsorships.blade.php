@@ -110,6 +110,60 @@
         </div>
     </section>
 
+    {{-- ===================== WHY SPONSORSHIP + VIDEO ===================== --}}
+    {{-- Top border separates this from the white grid above without adding a
+         second cream band next to Our Projects. --}}
+    <section class="border-t border-gray-100 py-14 sm:py-16">
+        <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+
+            {{-- Left: text --}}
+            <div class="nf-reveal">
+                <p class="text-sm font-semibold uppercase tracking-wider text-brand">Why sponsorship works</p>
+                <h2 class="mt-2 text-2xl font-bold text-navy-dark sm:text-3xl">More than a monthly gift</h2>
+
+                <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    Losing a parent takes away far more than income — it takes away the stability a child needs
+                    to stay in school and simply be a child. Sponsorship puts that stability back: a place at a
+                    desk, meals they can count on, a safe bed and someone responsible for their wellbeing.
+                </p>
+                <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    Because it arrives every month, sponsorship is the support we can plan around. It lets us
+                    commit to a child’s schooling years in advance rather than year to year — which is exactly
+                    what turns short-term relief into a finished education.
+                </p>
+
+                <ul class="mt-6 space-y-3">
+                    @php
+                        $why = [
+                            'You are matched with one child and follow their progress.',
+                            'Every penny is spent on the child you chose — 100% reaches them.',
+                            'Give monthly for ongoing care, or a one-off gift for urgent needs.',
+                        ];
+                    @endphp
+                    @foreach ($why as $j => $point)
+                        <li class="nf-reveal flex items-start gap-3" data-reveal-delay="{{ 120 + $j * 90 }}">
+                            <span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand/10 text-brand">
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <span class="text-sm leading-relaxed text-gray-600 sm:text-base">{{ $point }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+
+                <a href="#orphans" class="btn-brand group mt-7 px-7 py-3">
+                    Choose a child
+                    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+
+            {{-- Right: animated click-to-play video. The hero plays this film
+                 muted in the background; here it can be watched with sound. --}}
+            <div class="nf-reveal" data-reveal-delay="120">
+                @include('partials.video-card', ['videoKey' => 'orphans-sponsorships'])
+            </div>
+        </div>
+    </section>
+
     {{-- ===================== OUR PROJECTS ===================== --}}
     <section class="bg-cream/40 py-16 sm:py-20">
         <div class="nf-container">

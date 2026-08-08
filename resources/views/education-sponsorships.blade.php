@@ -136,6 +136,32 @@
         </div>
     </section>
 
+    {{-- ===================== ORPHANS CAROUSEL ===================== --}}
+    {{-- No top padding: the section above already closes with pb-14. --}}
+    <section class="pb-14 sm:pb-16">
+        <div class="nf-container">
+            <div class="nf-reveal mb-8 text-center">
+                <p class="text-sm font-semibold uppercase tracking-wider text-brand">Sponsor a child</p>
+                <h2 class="mt-2 text-2xl font-bold text-navy-dark sm:text-3xl">Children Waiting for a Sponsor</h2>
+                <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-gray-500 sm:text-base">
+                    Every child here is waiting for someone to fund their education. Tap any face to read their
+                    story and sponsor them directly.
+                </p>
+            </div>
+
+            <div class="nf-reveal" data-reveal-delay="120">
+                @include('partials.orphans-carousel')
+            </div>
+
+            <div class="nf-reveal mt-9 text-center" data-reveal-delay="200">
+                <a href="{{ route('orphans-sponsorships') }}" class="btn-navy group px-7 py-3">
+                    See all children
+                    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
     {{-- ===================== CTA (navy) ===================== --}}
     <section class="bg-navy">
         <div class="nf-container py-14 text-center">

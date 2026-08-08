@@ -22,6 +22,7 @@ use App\Http\Controllers\CambodiaEducationController;
 use App\Http\Controllers\CommunityCentreController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\EducationSponsorshipsController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\ProductCartController;
 use App\Http\Controllers\ShopController;
@@ -73,7 +74,7 @@ Route::get('/sehri-and-iftar', [SehriIftarController::class, 'index'])->name('se
 Route::get('/water-well', [WaterWellController::class, 'index'])->name('water-well');
 Route::get('/healthcare', [HealthcareController::class, 'index'])->name('healthcare');
 Route::get('/food-and-sustenance', [FoodSustenanceController::class, 'index'])->name('food-sustenance');
-Route::view('/education-sponsorships', 'education-sponsorships')->name('education-sponsorships');
+Route::get('/education-sponsorships', [EducationSponsorshipsController::class, 'index'])->name('education-sponsorships');
 Route::view('/hostel-for-students-orphans', 'hostel-for-students-orphans')->name('hostel-for-students-orphans');
 Route::view('/clean-water', 'clean-water')->name('clean-water');
 Route::get('/orphans-sponsorships', [\App\Http\Controllers\OrphanController::class, 'index'])->name('orphans-sponsorships');
