@@ -38,15 +38,21 @@
                             @endif
                         </div>
 
-                        {{-- Details --}}
-                        <div class="flex flex-1 flex-col p-5">
-                            <h3 class="text-base font-bold text-navy-dark transition-colors group-hover:text-brand sm:text-lg">{{ $orphan->name }}</h3>
-                            @if ($orphan->location)
-                                <p class="mt-1.5 inline-flex items-center gap-1.5 text-xs text-gray-500">
-                                    <svg class="h-3.5 w-3.5 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4"/></svg>
-                                    {{ $orphan->location }}
-                                </p>
-                            @endif
+                        {{-- Details. min-w-0 lets long names wrap instead of widening
+                             the card, and mt-auto pins every button to the bottom so
+                             they line up whether a name takes one line or two. --}}
+                        <div class="flex min-w-0 flex-1 flex-col p-5">
+                            {{-- This block grows, so the button below is pushed to the
+                                 card's bottom edge and every button lines up. --}}
+                            <div class="min-w-0 flex-1">
+                                <h3 class="line-clamp-2 text-base font-bold text-navy-dark transition-colors group-hover:text-brand sm:text-lg">{{ $orphan->name }}</h3>
+                                @if ($orphan->location)
+                                    <p class="mt-1.5 flex items-center gap-1.5 text-xs text-gray-500">
+                                        <svg class="h-3.5 w-3.5 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4"/></svg>
+                                        <span class="truncate">{{ $orphan->location }}</span>
+                                    </p>
+                                @endif
+                            </div>
 
                             <span class="btn-brand mt-4 w-full justify-center py-2.5 text-sm">
                                 View &amp; Sponsor
