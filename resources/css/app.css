@@ -1056,6 +1056,33 @@
     object-fit: cover;
 }
 
+/* ---------- Amount choice on a dark card (Prosthetic Limb donation panel) --- */
+.nf-limb-choice {
+    cursor: pointer;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.65rem 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+.nf-limb-choice:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+.nf-limb-choice.is-selected {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    box-shadow: 0 8px 18px rgba(116, 10, 46, 0.45);
+}
+@media (prefers-reduced-motion: reduce) {
+    .nf-limb-choice { transition: none; }
+    .nf-limb-choice:hover { transform: none; }
+}
+
 /* ---------- Giving-page hero heading ----------
    The title carries the hero on its own now (the eyebrow and subtitle were
    removed), so it gets a softer, slower entrance than the generic .nf-reveal,

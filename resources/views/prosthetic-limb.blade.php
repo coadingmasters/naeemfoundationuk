@@ -14,6 +14,21 @@
         ]);
     }
 
+    // Donation Details card — one source for the target figures, so the copy,
+    // the stat tiles and the preset amounts can never drift apart.
+    $limbCost = 1200;   // one complete limb, including fitting + rehabilitation
+    $limbCount = 10;    // limbs the appeal aims to fund
+    $limbGoal = $limbCost * $limbCount;
+
+    $limbStats = [
+        ['value' => money($limbCost, 0), 'label' => 'One complete limb'],
+        ['value' => money($limbGoal, 0), 'label' => 'Fundraising goal'],
+        ['value' => $limbCount, 'label' => 'Lives changed'],
+    ];
+
+    // Preset amounts. The full limb cost is pre-selected.
+    $limbAmounts = [100, 300, 600, $limbCost];
+
     // Two-up galleries
     $introGallery = [
         ['image' => 'images/supporton.png', 'alt' => 'Fitting a prosthetic limb'],
@@ -69,6 +84,85 @@
         </div>
     </section>
 
+    {{-- ===================== DONATION DETAILS CARD ===================== --}}
+    {{-- Promoted out of the cream panel below so the target and the amount picker
+         sit together, straight after the video. --}}
+    <section class="pb-14 sm:pb-16">
+        <div class="nf-container">
+            <div class="nf-reveal overflow-hidden rounded-3xl bg-navy shadow-2xl shadow-navy/25">
+                <div class="grid lg:grid-cols-[1.15fr_1fr]">
+
+                    {{-- Left: the details + amount picker --}}
+                    <div class="p-7 text-white sm:p-10 lg:p-12">
+                        <p class="text-sm font-semibold uppercase tracking-wider text-[#e9b9c6]">Donation Details</p>
+                        <h2 class="mt-2 text-2xl font-bold leading-snug sm:text-3xl">
+                            &ldquo;Minimum Target: One Limb, Maximum Impact&rdquo;
+                        </h2>
+                        <p class="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
+                            The cost of <span class="font-bold text-white">one complete prosthetic limb is {{ money($limbCost, 0) }}</span>.
+                            Our goal is to raise <span class="font-bold text-white">{{ money($limbGoal, 0) }}</span>, which will provide
+                            <span class="font-bold text-white">{{ $limbCount }} life-changing prosthetic limbs</span>. By contributing,
+                            you make a direct and tangible difference in the lives of those in need.
+                        </p>
+
+                        {{-- The three numbers at a glance --}}
+                        <div class="mt-7 grid grid-cols-3 gap-3">
+                            @foreach ($limbStats as $i => $stat)
+                                <div class="nf-reveal rounded-xl bg-white/10 p-3 text-center ring-1 ring-white/15 transition-colors duration-300 hover:bg-white/15 sm:p-4"
+                                     data-reveal-delay="{{ 120 + $i * 90 }}">
+                                    <p class="text-lg font-extrabold leading-none text-white sm:text-2xl">{{ $stat['value'] }}</p>
+                                    <p class="mt-1.5 text-[11px] leading-tight text-white/65 sm:text-xs">{{ $stat['label'] }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        {{-- Amount picker → straight into the donation basket. --}}
+                        <form method="POST" action="{{ route('donate.add') }}" data-cart-skip data-limb-form class="mt-7">
+                            @csrf
+                            <input type="hidden" name="cause" value="Prosthetic Limb">
+                            <input type="hidden" name="frequency" value="one-off">
+                            <input type="hidden" name="image" value="images/changinslives4.jpg">
+                            <input type="hidden" name="amount" value="{{ $limbCost }}" data-limb-amount>
+
+                            <p class="text-xs font-semibold uppercase tracking-wider text-white/70">Choose an amount</p>
+                            <div class="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
+                                @foreach ($limbAmounts as $amount)
+                                    <button type="button" data-limb-choice="{{ $amount }}"
+                                            class="nf-limb-choice {{ $amount === $limbCost ? 'is-selected' : '' }}">{{ money($amount, 0) }}</button>
+                                @endforeach
+                                <button type="button" data-limb-choice="other" class="nf-limb-choice">Other</button>
+                            </div>
+
+                            {{-- Revealed by "Other" --}}
+                            <div class="mt-3 hidden" data-limb-custom>
+                                <div class="relative">
+                                    <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-white/70">{{ region('symbol') }}</span>
+                                    <input type="number" min="1" step="1" inputmode="numeric" data-limb-custom-input
+                                           placeholder="Enter your amount"
+                                           class="h-12 w-full rounded-lg border border-white/25 bg-white/10 pl-9 pr-3 text-sm font-semibold text-white placeholder-white/45 outline-none transition focus:border-white/60 focus:ring-2 focus:ring-white/20">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-brand group mt-5 w-full justify-center py-3.5 text-base sm:w-auto sm:px-9">
+                                Donate Now
+                                <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <p class="mt-3 text-xs text-white/55">{{ money($limbCost, 0) }} funds one complete limb, including fitting and rehabilitation.</p>
+                        </form>
+                    </div>
+
+                    {{-- Right: image --}}
+                    <div class="relative min-h-[280px] overflow-hidden lg:min-h-full">
+                        <img src="{{ asset('images/supporton.png') }}" alt="A prosthetic limb being fitted"
+                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-out hover:scale-105">
+                        {{-- Blends the photo into the navy card on the left edge. --}}
+                        <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent lg:bg-gradient-to-r lg:from-navy lg:via-navy/25 lg:to-transparent" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- ===================== DETAIL PANEL (cream) ===================== --}}
     <section class="pb-14">
         <div class="nf-container">
@@ -92,15 +186,8 @@
                     guidance needed to use it effectively and safely.
                 </p>
 
-                {{-- Donation details --}}
-                <h3 class="mt-8 text-xl font-bold text-navy-dark sm:text-2xl">Donation Details</h3>
-                <p class="mt-2 text-sm font-bold italic text-brand">“Minimum Target: One Limb, Maximum Impact”</p>
-                <p class="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    The cost of <span class="font-bold text-navy-dark">one complete prosthetic limb is {{ region('symbol') }}1,200</span>.
-                    Our goal is to raise <span class="font-bold text-navy-dark">{{ region('symbol') }}12,000</span>, which will provide
-                    <span class="font-bold text-navy-dark">10 life-changing prosthetic limbs</span>. By contributing, you
-                    make a direct and tangible difference in the lives of those in need.
-                </p>
+                {{-- Donation Details now lives in its own card above, next to the
+                     amount picker — deliberately not repeated here. --}}
 
                 {{-- Gallery --}}
                 <div class="mt-8 grid gap-5 sm:grid-cols-2">
@@ -157,5 +244,49 @@
             </div>
         </div>
     </section>
+
+@push('scripts')
+<script>
+    // Donation Details card — amount picker. The submitted value always comes
+    // from the hidden input, so the server never trusts a button label.
+    (function () {
+        const form = document.querySelector('[data-limb-form]');
+        if (!form) return;
+
+        const amount = form.querySelector('[data-limb-amount]');
+        const customWrap = form.querySelector('[data-limb-custom]');
+        const customInput = form.querySelector('[data-limb-custom-input]');
+        const choices = [...form.querySelectorAll('[data-limb-choice]')];
+
+        choices.forEach((btn) => btn.addEventListener('click', () => {
+            choices.forEach((b) => b.classList.toggle('is-selected', b === btn));
+
+            if (btn.dataset.limbChoice === 'other') {
+                customWrap.classList.remove('hidden');
+                customInput.focus();
+                amount.value = customInput.value || '';
+            } else {
+                customWrap.classList.add('hidden');
+                amount.value = btn.dataset.limbChoice;
+            }
+        }));
+
+        customInput?.addEventListener('input', () => {
+            // Whole pounds only, matching the rest of the donation forms.
+            customInput.value = customInput.value.replace(/\D/g, '');
+            amount.value = customInput.value;
+        });
+
+        // Block a submit with no amount rather than bouncing off validation.
+        form.addEventListener('submit', (e) => {
+            if (!amount.value || Number(amount.value) < 1) {
+                e.preventDefault();
+                customWrap.classList.remove('hidden');
+                customInput.focus();
+            }
+        });
+    })();
+</script>
+@endpush
 
 @endsection
