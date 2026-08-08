@@ -78,10 +78,7 @@
         {{-- Copy. Top padding clears the fixed header (116px on mobile). --}}
         <div class="nf-container relative w-full pb-14 pt-36 sm:pb-16 sm:pt-40 lg:pb-20 lg:pt-44">
             <div class="nf-reveal max-w-2xl text-white">
-                <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white ring-1 ring-white/20 backdrop-blur-sm">
-                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span> Projects
-                </span>
-                <h1 class="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">Sponsor an Orphan Today</h1>
+                <h1 class="text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">Sponsor an Orphan Today</h1>
                 <p class="mt-4 text-sm leading-relaxed text-white/85 sm:text-base">
                     Select a child below to see their story. We offer two ways to help: choose <strong class="font-semibold text-white">monthly
                     support</strong> to cover their ongoing educational and living expenses, or give a one-off gift to

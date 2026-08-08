@@ -12,12 +12,25 @@
 
         {{-- Wider image column + capped card keeps the widget compact. --}}
         <div class="relative grid items-stretch lg:grid-cols-[1.55fr_1fr]">
-            {{-- Image --}}
-            <div class="relative min-h-[280px] sm:min-h-[360px] lg:min-h-[500px]">
-                <img src="{{ asset('images/zakathero.png') }}" alt="Zakat donations"
+            {{-- Image + heading. Matches the shared donate-hero treatment: the title
+                 is centred in the photo panel, with the padding-top clearing the
+                 fixed header and items-center balancing what's left. --}}
+            <div class="relative flex min-h-[420px] items-center pt-24 sm:min-h-[480px] lg:min-h-[560px] lg:pt-28">
+                <img src="{{ asset('images/zakathero.png') }}" alt=""
                      class="absolute inset-0 h-full w-full object-cover">
                 {{-- Blend image into the navy panel --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-navy"></div>
+                {{-- Darken the centre band so the heading holds up over the photo. --}}
+                <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.22),rgba(18,45,60,0.6)_45%,rgba(18,45,60,0.28))]"></div>
+
+                <div class="relative w-full px-6 py-10 sm:px-8 lg:px-10">
+                    <div class="nf-reveal mx-auto max-w-4xl text-center text-white">
+                        <h1 class="nf-hero-title text-4xl font-extrabold leading-[1.04] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-6xl">
+                            Purify Your Wealth, <span class="text-cream">Transform Lives</span>
+                        </h1>
+                        <span class="nf-hero-rule mx-auto mt-7 block h-1 rounded-full bg-brand" aria-hidden="true"></span>
+                    </div>
+                </div>
             </div>
 
             {{-- Donate widget (extra top padding on desktop so it clears the fixed header) --}}
