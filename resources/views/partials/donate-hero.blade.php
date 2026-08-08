@@ -1,5 +1,10 @@
 {{-- Split hero: image + heading on the left, donate widget on the right.
-     Params: $heroImage, $heroEyebrow, $heroTitle (HTML), $heroSubtitle, $widgetCauses (array) --}}
+     Params: $heroImage, $heroTitle (HTML), $widgetCauses (array)
+
+     The heading now stands alone — the eyebrow pill and subtitle were dropped so
+     the title can run large across the space up to the donate panel. Pages still
+     pass $heroEyebrow / $heroSubtitle; they're simply ignored, so restoring them
+     is a matter of putting the markup back here. --}}
 <section id="donate" class="relative overflow-hidden bg-gradient-to-br from-navy via-navy to-navy-dark">
     <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
     <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
@@ -14,19 +19,17 @@
         <div class="relative flex min-h-[400px] items-end sm:min-h-[440px] lg:min-h-[500px]">
             <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-navy-dark via-navy-dark/45 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-navy-dark/20 lg:to-navy"></div>
+            {{-- The heading now runs wide across the photo, and on lg the gradient
+                 above leaves this side clear — so darken the lower-left behind it. --}}
+            <div class="pointer-events-none absolute inset-0 hidden lg:block lg:bg-[linear-gradient(to_top_right,rgba(18,45,60,0.88),rgba(18,45,60,0.45)_38%,transparent_68%)]"></div>
 
             <div class="relative w-full p-6 pt-[8.75rem] sm:p-8 sm:pt-[9rem] lg:p-10 lg:pt-40">
-                <div class="max-w-lg text-white nf-reveal">
-                    <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
-                        <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                        {{ $heroEyebrow ?? 'Naeem Foundation' }}
-                    </span>
-                    <h1 class="mt-4 text-3xl font-extrabold leading-[1.08] sm:text-4xl lg:text-5xl">
+                <div class="nf-reveal max-w-3xl text-white">
+                    <h1 class="nf-hero-title text-4xl font-extrabold leading-[1.04] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-6xl">
                         {!! $heroTitle !!}
                     </h1>
-                    @if (!empty($heroSubtitle))
-                        <p class="mt-3 max-w-md text-sm leading-relaxed text-white/85 sm:text-base">{{ $heroSubtitle }}</p>
-                    @endif
+                    {{-- Accent rule draws itself in once the heading lands. --}}
+                    <span class="nf-hero-rule mt-6 block h-1 rounded-full bg-brand" aria-hidden="true"></span>
                 </div>
             </div>
         </div>

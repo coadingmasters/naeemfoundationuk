@@ -1056,6 +1056,43 @@
     object-fit: cover;
 }
 
+/* ---------- Giving-page hero heading ----------
+   The title carries the hero on its own now (the eyebrow and subtitle were
+   removed), so it gets a softer, slower entrance than the generic .nf-reveal,
+   plus an accent rule that draws itself in just behind it. Both key off
+   .nf-reveal's is-visible flag on the wrapper, so they stay in step. */
+.nf-hero-title {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s ease 0.05s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+    /* Keeps the title readable wherever it crosses a bright part of the photo. */
+    text-shadow: 0 2px 24px rgba(18, 45, 60, 0.35);
+}
+.nf-reveal.is-visible .nf-hero-title {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.nf-hero-rule {
+    width: 0;
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+}
+.nf-reveal.is-visible .nf-hero-rule {
+    width: 7rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nf-hero-title {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    .nf-hero-rule {
+        width: 7rem;
+        transition: none;
+    }
+}
+
 /* ---------- Full-bleed background film for a hero ----------
    Used by the Orphan Sponsorship hero: the film fills the whole section and
    the copy sits on top of it, over a darkening "layer mix" gradient. */
