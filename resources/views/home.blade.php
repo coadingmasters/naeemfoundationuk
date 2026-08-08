@@ -28,6 +28,18 @@
     // Group appeals into pages of 3 — one clean row of cards per slide.
     $appealPages = $appeals->chunk(3);
 
+    // Where an appeal card goes when clicked. The Link set in the admin always
+    // wins — that's the whole point of the field. Only when it's left empty do
+    // we fall back to the appeal's own page (or checkout for the placeholders,
+    // which have no id and so have no page of their own).
+    $appealUrl = function ($appeal) {
+        if (filled($appeal->link ?? null) && $appeal->link !== '#') {
+            return $appeal->link;
+        }
+
+        return isset($appeal->id) ? route('appeals.show', $appeal) : route('donate.checkout');
+    };
+
     // Causes carousel — managed in the admin dashboard, per region. Empty regions
     // hide the section — no default fallback.
     $causes = ($causes ?? collect());
@@ -199,7 +211,7 @@
                             <div class="w-full shrink-0" data-slide>
                                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
                                     @foreach ($page as $appeal)
-                                        <a href="{{ isset($appeal->id) ? route('appeals.show', $appeal) : $donateLink($appeal->link) }}"
+                                        <a href="{{ $appealUrl($appeal) }}"
                                            class="group flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-navy/10 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-navy/15">
                                             <div class="relative h-40 overflow-hidden sm:h-44">
                                                 <img src="{{ asset($appeal->image) }}" alt="{{ $appeal->title }}"

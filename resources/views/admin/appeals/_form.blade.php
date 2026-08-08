@@ -26,7 +26,7 @@
                     <input id="link" name="link" type="text" value="{{ old('link', $appeal->link) }}"
                            placeholder="https://… or /donate"
                            class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    <p class="mt-1 text-xs text-gray-400">Where the card links when clicked. Leave empty for no link.</p>
+                    <p class="mt-1 text-xs text-gray-400">Where the card on the homepage goes when clicked. Leave empty to send visitors to this appeal&rsquo;s own page.</p>
                 </div>
             </div>
         </div>
