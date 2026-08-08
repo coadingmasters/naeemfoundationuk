@@ -3,7 +3,10 @@
        $widgetCauses (array)  first entry becomes the fixed cause for this page
        $widgetImage  (string) basket thumbnail
        $widgetAmounts (array) four suggested amounts; the last renders as "Other"
-       $widgetTitle  (string) card heading --}}
+       $widgetTitle  (string) card heading
+       $widgetCtaLabel / $widgetCtaHref (string, optional) — a secondary button
+             under "Donate Now" that sends the donor to a fixed-price section
+             further down the page (e.g. a full limb, a full water source). --}}
 @php
     $widgetCauses = $widgetCauses ?? ['Where Most Needed'];
     $widgetImage = $widgetImage ?? 'images/changinslives1.jpg';
@@ -65,6 +68,16 @@
         Donate Now
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
+
+    {{-- Optional second action: jump to the fixed-price section below. It's an
+         anchor, not a submit, so it never posts this form. --}}
+    @if (! empty($widgetCtaLabel) && ! empty($widgetCtaHref))
+        <a href="{{ $widgetCtaHref }}"
+           class="group mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-brand/40 px-4 py-3 text-sm font-bold text-brand transition-colors hover:bg-brand hover:text-white">
+            {{ $widgetCtaLabel }}
+            <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+    @endif
 
     @include('partials.payment-icons')
 </form>

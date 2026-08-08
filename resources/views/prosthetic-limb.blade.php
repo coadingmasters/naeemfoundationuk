@@ -50,6 +50,9 @@
         'heroTitle' => 'Give the Gift of Mobility <span class="text-cream">Restore Lives</span>',
         'heroSubtitle' => 'A prosthetic limb restores far more than movement — it restores independence, confidence and the ability to earn a livelihood.',
         'widgetCauses' => ['Prosthetic Limb', 'Medical Care', 'Where Most Needed'],
+        // Sends the donor down to the fixed-price Donation Details card.
+        'widgetCtaLabel' => 'Donate a Full Prosthetic Limb',
+        'widgetCtaHref' => '#donation-details',
     ])
 
     {{-- ===================== INTRO ===================== --}}
@@ -87,7 +90,8 @@
     {{-- ===================== DONATION DETAILS CARD ===================== --}}
     {{-- Promoted out of the cream panel below so the target and the amount picker
          sit together, straight after the video. --}}
-    <section class="pb-14 sm:pb-16">
+    {{-- scroll-mt clears the fixed header when the hero button jumps here. --}}
+    <section id="donation-details" class="scroll-mt-28 pb-14 sm:pb-16">
         <div class="nf-container">
             <div class="nf-reveal overflow-hidden rounded-3xl bg-navy shadow-2xl shadow-navy/25">
                 <div class="grid lg:grid-cols-[1.15fr_1fr]">

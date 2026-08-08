@@ -8,7 +8,8 @@
      the shared AJAX handler in app.js take over, and it falls back to a normal
      POST if JavaScript is unavailable. --}}
 @php $tiersImage = $tiersImage ?? 'images/changinslives1.jpg'; @endphp
-<section class="bg-cream/40 py-14 sm:py-16">
+{{-- $tiersId lets a hero CTA anchor down to this block. --}}
+<section @isset($tiersId) id="{{ $tiersId }}" @endisset class="scroll-mt-28 bg-cream/40 py-14 sm:py-16">
     <div class="nf-container">
         <div class="nf-reveal mx-auto max-w-2xl text-center">
             @isset($eyebrow)<p class="text-sm font-semibold uppercase tracking-wider text-brand">{{ $eyebrow }}</p>@endisset

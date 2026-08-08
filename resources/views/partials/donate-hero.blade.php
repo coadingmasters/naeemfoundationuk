@@ -48,6 +48,9 @@
                     @include('partials.donate-widget', [
                         'widgetCauses' => $widgetCauses ?? ['Where Most Needed'],
                         'widgetImage' => $heroImage,
+                        // Optional "give a whole one" button — see donate-widget.
+                        'widgetCtaLabel' => $widgetCtaLabel ?? null,
+                        'widgetCtaHref' => $widgetCtaHref ?? null,
                     ])
                 @endif
             </div>

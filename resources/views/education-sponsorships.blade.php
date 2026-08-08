@@ -15,11 +15,13 @@
     }
 
     // Monthly sponsorship levels (currency follows the visitor's region).
-    // Course lengths confirmed by Naeem Foundation.
+    // Course lengths confirmed by Naeem Foundation. One flat monthly rate covers
+    // every level, so the figure lives here once rather than per row.
+    $levelAmount = 53;
     $levels = [
-        ['amount' => 53, 'label' => 'Hafiz / Hafiza', 'duration' => '2.5-year course', 'note' => 'Sponsor a student memorising the Holy Qur’an.'],
-        ['amount' => 63, 'label' => 'Alim / Alima', 'duration' => '8-year course', 'note' => 'Sponsor an Islamic scholar in training.'],
-        ['amount' => 72, 'label' => 'Mufti / Muftia', 'duration' => '2-year specialisation', 'note' => 'Sponsor advanced Islamic jurisprudence study.'],
+        ['label' => 'Hafiz / Hafiza', 'duration' => '2.5-year course', 'note' => 'Sponsor a student memorising the Holy Qur’an.'],
+        ['label' => 'Alim / Alima', 'duration' => '8-year course', 'note' => 'Sponsor an Islamic scholar in training.'],
+        ['label' => 'Mufti / Muftia', 'duration' => '2-year specialisation', 'note' => 'Sponsor advanced Islamic jurisprudence study.'],
     ];
 
     $focus = [
@@ -36,10 +38,10 @@
     @include('partials.donate-hero', [
         'heroImage' => 'images/changinslives1.jpg',
         'heroEyebrow' => 'Projects',
-        'heroTitle' => "Empowering Tomorrow's <span class=\"text-cream\">Leaders</span> Today",
+        'heroTitle' => 'Support <span class="text-cream">Education</span>',
         'heroSubtitle' => 'We believe education is the key to unlocking a world of possibilities — giving every deserving student access to quality learning, whatever their circumstances.',
         'panel' => [
-            'panelTitle' => 'Support Education',
+            'panelTitle' => 'Sponsor a Student',
             'causes' => ['Alim', 'Hafiz', 'Mufti'],
             'causeStyle' => 'buttons',
             'oneOffAmounts' => [30, 50, 100],
@@ -93,7 +95,7 @@
                     @foreach ($levels as $i => $l)
                         <div class="nf-reveal group flex items-center gap-4 rounded-xl border border-brand/15 bg-cream/50 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md"
                              data-reveal-delay="{{ $i * 90 }}">
-                            <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand text-sm font-extrabold text-white transition-transform duration-300 group-hover:scale-105">{{ money($l['amount'], 0) }}</span>
+                            <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand text-sm font-extrabold text-white transition-transform duration-300 group-hover:scale-105">{{ money($levelAmount, 0) }}</span>
                             <div class="min-w-0">
                                 <p class="font-bold text-navy-dark">{{ $l['label'] }} <span class="text-xs font-medium text-gray-400">/ month</span></p>
                                 {{-- How long the course runs, so a sponsor knows what

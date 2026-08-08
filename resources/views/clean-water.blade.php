@@ -24,6 +24,9 @@
         'heroTitle' => 'Clean Water, <span class="text-cream">Changed</span> Lives',
         'heroSubtitle' => 'Millions still live without safe water to drink. Your gift funds hand pumps, wells and filtration that bring clean, life-saving water to communities in need.',
         'widgetCauses' => ['Clean Water', 'Water Pump', 'Where Most Needed'],
+        // Sends the donor down to the fixed-price water source tiers.
+        'widgetCtaLabel' => 'Fund a Full Water Source',
+        'widgetCtaHref' => '#water-sources',
     ])
 
     {{-- ===================== INTRO + VIDEO ===================== --}}
@@ -62,6 +65,7 @@
 
     {{-- ===================== DONATION TIERS ===================== --}}
     @include('partials.give.tiers', [
+        'tiersId' => 'water-sources',
         'eyebrow' => 'Choose your gift',
         'title' => 'Fund a Water Source',
         'intro' => 'A one-off gift can leave a lasting legacy of clean water — a Sadaqah Jariyah that keeps giving long after your donation.',
