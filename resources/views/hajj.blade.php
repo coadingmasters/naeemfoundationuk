@@ -42,10 +42,6 @@
             <div class="relative flex flex-col justify-center bg-gradient-to-br from-brand to-brand-dark px-6 py-12 sm:px-10 lg:px-14 lg:pb-20 lg:pt-40">
                 <div class="pointer-events-none absolute -left-16 -top-16 h-56 w-56 rounded-full bg-white/5"></div>
                 <div class="relative max-w-lg text-white">
-                    <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
-                        <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                        Hajj 2027
-                    </span>
                     <h1 class="mt-5 text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
                         Naeem Foundation<br>Elite Hajj 2027
                     </h1>

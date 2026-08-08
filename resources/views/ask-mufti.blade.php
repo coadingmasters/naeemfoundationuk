@@ -16,10 +16,6 @@
         <div class="nf-float pointer-events-none absolute -left-16 bottom-24 h-56 w-56 rounded-full bg-white/10 blur-3xl" style="animation-delay: 1.5s"></div>
 
         <div class="relative z-10 nf-container flex min-h-[460px] flex-col items-center justify-center px-4 pb-48 pt-32 text-center sm:min-h-[540px] sm:pb-56 sm:pt-40">
-            <span class="nf-in-up inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white ring-1 ring-white/20">
-                <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                Guidance &amp; Fatwa
-            </span>
 
             <div class="nf-pop mt-6 rounded-2xl bg-white px-8 py-4 shadow-2xl shadow-navy-dark/40 sm:px-12 sm:py-5" style="animation-delay: .1s">
                 <h1 class="text-3xl font-extrabold text-navy-dark sm:text-4xl lg:text-5xl">Ask a <span class="text-brand">Mufti</span></h1>

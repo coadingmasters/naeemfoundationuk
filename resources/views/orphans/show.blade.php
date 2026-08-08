@@ -47,10 +47,7 @@
 
                         {{-- Name + facts --}}
                         <div class="text-white">
-                            <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
-                                <span class="h-1.5 w-1.5 rounded-full bg-white"></span> Sponsor an Orphan
-                            </span>
-                            <h1 class="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">{{ $orphan->name }}</h1>
+                            <h1 class="text-3xl font-extrabold leading-tight sm:text-4xl">{{ $orphan->name }}</h1>
 
                             <dl class="mt-5 space-y-2.5">
                                 @foreach ($facts as $label => $value)

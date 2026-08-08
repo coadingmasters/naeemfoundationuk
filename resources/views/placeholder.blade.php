@@ -9,10 +9,6 @@
         <div class="absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-brand/30 blur-3xl"></div>
 
         <div class="nf-container relative z-10 py-16 text-center text-white sm:py-20">
-            <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">
-                <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                {{ $pageTag ?? 'Naeem Foundation' }}
-            </span>
             <h1 class="mt-4 text-4xl font-extrabold leading-tight sm:text-5xl">{{ $pageTitle ?? 'Page' }}</h1>
 
             <nav class="mt-4 flex items-center justify-center gap-2 text-sm text-white/70">

@@ -53,10 +53,6 @@
 
             {{-- Left: copy --}}
             <div class="nf-reveal text-white">
-                <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
-                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                    Community Centre
-                </span>
 
                 <h1 class="mt-4 text-3xl font-extrabold leading-[1.1] sm:text-4xl lg:text-5xl">
                     A Home for Our <span class="text-cream">Community</span>

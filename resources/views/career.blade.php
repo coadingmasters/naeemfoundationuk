@@ -44,10 +44,6 @@
 
         <div class="nf-container relative pb-16 pt-24 text-center sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-44">
             <div class="mx-auto max-w-2xl text-white nf-reveal">
-                <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ring-1 ring-white/20">
-                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                    Careers
-                </span>
                 <h1 class="mt-5 text-4xl font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
                     This is What <span class="text-cream">We Do</span>
                 </h1>

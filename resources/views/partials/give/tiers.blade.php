@@ -1,6 +1,13 @@
 {{-- Donation tier cards (pricing-style). One tier can be featured.
-     Params: $eyebrow, $title, $intro (optional),
-             $tiers [ ['amount'=>, 'label'=>, 'note'=>, 'featured'=>bool], ... ] --}}
+     Params: $eyebrow, $title, $intro (optional), $tiersImage (optional basket
+             thumbnail), $tiers [ ['amount'=>, 'label'=>, 'note'=>,
+             'featured'=>bool, 'cause'=>optional basket label], ... ]
+
+     Each card is a real add-to-basket form, so clicking a tier drops that exact
+     amount into the basket and opens the mini-cart. No data-cart-skip: that lets
+     the shared AJAX handler in app.js take over, and it falls back to a normal
+     POST if JavaScript is unavailable. --}}
+@php $tiersImage = $tiersImage ?? 'images/changinslives1.jpg'; @endphp
 <section class="bg-cream/40 py-14 sm:py-16">
     <div class="nf-container">
         <div class="nf-reveal mx-auto max-w-2xl text-center">
@@ -21,10 +28,18 @@
                     <p class="text-3xl font-extrabold {{ $featured ? 'text-white' : 'text-brand' }} sm:text-4xl">{{ money($t['amount'], 0) }}</p>
                     <p class="mt-2 text-base font-bold {{ $featured ? 'text-white' : 'text-navy-dark' }}">{{ $t['label'] }}</p>
                     <p class="mt-1.5 flex-1 text-sm leading-relaxed {{ $featured ? 'text-white/75' : 'text-gray-500' }}">{{ $t['note'] }}</p>
-                    <a href="#donate" class="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-bold transition
-                            {{ $featured ? 'bg-white text-navy-dark hover:bg-cream' : 'bg-brand text-white hover:bg-brand-dark' }}">
-                        Donate {{ money($t['amount'], 0) }}
-                    </a>
+                    <form method="POST" action="{{ route('donate.add') }}" class="mt-5">
+                        @csrf
+                        <input type="hidden" name="cause" value="{{ $t['cause'] ?? $t['label'] }}">
+                        <input type="hidden" name="amount" value="{{ $t['amount'] }}">
+                        <input type="hidden" name="frequency" value="one-off">
+                        <input type="hidden" name="image" value="{{ $tiersImage }}">
+                        <button type="submit" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-bold transition disabled:opacity-60
+                                {{ $featured ? 'bg-white text-navy-dark hover:bg-cream' : 'bg-brand text-white hover:bg-brand-dark' }}">
+                            Donate {{ money($t['amount'], 0) }}
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </form>
                 </div>
             @endforeach
         </div>

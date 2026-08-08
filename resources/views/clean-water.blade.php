@@ -65,10 +65,11 @@
         'eyebrow' => 'Choose your gift',
         'title' => 'Fund a Water Source',
         'intro' => 'A one-off gift can leave a lasting legacy of clean water — a Sadaqah Jariyah that keeps giving long after your donation.',
+        'tiersImage' => 'images/handpump.jpg',
         'tiers' => [
-            ['amount' => 150, 'label' => 'A Hand Pump', 'note' => 'A dedicated hand pump giving one family a safe, lasting water source.'],
-            ['amount' => 350, 'label' => 'A Family Well', 'note' => 'A shallow well serving several families in a small community.', 'featured' => true],
-            ['amount' => 1500, 'label' => 'A Community Well', 'note' => 'A deep well that can serve an entire village for years to come.'],
+            ['amount' => 150, 'label' => 'A Hand Pump', 'cause' => 'Hand Pump', 'note' => 'A dedicated hand pump giving one family a safe, lasting water source.'],
+            ['amount' => 350, 'label' => 'A Family Well', 'cause' => 'Family Well', 'note' => 'A shallow well serving several families in a small community.', 'featured' => true],
+            ['amount' => 1500, 'label' => 'A Community Well', 'cause' => 'Community Well', 'note' => 'A deep well that can serve an entire village for years to come.'],
         ],
     ])
 

@@ -69,24 +69,86 @@
         </div>
     </section>
 
-    {{-- ===================== JOIN US (cream) ===================== --}}
-    <section class="pb-14">
-        <div class="nf-container">
-            <div class="rounded-2xl bg-cream px-6 py-10 sm:px-10 lg:px-12">
-                <h3 class="text-xl font-bold text-navy-dark sm:text-2xl">Join Us in Nourishing Lives</h3>
-                <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    Your generous donation can make a tangible difference in the lives of those struggling to put food on
-                    the table. By supporting our food assistance programs, you are helping to alleviate hunger, promote
-                    health, and empower individuals to build a better future.
-                </p>
+    {{-- ===================== FEED A FAMILY CARD ===================== --}}
+    @php
+        // One figure drives the copy, the tile and the submitted amount.
+        $familyCost = 150;
 
-                <div class="mt-8 border-t border-brand/15 pt-6">
-                    <h4 class="text-base font-bold text-navy-dark">Donation Options</h4>
-                    <ul class="mt-3 space-y-2 text-sm text-gray-600 sm:text-base">
-                        <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Single Donations:</span> Suggested amounts (e.g. {{ region('symbol') }}30, {{ region('symbol') }}50, {{ region('symbol') }}100, {{ region('symbol') }}250).</span></li>
-                        <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Recurring Donations:</span> Set up a monthly contribution to feed a family every month.</span></li>
-                        <li class="flex gap-2"><span class="font-semibold text-brand">›</span><span><span class="font-semibold text-navy-dark">Currency Options:</span> PKR, GBP, USD, CAD, EUR.</span></li>
-                    </ul>
+        // Currencies come from the region config so this list can never claim
+        // something the region switcher and PayPal don't actually support.
+        $currencies = collect(config('countries.list', []))->pluck('currency')->implode(', ');
+    @endphp
+    <section class="pb-14 sm:pb-16">
+        <div class="nf-container">
+            <div class="nf-reveal overflow-hidden rounded-3xl bg-navy shadow-2xl shadow-navy/25">
+                <div class="grid lg:grid-cols-[1.15fr_1fr]">
+
+                    {{-- Left: the details + the single amount --}}
+                    <div class="p-7 text-white sm:p-10 lg:p-12">
+                        <p class="text-sm font-semibold uppercase tracking-wider text-[#e9b9c6]">Join Us in Nourishing Lives</p>
+                        <h2 class="mt-2 text-2xl font-bold leading-snug sm:text-3xl">Feed a Family for a Month</h2>
+                        <p class="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
+                            Your generous donation can make a tangible difference in the lives of those struggling to put
+                            food on the table. By supporting our food assistance programs, you are helping to alleviate
+                            hunger, promote health, and empower individuals to build a better future.
+                        </p>
+
+                        <form method="POST" action="{{ route('donate.add') }}" data-cart-skip data-family-form class="mt-7">
+                            @csrf
+                            <input type="hidden" name="cause" value="Food & Sustenance">
+                            <input type="hidden" name="image" value="images/changinslives2.jpg">
+                            <input type="hidden" name="amount" value="{{ $familyCost }}">
+                            <input type="hidden" name="frequency" value="one-off" data-family-freq>
+
+                            {{-- The single amount, stated plainly. --}}
+                            <div class="flex items-center gap-4 rounded-2xl bg-white/10 p-4 ring-1 ring-white/15 sm:p-5">
+                                <span class="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-brand text-lg font-extrabold text-white shadow-lg shadow-brand/40 sm:h-20 sm:w-20 sm:text-2xl">
+                                    {{ money($familyCost, 0) }}
+                                </span>
+                                <div>
+                                    <p class="text-base font-bold text-white sm:text-lg">Feeds one family for a month</p>
+                                    <p class="mt-1 text-xs leading-relaxed text-white/65 sm:text-sm">A full ration pack — flour, rice, pulses, oil and essentials.</p>
+                                </div>
+                            </div>
+
+                            {{-- Give once, or every month (the recurring option below). --}}
+                            <p class="mt-6 text-xs font-semibold uppercase tracking-wider text-white/70">How often?</p>
+                            <div class="mt-3 grid grid-cols-2 gap-2 sm:max-w-xs">
+                                <button type="button" data-family-choice="one-off" class="nf-limb-choice is-selected">One-Off</button>
+                                <button type="button" data-family-choice="monthly" class="nf-limb-choice">Monthly</button>
+                            </div>
+
+                            <button type="submit" class="btn-brand group mt-6 w-full justify-center py-3.5 text-base sm:w-auto sm:px-9">
+                                Donate {{ money($familyCost, 0) }}
+                                <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </form>
+
+                        {{-- Donation options --}}
+                        <div class="mt-8 border-t border-white/15 pt-6">
+                            <h3 class="text-base font-bold text-white">Donation Options</h3>
+                            <ul class="mt-3 space-y-2.5 text-sm text-white/75">
+                                @foreach ([
+                                    ['Single Donations:', 'Give '.money($familyCost, 0).' once and feed a family for a full month.'],
+                                    ['Recurring Donations:', 'Set up a monthly contribution to feed a family every month.'],
+                                    ['Currency Options:', $currencies.' — set by your region at the top of the page.'],
+                                ] as $j => $opt)
+                                    <li class="nf-reveal flex gap-2" data-reveal-delay="{{ 140 + $j * 90 }}">
+                                        <span class="font-semibold text-[#e9b9c6]">&rsaquo;</span>
+                                        <span><span class="font-semibold text-white">{{ $opt[0] }}</span> {{ $opt[1] }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+
+                    {{-- Right: image --}}
+                    <div class="relative min-h-[280px] overflow-hidden lg:min-h-full">
+                        <img src="{{ asset('images/changinslives2.jpg') }}" alt="A family receiving a food ration pack"
+                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-out hover:scale-105">
+                        {{-- Blends the photo into the navy card on the left edge. --}}
+                        <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent lg:bg-gradient-to-r lg:from-navy lg:via-navy/25 lg:to-transparent" aria-hidden="true"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,5 +187,24 @@
             </div>
         </div>
     </section>
+
+@push('scripts')
+<script>
+    // Feed a Family card — the amount is fixed, so this only switches the
+    // frequency between a one-off gift and a monthly one.
+    (function () {
+        const form = document.querySelector('[data-family-form]');
+        if (!form) return;
+
+        const freq = form.querySelector('[data-family-freq]');
+        const choices = [...form.querySelectorAll('[data-family-choice]')];
+
+        choices.forEach((btn) => btn.addEventListener('click', () => {
+            choices.forEach((b) => b.classList.toggle('is-selected', b === btn));
+            freq.value = btn.dataset.familyChoice;
+        }));
+    })();
+</script>
+@endpush
 
 @endsection
