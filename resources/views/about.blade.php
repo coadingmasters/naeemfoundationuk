@@ -6,22 +6,40 @@
 @section('header-solid', 'yes')
 
 @php
-    // Tabs — each has its own content shown on click
+    // Tabs — each has its own content (array of paragraphs) shown on click.
     $tabs = [
         [
             'key' => 'about',
-            'label' => 'About & History',
-            'text' => 'Naeem Foundation is a dedicated charity committed to empowering individuals and communities. With a strong focus on addressing pressing social challenges, we strive to create a positive and lasting impact. Our mission is to uplift those in need, nurturing a society built on compassion and equality.',
+            'label' => 'Who We Are',
+            'text' => [
+                'Naeem Foundation is a global nonprofit organization carrying forward the legacy of the late Mufti Muhammad Naeem, whose life was devoted to serving people, strengthening communities, and creating opportunities for those in need. Today, that legacy has grown into an organized network working across education, food, clean water, shelter, healthcare, disability support, and assistance for vulnerable families.',
+                'Education remains at the heart of our work. More than 10,000 students from over 80 countries receive educational support, including many orphans, children without adequate support, and students from disadvantaged backgrounds. We also provide emergency assistance during earthquakes, floods, epidemics, and other crises, along with seasonal support during Ramadan, Eid, and Easter.',
+                'Our community centres provide spiritual, emotional, mental, and family support, helping individuals and families build stronger and more resilient lives.',
+            ],
+        ],
+        [
+            'key' => 'where',
+            'label' => 'Where We Are',
+            'text' => [
+                'Naeem Foundation has an established presence in the United Kingdom, the United States, and Canada, with new initiatives underway in Chile, Malaysia, and Cambodia. Our services extend across the Middle East and African countries, as well as deep into the remote deserts and mountainous regions of Sindh and Khyber Pakhtunkhwa in Pakistan.',
+                'Through this growing global network, we reach communities across diverse geographies and circumstances, connecting people, resources, and expertise to extend the legacy of service wherever support is needed.',
+            ],
         ],
         [
             'key' => 'vision',
             'label' => 'Vision',
-            'text' => 'Our vision is a world where every individual has access to the essentials of a dignified life — free from poverty, hunger and injustice. We envision thriving, self-reliant communities empowered to shape their own future, united by compassion, equality and hope for generations to come.',
+            'text' => [
+                'To build a world where every individual has the opportunity to live with dignity, learn, thrive, and contribute to a stronger and more compassionate society.',
+                'We envision communities where education opens doors, basic needs are met, vulnerable people are supported, families are strengthened, and people from diverse backgrounds can live with dignity, mutual respect, and hope.',
+            ],
         ],
         [
             'key' => 'mission',
             'label' => 'Mission',
-            'text' => 'Our mission is to uplift those in need through compassionate aid, sustainable development and community empowerment. By providing education, healthcare, clean water and emergency relief, we work to break the cycle of poverty and build a society founded on dignity, justice and shared responsibility.',
+            'text' => [
+                'Our mission is to serve humanity with compassion, dignity, and responsibility by providing sustainable support and creating meaningful opportunities for people and communities in need. We work to expand access to quality education, food, clean water, shelter, healthcare, disability support, and community services.',
+                'We respond to emergencies when communities face crisis, support families during important religious and seasonal occasions, and develop community centres that provide guidance and practical support. By connecting resources, expertise, communities, and volunteers across borders, Naeem Foundation seeks to turn the legacy of service into lasting impact, enabling individuals and communities to move from dependence towards dignity, resilience, and opportunity.',
+            ],
         ],
     ];
 
@@ -32,7 +50,6 @@
         ['label' => 'Zero Hunger', 'color' => 'navy', 'answer' => 'Our food distributions, Ramadan food packs and nutrition programmes ensure that vulnerable families and children have access to regular, nourishing meals — especially in times of crisis.'],
         ['label' => 'Good Health & Well-being', 'color' => 'brand', 'answer' => 'We fund medical camps, essential treatment and clean-water initiatives so that underserved communities can access the healthcare they need to live healthier lives.'],
         ['label' => 'Quality Education', 'color' => 'navy', 'answer' => 'We support schools, scholarships and learning resources so that children — particularly orphans and the underprivileged — can access the education that transforms their futures.'],
-        ['label' => 'Gender Equality', 'color' => 'brand', 'answer' => 'We invest in women through skills training, safe spaces and income opportunities, empowering them to lead, earn and support their households with dignity.'],
         ['label' => 'Clean Water and Sanitation', 'color' => 'navy', 'answer' => 'Our water wells and hand pumps bring safe, clean drinking water to communities who would otherwise walk miles each day for it, reducing disease and hardship.'],
         ['label' => 'Affordable and Sustainable Energy', 'color' => 'brand', 'answer' => 'Wherever possible we introduce solar and energy-efficient solutions, giving communities reliable power without adding to the strain on our environment.'],
         ['label' => 'Decent Work & Economic Growth', 'color' => 'navy', 'answer' => 'Our vocational and livelihood programmes equip people with the skills and tools they need to earn a fair, sustainable income and stand on their own feet.'],
@@ -45,7 +62,6 @@
         ['label' => 'Climate Action', 'color' => 'navy', 'answer' => 'We build climate resilience into our projects, helping vulnerable communities prepare for, withstand and recover from environmental shocks.'],
         ['label' => 'Life Below Water', 'color' => 'navy', 'answer' => 'We promote responsible practices that protect water sources and the fishing livelihoods that so many families depend upon.'],
         ['label' => 'Life on Land', 'color' => 'navy', 'answer' => 'We support sustainable land use and greening initiatives that protect the natural environment the communities we serve rely on.'],
-        ['label' => 'Peace, Justice, and Strong Institutions', 'color' => 'navy', 'answer' => 'We operate with full transparency and accountability, working only with trusted partners so that aid reaches people safely, fairly and without exploitation.'],
         ['label' => 'Partnerships for the Goals', 'color' => 'brand', 'answer' => 'We believe lasting change is only possible together, so we collaborate closely with donors, local partners and institutions to multiply our impact.'],
     ];
 
@@ -164,7 +180,7 @@
     {{-- ===================== TABS ===================== --}}
     <section class="pt-12" data-tabs>
         <div class="nf-container">
-            <div class="mx-auto grid max-w-3xl grid-cols-1 gap-3 rounded-xl bg-navy p-2 shadow-sm sm:grid-cols-3">
+            <div class="mx-auto grid max-w-3xl grid-cols-2 gap-3 rounded-xl bg-navy p-2 shadow-sm sm:grid-cols-4">
                 @foreach ($tabs as $i => $tab)
                     <button type="button" data-tab-btn="{{ $tab['key'] }}"
                             class="nf-tab rounded-lg px-6 py-3 text-center text-sm font-semibold transition-colors {{ $i === 0 ? 'is-active' : '' }}">
@@ -176,10 +192,12 @@
             {{-- Panels (one per tab) --}}
             <div class="pt-8">
                 @foreach ($tabs as $i => $tab)
-                    <p data-tab-panel="{{ $tab['key'] }}"
-                       class="max-w-4xl text-sm leading-relaxed text-gray-600 {{ $i === 0 ? '' : 'hidden' }}">
-                        {{ $tab['text'] }}
-                    </p>
+                    <div data-tab-panel="{{ $tab['key'] }}"
+                         class="max-w-4xl space-y-4 text-sm leading-relaxed text-gray-600 {{ $i === 0 ? '' : 'hidden' }}">
+                        @foreach ($tab['text'] as $para)
+                            <p>{{ $para }}</p>
+                        @endforeach
+                    </div>
                 @endforeach
             </div>
         </div>

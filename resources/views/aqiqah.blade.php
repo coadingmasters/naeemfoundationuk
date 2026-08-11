@@ -39,15 +39,18 @@
     <section class="py-14 sm:py-16">
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <div class="nf-reveal">
-                <p class="text-lg font-bold italic text-brand sm:text-xl">&ldquo;Every child is pledged for its Aqiqah.&rdquo; (Abu Dawud)</p>
+                <h2 class="text-2xl font-extrabold leading-tight text-navy-dark sm:text-3xl">Aqiqah: A Blessed Sunnah, A Gift of Sharing</h2>
+                <p class="mt-3 text-lg font-bold italic text-brand sm:text-xl">&ldquo;A child is pledged for his Aqiqah.&rdquo; (Abu Dawud)</p>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    Aqiqah is the beautiful Sunnah of sacrificing an animal in gratitude for the birth of a child &mdash;
-                    two sheep for a boy and one for a girl. It is a celebration of new life and a prayer of protection
-                    over the newborn.
+                    Aqiqah is a beautiful Sunnah of expressing gratitude to Allah for the blessing of a newborn.
+                    Traditionally, two animals are offered for a boy and one for a girl, marking the arrival of new life
+                    with gratitude, prayer, and generosity.
                 </p>
                 <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    We carry out your Aqiqah on your behalf and distribute the fresh, wholesome meat to poor families
-                    &mdash; turning your joy into a meal for someone who has little.
+                    Naeem Foundation makes it easy for you to fulfil this blessed Sunnah by carrying out your Aqiqah on
+                    your behalf and distributing the fresh meat among families in need. Your child&rsquo;s special moment
+                    can become a moment of joy for another family. Through your Aqiqah, a celebration of new life becomes
+                    an act of compassion, bringing nourishment, dignity, and happiness to those who need it most.
                 </p>
             </div>
             <div class="nf-reveal" data-reveal-delay="120">

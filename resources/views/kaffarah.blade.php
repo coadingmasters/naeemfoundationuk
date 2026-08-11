@@ -33,15 +33,17 @@
     <section class="py-14 sm:py-16">
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <div class="nf-reveal">
-                <p class="text-lg font-bold italic text-brand sm:text-xl">&ldquo;…the expiation is to feed sixty poor people.&rdquo; (Qur’an 58:4)</p>
+                <h2 class="text-2xl font-extrabold leading-tight text-navy-dark sm:text-3xl">Fulfil Your Kaffarah, Feed Those in Need</h2>
+                <p class="mt-3 text-lg font-bold italic text-brand sm:text-xl">&ldquo;The expiation is to feed sixty poor people.&rdquo; (Qur’an 58:4)</p>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    Kaffarah is a compensation prescribed in Islam for certain broken obligations &mdash; most commonly
-                    deliberately breaking a fast in Ramadan, or failing to keep a solemn oath.
+                    Kaffarah is an act of expiation prescribed in Islam for certain unfulfilled obligations, including
+                    specific violations related to fasting and solemn oaths. For those required to offer Kaffarah by
+                    feeding the poor, Naeem Foundation provides a trusted way to fulfil this responsibility.
                 </p>
                 <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    For a broken fast, the Kaffarah is to feed sixty poor people (or fast sixty consecutive days). By
-                    giving your Kaffarah through us, you fulfil this duty with certainty &mdash; and turn it into meals for
-                    families who truly need them.
+                    Your Kaffarah is used to provide nourishing meals to people and families facing hardship, ensuring that
+                    your act of worship reaches those who need it most. Fulfil your obligation with care and confidence,
+                    and turn an act of expiation into an opportunity to feed, support, and bring dignity to those in need.
                 </p>
             </div>
             <div class="nf-reveal" data-reveal-delay="120">

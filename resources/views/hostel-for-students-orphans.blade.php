@@ -48,15 +48,18 @@
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             {{-- Left: text --}}
             <div class="nf-reveal">
-                <p class="text-lg font-bold italic text-brand sm:text-xl">&ldquo;A safe home is the foundation of a bright future.&rdquo;</p>
+                <h2 class="text-2xl font-extrabold leading-tight text-navy-dark sm:text-3xl">Home Away From Home</h2>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    For many orphans and students, the biggest barrier to learning isn&rsquo;t ability &mdash; it&rsquo;s
-                    having nowhere safe to stay. Children from distant villages are often forced to abandon their studies
-                    simply because there is no home near their school or madrasah.
+                    Our state of the art student residences provide a safe, supportive, and nurturing home for more than
+                    5,000 students from 75 countries, including a large number of orphans and students without adequate
+                    family support. Each student is provided with a private bed, study desk, refrigerator, attached
+                    bathroom, three nutritious meals a day, free books, healthcare, and ambulance services.
                 </p>
                 <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    At Naeem Foundation, our hostels remove that barrier: a warm bed, wholesome food, a place to study
-                    and caring guardianship, so every child can stay, learn and flourish.
+                    The residences also offer sports facilities and an environment that encourages entrepreneurship,
+                    personal growth, and practical skill development. More than a place to live, these residences are
+                    designed to give every student a sense of belonging, dignity, and opportunity. All these facilities
+                    are provided free of charge through the support of Naeem Foundation.
                 </p>
             </div>
             {{-- Right: animated video --}}

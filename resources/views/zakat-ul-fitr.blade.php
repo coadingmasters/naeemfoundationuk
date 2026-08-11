@@ -42,9 +42,11 @@
                     <p class="text-sm font-semibold uppercase tracking-wider text-brand">An obligation before Eid</p>
                     <h2 class="mt-2 text-3xl font-bold text-navy-dark sm:text-4xl">Why Give Fitrana?</h2>
                     <p class="mt-3 text-sm leading-relaxed text-gray-500 sm:text-base">
-                        At Naeem Foundation, we believe in the power of giving and in ensuring that everyone in our
-                        community can celebrate Eid with dignity and joy — Fitrana purifies the fast and makes sure no
-                        family is left out of the celebration.
+                        Fitrana is an important obligation fulfilled before Eid al-Fitr. It purifies the fast and helps
+                        ensure that those facing hardship can share in the joy of Eid. At Naeem Foundation, we make it
+                        easier for your Fitrana to reach families and individuals in need, providing them with essential
+                        food and the dignity of celebrating Eid without worrying about their next meal. Give your Fitrana
+                        and help make Eid a time of joy for everyone.
                     </p>
                 </div>
 

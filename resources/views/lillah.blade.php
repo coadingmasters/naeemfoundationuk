@@ -34,14 +34,19 @@
     <section class="py-14 sm:py-16">
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <div class="nf-reveal">
-                <p class="text-lg font-bold italic text-brand sm:text-xl">&ldquo;Give, and it shall be given to you.&rdquo;</p>
+                <h2 class="text-2xl font-extrabold leading-tight text-navy-dark sm:text-3xl">Give Purely for the Sake of Allah</h2>
+                <p class="mt-3 text-lg font-bold italic text-brand sm:text-xl">&ldquo;Give, and it shall be given to you.&rdquo;</p>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    Lillah simply means &lsquo;for Allah&rsquo;. It is a general, voluntary charity given with no expectation
-                    of return &mdash; purely to seek His pleasure and reward.
+                    Lillah means giving purely for the sake of Allah, seeking His pleasure and reward without expecting
+                    anything in return. It is a voluntary form of charity that can be given whenever and in whatever amount
+                    one wishes. Unlike Zakat, Lillah is not restricted by the same specific conditions regarding its
+                    recipients.
                 </p>
                 <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    Unlike Zakat, Lillah is not bound by strict rules on who may receive it, so it can fund the buildings,
-                    running costs and wider relief that keep our work alive &mdash; helping anyone in need, wherever they are.
+                    Your Lillah can therefore help sustain the wider work of Naeem Foundation, from providing essential
+                    services and supporting vulnerable families to maintaining the facilities and programmes that serve
+                    communities in need. Give for His sake. Give with sincerity. Let your generosity become a source of
+                    lasting benefit for others.
                 </p>
             </div>
             <div class="nf-reveal" data-reveal-delay="120">

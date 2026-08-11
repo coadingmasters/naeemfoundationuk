@@ -40,13 +40,17 @@
 
             {{-- Left: text --}}
             <div>
-                <p class="text-lg font-bold italic text-brand sm:text-xl">“Health is the foundation of a thriving life.”</p>
+                <h2 class="text-2xl font-extrabold leading-tight text-navy-dark sm:text-3xl">Health Is a Basic Human Need</h2>
+                <p class="mt-3 text-lg font-bold italic text-brand sm:text-xl">“Health is the foundation of a thriving life.”</p>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    Health is not a luxury — it’s a basic human right. Yet, for many living in rural and underserved areas,
-                    access to healthcare can feel like an impossible dream. At Naeem Foundation, we are committed to
-                    ensuring that everyone, no matter where they live, has access to the care they need. Through innovative
-                    solutions and compassionate outreach, we’re working to bring life-saving healthcare to the doorsteps of
-                    those who need it most. Together, we can make health and well-being a reality for all.
+                    Health should never be a privilege reserved for those who can afford it. Yet, for many people living in
+                    rural and underserved communities, access to quality healthcare remains out of reach. At Naeem
+                    Foundation, we are committed to bringing essential healthcare closer to those who need it most,
+                    regardless of where they live or what they can afford.
+                </p>
+                <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    Through compassionate outreach, accessible services, and sustainable healthcare initiatives, we strive
+                    to protect lives, restore dignity, and help communities live healthier, more secure lives.
                 </p>
             </div>
 

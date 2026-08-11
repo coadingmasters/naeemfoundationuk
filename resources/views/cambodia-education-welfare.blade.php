@@ -46,12 +46,14 @@
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             {{-- Left: text --}}
             <div>
-                <p class="text-sm leading-relaxed text-gray-600 sm:text-base">
-                    In Cambodia, many schools operate without adequate classrooms, reliable access to clean water, or
-                    sufficient learning materials. Students often attend lessons hungry, while teachers work with minimal
-                    resources and limited support. These challenges force many children to miss school or drop out
-                    entirely, limiting their chances of a stable future. Addressing these gaps is essential to ensure
-                    children can learn, teachers can teach effectively, and communities can progress sustainably.
+                <h2 class="text-2xl font-extrabold leading-tight text-navy-dark sm:text-3xl">Empowering Young Minds, Building Brighter Futures in Cambodia</h2>
+                <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                    Across Cambodia, many schools continue to face a shortage of adequate classrooms, clean water,
+                    essential learning materials, and basic resources. Many children arrive at school hungry, while
+                    teachers strive to educate their students with limited tools and support. These challenges can prevent
+                    children from attending school regularly or completing their education, reducing their opportunities
+                    for a secure and stable future. Addressing these needs is vital to creating an environment where
+                    children can learn, teachers can thrive, and communities can build a stronger future.
                 </p>
 
                 <h2 class="mt-8 text-xl font-bold text-navy-dark sm:text-2xl">Our Focus in Cambodia</h2>
