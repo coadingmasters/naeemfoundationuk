@@ -16,9 +16,9 @@
 
     // Monthly sponsorship levels (currency follows the visitor's region).
     $levels = [
-        ['amount' => 45, 'label' => 'A Safe Bed', 'note' => 'A clean bed, bedding and a secure roof for one child each month.'],
-        ['amount' => 75, 'label' => 'Full Board', 'note' => 'Accommodation plus three nutritious meals a day.'],
-        ['amount' => 120, 'label' => 'Complete Care', 'note' => 'Full board, schooling, guardianship and everyday essentials.'],
+        ['amount' => 15, 'label' => 'A Safe Bed', 'note' => 'A clean bed, bedding and a secure roof for one child each month.'],
+        ['amount' => 35, 'label' => 'Full Board', 'note' => 'Accommodation plus three nutritious meals a day.'],
+        ['amount' => 53, 'label' => 'Complete Care', 'note' => 'Full board, schooling, guardianship and everyday essentials.'],
     ];
 
     // What each sponsorship makes possible.

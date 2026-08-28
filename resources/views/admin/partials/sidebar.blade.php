@@ -55,6 +55,12 @@
             'icon' => '<path d="M4 4h12l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" stroke-linejoin="round"/><path d="M8 9h8M8 13h8M8 17h5" stroke-linecap="round"/>',
         ],
         [
+            'label' => 'Page Videos',
+            'route' => 'admin.page-videos.index',
+            'active' => request()->routeIs('admin.page-videos.*'),
+            'icon' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3V9z" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
+        [
             'label' => 'Hajj Videos',
             'route' => 'admin.hajj-videos.index',
             'active' => request()->routeIs('admin.hajj-videos.*'),

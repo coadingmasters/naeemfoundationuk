@@ -5,14 +5,24 @@
 {{-- Dark full-bleed video hero, so the header stays transparent (site default). --}}
 
 @php
+    use App\Support\PageVideos;
     use App\Support\VideoSource;
 
-    // Hero background film. Same config entry the click-to-play card used, so
-    // swapping the footage in config/appeal-videos.php still drives this page.
-    $hero = config('appeal-videos.orphans-sponsorships', config('appeal-videos.default'));
-    $heroIsEmbed = VideoSource::isEmbed($hero['url']);
+    // Hero background film. Resolved through PageVideos so an admin override
+    // (Admin -> Page Videos) wins over the config default; the same entry also
+    // drives the click-to-play card further down the page.
+    $hero = PageVideos::resolve('orphans-sponsorships');
 
-    if ($heroIsEmbed) {
+    // A Facebook plugin video can't loop chrome-less as a background, so if the
+    // page's video is a Facebook link we show the poster still here (the
+    // click-to-play card below still embeds it).
+    $heroIsFacebook = VideoSource::isFacebook($hero['url']);
+    $heroIsEmbed = VideoSource::isEmbed($hero['url']) && ! $heroIsFacebook;
+    $heroSrc = null;
+
+    if ($heroIsFacebook) {
+        // no background player — poster only
+    } elseif ($heroIsEmbed) {
         $embed = VideoSource::embedUrl($hero['url']);
 
         if (str_contains($embed, 'player.vimeo.com')) {
@@ -62,7 +72,7 @@
                         allow="autoplay; encrypted-media; picture-in-picture"
                         referrerpolicy="strict-origin-when-cross-origin"
                         tabindex="-1" frameborder="0" allowfullscreen></iframe>
-            @else
+            @elseif ($heroSrc)
                 <video class="nf-herovideo__media" poster="{{ asset($hero['poster']) }}"
                        autoplay muted loop playsinline preload="metadata" tabindex="-1">
                     <source src="{{ $heroSrc }}">

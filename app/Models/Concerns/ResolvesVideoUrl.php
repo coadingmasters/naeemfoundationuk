@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 /**
  * Shared behaviour for models that hold a single video URL, which may be a
- * YouTube/Vimeo link (embedded via iframe) or an uploaded file path.
+ * YouTube/Vimeo/Facebook link (embedded via iframe) or an uploaded file path.
  */
 trait ResolvesVideoUrl
 {
@@ -23,13 +23,13 @@ trait ResolvesVideoUrl
         return $query->orderBy('sort_order')->orderByDesc('id');
     }
 
-    /** True when the URL is a YouTube/Vimeo link (embed via iframe). */
+    /** True when the URL is a YouTube/Vimeo/Facebook link (embed via iframe). */
     public function getIsEmbedAttribute(): bool
     {
-        return (bool) preg_match('#(youtube\.com|youtu\.be|vimeo\.com)#i', (string) $this->video_url);
+        return (bool) preg_match('#(youtube\.com|youtu\.be|vimeo\.com|facebook\.com|fb\.watch)#i', (string) $this->video_url);
     }
 
-    /** A ready-to-embed URL for YouTube/Vimeo; the raw URL/path otherwise. */
+    /** A ready-to-embed URL for YouTube/Vimeo/Facebook; the raw URL/path otherwise. */
     public function getEmbedUrlAttribute(): string
     {
         $url = (string) $this->video_url;
@@ -43,6 +43,10 @@ trait ResolvesVideoUrl
 
         if (preg_match('#vimeo\.com/(\d+)#i', $url, $m)) {
             return 'https://player.vimeo.com/video/'.$m[1];
+        }
+
+        if (preg_match('#(facebook\.com|fb\.watch)#i', $url)) {
+            return 'https://www.facebook.com/plugins/video.php?href='.rawurlencode($url).'&show_text=false';
         }
 
         return $url;

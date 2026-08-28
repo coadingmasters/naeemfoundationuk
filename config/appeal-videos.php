@@ -6,11 +6,15 @@
 |--------------------------------------------------------------------------
 |
 | Drives the "text left / video right" section under the hero on every Giving
-| page. Swap `url` for your real footage — either a YouTube/Vimeo link
+| page. Swap `url` for your real footage — a YouTube / Vimeo / Facebook link
 | (e.g. https://youtu.be/xxxx) or an uploaded file path (e.g. videos/zakat.mp4
 | placed in public/videos/). `poster` is the still shown before play.
 |
 | Any page without an entry here falls back to 'default'.
+|
+| These are the built-in defaults. Admins can override any page's video without
+| a code change via Admin → Page Videos (stored in the `page_videos` table and
+| resolved by App\Support\PageVideos).
 |
 */
 
@@ -67,7 +71,7 @@ return [
         'title' => 'Inside a Ramadan food pack',
     ],
     'food-sustenance' => [
-        'url' => $sample,
+        'url' => 'https://www.youtube.com/watch?v=Yys7PIwg6Fs',
         'poster' => 'images/changinslives2.jpg',
         'title' => 'Feeding families in need',
     ],
@@ -92,22 +96,22 @@ return [
         'title' => 'Clean water, changed lives',
     ],
     'education-sponsorships' => [
-        'url' => $sample,
+        'url' => 'https://www.youtube.com/watch?v=i6PE9GlHhb4',
         'poster' => 'images/changinslives1.jpg',
         'title' => 'Empowering the next generation',
     ],
     'hostel-for-students-orphans' => [
-        'url' => $sample,
+        'url' => 'https://www.youtube.com/watch?v=c84z1nCNafI',
         'poster' => 'images/changinslives4.jpg',
         'title' => 'A safe home to learn and grow',
     ],
     'clean-water' => [
-        'url' => $sample,
+        'url' => 'https://www.youtube.com/watch?v=qJMuAUdxpm0',
         'poster' => 'images/handpump.jpg',
         'title' => 'Clean water, changed lives',
     ],
     'orphans-sponsorships' => [
-        'url' => $sample,
+        'url' => 'https://www.youtube.com/watch?v=i6PE9GlHhb4',
         'poster' => 'images/supporton.png',
         'title' => 'Change an orphan’s life',
     ],
@@ -152,7 +156,7 @@ return [
         'title' => 'Your Qurbani, delivered with care',
     ],
     'prosthetic-limb' => [
-        'url' => $sample,
+        'url' => 'https://www.facebook.com/reel/1368501788717734',
         'poster' => 'images/changinslives4.jpg',
         'title' => 'Helping someone walk again',
     ],

@@ -1,8 +1,11 @@
-{{-- Animated click-to-play video card. Param: $videoKey (see config/appeal-videos.php). --}}
+{{-- Animated click-to-play video card. Param: $videoKey (see config/appeal-videos.php).
+     The video is resolved through App\Support\PageVideos so an admin override
+     (Admin -> Page Videos) wins over the config default. --}}
 @php
+    use App\Support\PageVideos;
     use App\Support\VideoSource;
 
-    $v = config('appeal-videos.'.($videoKey ?? 'default'), config('appeal-videos.default'));
+    $v = PageVideos::resolve($videoKey ?? 'default');
     $isEmbed = VideoSource::isEmbed($v['url']);
     $src = $isEmbed ? VideoSource::embedUrl($v['url'], true) : VideoSource::playableUrl($v['url']);
 @endphp

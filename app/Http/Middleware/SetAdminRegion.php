@@ -44,7 +44,11 @@ class SetAdminRegion
             $action = $request->route()?->getActionMethod();
             $name = (string) ($request->route()?->getName() ?? '');
 
-            if (in_array($action, ['create', 'store'], true) && ! str_starts_with($name, 'admin.users')) {
+            // Resources that aren't region-owned need no region to be created.
+            $regionExempt = ['admin.users', 'admin.page-videos'];
+            $needsRegion = ! collect($regionExempt)->contains(fn ($prefix) => str_starts_with($name, $prefix));
+
+            if (in_array($action, ['create', 'store'], true) && $needsRegion) {
                 // Where to continue once they pick a region (the create page they wanted).
                 $to = $request->isMethod('get') ? $request->url() : url()->previous();
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\NewsPostController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\OrphanController as AdminOrphanController;
+use App\Http\Controllers\Admin\PageVideoController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\AnnualReportController;
@@ -236,6 +237,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('hajj-videos', HajjVideoController::class)
             ->except(['show']);
+
+        // Per-page hero videos — an admin picks a Giving page and sets/uploads a
+        // video that overrides the built-in default. Keyed by page slug, not an
+        // id, so "edit" works before a row exists.
+        Route::get('page-videos', [PageVideoController::class, 'index'])->name('page-videos.index');
+        Route::get('page-videos/create', [PageVideoController::class, 'create'])->name('page-videos.create');
+        Route::post('page-videos', [PageVideoController::class, 'store'])->name('page-videos.store');
+        Route::get('page-videos/{pageKey}/edit', [PageVideoController::class, 'edit'])->name('page-videos.edit');
+        Route::put('page-videos/{pageKey}', [PageVideoController::class, 'update'])->name('page-videos.update');
+        Route::delete('page-videos/{pageKey}', [PageVideoController::class, 'destroy'])->name('page-videos.destroy');
 
         // Hajj 2027 registrations submitted through the public form (read + delete + export).
         Route::get('hajj-registrations', [AdminHajjRegistrationController::class, 'index'])->name('hajj-registrations.index');
