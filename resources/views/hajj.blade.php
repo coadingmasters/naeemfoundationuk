@@ -65,7 +65,7 @@
 
             {{-- Right image --}}
             <div class="relative min-h-[280px] lg:min-h-full">
-                <img src="{{ asset('images/homepagehero.png') }}" alt="Pilgrims performing Hajj"
+                <img src="{{ asset('images/hajj-kaaba.jpg') }}" alt="Pilgrims performing Tawaf around the Kaaba"
                      class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent lg:bg-gradient-to-l lg:from-transparent lg:to-brand/30"></div>
             </div>
@@ -113,7 +113,7 @@
     <section class="pb-14">
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <div class="relative order-2 lg:order-1">
-                <img src="{{ asset('images/zakathero.png') }}" alt="The Kaaba in Makkah"
+                <img src="{{ asset('images/hajj-kaaba.jpg') }}" alt="The Kaaba in Makkah"
                      class="h-72 w-full rounded-2xl object-cover shadow-lg sm:h-80 lg:h-[420px]">
             </div>
             <div class="order-1 lg:order-2">
@@ -151,7 +151,7 @@
                 </p>
             </div>
             <div class="relative">
-                <img src="{{ asset('images/givezakat.png') }}" alt="Pilgrims during Hajj"
+                <img src="{{ asset('images/hajj-arafat.jpg') }}" alt="Pilgrims gathered on the plains of Arafat"
                      class="h-72 w-full rounded-2xl object-cover shadow-lg sm:h-80 lg:h-[420px]">
             </div>
         </div>
