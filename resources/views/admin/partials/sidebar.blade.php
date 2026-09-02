@@ -13,6 +13,12 @@
             'icon' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-4 4 3 3-2 6 5" stroke-linecap="round" stroke-linejoin="round"/>',
         ],
         [
+            'label' => 'Hero Banners',
+            'route' => 'admin.page-heroes.index',
+            'active' => request()->routeIs('admin.page-heroes.*'),
+            'icon' => '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.7"/><path d="M21 15.5l-5.5-5.5L5 20" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
+        [
             'label' => 'Latest Appeals',
             'route' => 'admin.appeals.index',
             'active' => request()->routeIs('admin.appeals.*'),

@@ -5,6 +5,12 @@
      the title can run large across the space up to the donate panel. Pages still
      pass $heroEyebrow / $heroSubtitle; they're simply ignored, so restoring them
      is a matter of putting the markup back here. --}}
+@php
+    // An admin upload (Admin -> Hero Banners) overrides the page's hardcoded
+    // default, keyed by the current route name — no code change needed to
+    // swap a hero photo once a banner is set for this page.
+    $heroImage = \App\Support\PageHeroes::resolve(request()->route()?->getName() ?? '', $heroImage);
+@endphp
 <section id="donate" class="relative overflow-hidden bg-gradient-to-br from-navy via-navy to-navy-dark">
     <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
     <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\NewsPostController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\OrphanController as AdminOrphanController;
+use App\Http\Controllers\Admin\PageHeroController;
 use App\Http\Controllers\Admin\PageVideoController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProjectController;
@@ -247,6 +248,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('page-videos/{pageKey}/edit', [PageVideoController::class, 'edit'])->name('page-videos.edit');
         Route::put('page-videos/{pageKey}', [PageVideoController::class, 'update'])->name('page-videos.update');
         Route::delete('page-videos/{pageKey}', [PageVideoController::class, 'destroy'])->name('page-videos.destroy');
+
+        // Per-page hero banners — an admin picks a Giving page and uploads a
+        // photo (auto-resized) that overrides the built-in hero background.
+        // Same page-keyed-by-route-name pattern as page-videos above.
+        Route::get('page-heroes', [PageHeroController::class, 'index'])->name('page-heroes.index');
+        Route::get('page-heroes/create', [PageHeroController::class, 'create'])->name('page-heroes.create');
+        Route::post('page-heroes', [PageHeroController::class, 'store'])->name('page-heroes.store');
+        Route::get('page-heroes/{pageKey}/edit', [PageHeroController::class, 'edit'])->name('page-heroes.edit');
+        Route::put('page-heroes/{pageKey}', [PageHeroController::class, 'update'])->name('page-heroes.update');
+        Route::delete('page-heroes/{pageKey}', [PageHeroController::class, 'destroy'])->name('page-heroes.destroy');
 
         // Hajj 2027 registrations submitted through the public form (read + delete + export).
         Route::get('hajj-registrations', [AdminHajjRegistrationController::class, 'index'])->name('hajj-registrations.index');

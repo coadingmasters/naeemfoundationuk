@@ -44,4 +44,66 @@ trait HandlesImageUploads
             }
         }
     }
+
+    /**
+     * Like storeUploadedImage(), but downscales the photo first so an admin
+     * can upload a full-size phone/camera photo straight from their device —
+     * no manual resizing needed. Only shrinks (never upscales); re-encodes at
+     * a web-friendly quality. Falls back to a plain move if GD can't decode
+     * the file (e.g. an unusual format), so an upload never hard-fails.
+     */
+    protected function storeResizedImage(UploadedFile $file, string $dir, string $prefix, int $maxWidth = 1920): string
+    {
+        $ext = strtolower($file->getClientOriginalExtension()) ?: 'jpg';
+        if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+            $ext = 'jpg';
+        }
+
+        $name = $prefix.'-'.now()->format('YmdHis').'-'.substr(md5(uniqid('', true)), 0, 8).'.'.$ext;
+        $destDir = $this->webRoot().'/'.$dir;
+        if (! is_dir($destDir)) {
+            @mkdir($destDir, 0755, true);
+        }
+        $destPath = $destDir.'/'.$name;
+
+        $source = match ($ext) {
+            'png' => @imagecreatefrompng($file->getRealPath()),
+            'webp' => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($file->getRealPath()) : false,
+            default => @imagecreatefromjpeg($file->getRealPath()),
+        };
+
+        if (! $source) {
+            // GD couldn't decode it — store the original as-is rather than fail the upload.
+            $file->move($destDir, $name);
+
+            return $dir.'/'.$name;
+        }
+
+        $width = imagesx($source);
+        $height = imagesy($source);
+
+        if ($width > $maxWidth) {
+            $newWidth = $maxWidth;
+            $newHeight = (int) round($height * ($maxWidth / $width));
+            $resized = imagecreatetruecolor($newWidth, $newHeight);
+
+            if ($ext === 'png') {
+                imagealphablending($resized, false);
+                imagesavealpha($resized, true);
+            }
+
+            imagecopyresampled($resized, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+            imagedestroy($source);
+            $source = $resized;
+        }
+
+        match ($ext) {
+            'png' => imagepng($source, $destPath, 6),
+            'webp' => function_exists('imagewebp') ? imagewebp($source, $destPath, 82) : imagejpeg($source, $destPath, 82),
+            default => imagejpeg($source, $destPath, 82),
+        };
+        imagedestroy($source);
+
+        return $dir.'/'.$name;
+    }
 }

@@ -2,6 +2,11 @@
 
 @section('title', 'Zakat — ' . config('app.name'))
 
+@php
+    // Admin -> Hero Banners can override this without a code change.
+    $heroImage = \App\Support\PageHeroes::resolve('zakat', 'images/zakathero.png');
+@endphp
+
 @section('content')
 
     {{-- ===================== HERO + DONATE WIDGET ===================== --}}
@@ -16,7 +21,7 @@
                  is centred in the photo panel, with the padding-top clearing the
                  fixed header and items-center balancing what's left. --}}
             <div class="relative flex min-h-[420px] items-center pt-24 sm:min-h-[480px] lg:min-h-[560px] lg:pt-28">
-                <img src="{{ asset('images/zakathero.png') }}" alt=""
+                <img src="{{ asset($heroImage) }}" alt=""
                      class="absolute inset-0 h-full w-full object-cover">
                 {{-- Blend image into the navy panel --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-navy"></div>
@@ -43,7 +48,7 @@
                 <form method="POST" action="{{ route('donate.add') }}" data-donate-form
                       class="mt-5 w-full rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6 lg:max-w-[28rem]">
                     @csrf
-                    <input type="hidden" name="image" value="images/zakathero.png">
+                    <input type="hidden" name="image" value="{{ $heroImage }}">
 
                     <p class="text-center text-sm font-bold uppercase tracking-wide text-brand">Choose an amount</p>
 
