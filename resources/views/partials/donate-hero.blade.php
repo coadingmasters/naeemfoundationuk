@@ -11,29 +11,27 @@
     // swap a hero photo once a banner is set for this page.
     $heroImage = \App\Support\PageHeroes::resolve(request()->route()?->getName() ?? '', $heroImage);
 @endphp
-<section id="donate" class="relative overflow-hidden bg-gradient-to-br from-navy via-navy to-navy-dark">
+<section id="donate" class="relative overflow-hidden">
+    {{-- Full-bleed photo behind the whole hero — heading column AND the
+         donate panel column — with a single light, even tint so the photo
+         stays clearly visible edge to edge instead of fading into a solid
+         navy block behind the form. $heroImagePosition (optional): an
+         object-position override for photos whose subject isn't centred. --}}
+    <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $heroImagePosition ?? '' }}">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.35),rgba(18,45,60,0.55)_45%,rgba(18,45,60,0.4))]"></div>
+
     <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
     <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
 
     {{-- Image column is wider than the widget column so the photo gets more
          room and the donation card reads as a compact, professional panel. --}}
     <div class="relative grid items-stretch lg:grid-cols-[1.55fr_1fr]">
-        {{-- Image + heading. The heading is centred in the photo panel, both axes.
-             The padding-top on this flex box (not on the copy) clears the fixed
-             header — 116px on mobile — while leaving the remaining space for
-             items-center to balance, so the title sits optically centred rather
-             than pinned to the bottom. A long headline still grows the panel. --}}
+        {{-- Heading. The padding-top on this flex box (not on the copy) clears
+             the fixed header — 116px on mobile — while leaving the remaining
+             space for items-center to balance, so the title sits optically
+             centred rather than pinned to the bottom. A long headline still
+             grows the panel. --}}
         <div class="relative flex min-h-[440px] items-center pt-24 sm:min-h-[500px] lg:min-h-[580px] lg:pt-28">
-            {{-- $heroImagePosition (optional): object-position override for photos
-                 whose subject isn't centred — e.g. a wide banner-shaped image. --}}
-            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $heroImagePosition ?? '' }}">
-            <div class="absolute inset-0 bg-gradient-to-t from-navy-dark via-navy-dark/45 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-navy-dark/20 lg:to-navy"></div>
-            {{-- The heading now sits across the middle of the photo, where the
-                 gradient above is at its weakest — so darken the centre band at
-                 every breakpoint, not just lg, or the title washes out on bright
-                 images. --}}
-            <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.22),rgba(18,45,60,0.6)_45%,rgba(18,45,60,0.28))]"></div>
-
             <div class="relative w-full px-6 py-10 sm:px-8 lg:px-10">
                 <div class="nf-reveal mx-auto max-w-4xl text-center text-white">
                     <h1 class="nf-hero-title text-4xl font-extrabold leading-[1.04] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-6xl xl:text-[4.25rem]">
