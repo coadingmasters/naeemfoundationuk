@@ -18,7 +18,9 @@
              items-center to balance, so the title sits optically centred rather
              than pinned to the bottom. A long headline still grows the panel. --}}
         <div class="relative flex min-h-[440px] items-center pt-24 sm:min-h-[500px] lg:min-h-[580px] lg:pt-28">
-            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover">
+            {{-- $heroImagePosition (optional): object-position override for photos
+                 whose subject isn't centred — e.g. a wide banner-shaped image. --}}
+            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $heroImagePosition ?? '' }}">
             <div class="absolute inset-0 bg-gradient-to-t from-navy-dark via-navy-dark/45 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-navy-dark/20 lg:to-navy"></div>
             {{-- The heading now sits across the middle of the photo, where the
                  gradient above is at its weakest — so darken the centre band at

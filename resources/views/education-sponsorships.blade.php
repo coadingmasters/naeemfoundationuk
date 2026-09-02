@@ -36,7 +36,10 @@
 
     {{-- ===================== HERO + DONATE ===================== --}}
     @include('partials.donate-hero', [
-        'heroImage' => 'images/changinslives1.jpg',
+        'heroImage' => 'images/naeemeducation.jpeg',
+        // The photo is a wide banner shot — bias the crop left so the children
+        // stay in frame instead of a single face at dead centre.
+        'heroImagePosition' => 'object-[20%_center]',
         'heroEyebrow' => 'Projects',
         'heroTitle' => 'Support <span class="text-cream">Education</span>',
         'heroSubtitle' => 'We believe education is the key to unlocking a world of possibilities — giving every deserving student access to quality learning, whatever their circumstances.',
