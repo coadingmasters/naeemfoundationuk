@@ -55,6 +55,20 @@
         ],
     ])
 
+    {{-- ===================== CLASSROOM BANNER ===================== --}}
+    <section class="py-12 sm:py-14">
+        <div class="nf-container">
+            <div class="nf-reveal mb-6 text-center">
+                <p class="text-sm font-semibold uppercase tracking-wider text-brand">On the ground</p>
+                <h2 class="mt-2 text-2xl font-bold text-navy-dark sm:text-3xl">Inside a Naeem Foundation Classroom</h2>
+            </div>
+            <div class="nf-reveal aspect-[1600/291] w-full overflow-hidden rounded-2xl shadow-sm" data-reveal-delay="120">
+                <img src="{{ asset('images/naeemeducation.jpeg') }}" alt="Students inside a Naeem Foundation classroom"
+                     class="h-full w-full object-cover">
+            </div>
+        </div>
+    </section>
+
     {{-- ===================== INTRO + VIDEO ===================== --}}
     <section class="py-14 sm:py-16">
         <div class="nf-container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
