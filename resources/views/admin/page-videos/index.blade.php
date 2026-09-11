@@ -13,70 +13,57 @@
 @endsection
 
 @section('content')
-    <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-                <thead class="border-b border-gray-100 bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
-                    <tr>
-                        <th class="px-5 py-3 font-semibold">Page</th>
-                        <th class="px-5 py-3 font-semibold">Current video</th>
-                        <th class="px-5 py-3 font-semibold">Source</th>
-                        <th class="px-5 py-3 font-semibold">Status</th>
-                        <th class="px-5 py-3 text-right font-semibold">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @foreach ($rows as $row)
-                        @php $custom = $row['video']; @endphp
-                        <tr class="transition hover:bg-gray-50/70">
-                            <td class="px-5 py-3">
-                                <p class="font-semibold text-navy-dark">{{ $row['label'] }}</p>
-                                <p class="text-xs text-gray-400">/{{ $row['key'] }}</p>
-                            </td>
-                            <td class="px-5 py-3">
-                                <p class="max-w-xs truncate text-xs text-gray-500">{{ \Illuminate\Support\Str::limit($row['resolved']['url'], 60) }}</p>
-                            </td>
-                            <td class="px-5 py-3">
-                                @if ($custom)
-                                    <span class="inline-flex items-center rounded-full bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">Custom</span>
-                                @else
-                                    <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500">Default</span>
-                                @endif
-                            </td>
-                            <td class="px-5 py-3">
-                                @if (! $custom)
-                                    <span class="text-xs text-gray-400">—</span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold {{ $custom->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
-                                        <span class="h-1.5 w-1.5 rounded-full {{ $custom->is_active ? 'bg-green-500' : 'bg-gray-400' }}"></span>
-                                        {{ $custom->is_active ? 'Live' : 'Hidden' }}
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-5 py-3">
-                                <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('admin.page-videos.edit', $row['key']) }}"
-                                       class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-navy transition hover:border-brand hover:text-brand">
-                                        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4l10-10-4-4L4 16v4zM13.5 6.5l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        {{ $custom ? 'Edit' : 'Set video' }}
-                                    </a>
-                                    @if ($custom)
-                                        <form method="POST" action="{{ route('admin.page-videos.destroy', $row['key']) }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" data-admin-delete data-label="the custom video for {{ $row['label'] }}"
-                                                    class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:border-red-300 hover:bg-red-50">
-                                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                Reset
-                                            </button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        @foreach ($rows as $i => $row)
+            @php $custom = $row['video']; @endphp
+            <div class="nf-in-up overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+                 style="animation-delay: {{ min($i * 50, 500) }}ms">
+                {{-- Video preview header — a branded play-button treatment rather
+                     than a fetched thumbnail, since the source can be a YouTube,
+                     Vimeo, Facebook or uploaded-file link. --}}
+                <div class="relative flex h-28 items-center justify-center overflow-hidden bg-gradient-to-br from-navy to-navy-dark">
+                    <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-brand/20 blur-2xl"></div>
+                    <div class="pointer-events-none absolute -bottom-8 -left-6 h-24 w-24 rounded-full bg-white/5 blur-2xl"></div>
+                    <span class="relative grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white ring-1 ring-white/20 transition group-hover:scale-105">
+                        <svg class="h-5 w-5 translate-x-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.72-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>
+                    </span>
+                    <span class="absolute right-2 top-2 inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $custom ? 'bg-brand/90 text-white' : 'bg-white/90 text-gray-500' }}">
+                        {{ $custom ? 'Custom' : 'Default' }}
+                    </span>
+                    @if ($custom && ! $custom->is_active)
+                        <span class="absolute left-2 top-2 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-gray-500">
+                            <span class="h-1.5 w-1.5 rounded-full bg-gray-400"></span> Hidden
+                        </span>
+                    @endif
+                </div>
+
+                <div class="p-5">
+                    <p class="font-semibold text-navy-dark">{{ $row['label'] }}</p>
+                    <p class="text-xs text-gray-400">/{{ $row['key'] }}</p>
+                    <p class="mt-2 truncate text-xs text-gray-500" title="{{ $row['resolved']['url'] }}">
+                        {{ \Illuminate\Support\Str::limit($row['resolved']['url'], 46) }}
+                    </p>
+
+                    <div class="mt-4 flex items-center gap-2">
+                        <a href="{{ route('admin.page-videos.edit', $row['key']) }}"
+                           class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-navy transition hover:border-brand hover:text-brand">
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4l10-10-4-4L4 16v4zM13.5 6.5l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            {{ $custom ? 'Edit' : 'Set video' }}
+                        </a>
+                        @if ($custom)
+                            <form method="POST" action="{{ route('admin.page-videos.destroy', $row['key']) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" data-admin-delete data-label="the custom video for {{ $row['label'] }}"
+                                        class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:border-red-300 hover:bg-red-50">
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    Reset
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 @endsection
