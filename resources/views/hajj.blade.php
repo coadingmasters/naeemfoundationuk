@@ -31,6 +31,8 @@
     ];
 
     $brochure = asset('pdf/Hajj_27_Brochure.pdf');
+    // Hero-only document — the Elite Hajj profile PDF.
+    $eliteProfile = asset('pdf/Elite_Hajj_2027_Profile.pdf');
 @endphp
 
 @section('content')
@@ -55,9 +57,14 @@
                             Register Now
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>
-                        <a href="{{ $brochure }}" target="_blank" rel="noopener"
+                        <a href="{{ $eliteProfile }}" target="_blank" rel="noopener"
                            class="inline-flex items-center justify-center gap-2 rounded-md border border-white/40 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
-                            View Brochure
+                            View Document
+                        </a>
+                        <a href="{{ $eliteProfile }}" download
+                           class="inline-flex items-center justify-center gap-2 rounded-md border border-white/40 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Download PDF
                         </a>
                     </div>
                 </div>
