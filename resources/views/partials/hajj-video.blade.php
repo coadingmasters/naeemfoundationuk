@@ -1,12 +1,13 @@
 {{-- Renders a single Hajj video. Expects $video with: is_embed, embed_url,
      playable_url, title, video_url.
-     Facebook videos are almost always Reels (portrait, 9:16) — cropping them
-     into a landscape box looks wrong, so they get a narrower, taller "phone"
-     frame instead. Everything else (YouTube/Vimeo/uploaded files) keeps the
-     standard 16:9 frame. --}}
+     Testimonial-style clips — Facebook links (almost always Reels) and any
+     directly uploaded file (these are phone-shot review videos, shot
+     vertically) — are portrait, so cropping them into a 16:9 box looks
+     wrong. They get a narrower, taller "phone" frame instead. YouTube/Vimeo
+     embeds (standard landscape-hosted video) keep the normal 16:9 frame. --}}
 @php
-    $isFacebook = \App\Support\VideoSource::isFacebook($video->video_url ?? null);
-    $frameClass = $isFacebook
+    $isPortrait = \App\Support\VideoSource::isFacebook($video->video_url ?? null) || ! $video->is_embed;
+    $frameClass = $isPortrait
         ? 'mx-auto aspect-[9/16] w-full max-w-[280px]'
         : 'aspect-video w-full';
 @endphp
