@@ -22,6 +22,7 @@
         <div class="h-full w-0 rounded-full bg-brand transition-[width] duration-150 ease-out" data-upload-progress-fill></div>
     </div>
     <p class="mt-1.5 text-xs font-semibold text-navy-dark" data-upload-progress-pct>Uploading… 0%</p>
+    <div class="mt-2 hidden rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-upload-error></div>
 </div>
 
 @push('scripts')
@@ -34,6 +35,7 @@
             const pctLabel = form.querySelector('[data-upload-progress-pct]');
             if (!fileInput || !bar || !fill || !pctLabel) return;
 
+            const errorBox = form.querySelector('[data-upload-error]');
             const submitBtn = form.querySelector('button[type="submit"]');
             const submitBtnOriginalHtml = submitBtn ? submitBtn.innerHTML : '';
 
@@ -44,9 +46,14 @@
             };
 
             const setFailed = (text) => {
-                pctLabel.textContent = text;
+                pctLabel.textContent = 'Upload failed';
                 fill.classList.remove('bg-brand');
                 fill.classList.add('bg-red-500');
+                if (errorBox) {
+                    errorBox.textContent = text;
+                    errorBox.classList.remove('hidden');
+                    errorBox.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+                }
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = submitBtnOriginalHtml;
@@ -63,6 +70,13 @@
                 const formData = new FormData(form);
                 const xhr = new XMLHttpRequest();
                 xhr.open(form.getAttribute('method') || 'POST', form.action, true);
+                // Ask for JSON back. Without this the server answers with a
+                // redirect, which XHR follows transparently — silently eating
+                // the flashed success/validation messages before the browser
+                // ever renders them, so a rejected upload looked like nothing
+                // happened at all.
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.setRequestHeader('Accept', 'application/json');
                 // Generous ceiling for a large file on a slow connection — just
                 // under the server's own 1200s max_execution_time/max_input_time
                 // (public/.htaccess), so a genuinely slow-but-progressing upload
@@ -81,15 +95,31 @@
                 });
 
                 xhr.addEventListener('load', () => {
-                    // The server always responds with a redirect (to the index
-                    // on success, or back to this form with errors on
-                    // validation failure) — XHR follows it transparently, so
-                    // just send the browser to wherever it ended up.
-                    if (xhr.status >= 200 && xhr.status < 400) {
-                        window.location.href = xhr.responseURL || form.action;
-                    } else {
-                        setFailed('Upload failed (server error) — please try again.');
+                    let payload = null;
+                    try { payload = JSON.parse(xhr.responseText); } catch (err) { /* not JSON */ }
+
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        // Saved. The success message is flashed server-side and
+                        // shows on the page we're about to land on.
+                        setProgress('Saved — loading…', 100);
+                        window.location.href = (payload && payload.redirect) || xhr.responseURL || form.action;
+                        return;
                     }
+
+                    if (xhr.status === 422 && payload && payload.errors) {
+                        // Validation rejected it — show exactly why, rather
+                        // than leaving the admin guessing.
+                        const messages = Object.values(payload.errors).flat();
+                        setFailed(messages.join(' '));
+                        return;
+                    }
+
+                    if (xhr.status === 413) {
+                        setFailed('That file is too large for the server to accept.');
+                        return;
+                    }
+
+                    setFailed('Upload failed (server error ' + xhr.status + ') — please try again.');
                 });
 
                 xhr.addEventListener('error', () => setFailed('Upload failed — check your connection and try again.'));
@@ -97,6 +127,9 @@
 
                 bar.classList.remove('hidden');
                 bar.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+                fill.classList.remove('bg-red-500');
+                fill.classList.add('bg-brand');
+                if (errorBox) errorBox.classList.add('hidden');
                 if (submitBtn) submitBtn.disabled = true;
                 setProgress('Uploading… 0%', 0);
 

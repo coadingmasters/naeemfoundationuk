@@ -4,15 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Concerns\AssignsSortOrder;
 use App\Http\Controllers\Concerns\HandlesImageUploads;
+use App\Http\Controllers\Concerns\RespondsToUploads;
 use App\Http\Controllers\Controller;
 use App\Models\CommunityVideo;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class CommunityVideoController extends Controller
 {
-    use AssignsSortOrder, HandlesImageUploads;
+    use AssignsSortOrder, HandlesImageUploads, RespondsToUploads;
 
     /** Directory (relative to the web root) where uploaded videos are stored. */
     private const UPLOAD_DIR = 'videos/community';
@@ -31,7 +33,7 @@ class CommunityVideoController extends Controller
         return view('admin.community-videos.create', compact('video'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $data = $this->validateData($request);
         $data['sort_order'] = $request->filled('sort_order')
@@ -42,8 +44,7 @@ class CommunityVideoController extends Controller
 
         CommunityVideo::create($data);
 
-        return redirect()->route('admin.community-videos.index')
-            ->with('success', 'Video added successfully.');
+        return $this->uploadRedirect($request, 'admin.community-videos.index', 'Video added successfully.');
     }
 
     public function edit(CommunityVideo $communityVideo)
@@ -51,7 +52,7 @@ class CommunityVideoController extends Controller
         return view('admin.community-videos.edit', ['video' => $communityVideo]);
     }
 
-    public function update(Request $request, CommunityVideo $communityVideo): RedirectResponse
+    public function update(Request $request, CommunityVideo $communityVideo): RedirectResponse|JsonResponse
     {
         $data = $this->validateData($request);
         $data['is_active'] = $request->boolean('is_active');
@@ -73,8 +74,7 @@ class CommunityVideoController extends Controller
 
         $communityVideo->update($data);
 
-        return redirect()->route('admin.community-videos.index')
-            ->with('success', 'Video updated successfully.');
+        return $this->uploadRedirect($request, 'admin.community-videos.index', 'Video updated successfully.');
     }
 
     public function destroy(CommunityVideo $communityVideo): RedirectResponse
@@ -92,7 +92,7 @@ class CommunityVideoController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'video_url' => ['nullable', 'string', 'max:1000'],
-            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg', 'max:512000'],
+            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg,video/quicktime,video/x-m4v,video/mpeg,video/x-msvideo', 'max:512000'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
 

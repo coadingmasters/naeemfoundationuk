@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Concerns\AssignsSortOrder;
 use App\Http\Controllers\Concerns\HandlesImageUploads;
+use App\Http\Controllers\Concerns\RespondsToUploads;
 use App\Http\Controllers\Controller;
 use App\Models\HajjStepVideo;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +18,7 @@ use Illuminate\Validation\ValidationException;
  */
 class HajjStepVideoController extends Controller
 {
-    use AssignsSortOrder, HandlesImageUploads;
+    use AssignsSortOrder, HandlesImageUploads, RespondsToUploads;
 
     /** Directory (relative to the web root) where uploaded step videos are stored. */
     private const UPLOAD_DIR = 'videos/hajj-steps';
@@ -35,7 +37,7 @@ class HajjStepVideoController extends Controller
         return view('admin.hajj-step-videos.create', compact('video'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $data = $this->validateData($request);
         $data['sort_order'] = $request->filled('sort_order')
@@ -46,8 +48,7 @@ class HajjStepVideoController extends Controller
 
         HajjStepVideo::create($data);
 
-        return redirect()->route('admin.hajj-step-videos.index')
-            ->with('success', 'Video added successfully.');
+        return $this->uploadRedirect($request, 'admin.hajj-step-videos.index', 'Video added successfully.');
     }
 
     public function edit(HajjStepVideo $hajjStepVideo)
@@ -55,7 +56,7 @@ class HajjStepVideoController extends Controller
         return view('admin.hajj-step-videos.edit', ['video' => $hajjStepVideo]);
     }
 
-    public function update(Request $request, HajjStepVideo $hajjStepVideo): RedirectResponse
+    public function update(Request $request, HajjStepVideo $hajjStepVideo): RedirectResponse|JsonResponse
     {
         $data = $this->validateData($request);
         $data['is_active'] = $request->boolean('is_active');
@@ -77,8 +78,7 @@ class HajjStepVideoController extends Controller
 
         $hajjStepVideo->update($data);
 
-        return redirect()->route('admin.hajj-step-videos.index')
-            ->with('success', 'Video updated successfully.');
+        return $this->uploadRedirect($request, 'admin.hajj-step-videos.index', 'Video updated successfully.');
     }
 
     public function destroy(HajjStepVideo $hajjStepVideo): RedirectResponse
@@ -96,7 +96,7 @@ class HajjStepVideoController extends Controller
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
             'video_url' => ['nullable', 'string', 'max:1000'],
-            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg', 'max:512000'],
+            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg,video/quicktime,video/x-m4v,video/mpeg,video/x-msvideo', 'max:512000'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
 

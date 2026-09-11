@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Concerns\HandlesImageUploads;
+use App\Http\Controllers\Concerns\RespondsToUploads;
 use App\Http\Controllers\Controller;
 use App\Models\PageVideo;
 use App\Support\PageVideos;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -20,7 +22,7 @@ use Illuminate\Validation\ValidationException;
  */
 class PageVideoController extends Controller
 {
-    use HandlesImageUploads;
+    use HandlesImageUploads, RespondsToUploads;
 
     /** Directory (relative to the web root) where uploaded videos are stored. */
     private const UPLOAD_DIR = 'videos/pages';
@@ -49,7 +51,7 @@ class PageVideoController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $pageKey = (string) $request->input('page_key');
         $request->merge(['page_key' => $pageKey]);
@@ -69,8 +71,7 @@ class PageVideoController extends Controller
             'video_url' => $this->resolveVideoUrl($request),
         ]);
 
-        return redirect()->route('admin.page-videos.index')
-            ->with('success', 'Video set for '.PageVideos::pages()[$pageKey].'.');
+        return $this->uploadRedirect($request, 'admin.page-videos.index', 'Video set for '.PageVideos::pages()[$pageKey].'.');
     }
 
     public function edit(string $pageKey)
@@ -90,7 +91,7 @@ class PageVideoController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $pageKey): RedirectResponse
+    public function update(Request $request, string $pageKey): RedirectResponse|JsonResponse
     {
         abort_unless(PageVideos::isPage($pageKey), 404);
 
@@ -117,8 +118,7 @@ class PageVideoController extends Controller
 
         PageVideo::updateOrCreate(['page_key' => $pageKey], $attributes);
 
-        return redirect()->route('admin.page-videos.index')
-            ->with('success', 'Video updated for '.PageVideos::pages()[$pageKey].'.');
+        return $this->uploadRedirect($request, 'admin.page-videos.index', 'Video updated for '.PageVideos::pages()[$pageKey].'.');
     }
 
     public function destroy(string $pageKey): RedirectResponse
@@ -147,7 +147,7 @@ class PageVideoController extends Controller
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
             'video_url' => ['nullable', 'string', 'max:1000'],
-            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg', 'max:512000'],
+            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg,video/quicktime,video/x-m4v,video/mpeg,video/x-msvideo', 'max:512000'],
         ]);
 
         if (! $exists && empty($validated['video_url']) && ! $request->hasFile('video_file')) {
