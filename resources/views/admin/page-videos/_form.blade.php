@@ -55,12 +55,13 @@
                     <label for="video_file" class="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center transition hover:border-brand hover:bg-cream/40">
                         <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L8 8m4-4l4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         <span class="mt-2 text-sm font-semibold text-navy-dark" data-file-label>Click to upload a video</span>
-                        <span class="mt-0.5 text-xs text-gray-400">MP4, WEBM or OGG — up to 50 MB</span>
+                        <span class="mt-0.5 text-xs text-gray-400">MP4, WEBM or OGG — up to 500 MB</span>
                         <input id="video_file" name="video_file" type="file" accept="video/mp4,video/webm,video/ogg" data-file-input class="sr-only">
                     </label>
                     @if ($video->exists && ! \Illuminate\Support\Str::startsWith($video->video_url, ['http://', 'https://']))
                         <p class="mt-2 text-xs text-gray-400">Currently using an uploaded file. Upload a new one to replace it.</p>
                     @endif
+                    @include('admin.partials.upload-progress')
                 </div>
 
                 <div>

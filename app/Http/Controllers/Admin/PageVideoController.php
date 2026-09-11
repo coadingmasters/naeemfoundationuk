@@ -147,7 +147,7 @@ class PageVideoController extends Controller
         $validated = $request->validate([
             'title' => ['nullable', 'string', 'max:255'],
             'video_url' => ['nullable', 'string', 'max:1000'],
-            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg', 'max:51200'],
+            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg', 'max:512000'],
         ]);
 
         if (! $exists && empty($validated['video_url']) && ! $request->hasFile('video_file')) {

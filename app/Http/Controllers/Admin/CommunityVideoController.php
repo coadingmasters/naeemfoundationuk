@@ -92,7 +92,7 @@ class CommunityVideoController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'video_url' => ['nullable', 'string', 'max:1000'],
-            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg', 'max:51200'],
+            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg', 'max:512000'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
 
