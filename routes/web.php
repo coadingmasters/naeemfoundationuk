@@ -240,12 +240,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('hajj-videos', HajjVideoController::class)
             ->except(['show']);
 
-        // Video for any of the 8 fixed "Steps of Hajj" cards — always exactly
-        // 8 steps, so edit/update/destroy only (no create).
-        Route::get('hajj-step-videos', [HajjStepVideoController::class, 'index'])->name('hajj-step-videos.index');
-        Route::get('hajj-step-videos/{stepKey}/edit', [HajjStepVideoController::class, 'edit'])->name('hajj-step-videos.edit');
-        Route::put('hajj-step-videos/{stepKey}', [HajjStepVideoController::class, 'update'])->name('hajj-step-videos.update');
-        Route::delete('hajj-step-videos/{stepKey}', [HajjStepVideoController::class, 'destroy'])->name('hajj-step-videos.destroy');
+        // "Steps of Hajj" video gallery — an open list, add/edit/delete as
+        // many videos as needed.
+        Route::resource('hajj-step-videos', HajjStepVideoController::class)
+            ->except(['show']);
 
         // Per-page hero videos — an admin picks a Giving page and sets/uploads a
         // video that overrides the built-in default. Keyed by page slug, not an

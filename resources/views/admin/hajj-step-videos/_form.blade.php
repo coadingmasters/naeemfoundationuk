@@ -1,16 +1,17 @@
-{{-- Shared fields. Expects $video (HajjStepVideo, possibly unsaved), $stepLabel. --}}
+{{-- Shared fields for create/edit. Expects $video (HajjStepVideo, possibly unsaved). --}}
 <div class="grid gap-6 lg:grid-cols-3">
     {{-- Main fields --}}
     <div class="space-y-5 lg:col-span-2">
         <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            <h3 class="mb-4 text-sm font-semibold text-navy-dark">Video</h3>
+            <h3 class="mb-4 text-sm font-semibold text-navy-dark">Video details</h3>
 
             <div class="space-y-5">
                 <div>
-                    <span class="mb-1.5 block text-sm font-semibold text-navy-dark">Step</span>
-                    <div class="flex h-11 w-full items-center rounded-lg border border-gray-200 bg-gray-50 px-3.5 text-sm font-semibold text-navy-dark">
-                        {{ $stepLabel }}
-                    </div>
+                    <label for="title" class="mb-1.5 block text-sm font-semibold text-navy-dark">Label <span class="text-gray-400">(optional, for your own reference)</span></label>
+                    <input id="title" name="title" type="text" value="{{ old('title', $video->title) }}"
+                           placeholder="e.g. Episode 1 — Ihram"
+                           class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
+                    <p class="mt-1 text-xs text-gray-400">Not shown on the site — just helps you tell videos apart in this list.</p>
                 </div>
 
                 <div>
@@ -46,14 +47,22 @@
         <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <h3 class="mb-4 text-sm font-semibold text-navy-dark">Settings</h3>
 
-            <div>
-                <span class="mb-1.5 block text-sm font-semibold text-navy-dark">Visibility</span>
-                <label class="flex cursor-pointer items-center justify-between rounded-lg border border-gray-200 px-3.5 py-3">
-                    <span class="text-sm text-gray-600">Show on the website</span>
-                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $video->is_active ?? true) ? 'checked' : '' }}
-                           class="h-5 w-5 rounded border-gray-300 text-brand focus:ring-brand">
-                </label>
-                <p class="mt-1 text-xs text-gray-400">When hidden, this step falls back to its default description text.</p>
+            <div class="space-y-5">
+                <div>
+                    <label for="sort_order" class="mb-1.5 block text-sm font-semibold text-navy-dark">Display order <span class="text-gray-400">(optional)</span></label>
+                    <input id="sort_order" name="sort_order" type="number" min="0" max="9999" value="{{ old('sort_order', $video->sort_order) }}" placeholder="Auto"
+                           class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
+                    <p class="mt-1 text-xs text-gray-400">Leave empty to place it automatically. Lower numbers show first.</p>
+                </div>
+
+                <div>
+                    <span class="mb-1.5 block text-sm font-semibold text-navy-dark">Visibility</span>
+                    <label class="flex cursor-pointer items-center justify-between rounded-lg border border-gray-200 px-3.5 py-3">
+                        <span class="text-sm text-gray-600">Show on website</span>
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $video->is_active ?? true) ? 'checked' : '' }}
+                               class="h-5 w-5 rounded border-gray-300 text-brand focus:ring-brand">
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -61,7 +70,7 @@
             <div class="flex flex-col gap-3">
                 <button type="submit" class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand text-sm font-semibold text-white transition hover:bg-brand-dark">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    {{ $video->exists ? 'Save Changes' : 'Set Video' }}
+                    {{ $video->exists ? 'Save Changes' : 'Add Video' }}
                 </button>
                 <a href="{{ route('admin.hajj-step-videos.index') }}" class="flex h-11 w-full items-center justify-center rounded-lg border border-gray-200 text-sm font-semibold text-navy transition hover:bg-gray-50">
                     Cancel

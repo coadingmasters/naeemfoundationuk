@@ -18,10 +18,8 @@
     // First video doubles as the featured "Hajj e Badal" clip.
     $featuredVideo = $videos->first();
 
-    // The 8 stages of Hajj shown in the "Steps of Hajj" grid. Each can carry
-    // its own admin-uploaded video (Admin -> Hajj Steps); $stepVideos is
-    // keyed by the same step key, resolved in HajjController.
-    $steps = \App\Support\HajjSteps::all();
+    // "Steps of Hajj" video gallery (Admin -> Hajj Steps) — an open,
+    // admin-managed list, resolved in HajjController.
     $stepVideos = $stepVideos ?? collect();
 
     $brochure = asset('pdf/Hajj_27_Brochure.pdf');
@@ -154,48 +152,33 @@
         </div>
     </section>
 
-    {{-- ===================== STEPS OF HAJJ ===================== --}}
-    <section class="bg-cream py-16 sm:py-20">
-        <div class="nf-container">
-            <div class="text-center">
-                <p class="text-sm font-semibold uppercase tracking-wider text-brand">A sacred path followed with intention and guidance</p>
-                <h2 class="mt-2 text-3xl font-bold text-navy-dark sm:text-4xl">Steps of Hajj</h2>
-            </div>
+    {{-- ===================== STEPS OF HAJJ (VIDEO GALLERY) ===================== --}}
+    @if ($stepVideos->isNotEmpty())
+        <section class="bg-cream py-16 sm:py-20">
+            <div class="nf-container">
+                <div class="text-center">
+                    <p class="text-sm font-semibold uppercase tracking-wider text-brand">A sacred path followed with intention and guidance</p>
+                    <h2 class="mt-2 text-3xl font-bold text-navy-dark sm:text-4xl">Steps of Hajj</h2>
+                </div>
 
-            <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ($steps as $key => $step)
-                    @php
-                        $stepVideo = $stepVideos->get($key);
-                        // hajj_step_videos has no title column — give the shared
-                        // player component the step's own title for its iframe
-                        // title attribute (accessibility), without persisting it.
-                        if ($stepVideo) {
-                            $stepVideo->title = $step['title'];
-                        }
-                    @endphp
-                    <div class="nf-reveal flex h-full flex-col rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg {{ $stepVideo ? 'p-4' : 'p-6' }}"
-                         data-reveal-delay="{{ $loop->index * 60 }}">
-                        <span class="text-2xl font-extrabold text-brand/25">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-                        <h3 class="mt-1 font-bold text-navy-dark">{{ $step['title'] }}</h3>
-                        @if ($stepVideo)
-                            {{-- Admin has set a video for this step (Admin -> Hajj Steps) —
-                                 same gallery-style player used in "Recent Hajj Reviews" below. --}}
-                            <div class="mt-3">
-                                @include('partials.hajj-video', ['video' => $stepVideo])
-                            </div>
-                        @else
-                            <p class="mt-1.5 text-sm leading-relaxed text-gray-500">{{ $step['text'] }}</p>
-                        @endif
-                    </div>
-                @endforeach
-            </div>
+                {{-- Bigger, fewer-per-row cards — the video is the whole card,
+                     no number or caption, in a deliberately heavier frame. --}}
+                <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($stepVideos as $stepVideo)
+                        <div class="nf-reveal overflow-hidden rounded-3xl bg-navy-dark p-1.5 shadow-xl ring-1 ring-black/10 transition hover:-translate-y-1 hover:shadow-2xl"
+                             data-reveal-delay="{{ $loop->index * 60 }}">
+                            @include('partials.hajj-video', ['video' => $stepVideo])
+                        </div>
+                    @endforeach
+                </div>
 
-            <p class="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-gray-500">
-                With experienced scholars and on-ground support, Naeem Foundation ensures pilgrims understand not just
-                what to do, but why they do it.
-            </p>
-        </div>
-    </section>
+                <p class="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-gray-500">
+                    With experienced scholars and on-ground support, Naeem Foundation ensures pilgrims understand not just
+                    what to do, but why they do it.
+                </p>
+            </div>
+        </section>
+    @endif
 
     {{-- ===================== HAJJ E BADAL ===================== --}}
     <section class="py-16 sm:py-20">

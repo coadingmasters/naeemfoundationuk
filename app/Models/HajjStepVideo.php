@@ -6,17 +6,18 @@ use App\Models\Concerns\ResolvesVideoUrl;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * An admin-uploaded video for one of the 8 "Steps of Hajj" (see
- * App\Support\HajjSteps). Replaces that step's plain description card with a
- * video, gallery-style, on the public Hajj page.
+ * A video shown in the "Steps of Hajj" gallery on the Hajj page — an open,
+ * admin-managed list (add/edit/delete as many as needed), same shape as
+ * HajjVideo.
  */
 class HajjStepVideo extends Model
 {
     use ResolvesVideoUrl;
 
     protected $fillable = [
-        'step_key',
+        'title',
         'video_url',
+        'sort_order',
         'is_active',
     ];
 
@@ -24,6 +25,7 @@ class HajjStepVideo extends Model
     {
         return [
             'is_active' => 'boolean',
+            'sort_order' => 'integer',
         ];
     }
 }

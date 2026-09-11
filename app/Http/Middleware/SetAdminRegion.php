@@ -45,7 +45,7 @@ class SetAdminRegion
             $name = (string) ($request->route()?->getName() ?? '');
 
             // Resources that aren't region-owned need no region to be created.
-            $regionExempt = ['admin.users', 'admin.page-videos', 'admin.page-heroes'];
+            $regionExempt = ['admin.users', 'admin.page-videos', 'admin.page-heroes', 'admin.hajj-step-videos'];
             $needsRegion = ! collect($regionExempt)->contains(fn ($prefix) => str_starts_with($name, $prefix));
 
             if (in_array($action, ['create', 'store'], true) && $needsRegion) {

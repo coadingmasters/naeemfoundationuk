@@ -2,104 +2,124 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\AssignsSortOrder;
 use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Controller;
 use App\Models\HajjStepVideo;
-use App\Support\HajjSteps;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Lets an admin set a video for any of the 8 "Steps of Hajj" cards, replacing
- * that step's plain description with a video on the public Hajj page. There
- * are always exactly 8 fixed steps (App\Support\HajjSteps) — no create/delete
- * of steps themselves, only editing or clearing each one's video.
+ * Full CRUD for the "Steps of Hajj" video gallery on the Hajj page — an open
+ * list, add/edit/delete as many videos as needed (mirrors HajjVideoController).
  */
 class HajjStepVideoController extends Controller
 {
-    use HandlesImageUploads;
+    use AssignsSortOrder, HandlesImageUploads;
 
     /** Directory (relative to the web root) where uploaded step videos are stored. */
     private const UPLOAD_DIR = 'videos/hajj-steps';
 
     public function index()
     {
-        $overrides = HajjStepVideo::all()->keyBy('step_key');
+        $videos = HajjStepVideo::ordered()->paginate(12);
 
-        $rows = collect(HajjSteps::all())->map(fn ($step, $key) => [
-            'key' => $key,
-            'label' => $step['title'],
-            'video' => $overrides->get($key),
-        ])->values();
-
-        return view('admin.hajj-step-videos.index', compact('rows'));
+        return view('admin.hajj-step-videos.index', compact('videos'));
     }
 
-    public function edit(string $stepKey)
+    public function create()
     {
-        abort_unless(HajjSteps::isStep($stepKey), 404);
+        $video = new HajjStepVideo(['is_active' => true]);
 
-        $video = HajjStepVideo::firstOrNew(
-            ['step_key' => $stepKey],
-            ['is_active' => true],
-        );
-
-        return view('admin.hajj-step-videos.edit', [
-            'video' => $video,
-            'stepKey' => $stepKey,
-            'stepLabel' => HajjSteps::all()[$stepKey]['title'],
-        ]);
+        return view('admin.hajj-step-videos.create', compact('video'));
     }
 
-    public function update(Request $request, string $stepKey): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        abort_unless(HajjSteps::isStep($stepKey), 404);
+        $data = $this->validateData($request);
+        $data['sort_order'] = $request->filled('sort_order')
+            ? (int) $request->input('sort_order')
+            : $this->nextSortOrder(HajjStepVideo::class);
+        $data['is_active'] = $request->boolean('is_active');
+        $data['video_url'] = $this->resolveVideoUrl($request);
 
-        $existing = HajjStepVideo::where('step_key', $stepKey)->first();
+        HajjStepVideo::create($data);
 
+        return redirect()->route('admin.hajj-step-videos.index')
+            ->with('success', 'Video added successfully.');
+    }
+
+    public function edit(HajjStepVideo $hajjStepVideo)
+    {
+        return view('admin.hajj-step-videos.edit', ['video' => $hajjStepVideo]);
+    }
+
+    public function update(Request $request, HajjStepVideo $hajjStepVideo): RedirectResponse
+    {
+        $data = $this->validateData($request);
+        $data['is_active'] = $request->boolean('is_active');
+
+        if (! $request->filled('sort_order')) {
+            unset($data['sort_order']); // keep the existing order
+        }
+
+        // Only replace the URL/file when a new one is supplied.
+        if ($request->hasFile('video_file')) {
+            $this->deleteUploadedVideo($hajjStepVideo->video_url);
+            $data['video_url'] = $this->storeUploadedImage($request->file('video_file'), self::UPLOAD_DIR, 'hajj-step');
+        } elseif ($request->filled('video_url')) {
+            $this->deleteUploadedVideo($hajjStepVideo->video_url);
+            $data['video_url'] = trim($request->input('video_url'));
+        } else {
+            unset($data['video_url']);
+        }
+
+        $hajjStepVideo->update($data);
+
+        return redirect()->route('admin.hajj-step-videos.index')
+            ->with('success', 'Video updated successfully.');
+    }
+
+    public function destroy(HajjStepVideo $hajjStepVideo): RedirectResponse
+    {
+        $this->deleteUploadedVideo($hajjStepVideo->video_url);
+        $hajjStepVideo->delete();
+
+        return redirect()->route('admin.hajj-step-videos.index')
+            ->with('success', 'Video deleted successfully.');
+    }
+
+    /** Validate the shared fields (title, order, and the two video sources). */
+    private function validateData(Request $request): array
+    {
         $validated = $request->validate([
+            'title' => ['nullable', 'string', 'max:255'],
             'video_url' => ['nullable', 'string', 'max:1000'],
             'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/ogg', 'max:512000'],
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
         ]);
 
-        $attributes = ['is_active' => $request->boolean('is_active', true)];
-
-        if ($request->hasFile('video_file')) {
-            if ($existing) {
-                $this->deleteUploadedVideo($existing->video_url);
-            }
-            $attributes['video_url'] = $this->storeUploadedImage($request->file('video_file'), self::UPLOAD_DIR, 'hajj-step');
-        } elseif (filled($validated['video_url'] ?? null)) {
-            if ($existing) {
-                $this->deleteUploadedVideo($existing->video_url);
-            }
-            $attributes['video_url'] = trim($validated['video_url']);
-        } elseif (! $existing) {
+        // On create, at least one source is required.
+        if (! $request->routeIs('*.update')
+            && empty($validated['video_url'])
+            && ! $request->hasFile('video_file')) {
             throw ValidationException::withMessages([
                 'video_url' => 'Provide a video link or upload a video file.',
             ]);
         }
 
-        HajjStepVideo::updateOrCreate(['step_key' => $stepKey], $attributes);
-
-        return redirect()->route('admin.hajj-step-videos.index')
-            ->with('success', 'Video set for '.HajjSteps::all()[$stepKey]['title'].'.');
+        return array_intersect_key($validated, array_flip(['title', 'sort_order']));
     }
 
-    public function destroy(string $stepKey): RedirectResponse
+    /** A new video's URL comes from an uploaded file if present, else the link. */
+    private function resolveVideoUrl(Request $request): string
     {
-        abort_unless(HajjSteps::isStep($stepKey), 404);
-
-        $video = HajjStepVideo::where('step_key', $stepKey)->first();
-
-        if ($video) {
-            $this->deleteUploadedVideo($video->video_url);
-            $video->delete();
+        if ($request->hasFile('video_file')) {
+            return $this->storeUploadedImage($request->file('video_file'), self::UPLOAD_DIR, 'hajj-step');
         }
 
-        return redirect()->route('admin.hajj-step-videos.index')
-            ->with('success', HajjSteps::all()[$stepKey]['title'].' is back to the default text.');
+        return trim((string) $request->input('video_url'));
     }
 
     /** Delete an uploaded video only if it lives in our upload directory. */

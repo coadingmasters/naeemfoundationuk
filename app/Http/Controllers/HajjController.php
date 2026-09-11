@@ -25,13 +25,13 @@ class HajjController extends Controller
             $videos = collect();
         }
 
-        // Admin-set video per "Steps of Hajj" card (Admin -> Hajj Steps),
-        // keyed by step so the view can look one up per step in the loop.
+        // "Steps of Hajj" video gallery (Admin -> Hajj Steps) — an open,
+        // admin-managed list, as many videos as they've added.
         $stepVideos = collect();
 
         try {
             if (Schema::hasTable('hajj_step_videos')) {
-                $stepVideos = HajjStepVideo::active()->get()->keyBy('step_key');
+                $stepVideos = HajjStepVideo::active()->ordered()->get();
             }
         } catch (Throwable $e) {
             $stepVideos = collect();
