@@ -8,7 +8,7 @@
 @php
     $isPortrait = \App\Support\VideoSource::isFacebook($video->video_url ?? null) || ! $video->is_embed;
     $frameClass = $isPortrait
-        ? 'mx-auto aspect-[9/16] w-full max-w-[280px]'
+        ? 'mx-auto aspect-[9/16] w-full max-w-[240px]'
         : 'aspect-video w-full';
 @endphp
 <div class="{{ $frameClass }} overflow-hidden rounded-2xl bg-navy-dark shadow-lg ring-1 ring-black/5">
