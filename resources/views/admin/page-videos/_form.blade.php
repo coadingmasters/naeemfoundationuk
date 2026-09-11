@@ -14,6 +14,16 @@
             <h3 class="mb-4 text-sm font-semibold text-navy-dark">Video details</h3>
 
             <div class="space-y-5">
+                @if ($isEdit && $video->exists)
+                    {{-- What's actually live right now — reload this page after
+                         saving to confirm a new upload really took effect. --}}
+                    <div>
+                        <span class="mb-1.5 block text-sm font-semibold text-navy-dark">Current video (live now)</span>
+                        @include('partials.hajj-video', ['video' => $video])
+                        <p class="mt-1.5 text-xs text-gray-400">Last saved {{ $video->updated_at->diffForHumans() }}.</p>
+                    </div>
+                @endif
+
                 {{-- Which page --}}
                 <div>
                     <label for="page_key" class="mb-1.5 block text-sm font-semibold text-navy-dark">Page <span class="text-red-500">*</span></label>

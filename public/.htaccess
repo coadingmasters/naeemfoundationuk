@@ -1,8 +1,29 @@
-# Block direct HTTP access to dotfiles (.user.ini, .env, etc.) — PHP-FPM and
-# git read these straight off disk, they never need to be served as a page.
+# Block direct HTTP access to dotfiles (.env, etc.) — these are read straight
+# off disk by the app/git, they never need to be served as a page.
 <FilesMatch "^\.">
     Require all denied
 </FilesMatch>
+
+# Raise PHP's request-handling limits for large admin video uploads (up to
+# 500MB — see the video-upload controllers). The host's LiteSpeed PHP doesn't
+# honour .user.ini (user_ini.filename is empty there), but does apply these
+# php_value overrides from .htaccess. max_execution_time/max_input_time in
+# particular matter here — the base server config caps both at 6 minutes,
+# too short for a large file over a slow connection.
+<IfModule mod_php.c>
+    php_value upload_max_filesize 512M
+    php_value post_max_size 520M
+    php_value memory_limit 512M
+    php_value max_execution_time 1200
+    php_value max_input_time 1200
+</IfModule>
+<IfModule Litespeed>
+    php_value upload_max_filesize 512M
+    php_value post_max_size 520M
+    php_value memory_limit 512M
+    php_value max_execution_time 1200
+    php_value max_input_time 1200
+</IfModule>
 
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>

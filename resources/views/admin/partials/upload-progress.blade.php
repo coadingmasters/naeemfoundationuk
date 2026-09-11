@@ -63,9 +63,11 @@
                 const formData = new FormData(form);
                 const xhr = new XMLHttpRequest();
                 xhr.open(form.getAttribute('method') || 'POST', form.action, true);
-                // Generous ceiling for a large file on a slow connection —
-                // matches the server's own max_execution_time.
-                xhr.timeout = 280000;
+                // Generous ceiling for a large file on a slow connection — just
+                // under the server's own 1200s max_execution_time/max_input_time
+                // (public/.htaccess), so a genuinely slow-but-progressing upload
+                // isn't cut off client-side before the server would allow it.
+                xhr.timeout = 1100000;
 
                 xhr.upload.addEventListener('progress', (evt) => {
                     if (!evt.lengthComputable) return;
