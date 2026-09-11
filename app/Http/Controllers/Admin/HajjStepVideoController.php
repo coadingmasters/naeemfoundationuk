@@ -7,6 +7,7 @@ use App\Http\Controllers\Concerns\HandlesImageUploads;
 use App\Http\Controllers\Concerns\RespondsToUploads;
 use App\Http\Controllers\Controller;
 use App\Models\HajjStepVideo;
+use App\Support\VideoSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -71,7 +72,7 @@ class HajjStepVideoController extends Controller
             $data['video_url'] = $this->storeUploadedImage($request->file('video_file'), self::UPLOAD_DIR, 'hajj-step');
         } elseif ($request->filled('video_url')) {
             $this->deleteUploadedVideo($hajjStepVideo->video_url);
-            $data['video_url'] = trim($request->input('video_url'));
+            $data['video_url'] = VideoSource::resolveShareLink(trim($request->input('video_url')));
         } else {
             unset($data['video_url']);
         }
@@ -119,7 +120,7 @@ class HajjStepVideoController extends Controller
             return $this->storeUploadedImage($request->file('video_file'), self::UPLOAD_DIR, 'hajj-step');
         }
 
-        return trim((string) $request->input('video_url'));
+        return VideoSource::resolveShareLink(trim((string) $request->input('video_url')));
     }
 
     /** Delete an uploaded video only if it lives in our upload directory. */

@@ -61,4 +61,49 @@ class VideoSource
 
         return Str::startsWith($url, ['http://', 'https://', '//']) ? $url : asset($url);
     }
+
+    /**
+     * Facebook's embed plugin needs the canonical video URL (…/reel/{id},
+     * …/videos/{id}, …/watch/?v={id}) — a facebook.com/share/... shortlink
+     * doesn't resolve inside the iframe, so the embed shows "Video
+     * unavailable" even though the link opens fine in a real browser.
+     *
+     * Called once, when an admin saves a link (not on every page view):
+     * follows the shortlink's redirect and stores the canonical URL it
+     * lands on instead. Falls back to the original link on any failure
+     * (Facebook down, no curl, etc.) so saving never hard-fails.
+     */
+    public static function resolveShareLink(string $url): string
+    {
+        if (! preg_match('#facebook\.com/share/#i', $url) || ! function_exists('curl_init')) {
+            return $url;
+        }
+
+        try {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_NOBODY => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS => 5,
+                CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_TIMEOUT => 8,
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; NaeemFoundationBot/1.0; +https://naeemfoundation.co.uk)',
+            ]);
+            curl_exec($ch);
+            $effectiveUrl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+            $failed = curl_errno($ch) !== 0;
+            curl_close($ch);
+
+            if (! $failed && is_string($effectiveUrl) && str_contains($effectiveUrl, 'facebook.com')) {
+                // Drop Facebook's tracking query string (mibextid, rdid,
+                // share_url…) — the plugin only needs the canonical path.
+                return strtok($effectiveUrl, '?') ?: $effectiveUrl;
+            }
+        } catch (\Throwable $e) {
+            // fall through to the original link
+        }
+
+        return $url;
+    }
 }

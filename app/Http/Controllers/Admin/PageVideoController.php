@@ -7,6 +7,7 @@ use App\Http\Controllers\Concerns\RespondsToUploads;
 use App\Http\Controllers\Controller;
 use App\Models\PageVideo;
 use App\Support\PageVideos;
+use App\Support\VideoSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -109,7 +110,7 @@ class PageVideoController extends Controller
             $attributes['video_url'] = $this->storeUploadedImage($request->file('video_file'), self::UPLOAD_DIR, 'page-video');
         } elseif ($request->filled('video_url')) {
             $this->deleteUploadedVideo($existing?->video_url);
-            $attributes['video_url'] = trim((string) $request->input('video_url'));
+            $attributes['video_url'] = VideoSource::resolveShareLink(trim((string) $request->input('video_url')));
         } elseif (! $existing) {
             throw ValidationException::withMessages([
                 'video_url' => 'Provide a video link or upload a video file.',
@@ -166,7 +167,7 @@ class PageVideoController extends Controller
             return $this->storeUploadedImage($request->file('video_file'), self::UPLOAD_DIR, 'page-video');
         }
 
-        return trim((string) $request->input('video_url'));
+        return VideoSource::resolveShareLink(trim((string) $request->input('video_url')));
     }
 
     /** Delete an uploaded video only if it lives in our upload directory. */
