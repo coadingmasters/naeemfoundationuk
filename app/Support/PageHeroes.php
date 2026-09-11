@@ -32,7 +32,7 @@ class PageHeroes
             'water-well', 'healthcare', 'food-sustenance', 'food-appeal', 'sustainable-livelihood',
             'cambodia-education-welfare', 'education-sponsorships', 'hostel-for-students-orphans',
             'clean-water', 'widows', 'lillah', 'aqiqah', 'kaffarah', 'dhul-hajj', 'qurbani',
-            'prosthetic-limb', 'eid-gifts', 'ramadan-food-packs',
+            'prosthetic-limb', 'eid-gifts', 'ramadan-food-packs', 'hajj',
         ];
 
         $labels = PageVideos::pages();
