@@ -11,6 +11,11 @@
     failure — so once the browser has the file fully uploaded we just navigate
     to wherever the server redirected, and the existing flash/error UI takes
     over exactly as it would for a non-JS submit.
+
+    Feedback shows in two places: the submit button itself (often in a
+    separate column from this bar on desktop, so it's what the admin is
+    actually looking at right after they click it) and this dedicated bar,
+    which also scrolls into view so it's never missed.
 --}}
 <div class="mt-3 hidden" data-upload-progress>
     <div class="h-2 w-full overflow-hidden rounded-full bg-gray-200">
@@ -29,6 +34,25 @@
             const pctLabel = form.querySelector('[data-upload-progress-pct]');
             if (!fileInput || !bar || !fill || !pctLabel) return;
 
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const submitBtnOriginalHtml = submitBtn ? submitBtn.innerHTML : '';
+
+            const setProgress = (text, percent) => {
+                pctLabel.textContent = text;
+                if (percent !== null) fill.style.width = percent + '%';
+                if (submitBtn) submitBtn.textContent = text;
+            };
+
+            const setFailed = (text) => {
+                pctLabel.textContent = text;
+                fill.classList.remove('bg-brand');
+                fill.classList.add('bg-red-500');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = submitBtnOriginalHtml;
+                }
+            };
+
             form.addEventListener('submit', (e) => {
                 // Only take over the request when a file was actually chosen —
                 // a text-only edit (no new upload) submits the normal way.
@@ -36,23 +60,22 @@
 
                 e.preventDefault();
 
-                const submitBtn = form.querySelector('button[type="submit"]');
                 const formData = new FormData(form);
                 const xhr = new XMLHttpRequest();
                 xhr.open(form.getAttribute('method') || 'POST', form.action, true);
+                // Generous ceiling for a large file on a slow connection —
+                // matches the server's own max_execution_time.
+                xhr.timeout = 280000;
 
                 xhr.upload.addEventListener('progress', (evt) => {
                     if (!evt.lengthComputable) return;
-                    const percent = Math.round((evt.loaded / evt.total) * 100);
-                    fill.style.width = percent + '%';
-                    pctLabel.textContent = 'Uploading… ' + percent + '%';
+                    setProgress('Uploading… ' + Math.round((evt.loaded / evt.total) * 100) + '%', Math.round((evt.loaded / evt.total) * 100));
                 });
 
                 xhr.upload.addEventListener('load', () => {
                     // The browser finished sending the file — the server still
                     // needs a moment to store it and write the database row.
-                    fill.style.width = '100%';
-                    pctLabel.textContent = 'Upload complete — saving…';
+                    setProgress('Upload complete — saving…', 100);
                 });
 
                 xhr.addEventListener('load', () => {
@@ -63,24 +86,17 @@
                     if (xhr.status >= 200 && xhr.status < 400) {
                         window.location.href = xhr.responseURL || form.action;
                     } else {
-                        pctLabel.textContent = 'Upload failed — please try again.';
-                        fill.classList.remove('bg-brand');
-                        fill.classList.add('bg-red-500');
-                        if (submitBtn) submitBtn.disabled = false;
+                        setFailed('Upload failed (server error) — please try again.');
                     }
                 });
 
-                xhr.addEventListener('error', () => {
-                    pctLabel.textContent = 'Upload failed — check your connection and try again.';
-                    fill.classList.remove('bg-brand');
-                    fill.classList.add('bg-red-500');
-                    if (submitBtn) submitBtn.disabled = false;
-                });
+                xhr.addEventListener('error', () => setFailed('Upload failed — check your connection and try again.'));
+                xhr.addEventListener('timeout', () => setFailed('Upload timed out — try again, or use a smaller file.'));
 
-                bar.hidden = false;
-                fill.style.width = '0%';
-                pctLabel.textContent = 'Uploading… 0%';
+                bar.classList.remove('hidden');
+                bar.scrollIntoView({behavior: 'smooth', block: 'nearest'});
                 if (submitBtn) submitBtn.disabled = true;
+                setProgress('Uploading… 0%', 0);
 
                 xhr.send(formData);
             });
