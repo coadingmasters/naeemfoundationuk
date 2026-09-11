@@ -328,10 +328,13 @@
                 </p>
             </div>
 
-            <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {{-- Bigger, heavier "framed" cards — matches the Steps of Hajj gallery. --}}
+            <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($videos as $video)
                     <div>
-                        @include('partials.hajj-video', ['video' => $video])
+                        <div class="overflow-hidden rounded-3xl bg-navy-dark p-1.5 shadow-xl ring-1 ring-black/10 transition hover:-translate-y-1 hover:shadow-2xl">
+                            @include('partials.hajj-video', ['video' => $video])
+                        </div>
                         <p class="mt-3 text-sm font-semibold text-navy-dark">{{ $video->title }}</p>
                     </div>
                 @endforeach

@@ -28,7 +28,7 @@
                     <input id="video_url" name="video_url" type="text" value="{{ old('video_url', \Illuminate\Support\Str::startsWith($video->video_url ?? '', ['http://', 'https://']) ? $video->video_url : '') }}"
                            placeholder="https://www.youtube.com/watch?v=…  or  https://…/video.mp4"
                            class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    <p class="mt-1 text-xs text-gray-400">Paste a YouTube / Vimeo link or a direct video file URL. {{ $video->exists ? 'Leave empty to keep the current video.' : '' }}</p>
+                    <p class="mt-1 text-xs text-gray-400">Paste a YouTube, Vimeo or Facebook link, or a direct video file URL. {{ $video->exists ? 'Leave empty to keep the current video.' : '' }}</p>
                 </div>
 
                 <div class="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-gray-300">
