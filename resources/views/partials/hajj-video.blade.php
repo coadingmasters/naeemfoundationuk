@@ -4,9 +4,12 @@
      directly uploaded file (these are phone-shot review videos, shot
      vertically) — are portrait, so cropping them into a 16:9 box looks
      wrong. They get a narrower, taller "phone" frame instead. YouTube/Vimeo
-     embeds (standard landscape-hosted video) keep the normal 16:9 frame. --}}
+     embeds (standard landscape-hosted video) keep the normal 16:9 frame.
+     Pass $forceLandscape = true to always keep the standard 16:9 frame
+     regardless of source (used by the Hajj-e-Badal featured video). --}}
 @php
-    $isPortrait = \App\Support\VideoSource::isFacebook($video->video_url ?? null) || ! $video->is_embed;
+    $isPortrait = ! ($forceLandscape ?? false)
+        && (\App\Support\VideoSource::isFacebook($video->video_url ?? null) || ! $video->is_embed);
     $frameClass = $isPortrait
         ? 'mx-auto aspect-[9/16] w-full max-w-[240px]'
         : 'aspect-video w-full';

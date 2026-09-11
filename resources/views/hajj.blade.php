@@ -203,7 +203,7 @@
                 </div>
             </div>
             <div>
-                @include('partials.hajj-video', ['video' => $featuredVideo])
+                @include('partials.hajj-video', ['video' => $featuredVideo, 'forceLandscape' => true])
             </div>
         </div>
     </section>
