@@ -1,3 +1,9 @@
+# Block direct HTTP access to dotfiles (.user.ini, .env, etc.) — PHP-FPM and
+# git read these straight off disk, they never need to be served as a page.
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
