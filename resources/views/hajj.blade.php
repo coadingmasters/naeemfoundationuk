@@ -18,17 +18,11 @@
     // First video doubles as the featured "Hajj e Badal" clip.
     $featuredVideo = $videos->first();
 
-    // The 8 stages of Hajj shown in the "Steps of Hajj" grid.
-    $steps = [
-        ['title' => 'Ihram', 'text' => 'Pilgrims enter a state of purity and intention, wearing simple garments and committing to spiritual discipline.'],
-        ['title' => 'Tawaf', 'text' => 'Circling the Kaaba seven times in devotion, symbolising unity and submission to Allah.'],
-        ['title' => 'Sa’i', 'text' => 'Walking between Safa and Marwah, honouring the perseverance of Hajar (AS).'],
-        ['title' => 'Mina', 'text' => 'A place of reflection and preparation, where pilgrims stay and engage in worship.'],
-        ['title' => 'Arafat', 'text' => 'The heart of Hajj — a day of intense duʿāʾ, repentance and forgiveness.'],
-        ['title' => 'Muzdalifah', 'text' => 'A night under the open sky, gathering pebbles and remembering simplicity.'],
-        ['title' => 'Rami (Stoning of Jamarat)', 'text' => 'Rejecting temptation and reaffirming obedience to Allah.'],
-        ['title' => 'Qurbani & Final Tawaf', 'text' => 'Completing the sacrifice and returning to Makkah to conclude Hajj.'],
-    ];
+    // The 8 stages of Hajj shown in the "Steps of Hajj" grid. Each can carry
+    // its own admin-uploaded video (Admin -> Hajj Steps); $stepVideos is
+    // keyed by the same step key, resolved in HajjController.
+    $steps = \App\Support\HajjSteps::all();
+    $stepVideos = $stepVideos ?? collect();
 
     $brochure = asset('pdf/Hajj_27_Brochure.pdf');
     // Hero-only document — the Elite Hajj profile PDF.
@@ -169,11 +163,29 @@
             </div>
 
             <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ($steps as $i => $step)
-                    <div class="nf-reveal flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                        <span class="text-2xl font-extrabold text-brand/25">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                @foreach ($steps as $key => $step)
+                    @php
+                        $stepVideo = $stepVideos->get($key);
+                        // hajj_step_videos has no title column — give the shared
+                        // player component the step's own title for its iframe
+                        // title attribute (accessibility), without persisting it.
+                        if ($stepVideo) {
+                            $stepVideo->title = $step['title'];
+                        }
+                    @endphp
+                    <div class="nf-reveal flex h-full flex-col rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg {{ $stepVideo ? 'p-4' : 'p-6' }}"
+                         data-reveal-delay="{{ $loop->index * 60 }}">
+                        <span class="text-2xl font-extrabold text-brand/25">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                         <h3 class="mt-1 font-bold text-navy-dark">{{ $step['title'] }}</h3>
-                        <p class="mt-1.5 text-sm leading-relaxed text-gray-500">{{ $step['text'] }}</p>
+                        @if ($stepVideo)
+                            {{-- Admin has set a video for this step (Admin -> Hajj Steps) —
+                                 same gallery-style player used in "Recent Hajj Reviews" below. --}}
+                            <div class="mt-3">
+                                @include('partials.hajj-video', ['video' => $stepVideo])
+                            </div>
+                        @else
+                            <p class="mt-1.5 text-sm leading-relaxed text-gray-500">{{ $step['text'] }}</p>
+                        @endif
                     </div>
                 @endforeach
             </div>

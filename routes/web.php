@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\HajjRegistrationController as AdminHajjRegistrationController;
 use App\Http\Controllers\Admin\VolunteerController as AdminVolunteerController;
+use App\Http\Controllers\Admin\HajjStepVideoController;
 use App\Http\Controllers\Admin\HajjVideoController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\NewsPostController;
@@ -238,6 +239,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('hajj-videos', HajjVideoController::class)
             ->except(['show']);
+
+        // Video for any of the 8 fixed "Steps of Hajj" cards — always exactly
+        // 8 steps, so edit/update/destroy only (no create).
+        Route::get('hajj-step-videos', [HajjStepVideoController::class, 'index'])->name('hajj-step-videos.index');
+        Route::get('hajj-step-videos/{stepKey}/edit', [HajjStepVideoController::class, 'edit'])->name('hajj-step-videos.edit');
+        Route::put('hajj-step-videos/{stepKey}', [HajjStepVideoController::class, 'update'])->name('hajj-step-videos.update');
+        Route::delete('hajj-step-videos/{stepKey}', [HajjStepVideoController::class, 'destroy'])->name('hajj-step-videos.destroy');
 
         // Per-page hero videos — an admin picks a Giving page and sets/uploads a
         // video that overrides the built-in default. Keyed by page slug, not an

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HajjRegistration;
+use App\Models\HajjStepVideo;
 use App\Models\HajjVideo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,7 +25,19 @@ class HajjController extends Controller
             $videos = collect();
         }
 
-        return view('hajj', compact('videos'));
+        // Admin-set video per "Steps of Hajj" card (Admin -> Hajj Steps),
+        // keyed by step so the view can look one up per step in the loop.
+        $stepVideos = collect();
+
+        try {
+            if (Schema::hasTable('hajj_step_videos')) {
+                $stepVideos = HajjStepVideo::active()->get()->keyBy('step_key');
+            }
+        } catch (Throwable $e) {
+            $stepVideos = collect();
+        }
+
+        return view('hajj', compact('videos', 'stepVideos'));
     }
 
     public function register(Request $request): RedirectResponse
