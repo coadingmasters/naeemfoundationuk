@@ -53,10 +53,6 @@
                         comfort, care and devotion at every step — so your heart can remain focused on worship.
                     </p>
                     <div class="mt-7 flex flex-wrap gap-3">
-                        <a href="#register" class="btn-white px-7 py-3">
-                            Register Now
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </a>
                         <a href="{{ $eliteProfile }}" target="_blank" rel="noopener"
                            class="inline-flex items-center justify-center gap-2 rounded-md border border-white/40 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
                             View Document
