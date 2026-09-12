@@ -36,8 +36,8 @@
     ];
 
     $creamGallery = [
-        ['image' => 'images/changinslives1.jpg', 'alt' => 'A child standing with a new prosthetic limb'],
-        ['image' => 'images/changinslives4.jpg', 'alt' => 'Rehabilitation support session'],
+        ['image' => 'images/nf-web-square-2.jpg', 'alt' => 'A child standing with a new prosthetic limb'],
+        ['image' => 'images/nf-web-square-5.jpg', 'alt' => 'Rehabilitation support session'],
     ];
 @endphp
 
@@ -157,7 +157,7 @@
 
                     {{-- Right: image --}}
                     <div class="relative min-h-[280px] overflow-hidden lg:min-h-full">
-                        <img src="{{ asset('images/supporton.png') }}" alt="A prosthetic limb being fitted"
+                        <img src="{{ asset('images/nf-web-verticle-6.jpg') }}" alt="A prosthetic limb being fitted"
                              class="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-out hover:scale-105">
                         {{-- Blends the photo into the navy card on the left edge. --}}
                         <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent lg:bg-gradient-to-r lg:from-navy lg:via-navy/25 lg:to-transparent" aria-hidden="true"></span>
