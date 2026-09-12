@@ -25,7 +25,7 @@
             {{-- Heading. Matches the shared donate-hero treatment: the title
                  is centred in the photo panel, with the padding-top clearing the
                  fixed header and items-center balancing what's left. --}}
-            <div class="relative flex min-h-[420px] items-center pt-24 sm:min-h-[480px] lg:min-h-[560px] lg:pt-28">
+            <div class="relative flex min-h-[420px] items-center pt-24 sm:min-h-[480px] lg:min-h-[560px] lg:pt-28 xl:min-h-[620px] 2xl:min-h-[700px]">
                 <div class="relative w-full px-6 py-10 sm:px-8 lg:px-10">
                     <div class="nf-reveal mx-auto max-w-4xl text-center text-white">
                         <h1 class="nf-hero-title text-4xl font-extrabold leading-[1.04] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-6xl">
