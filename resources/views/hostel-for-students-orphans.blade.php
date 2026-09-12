@@ -126,7 +126,7 @@
             <div class="nf-reveal lg:sticky lg:top-28" data-reveal-delay="120">
                 <div class="overflow-hidden rounded-2xl bg-cream shadow-sm ring-1 ring-navy/10">
                     <div class="relative h-64 overflow-hidden sm:h-80">
-                        <img src="{{ asset('images/changinslives2.jpg') }}" alt="Children at the hostel" class="h-full w-full object-cover">
+                        <img src="{{ asset('images/nf-web-450-4.jpg') }}" alt="Children at the hostel" class="h-full w-full object-cover">
                         <span class="absolute inset-0 bg-gradient-to-t from-navy-dark/40 to-transparent"></span>
                     </div>
                     <div class="p-6 sm:p-8">
