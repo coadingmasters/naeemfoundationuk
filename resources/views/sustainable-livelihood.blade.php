@@ -75,7 +75,7 @@
     <section class="pb-14">
         <div class="nf-container">
             <div class="rounded-2xl bg-cream px-6 py-10 sm:px-10 lg:px-12">
-                <img src="{{ asset('images/zakatcenter.png') }}" alt="Communities supported by Naeem Foundation"
+                <img src="{{ asset('images/nf-web-450-12.jpg') }}" alt="Communities supported by Naeem Foundation"
                      class="h-56 w-full rounded-xl object-cover sm:h-72 lg:h-80">
 
                 <h3 class="mt-8 text-xl font-bold text-navy-dark sm:text-2xl">Join Us in Creating a Sustainable Future</h3>
