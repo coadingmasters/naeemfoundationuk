@@ -97,7 +97,7 @@
                         <form method="POST" action="{{ route('donate.add') }}" data-cart-skip data-family-form class="mt-7">
                             @csrf
                             <input type="hidden" name="cause" value="Food & Sustenance">
-                            <input type="hidden" name="image" value="images/changinslives2.jpg">
+                            <input type="hidden" name="image" value="images/Food-1920.jpg">
                             <input type="hidden" name="amount" value="{{ $familyCost }}" data-family-amount-input>
                             <input type="hidden" name="frequency" value="one-off" data-family-freq>
 
@@ -150,7 +150,7 @@
 
                     {{-- Right: image --}}
                     <div class="relative min-h-[280px] overflow-hidden lg:min-h-full">
-                        <img src="{{ asset('images/changinslives2.jpg') }}" alt="A family receiving a food ration pack"
+                        <img src="{{ asset('images/Food-1920.jpg') }}" alt="A family receiving a food ration pack"
                              class="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-out hover:scale-105">
                         {{-- Blends the photo into the navy card on the left edge. --}}
                         <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent lg:bg-gradient-to-r lg:from-navy lg:via-navy/25 lg:to-transparent" aria-hidden="true"></span>
