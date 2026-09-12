@@ -133,7 +133,7 @@
                 <div class="grid lg:grid-cols-2">
                     {{-- Image --}}
                     <div class="relative min-h-[280px] lg:min-h-full">
-                        <img src="{{ asset('images/changinslives3.jpg') }}" alt="A family receiving a Ramadan food pack"
+                        <img src="{{ asset('images/changinslives2.jpg') }}" alt="A family receiving a Ramadan food pack"
                              class="absolute inset-0 h-full w-full object-cover">
                         <span class="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-brand px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg">
                             <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
