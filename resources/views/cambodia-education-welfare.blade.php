@@ -24,9 +24,9 @@
 
     // Gallery inside the cream panel
     $gallery = [
-        ['image' => 'images/changinslives1.jpg', 'alt' => 'Volunteers at a Cambodian school'],
-        ['image' => 'images/changinslives2.jpg', 'alt' => 'Feeding future scholars distribution'],
-        ['image' => 'images/changinslives3.jpg', 'alt' => 'Students in a Cambodian classroom'],
+        ['image' => 'images/cm1.jpg', 'alt' => 'Volunteers at a Cambodian school'],
+        ['image' => 'images/cm2.jpg', 'alt' => 'Feeding future scholars distribution'],
+        ['image' => 'images/cm11.jpg', 'alt' => 'Students in a Cambodian classroom'],
     ];
 @endphp
 
