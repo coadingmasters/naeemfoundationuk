@@ -52,6 +52,42 @@
                 </div>
             </div>
         </div>
+
+        <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+            <h3 class="text-sm font-semibold text-navy-dark">Mobile banner <span class="font-normal text-gray-400">(optional)</span></h3>
+            <p class="mt-1 text-xs text-gray-500">
+                Phones show this photo instead of the one above — upload a version cropped for a
+                narrow screen (e.g. the subject centred, not off to one side). Leave empty to just
+                use the desktop photo on phones too.
+            </p>
+
+            <div class="mt-4 space-y-5">
+                @if ($isEdit && $hero->exists && $hero->mobile_image)
+                    <div>
+                        <span class="mb-1.5 block text-sm font-semibold text-navy-dark">Current mobile banner</span>
+                        <img src="{{ asset($hero->mobile_image) }}" alt="Current mobile hero banner"
+                             class="h-40 w-32 rounded-lg border border-gray-200 object-cover">
+                    </div>
+                @endif
+
+                <div>
+                    <label for="mobile_image" class="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center transition hover:border-brand hover:bg-cream/40">
+                        <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L8 8m4-4l4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span class="mt-2 text-sm font-semibold text-navy-dark" data-file-label>{{ $isEdit && ($hero->mobile_image ?? null) ? 'Click to upload a replacement photo' : 'Click to upload a photo' }}</span>
+                        <span class="mt-0.5 text-xs text-gray-400">JPG, PNG or WEBP — any size, resized automatically</span>
+                        <input id="mobile_image" name="mobile_image" type="file" accept="image/jpeg,image/png,image/webp" data-file-input class="sr-only">
+                    </label>
+                </div>
+
+                @if ($isEdit && $hero->exists && $hero->mobile_image)
+                    <label class="flex cursor-pointer items-center justify-between rounded-lg border border-gray-200 px-3.5 py-3">
+                        <span class="text-sm text-gray-600">Remove mobile banner (use the desktop photo on phones)</span>
+                        <input type="checkbox" name="remove_mobile_image" value="1"
+                               class="h-5 w-5 rounded border-gray-300 text-brand focus:ring-brand">
+                    </label>
+                @endif
+            </div>
+        </div>
     </div>
 
     {{-- Settings --}}
@@ -87,13 +123,14 @@
 @push('scripts')
 <script>
     (function () {
-        const input = document.querySelector('[data-file-input]');
-        const label = document.querySelector('[data-file-label]');
-        if (!input || !label) return;
-        const original = label.textContent;
-        input.addEventListener('change', () => {
-            const file = input.files && input.files[0];
-            label.textContent = file ? file.name : original;
+        document.querySelectorAll('[data-file-input]').forEach((input) => {
+            const label = input.closest('label')?.querySelector('[data-file-label]');
+            if (!label) return;
+            const original = label.textContent;
+            input.addEventListener('change', () => {
+                const file = input.files && input.files[0];
+                label.textContent = file ? file.name : original;
+            });
         });
     })();
 </script>

@@ -15,6 +15,7 @@ class PageHero extends Model
     protected $fillable = [
         'page_key',
         'image',
+        'mobile_image',
         'is_active',
     ];
 

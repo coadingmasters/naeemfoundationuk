@@ -53,18 +53,26 @@ class PageHeroController extends Controller
         $request->validate([
             'page_key' => ['required', Rule::in(array_keys(PageHeroes::pages()))],
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+            'mobile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
         ]);
 
-        // Replacing an existing custom banner for this page — drop the old file.
+        // Replacing an existing custom banner for this page — drop the old files.
         $existing = PageHero::where('page_key', $pageKey)->first();
         if ($existing) {
             $this->deleteUploadedImage($existing->image, self::UPLOAD_DIR);
+            $this->deleteUploadedImage($existing->mobile_image, self::UPLOAD_DIR);
         }
 
-        PageHero::updateOrCreate(['page_key' => $pageKey], [
+        $attributes = [
             'image' => $this->storeResizedImage($request->file('image'), self::UPLOAD_DIR, 'hero'),
             'is_active' => $request->boolean('is_active', true),
-        ]);
+        ];
+
+        if ($request->hasFile('mobile_image')) {
+            $attributes['mobile_image'] = $this->storeResizedImage($request->file('mobile_image'), self::UPLOAD_DIR, 'hero-mobile', 960);
+        }
+
+        PageHero::updateOrCreate(['page_key' => $pageKey], $attributes);
 
         return redirect()->route('admin.page-heroes.index')
             ->with('success', 'Hero banner set for '.PageHeroes::pages()[$pageKey].'.');
@@ -94,6 +102,7 @@ class PageHeroController extends Controller
 
         $request->validate([
             'image' => [$existing ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+            'mobile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
         ]);
 
         $attributes = ['is_active' => $request->boolean('is_active', true)];
@@ -103,6 +112,16 @@ class PageHeroController extends Controller
                 $this->deleteUploadedImage($existing->image, self::UPLOAD_DIR);
             }
             $attributes['image'] = $this->storeResizedImage($request->file('image'), self::UPLOAD_DIR, 'hero');
+        }
+
+        if ($request->hasFile('mobile_image')) {
+            if ($existing) {
+                $this->deleteUploadedImage($existing->mobile_image, self::UPLOAD_DIR);
+            }
+            $attributes['mobile_image'] = $this->storeResizedImage($request->file('mobile_image'), self::UPLOAD_DIR, 'hero-mobile', 960);
+        } elseif ($request->boolean('remove_mobile_image') && $existing) {
+            $this->deleteUploadedImage($existing->mobile_image, self::UPLOAD_DIR);
+            $attributes['mobile_image'] = null;
         }
 
         PageHero::updateOrCreate(['page_key' => $pageKey], $attributes);
@@ -119,6 +138,7 @@ class PageHeroController extends Controller
 
         if ($hero) {
             $this->deleteUploadedImage($hero->image, self::UPLOAD_DIR);
+            $this->deleteUploadedImage($hero->mobile_image, self::UPLOAD_DIR);
             $hero->delete();
         }
 

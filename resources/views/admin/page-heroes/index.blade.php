@@ -33,6 +33,12 @@
                             <span class="h-1.5 w-1.5 rounded-full bg-gray-400"></span> Hidden
                         </span>
                     @endif
+                    @if ($custom && $custom->mobile_image)
+                        <span class="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-navy-dark">
+                            <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2" stroke-linecap="round"/></svg>
+                            Mobile set
+                        </span>
+                    @endif
                 </div>
                 <div class="flex items-center justify-between gap-3 p-4">
                     <div class="min-w-0">

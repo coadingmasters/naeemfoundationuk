@@ -67,6 +67,16 @@ class PageHeroes
     }
 
     /**
+     * The phone-specific hero photo for a page, or null when the page has no
+     * custom banner or no mobile-specific photo was uploaded for it — callers
+     * should fall back to resolve()'s desktop photo in that case.
+     */
+    public static function resolveMobile(string $key): ?string
+    {
+        return static::override($key)?->mobile_image;
+    }
+
+    /**
      * The active override row for a page, or null. Resilient so front-end pages
      * never break before the migration has run on a fresh server.
      */

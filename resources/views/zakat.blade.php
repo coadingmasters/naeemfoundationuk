@@ -3,8 +3,10 @@
 @section('title', 'Zakat — ' . config('app.name'))
 
 @php
-    // Admin -> Hero Banners can override this without a code change.
+    // Admin -> Hero Banners can override this without a code change. A
+    // separate mobile-specific photo can be set there too, used on phones.
     $heroImage = \App\Support\PageHeroes::resolve('zakat', 'images/zakathero.png');
+    $mobileHeroImage = \App\Support\PageHeroes::resolveMobile('zakat');
 @endphp
 
 @section('content')
@@ -16,7 +18,12 @@
              Hero photos are exported wide (1920x450) with the subject on the
              left and a plain/faded area on the right made to be cropped, so
              the crop anchors left. --}}
-        <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover object-left">
+        @if ($mobileHeroImage)
+            <img src="{{ asset($mobileHeroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover object-left lg:hidden">
+            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 hidden h-full w-full object-cover object-left lg:block">
+        @else
+            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover object-left">
+        @endif
         <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.35),rgba(18,45,60,0.55)_45%,rgba(18,45,60,0.4))]"></div>
 
         {{-- Decorative glows --}}

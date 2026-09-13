@@ -8,8 +8,12 @@
 @php
     // An admin upload (Admin -> Hero Banners) overrides the page's hardcoded
     // default, keyed by the current route name — no code change needed to
-    // swap a hero photo once a banner is set for this page.
-    $heroImage = \App\Support\PageHeroes::resolve(request()->route()?->getName() ?? '', $heroImage);
+    // swap a hero photo once a banner is set for this page. A separate
+    // mobile-specific photo can also be set there; phones use that instead
+    // when present, falling back to the same desktop photo otherwise.
+    $routeName = request()->route()?->getName() ?? '';
+    $heroImage = \App\Support\PageHeroes::resolve($routeName, $heroImage);
+    $mobileHeroImage = \App\Support\PageHeroes::resolveMobile($routeName);
 @endphp
 <section id="donate" class="relative overflow-hidden">
     {{-- Full-bleed photo behind the whole hero — heading column AND the
@@ -20,7 +24,12 @@
          the right made to be cropped — so the crop anchors left by default.
          $heroImagePosition (optional): overrides this for a photo composed
          differently. --}}
-    <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $heroImagePosition ?? 'object-left' }}">
+    @if ($mobileHeroImage)
+        <img src="{{ asset($mobileHeroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $heroImagePosition ?? 'object-left' }} lg:hidden">
+        <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 hidden h-full w-full object-cover lg:block {{ $heroImagePosition ?? 'object-left' }}">
+    @else
+        <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $heroImagePosition ?? 'object-left' }}">
+    @endif
     <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.35),rgba(18,45,60,0.55)_45%,rgba(18,45,60,0.4))]"></div>
 
     <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>

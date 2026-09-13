@@ -27,8 +27,10 @@
     $eliteProfile = asset('pdf/Elite_Hajj_2027_Profile.pdf');
 
     // Hero photo — admin-managed (Admin -> Hero Banners), falls back to the
-    // built-in Kaaba photo when no override is set.
+    // built-in Kaaba photo when no override is set. A separate mobile-specific
+    // photo can be set there too, used on phones.
     $heroImage = \App\Support\PageHeroes::resolve('hajj', 'images/hajj-kaaba.jpg');
+    $mobileHeroImage = \App\Support\PageHeroes::resolveMobile('hajj');
 @endphp
 
 @section('content')
@@ -64,8 +66,12 @@
 
             {{-- Right image --}}
             <div class="relative min-h-[280px] lg:min-h-full">
-                <img src="{{ asset($heroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba"
-                     class="absolute inset-0 h-full w-full object-cover">
+                @if ($mobileHeroImage)
+                    <img src="{{ asset($mobileHeroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba" class="absolute inset-0 h-full w-full object-cover lg:hidden">
+                    <img src="{{ asset($heroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba" class="absolute inset-0 hidden h-full w-full object-cover lg:block">
+                @else
+                    <img src="{{ asset($heroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba" class="absolute inset-0 h-full w-full object-cover">
+                @endif
                 <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent lg:bg-gradient-to-l lg:from-transparent lg:to-brand/30"></div>
             </div>
         </div>
