@@ -12,8 +12,11 @@
     {{-- ===================== HERO + DONATE WIDGET ===================== --}}
     <section class="relative overflow-hidden">
         {{-- Full-bleed photo behind the whole hero (heading AND the donate
-             widget), with one light, even tint — matches partials/donate-hero. --}}
-        <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover">
+             widget), with one light, even tint — matches partials/donate-hero.
+             Hero photos are exported wide (1920x450) with the subject on the
+             left and a plain/faded area on the right made to be cropped, so
+             the crop anchors left. --}}
+        <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover object-left">
         <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.35),rgba(18,45,60,0.55)_45%,rgba(18,45,60,0.4))]"></div>
 
         {{-- Decorative glows --}}
@@ -25,7 +28,7 @@
             {{-- Heading. Matches the shared donate-hero treatment: the title
                  is centred in the photo panel, with the padding-top clearing the
                  fixed header and items-center balancing what's left. --}}
-            <div class="relative flex min-h-[420px] items-center pt-24 sm:min-h-[480px] lg:min-h-[560px] lg:pt-28 xl:min-h-[620px] 2xl:min-h-[700px]">
+            <div class="relative flex min-h-[420px] items-center pt-24 sm:min-h-[480px] lg:min-h-[560px] lg:pt-28">
                 <div class="relative w-full px-6 py-10 sm:px-8 lg:px-10">
                     <div class="nf-reveal mx-auto max-w-4xl text-center text-white">
                         <h1 class="nf-hero-title text-4xl font-extrabold leading-[1.04] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-6xl">

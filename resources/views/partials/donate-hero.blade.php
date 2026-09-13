@@ -15,9 +15,12 @@
     {{-- Full-bleed photo behind the whole hero — heading column AND the
          donate panel column — with a single light, even tint so the photo
          stays clearly visible edge to edge instead of fading into a solid
-         navy block behind the form. $heroImagePosition (optional): an
-         object-position override for photos whose subject isn't centred. --}}
-    <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $heroImagePosition ?? '' }}">
+         navy block behind the form. Every hero photo is exported wide
+         (1920x450) with its subject on the left and a plain/faded area on
+         the right made to be cropped — so the crop anchors left by default.
+         $heroImagePosition (optional): overrides this for a photo composed
+         differently. --}}
+    <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover {{ $heroImagePosition ?? 'object-left' }}">
     <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.35),rgba(18,45,60,0.55)_45%,rgba(18,45,60,0.4))]"></div>
 
     <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
@@ -31,7 +34,7 @@
              space for items-center to balance, so the title sits optically
              centred rather than pinned to the bottom. A long headline still
              grows the panel. --}}
-        <div class="relative flex min-h-[440px] items-center pt-24 sm:min-h-[500px] lg:min-h-[580px] lg:pt-28 xl:min-h-[640px] 2xl:min-h-[720px]">
+        <div class="relative flex min-h-[440px] items-center pt-24 sm:min-h-[500px] lg:min-h-[580px] lg:pt-28">
             <div class="relative w-full px-6 py-10 sm:px-8 lg:px-10">
                 <div class="nf-reveal mx-auto max-w-4xl text-center text-white">
                     <h1 class="nf-hero-title text-4xl font-extrabold leading-[1.04] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-6xl xl:text-[4.25rem]">
