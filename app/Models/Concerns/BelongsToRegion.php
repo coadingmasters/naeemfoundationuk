@@ -4,6 +4,7 @@ namespace App\Models\Concerns;
 
 use App\Support\RegionContext;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Makes a model region-owned:
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Builder;
  *  - new records are stamped with the active region on create.
  *
  * Use `Model::withoutGlobalScope('region')` (or ::allRegions()) to bypass.
+ *
+ * @mixin Model
  */
 trait BelongsToRegion
 {
