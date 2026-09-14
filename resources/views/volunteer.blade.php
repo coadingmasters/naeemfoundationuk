@@ -2,12 +2,24 @@
 
 @section('title', 'Volunteer — ' . config('app.name'))
 
+@php
+    // Hero photo — admin-managed (Admin -> Hero Banners), falls back to the
+    // built-in default when no override is set. A separate mobile-specific
+    // photo can be set there too, used on phones.
+    $heroImage = \App\Support\PageHeroes::resolve('volunteer', 'images/voluntear.png');
+    $mobileHeroImage = \App\Support\PageHeroes::resolveMobile('volunteer');
+@endphp
+
 @section('content')
 
     {{-- ===================== ANIMATED HERO ===================== --}}
     <section class="relative isolate overflow-hidden bg-navy-dark">
-        <img src="{{ asset('images/voluntear.png') }}" alt=""
-             class="nf-kenburns absolute inset-0 h-full w-full object-cover">
+        @if ($mobileHeroImage)
+            <img src="{{ asset($mobileHeroImage) }}" alt="" class="nf-kenburns absolute inset-0 h-full w-full object-cover lg:hidden">
+            <img src="{{ asset($heroImage) }}" alt="" class="nf-kenburns absolute inset-0 hidden h-full w-full object-cover lg:block">
+        @else
+            <img src="{{ asset($heroImage) }}" alt="" class="nf-kenburns absolute inset-0 h-full w-full object-cover">
+        @endif
         <div class="absolute inset-0 bg-gradient-to-br from-navy-dark/90 via-navy/80 to-brand/70"></div>
 
         <div class="nf-float pointer-events-none absolute -right-20 top-10 h-64 w-64 rounded-full bg-brand/30 blur-3xl"></div>
