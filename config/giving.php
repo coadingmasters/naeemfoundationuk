@@ -21,7 +21,8 @@ return [
             ['title' => 'Food & Sustenance', 'route' => 'food-sustenance'],
             ['title' => 'Hostel for Students / Orphans', 'route' => 'hostel-for-students-orphans'],
             ['title' => 'Prosthetic Limb', 'route' => 'prosthetic-limb'],
-            ['title' => 'Community Centre', 'route' => 'community-centre'],
+            // Hidden for now (not removed) — restore by uncommenting this entry.
+            // ['title' => 'Community Centre', 'route' => 'community-centre'],
             ['title' => 'Clean Water', 'route' => 'clean-water'],
             ['title' => 'Orphans Sponsorships', 'route' => 'orphans-sponsorships'],
             ['title' => 'Cambodia Education & Welfare', 'route' => 'cambodia-education-welfare'],
