@@ -129,50 +129,6 @@
         </div>
     </section>
 
-    {{-- ===================== STORY ===================== --}}
-    <section class="pb-16">
-        <div class="nf-container">
-            <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-                <div class="grid lg:grid-cols-2">
-                    {{-- Image --}}
-                    <div class="relative min-h-[280px] lg:min-h-full">
-                        <img src="{{ asset('images/changinslives1.jpg') }}" alt="A child’s Eid smile"
-                             class="absolute inset-0 h-full w-full object-cover">
-                        <span class="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-brand px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg">
-                            <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                            A true story
-                        </span>
-                    </div>
-
-                    {{-- Text --}}
-                    <div class="p-6 sm:p-10">
-                        <h2 class="text-2xl font-bold text-brand">A Heartfelt Thank You from Fatima</h2>
-                        <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                            Fatima is a mother of three, including her son Ayaan who studies at the local Maktab. Living in
-                            a small rented house, her family struggles to make ends meet — and Eid gifts were always
-                            beyond reach.
-                        </p>
-
-                        <figure class="mt-6 rounded-xl border-l-4 border-brand bg-cream/60 p-5">
-                            <blockquote class="text-sm leading-relaxed italic text-navy-dark sm:text-base">
-                                “Alhamdulillah, I am so thankful to Naeem Foundation for the beautiful Eid gifts they
-                                distributed. This allowed my children to experience the joy of Eid and celebrate just like
-                                other children. I pray for blessings upon those who made this possible. May Allah reward
-                                them abundantly.”
-                            </blockquote>
-                            <figcaption class="mt-3 text-xs font-semibold text-gray-500">— Fatima, mother of Ayaan</figcaption>
-                        </figure>
-
-                        <a href="#donate" class="btn-navy mt-6 px-7 py-2.5">
-                            Sponsor a Child’s Eid
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     {{-- ===================== CTA BANNER ===================== --}}
     <section class="bg-navy">
         <div class="nf-container py-14 text-center">
