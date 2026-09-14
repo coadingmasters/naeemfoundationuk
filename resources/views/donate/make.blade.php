@@ -66,19 +66,17 @@
     <section data-screen="steps" hidden class="nf-wz-screen bg-cream py-10 sm:py-14">
         <div class="nf-container">
 
-            {{-- Progress. Gift Aid is a UK-only tax relief, so that step is dropped
-                 outside the UK. `data-step` stays tied to the panel number, while the
-                 shown number is sequential — so highlighting stays correct either way. --}}
+            {{-- Progress. `data-step` stays tied to the panel number, while the
+                 shown number is sequential — so highlighting stays correct even
+                 with the gap left by the removed Gift Aid step. --}}
             @php
-                $isUK = region('code') === 'GB';
-                $wizardSteps = array_values(array_filter([
+                $wizardSteps = [
                     ['step' => 1, 'label' => 'Start'],
                     ['step' => 2, 'label' => 'Donation'],
-                    $isUK ? ['step' => 3, 'label' => 'Gift Aid'] : null,
                     ['step' => 4, 'label' => 'Keep in touch'],
                     ['step' => 5, 'label' => 'Details'],
                     ['step' => 6, 'label' => 'Payment'],
-                ]));
+                ];
             @endphp
             <ol class="nf-wz-steps mb-9 sm:mb-11">
                 @foreach ($wizardSteps as $i => $s)
@@ -130,48 +128,11 @@
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Back
                         </button>
-                        <button type="button" data-next="{{ $isUK ? 3 : 4 }}" data-validate="amount" class="btn-brand px-7 py-3 text-base">
+                        <button type="button" data-next="4" data-validate="amount" class="btn-brand px-7 py-3 text-base">
                             Continue {!! $arrow !!}
                         </button>
                     </div>
                 </div>
-
-                {{-- ===== STEP 3 · Gift Aid (UK only) ===== --}}
-                @if ($isUK)
-                <div class="nf-wz-panel" data-panel="3" hidden>
-                    <h2 class="text-2xl font-extrabold text-navy-dark sm:text-3xl">Boost your donation with Gift Aid</h2>
-                    <p class="mt-1.5 text-sm text-navy/70">If you&rsquo;re a UK taxpayer, add 25% at no extra cost to you.</p>
-
-                    <div class="mt-6 rounded-xl bg-cream/70 p-6 text-center ring-1 ring-navy/10">
-                        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Your gift could become</p>
-                        <p class="mt-2 flex items-center justify-center gap-3 text-3xl font-extrabold text-navy-dark sm:text-4xl">
-                            <span data-ga-amount>{{ region('symbol') }}0.00</span>
-                            <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            <span class="text-brand" data-ga-plus>{{ region('symbol') }}0.00</span>
-                        </p>
-                    </div>
-
-                    <label class="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-navy/10 p-4 transition-colors hover:border-brand">
-                        <input type="checkbox" data-ga-check
-                               class="mt-0.5 h-5 w-5 shrink-0 rounded border-gray-300 text-brand focus:ring-2 focus:ring-brand/30">
-                        <span class="text-sm leading-relaxed text-navy-dark">
-                            I am a UK taxpayer and would like Naeem Foundation to claim Gift Aid on this donation and any
-                            I make in the future or have made in the past 4 years.
-                        </span>
-                    </label>
-
-                    <div class="mt-8 flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <button type="button" data-back="2" class="nf-wz-nav-back">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            Back
-                        </button>
-                        <button type="button" data-next="4" class="btn-brand px-7 py-3 text-base">
-                            Continue {!! $arrow !!}
-                        </button>
-                    </div>
-                </div>
-
-                @endif
 
                 {{-- ===== STEP 4 · Keep in touch ===== --}}
                 <div class="nf-wz-panel" data-panel="4" hidden>
@@ -205,7 +166,7 @@
                     <p class="mt-3 text-xs text-navy/50">Prefer not to hear from us? Just leave these unticked &mdash; your donation still goes through.</p>
 
                     <div class="mt-8 flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <button type="button" data-back="{{ $isUK ? 3 : 2 }}" class="nf-wz-nav-back">
+                        <button type="button" data-back="2" class="nf-wz-nav-back">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Back
                         </button>
@@ -262,9 +223,6 @@
     const amountBtns = Array.from(root.querySelectorAll('[data-amount]'));
     const otherWrap = root.querySelector('[data-other-wrap]');
     const otherInput = root.querySelector('[data-other-input]');
-    const gaAmount = root.querySelector('[data-ga-amount]');
-    const gaPlus = root.querySelector('[data-ga-plus]');
-    const gaCheck = root.querySelector('[data-ga-check]');
     const consentBoxes = Array.from(root.querySelectorAll('[data-consent]'));
     const flashEl = root.querySelector('[data-flash]');
 
@@ -369,21 +327,9 @@
         state.amount = parseFloat(otherInput.value) || null; save();
     });
 
-    // ---- Gift aid figures ----
-    function updateGiftAid() {
-        const a = Number(state.amount) || 0;
-        gaAmount.textContent = money(a);
-        gaPlus.textContent = money(a * 1.25);
-    }
-    // Gift Aid and marketing consent are a fresh, active choice on every
-    // donation — never restored from a previous session's localStorage.
-    if (gaCheck) {
-        state.giftAid = false;
-        gaCheck.checked = false;
-        gaCheck.addEventListener('change', () => { state.giftAid = gaCheck.checked; save(); });
-    }
-
     // ---- Keep in touch (marketing consent) ----
+    // A fresh, active choice on every donation — never restored from a
+    // previous session's localStorage.
     state.consent = {};
     consentBoxes.forEach((box) => {
         const key = box.dataset.consent;
@@ -395,13 +341,10 @@
     // ---- Next / Back ----
     root.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => {
         const to = Number(b.dataset.next);
-        // The step-2 "Continue" carries data-validate; it may go to step 3 (UK,
-        // Gift Aid) or straight to step 4 (non-UK, Gift Aid step removed).
         if (b.dataset.validate === 'amount') {
             if (!state.fund) { flash('Please choose a fund first.'); return; }
             if (!state.amount || state.amount < 1) { flash('Please choose or enter an amount.'); return; }
         }
-        if (to === 3) updateGiftAid(); // only when the Gift Aid step is present
         showStep(to);
         stepsScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
