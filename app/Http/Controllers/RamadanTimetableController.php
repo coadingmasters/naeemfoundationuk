@@ -24,7 +24,7 @@ class RamadanTimetableController extends Controller
 
         $rows = $this->rows();
 
-        return view('schedule-ramadan-giving', [
+        return view('ramadan-calendar', [
             'projects' => $projects,
             'rows' => $rows,
             // True once at least one day has real prayer times configured.

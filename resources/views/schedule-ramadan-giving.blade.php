@@ -1,213 +1,170 @@
 @extends('layouts.app')
 
-@section('title', 'Ramadan Timetable ' . config('ramadan-timetable.year') . ' — ' . config('app.name'))
+@section('title', 'Schedule Your Ramadan Giving — ' . config('app.name'))
+
+{{-- Light hero → keep the header solid. --}}
+@section('header-solid', 'yes')
 
 @php
-    $year = config('ramadan-timetable.year');
-    $location = config('ramadan-timetable.location');
+    $nights = (int) config('ramadan.nights');
+    $amounts = config('ramadan.amounts');
+    $popular = config('ramadan.popular');
+    $defaultDaily = (float) config('ramadan.default_daily');
+    $boosts = config('ramadan.boosts');
+    $causes = config('ramadan.causes');
+    $defaultCause = $causes[0];
 
-    // Offer the PDF when it has been uploaded; otherwise let the donor print.
-    $pdf = config('ramadan-timetable.pdf');
-    $hasPdf = $pdf && file_exists(public_path($pdf));
+    $starts = \Illuminate\Support\Carbon::parse(config('ramadan.starts_at'));
+    $ends = \Illuminate\Support\Carbon::parse(config('ramadan.ends_at'));
 
-    $columns = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib/Iftar', 'Isha'];
-
-    // "Our Projects" cards — managed in the admin dashboard, with a resilient fallback.
-    $projects = ($projects ?? collect());
-    if ($projects->isEmpty()) {
-        $projects = collect([
-            (object) ['image' => 'images/changinslives2.jpg', 'title' => 'Food', 'description' => 'Food Support — our mission to provide for people in need.', 'link' => '#'],
-            (object) ['image' => 'images/changinslives3.jpg', 'title' => 'Binoria Water Campaign', 'description' => 'Water Crisis Hit Jamia Binoria Hard — students struggle for clean water.', 'link' => '#'],
-            (object) ['image' => 'images/changinslives1.jpg', 'title' => 'Education', 'description' => 'Empowering tomorrow’s leaders today at Naeem Foundation.', 'link' => '#'],
-            (object) ['image' => 'images/changinslives4.jpg', 'title' => 'Healthcare', 'description' => 'Free medical care and medicine for remote communities.', 'link' => '#'],
-        ]);
-    }
+    // Cause icons (single-path SVGs)
+    $causeIcons = [
+        'Zakat' => 'M12 3v18M8 7h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h7',
+        'Sadaqah' => 'M12 21s-7-4.35-9-8.5C1.5 9 3.5 6 6.5 6 9 6 12 9 12 9s3-3 5.5-3C20.5 6 22.5 9 21 12.5 19 16.65 12 21 12 21z',
+        'Orphans' => 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0',
+        'Education' => 'M22 9L12 4 2 9l10 5 10-5zM6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5',
+    ];
 @endphp
 
 @section('content')
 
-    {{-- ===================== HERO ===================== --}}
-    <section class="nf-noprint relative overflow-hidden">
-        <img src="{{ asset('images/changinslives2.jpg') }}" alt="Iftar table"
-             class="h-72 w-full object-cover sm:h-96 lg:h-[420px]">
-        <div class="absolute inset-0 bg-navy-dark/55"></div>
+    <section class="bg-cream py-12 sm:py-16">
+        <div class="nf-container">
 
-        <div class="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
-            <h1 class="rounded-lg bg-white px-6 py-3 text-2xl font-extrabold text-navy-dark shadow-xl sm:px-10 sm:py-4 sm:text-3xl lg:text-4xl">
-                Ramadan Timetable <span class="text-brand">{{ $year }}</span>
+            <h1 class="text-3xl font-extrabold leading-tight text-navy sm:text-4xl lg:text-5xl">
+                Automate your giving this Ramadan
             </h1>
+            <p class="mt-3 max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
+                Give a little every night of Ramadan. Set your daily amount once and we’ll take care of the rest —
+                including a boost on the blessed 27th night.
+            </p>
 
-            <nav aria-label="Breadcrumb" class="mt-4 text-sm text-white/85">
-                <a href="{{ route('home') }}" class="hover:text-white">Home</a>
-                <span class="mx-1.5">›</span>
-                <span class="font-semibold text-white">Ramadan Timetable</span>
-            </nav>
-        </div>
-    </section>
+            <form method="POST" action="{{ route('donate.add') }}" data-ramadan data-nights="{{ $nights }}"
+                  class="mt-10 grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
+                @csrf
+                <input type="hidden" name="frequency" value="one-off">
+                <input type="hidden" name="image" value="images/changinslives2.jpg">
+                <input type="hidden" name="cause" data-rg-cause-input value="{{ $defaultCause }} (Ramadan {{ $nights }} Nights)">
+                <input type="hidden" name="amount" data-rg-amount-input value="{{ $defaultDaily * $nights }}">
 
-    {{-- ===================== TIMETABLE ===================== --}}
-    <section class="py-14 sm:py-16">
-        <div class="nf-container">
-            <h2 class="text-center text-2xl font-bold text-brand sm:text-3xl">Seher &amp; Iftar Schedule {{ $year }}</h2>
-            <p class="mt-2 text-center text-sm text-gray-500">{{ $location }}</p>
+                {{-- ================= LEFT ================= --}}
+                <div class="space-y-6">
 
-            @unless ($hasTimes)
-                <p class="mx-auto mt-5 max-w-2xl rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800">
-                    Prayer times for {{ $year }} are being finalised and will be published here shortly.
-                    Please confirm timings with your local mosque.
-                </p>
-            @endunless
+                    {{-- Organisation --}}
+                    <div class="flex items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-12 w-12 rounded-full object-contain">
+                            <div>
+                                <p class="text-xs text-gray-500">Automate giving with</p>
+                                <p class="text-sm font-extrabold uppercase tracking-wide text-navy-dark">{{ config('app.name') }}</p>
+                            </div>
+                        </div>
+                    </div>
 
-            {{-- Table --}}
-            <div class="mx-auto mt-8 max-w-3xl overflow-hidden rounded-2xl bg-brand p-4 shadow-xl sm:p-6">
-                <div class="text-center text-white">
-                    <p class="text-lg font-extrabold tracking-wide sm:text-2xl">RAMADAN KAREEM</p>
-                </div>
+                    {{-- Nights tab --}}
+                    <div class="border-b border-gray-200">
+                        <span class="inline-block border-b-2 border-brand pb-2 text-base font-bold text-brand">
+                            {{ $nights }} Nights
+                        </span>
+                    </div>
 
-                <div class="mt-4 overflow-x-auto rounded-lg">
-                    <table class="w-full min-w-[640px] border-collapse bg-white text-left text-xs sm:text-sm">
-                        <thead>
-                            <tr class="bg-cream text-navy-dark">
-                                <th scope="col" class="px-3 py-2.5 font-bold">Date</th>
-                                <th scope="col" class="px-3 py-2.5 font-bold">Ramadan</th>
-                                @foreach ($columns as $column)
-                                    <th scope="col" class="px-3 py-2.5 font-bold">{{ $column }}</th>
-                                @endforeach
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($rows as $i => $row)
-                                <tr class="{{ $i % 2 ? 'bg-gray-50' : 'bg-white' }} border-t border-gray-100">
-                                    <td class="whitespace-nowrap px-3 py-2 text-gray-700">{{ $row['date']->format('d/m/Y') }}</td>
-                                    <td class="whitespace-nowrap px-3 py-2 font-semibold text-navy-dark">{{ $row['label'] }}</td>
+                    {{-- Daily amount --}}
+                    <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+                        <h2 class="text-base font-bold text-navy-dark">Enter your daily amount</h2>
 
-                                    @for ($c = 0; $c < 6; $c++)
-                                        <td class="whitespace-nowrap px-3 py-2 text-gray-700">
-                                            {{ $row['times'][$c] ?? '—' }}
-                                        </td>
-                                    @endfor
-                                </tr>
+                        <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                            @foreach ($amounts as $amount)
+                                <div class="relative">
+                                    @if ($amount === $popular)
+                                        <span class="absolute -top-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-brand px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">Popular</span>
+                                    @endif
+                                    <button type="button" data-rg-amount="{{ $amount }}"
+                                            class="nf-rg-option w-full {{ (float) $amount === $defaultDaily ? 'is-selected' : '' }}">
+                                        {{ region('symbol') }}{{ $amount }}
+                                    </button>
+                                </div>
                             @endforeach
-                        </tbody>
-                    </table>
+                        </div>
+
+                        {{-- Custom amount --}}
+                        <div class="mt-4 flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
+                            <span class="flex items-center gap-1.5 border-r border-gray-200 pr-3 text-sm font-semibold text-navy-dark">
+                                🇬🇧 GBP
+                            </span>
+                            <span class="text-xl font-bold text-navy-dark">{{ region('symbol') }}</span>
+                            <input type="number" min="1" step="0.01" value="{{ $defaultDaily }}" data-rg-custom
+                                   aria-label="Daily amount in pounds"
+                                   class="w-full border-0 bg-transparent p-0 text-xl font-bold text-navy-dark focus:outline-none focus:ring-0">
+                        </div>
+
+                        {{-- 27th night boost --}}
+                        <div class="mt-5 rounded-xl border border-brand/20 bg-brand/5 p-4 text-center">
+                            <p class="text-sm font-bold text-navy-dark">Increase my donation on the 27th night</p>
+                            <p class="mt-1 text-xs text-gray-600">
+                                Add <span class="font-bold text-brand" data-rg-boost-amount>{{ region('symbol') }}0.00</span> for the 27th night
+                            </p>
+
+                            <div class="mt-3 flex flex-wrap justify-center gap-1 rounded-full bg-white p-1">
+                                @foreach ($boosts as $boost)
+                                    <button type="button" data-rg-boost="{{ $boost }}"
+                                            class="nf-rg-pill {{ $boost === 0 ? 'is-selected' : '' }}">
+                                        {{ $boost }}%
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-white/85">
-                    <span>{{ region('phone') }}</span>
-                    <span>naeemfoundation.co.uk</span>
-                </div>
-            </div>
+                {{-- ================= RIGHT ================= --}}
+                <div class="rounded-2xl bg-white p-5 shadow-lg ring-1 ring-black/5 sm:p-6 lg:sticky lg:top-28">
+                    <h2 class="text-base font-bold text-navy-dark">Select your cause</h2>
 
-            {{-- Download / print --}}
-            <div class="nf-noprint mt-6 text-center">
-                @if ($hasPdf)
-                    <a href="{{ asset($pdf) }}" download class="btn-brand px-6 py-2.5">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        Download Ramadan timetable {{ $year }}
-                    </a>
-                @else
-                    <button type="button" data-print-page class="btn-brand px-6 py-2.5">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        Print / save timetable {{ $year }}
+                    <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        @foreach ($causes as $cause)
+                            <button type="button" data-rg-cause="{{ $cause }}"
+                                    class="nf-rg-cause {{ $cause === $defaultCause ? 'is-selected' : '' }}">
+                                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <path d="{{ $causeIcons[$cause] }}" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                {{ $cause }}
+                            </button>
+                        @endforeach
+                    </div>
+
+                    {{-- Totals --}}
+                    <div class="mt-6 border-t border-gray-200 pt-4">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-sm font-bold text-navy-dark">Total nights</p>
+                                <p class="text-xs text-gray-500">{{ $starts->format('j M') }} to {{ $ends->format('j M') }}</p>
+                            </div>
+                            <p class="text-sm font-bold text-navy-dark">{{ $nights }} nights</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
+                        <p class="text-base font-bold text-navy-dark">Total</p>
+                        <p class="text-xl font-extrabold text-brand" data-rg-total>{{ region('symbol') }}0.00</p>
+                    </div>
+
+                    {{-- Continue --}}
+                    <button type="submit" data-rg-submit
+                            class="mt-5 flex w-full items-center justify-between gap-2 rounded-xl bg-navy px-5 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-navy-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60">
+                        <span class="flex items-center gap-2">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                            Continue with card
+                        </span>
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
-                @endif
-            </div>
-        </div>
-    </section>
 
-    {{-- ===================== ARTICLE ===================== --}}
-    <section class="nf-noprint pb-14">
-        <div class="nf-container">
-            <article class="mx-auto max-w-3xl space-y-8 text-sm leading-relaxed text-gray-600 sm:text-base">
-
-                <div>
-                    <h2 class="text-xl font-bold text-navy-dark sm:text-2xl">
-                        Fasting in Ramadan {{ $year }}: The Pillar of Patience and Reflection in Islam
-                    </h2>
-                    <p class="mt-3">
-                        Ramadan is the most sacred and anticipated month of the Islamic calendar — a time for deep
-                        spiritual reflection, purification and abundant mercy. Fasting during Ramadan is one of the Five
-                        Pillars of Islam, making it a cornerstone of every Muslim’s faith and practice. This month-long
-                        period of fasting goes beyond abstaining from food and drink; it is a time to cleanse the soul,
-                        strengthen self-discipline, and seek the mercy and forgiveness of Allah (SWT).
+                    <p class="mt-4 text-center text-xs leading-relaxed text-gray-500">
+                        You’ll confirm your Gift Aid declaration, donor details and payment on the next steps.
+                        By continuing you agree to our
+                        <a href="{{ route('privacy-policy') }}" class="font-semibold text-navy underline hover:text-brand">Privacy Policy</a>.
                     </p>
                 </div>
-
-                <div>
-                    <h2 class="text-xl font-bold text-navy-dark sm:text-2xl">The Purpose of Fasting in Ramadan</h2>
-                    <p class="mt-3">
-                        Fasting during Ramadan is a powerful way for Muslims to draw closer to Allah. It provides an
-                        opportunity to develop taqwa (God-consciousness), practise patience, and express gratitude for
-                        blessings. Allah (SWT) says in the Qur’an:
-                    </p>
-                    <blockquote class="mt-4 border-l-4 border-brand pl-4 text-sm font-bold italic text-brand sm:text-base">
-                        “O you who have believed, decreed upon you is fasting as it was decreed upon those before you
-                        that you may become righteous.” (Qur’an 2:183)
-                    </blockquote>
-                    <p class="mt-4">
-                        This sacred practice encourages believers to empathise with the less fortunate and focus on
-                        spiritual growth, kindness and self-discipline throughout the blessed month.
-                    </p>
-                </div>
-
-                <div>
-                    <h2 class="text-xl font-bold text-navy-dark sm:text-2xl">Rewards and Blessings of Fasting</h2>
-                    <p class="mt-3">
-                        Fasting in Ramadan brings immense reward. As mentioned in authentic Hadith, fasting is a unique
-                        act of worship that Allah Himself promises to reward generously:
-                    </p>
-
-                    <p class="mt-4"><span class="font-bold text-navy-dark">Forgiveness of Sins:</span></p>
-                    <p>The Prophet Muhammad (PBUH) said:</p>
-                    <p class="italic">
-                        “Whoever fasts during Ramadan with faith and seeking reward from Allah will have his past sins
-                        forgiven.” (Bukhari, Muslim)
-                    </p>
-
-                    <p class="mt-4"><span class="font-bold text-navy-dark">Exclusive Reward of Fasting:</span></p>
-                    <p>The Prophet (PBUH) also said:</p>
-                    <p class="italic">
-                        “Every deed of the son of Adam is for him except fasting, for it is for Me, and I shall reward it
-                        (as I like).” (Sahih Muslim)
-                    </p>
-                </div>
-
-                <div>
-                    <h2 class="text-xl font-bold text-navy-dark sm:text-2xl">When Does Ramadan {{ $year }} Begin?</h2>
-                    <p class="mt-3">
-                        Ramadan in {{ $year }} is expected to begin on the evening of Tuesday, 17th February {{ $year }},
-                        with the first fast on Wednesday, 18th February {{ $year }}. The exact start depends on the
-                        sighting of the new moon and may vary by region.
-                    </p>
-                </div>
-
-                <div>
-                    <h2 class="text-xl font-bold text-navy-dark sm:text-2xl">When Does Ramadan {{ $year }} End?</h2>
-                    <p class="mt-3">
-                        Ramadan {{ $year }} is expected to conclude on Thursday, 19th March {{ $year }}, with Eid al-Fitr
-                        celebrations beginning thereafter. The final date is confirmed upon moon sighting in each
-                        locality.
-                    </p>
-                </div>
-            </article>
-        </div>
-    </section>
-
-    {{-- ===================== OUR PROJECTS ===================== --}}
-    <section class="nf-noprint pb-16 sm:pb-20">
-        <div class="nf-container">
-            <div class="text-center">
-                <p class="text-sm font-semibold uppercase tracking-wider text-brand">Livelihood programs</p>
-                <h2 class="mt-2 text-3xl font-bold text-navy-dark sm:text-4xl">Our Projects</h2>
-                <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-gray-500 sm:text-base">
-                    Naeem Foundation is a vibrant and compassionate NGO dedicated to improving the lives of individuals
-                    and communities in need, with a solid spotlight on compassion.
-                </p>
-            </div>
-
-            <div class="mt-10">
-                @include('partials.projects-carousel')
-            </div>
+            </form>
         </div>
     </section>
 
