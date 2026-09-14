@@ -34,10 +34,6 @@
             @endforeach
             <button type="button" data-qurbani-choice="other" data-qurbani-label="Qurbani" class="nf-choice py-2.5">Other</button>
         </div>
-        <p class="mt-3 text-sm font-semibold text-brand" data-qurbani-price>
-            <span data-qurbani-price-amount>{{ region('symbol') }}{{ $default['amount'] }}</span>
-            <span class="font-normal text-gray-500">for this package</span>
-        </p>
     </div>
 
     {{-- Amount — custom ("Other") --}}
@@ -84,13 +80,10 @@
 
         const amount = form.querySelector('[data-qurbani-amount]');
         const causeInput = form.querySelector('[data-qurbani-cause-input]');
-        const priceHint = form.querySelector('[data-qurbani-price]');
-        const priceHintAmount = form.querySelector('[data-qurbani-price-amount]');
         const customWrap = form.querySelector('[data-qurbani-custom]');
         const customInput = form.querySelector('[data-qurbani-custom-input]');
         const recipientInput = form.querySelector('[data-qurbani-recipient]');
         const choices = [...form.querySelectorAll('[data-qurbani-choice]')];
-        const sym = '{{ region("symbol") }}';
 
         let currentLabel = choices[0]?.dataset.qurbaniLabel ?? 'Qurbani';
 
@@ -105,13 +98,10 @@
 
             if (btn.dataset.qurbaniChoice === 'other') {
                 customWrap.classList.remove('hidden');
-                priceHint.classList.add('hidden');
                 customInput.focus();
                 amount.value = customInput.value || '';
             } else {
                 customWrap.classList.add('hidden');
-                priceHint.classList.remove('hidden');
-                priceHintAmount.textContent = sym + btn.dataset.qurbaniChoice;
                 amount.value = btn.dataset.qurbaniChoice;
             }
             updateCause();
@@ -135,7 +125,6 @@
             if (!amount.value || Number(amount.value) < 1) {
                 e.preventDefault();
                 customWrap.classList.remove('hidden');
-                priceHint.classList.add('hidden');
                 customInput.focus();
             }
         });
