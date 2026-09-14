@@ -51,7 +51,7 @@
         ['heading' => config('giving.qurbani.heading'), 'items' => config('giving.qurbani.items')],
     ];
     $megaPromo = [
-        'image' => 'images/zakatcenter.png',
+        'image' => 'images/givngdropdown.jpeg',
         'eyebrow' => 'Not sure where to give?',
         'title' => 'Where Most Needed',
         // Lands on the donation picker, not straight into checkout — the donor
