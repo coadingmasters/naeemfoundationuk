@@ -19,8 +19,10 @@
                  'icon' => '<path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" stroke-linejoin="round"/><path d="M17 9h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2M8 9h6M8 13h6M8 17h3" stroke-linecap="round" stroke-linejoin="round"/>'],
             ],
         ],
-        ['label' => 'Givings', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well', 'dhul-hajj', 'qurbani')],
-        ['label' => 'Community Centre', 'url' => route('community-centre'), 'active' => request()->routeIs('community-centre')],
+        // Hidden for now (not removed) — restore by uncommenting these two entries.
+        // ['label' => 'Givings', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well', 'dhul-hajj', 'qurbani')],
+        // ['label' => 'Community Centre', 'url' => route('community-centre'), 'active' => request()->routeIs('community-centre')],
+        ['label' => 'Zakat Calculator', 'url' => route('zakat-calculator'), 'active' => request()->routeIs('zakat-calculator')],
         ['label' => 'Hajj 2027', 'url' => route('hajj'), 'active' => request()->routeIs('hajj')],
         ['label' => 'Shop', 'url' => route('shop'), 'active' => request()->routeIs('shop', 'shop.*')],
     ];
@@ -31,6 +33,7 @@
         // Keys must match the nav labels above — the drawer looks icons up by label.
         'Givings' => '<path d="M12 21s-7.5-4.6-9.5-9A5.2 5.2 0 0 1 12 6.6a5.2 5.2 0 0 1 9.5 5.4c-2 4.4-9.5 9-9.5 9Z" stroke-linejoin="round"/>',
         'Community Centre' => '<path d="M3 10.5 12 4l9 6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" stroke-linecap="round" stroke-linejoin="round"/>',
+        'Zakat Calculator' => '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M8 11h1M8 14h1M8 17h1M12 11h1M12 14h1M12 17h1M16 11h1M16 14h1M16 17h1" stroke-linecap="round"/>',
         // Kaaba — deliberately distinct from the Community Centre house.
         'Hajj 2027' => '<rect x="5" y="7" width="14" height="13" rx="1"/><path d="M5 11h14" stroke-linecap="round"/><path d="M12 3v4M9.5 4.5h5" stroke-linecap="round"/>',
         'Shop' => '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linejoin="round"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round"/>',
