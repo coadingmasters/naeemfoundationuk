@@ -201,23 +201,40 @@
                 <p class="mx-auto mt-3 max-w-xl text-sm text-gray-500">Tell us a little about yourself and we'll get back to you.</p>
             </div>
 
-            <form data-career-form class="mx-auto mt-8 max-w-3xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+            <form method="POST" action="{{ route('careers.apply') }}" enctype="multipart/form-data"
+                  data-career-form class="mx-auto mt-8 max-w-3xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+                @csrf
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <input type="text" name="name" required placeholder="Name"
+                    <input type="text" name="name" required placeholder="Name" value="{{ old('name') }}"
                            class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    <input type="tel" name="phone" required placeholder="Phone Number"
+                    <input type="tel" name="phone" required placeholder="Phone Number" value="{{ old('phone') }}"
                            class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    <input type="email" name="email" required placeholder="Email"
+                    <input type="email" name="email" required placeholder="Email" value="{{ old('email') }}"
                            class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    <input type="text" name="postcode" placeholder="Postcode"
+                    <input type="text" name="postcode" placeholder="Postcode" value="{{ old('postcode') }}"
                            class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
                     <textarea name="address" rows="4" placeholder="Enter your address"
-                              class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30 sm:col-span-2"></textarea>
+                              class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30 sm:col-span-2">{{ old('address') }}</textarea>
                 </div>
 
-                <div data-career-success class="mt-5 hidden items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800">
-                    <svg class="h-5 w-5 shrink-0 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    Thank you! We've received your application and will be in touch soon.
+                {{-- CV upload — accepts PDF, Word, OpenDocument, RTF or plain text,
+                     so no one is blocked from applying by an unusual file format. --}}
+                <div class="mt-4">
+                    <label for="cv"
+                           data-cv-drop
+                           class="group flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center transition-all duration-300 hover:scale-[1.01] hover:border-brand hover:bg-cream/40">
+                        <svg data-cv-icon class="h-7 w-7 text-brand transition-transform duration-300 group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M12 16V4m0 0L8 8m4-4l4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="mt-2 text-sm font-semibold text-navy-dark" data-cv-label>Click to upload your CV</span>
+                        <span class="mt-0.5 text-xs text-gray-400">PDF, Word, ODT, RTF or TXT — up to 5MB</span>
+                        <input id="cv" name="cv" type="file"
+                               accept=".pdf,.doc,.docx,.odt,.rtf,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/rtf,text/plain"
+                               data-cv-input class="sr-only">
+                    </label>
+                    @error('cv')
+                        <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <button type="submit" class="btn-brand mt-6 w-full py-3">Submit</button>
@@ -246,12 +263,36 @@
 
 @push('scripts')
 <script>
-    document.querySelector('[data-career-form]')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const msg = e.target.querySelector('[data-career-success]');
-        if (msg) { msg.classList.remove('hidden'); msg.classList.add('flex'); }
-        e.target.querySelectorAll('input, textarea').forEach((f) => (f.value = ''));
-        msg?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+    // The form submits for real (see CareerController::store) — the site-wide
+    // success popup shows once the page redirects back. This just gives live
+    // feedback on the CV dropzone: swaps the icon/label once a file is chosen.
+    (function () {
+        const input = document.querySelector('[data-cv-input]');
+        const drop = document.querySelector('[data-cv-drop]');
+        const label = document.querySelector('[data-cv-label]');
+        const icon = document.querySelector('[data-cv-icon]');
+        if (!input || !drop || !label || !icon) return;
+
+        const original = label.textContent;
+        const checkPath = '<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>';
+        const uploadPath = '<path d="M12 16V4m0 0L8 8m4-4l4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>';
+
+        input.addEventListener('change', () => {
+            const file = input.files && input.files[0];
+            if (file) {
+                label.textContent = file.name;
+                icon.innerHTML = checkPath;
+                drop.classList.add('border-brand', 'bg-cream/50');
+                drop.classList.remove('border-gray-300', 'bg-gray-50');
+                icon.classList.add('scale-110');
+                setTimeout(() => icon.classList.remove('scale-110'), 300);
+            } else {
+                label.textContent = original;
+                icon.innerHTML = uploadPath;
+                drop.classList.remove('border-brand', 'bg-cream/50');
+                drop.classList.add('border-gray-300', 'bg-gray-50');
+            }
+        });
+    })();
 </script>
 @endpush

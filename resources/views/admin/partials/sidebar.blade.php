@@ -91,6 +91,12 @@
             'icon' => '<circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0" stroke-linecap="round"/><path d="M16 3.2a3 3 0 0 1 0 5.6M17.5 20a5.5 5.5 0 0 0-2.7-4.8" stroke-linecap="round"/>',
         ],
         [
+            'label' => 'Job Applications',
+            'route' => 'admin.job-applications.index',
+            'active' => request()->routeIs('admin.job-applications.*'),
+            'icon' => '<path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" stroke-linejoin="round"/><path d="M8 9h6M8 13h6M8 17h3" stroke-linecap="round" stroke-linejoin="round"/>',
+        ],
+        [
             'label' => 'Ask a Mufti',
             'route' => 'admin.mufti-questions.index',
             'active' => request()->routeIs('admin.mufti-questions.*'),

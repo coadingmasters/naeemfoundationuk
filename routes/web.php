@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CauseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\HajjRegistrationController as AdminHajjRegistrationController;
+use App\Http\Controllers\Admin\JobApplicationController as AdminJobApplicationController;
 use App\Http\Controllers\Admin\VolunteerController as AdminVolunteerController;
 use App\Http\Controllers\Admin\HajjStepVideoController;
 use App\Http\Controllers\Admin\HajjVideoController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\AnnualReportController;
 use App\Http\Controllers\AskMuftiController;
 use App\Http\Controllers\Admin\CommunityVideoController;
 use App\Http\Controllers\CambodiaEducationController;
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\CommunityCentreController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DonationController;
@@ -63,6 +65,7 @@ Route::get('/region/{code}', function (string $code) {
 Route::view('/about', 'about')->name('about');
 Route::view('/history', 'history')->name('history');
 Route::view('/careers', 'career')->name('careers');
+Route::post('/careers/apply', [CareerController::class, 'store'])->name('careers.apply');
 Route::get('/annual-report', [AnnualReportController::class, 'index'])->name('annual-report');
 Route::get('/news-and-press', [NewsController::class, 'index'])->name('news');
 Route::get('/news-and-press/{slug}', [NewsController::class, 'show'])->name('news.show');
@@ -281,6 +284,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('volunteers', [AdminVolunteerController::class, 'index'])->name('volunteers.index');
         Route::get('volunteers/export', [AdminVolunteerController::class, 'export'])->name('volunteers.export');
         Route::delete('volunteers/{volunteer}', [AdminVolunteerController::class, 'destroy'])->name('volunteers.destroy');
+
+        // Job applications submitted through the Careers page form (read + delete).
+        Route::get('job-applications', [AdminJobApplicationController::class, 'index'])->name('job-applications.index');
+        Route::delete('job-applications/{jobApplication}', [AdminJobApplicationController::class, 'destroy'])->name('job-applications.destroy');
 
         Route::resource('community-videos', CommunityVideoController::class)
             ->except(['show']);
