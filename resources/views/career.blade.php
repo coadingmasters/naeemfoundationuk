@@ -51,7 +51,7 @@
                     Join a team dedicated to making a difference in the lives of individuals and communities in need.
                 </p>
                 <a href="#apply" class="btn-white mt-7 px-7 py-3">
-                    Apply As a Volunteer
+                    Apply Now
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
 
