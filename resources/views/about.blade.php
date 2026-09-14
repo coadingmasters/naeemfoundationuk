@@ -175,7 +175,7 @@
                 {{-- Image --}}
                 <div>
                     <img src="{{ asset($heroImage) }}" alt="Naeem Foundation team"
-                         class="h-72 w-full rounded-xl object-cover shadow-md sm:h-96 lg:h-[440px]">
+                         class="aspect-video w-full rounded-xl object-cover shadow-md">
                 </div>
             </div>
         </div>
