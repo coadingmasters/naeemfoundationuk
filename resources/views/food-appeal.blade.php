@@ -62,6 +62,9 @@
         </div>
     </section>
 
+    {{-- ===================== FEED A FAMILY CARD ===================== --}}
+    @include('partials.feed-a-family-card')
+
     {{-- ===================== WHAT WE'VE ACHIEVED ===================== --}}
     <section class="pb-14">
         <div class="nf-container">

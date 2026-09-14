@@ -34,7 +34,8 @@ return [
         'items' => [
             ['title' => 'Food Appeal', 'route' => 'food-appeal'],
             ['title' => 'Healthcare', 'route' => 'healthcare'],
-            ['title' => 'Water Pump', 'route' => 'water-well'],
+            // Hidden for now (not removed) — restore by uncommenting this entry.
+            // ['title' => 'Water Pump', 'route' => 'water-well'],
             ['title' => 'Widows', 'route' => 'widows'],
             ['title' => 'Sustainable Livelihood', 'route' => 'sustainable-livelihood'],
         ],
