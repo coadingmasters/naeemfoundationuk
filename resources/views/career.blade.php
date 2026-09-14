@@ -37,7 +37,7 @@
     // Hero photo — admin-managed (Admin -> Hero Banners), falls back to the
     // built-in default when no override is set. A separate mobile-specific
     // photo can be set there too, used on phones.
-    $heroImage = \App\Support\PageHeroes::resolve('careers', 'images/aboutusandcareerpage.jpeg');
+    $heroImage = \App\Support\PageHeroes::resolve('careers', 'images/about us hero banner.png');
     $mobileHeroImage = \App\Support\PageHeroes::resolveMobile('careers');
 @endphp
 
