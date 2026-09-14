@@ -29,7 +29,7 @@
         <div class="nf-reveal {{ $reverse ? 'lg:order-1' : '' }}" data-reveal-delay="120">
             @if ($variant === 'image' && ! empty($image))
                 <div class="overflow-hidden rounded-3xl shadow-sm ring-1 ring-navy/10">
-                    <div class="relative aspect-[4/3] w-full overflow-hidden">
+                    <div class="relative aspect-square w-full overflow-hidden">
                         <img src="{{ asset($image) }}" alt="{{ $title }}" class="h-full w-full object-cover">
                         <span class="absolute inset-0 bg-gradient-to-t from-navy-dark/35 to-transparent"></span>
                     </div>

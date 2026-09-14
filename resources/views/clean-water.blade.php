@@ -80,7 +80,7 @@
     {{-- ===================== IMAGE HIGHLIGHT ===================== --}}
     @include('partials.give.highlight', [
         'variant' => 'image',
-        'image' => 'images/handpump.jpg',
+        'image' => 'images/handpumppage.jpeg',
         'reverse' => true,
         'eyebrow' => 'A gift that keeps giving',
         'title' => 'One well, a whole village transformed',
