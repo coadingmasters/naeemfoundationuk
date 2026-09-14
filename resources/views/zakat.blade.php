@@ -202,7 +202,7 @@
 
     {{-- ===================== CHANGE LIVES BANNER ===================== --}}
     <section class="relative mt-12 overflow-hidden">
-        <img src="{{ asset('images/nf-web-450-14.jpg') }}" alt="Your Zakat can change lives"
+        <img src="{{ asset('images/zkatpagecenter.jpeg') }}" alt="Your Zakat can change lives"
              class="h-72 w-full object-cover sm:h-80 lg:h-96">
         <div class="absolute inset-0 bg-navy-dark/65"></div>
         <div class="absolute inset-0 flex items-center">

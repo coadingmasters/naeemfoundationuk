@@ -13,6 +13,10 @@
         ['no' => '03', 'title' => 'Continuous Growth', 'text' => 'Year after year we have expanded our reach — from food and water to education and healthcare.'],
         ['no' => '04', 'title' => 'Trust & Transparency', 'text' => 'We are committed to honesty and accountability in everything we do for our supporters.'],
     ];
+
+    // Hero photo — admin-managed (Admin -> Hero Banners), falls back to the
+    // same default used on About Us.
+    $heroImage = \App\Support\PageHeroes::resolve('history', 'images/aboutusandcareerpage.jpeg');
 @endphp
 
 @section('content')
@@ -37,8 +41,8 @@
 
                 {{-- Image --}}
                 <div>
-                    <img src="{{ asset('images/about us hero banner.png') }}" alt="Naeem Foundation team"
-                         class="h-64 w-full rounded-xl object-cover shadow-md sm:h-80 lg:h-[360px]">
+                    <img src="{{ asset($heroImage) }}" alt="Naeem Foundation team"
+                         class="aspect-video w-full rounded-xl object-cover shadow-md">
                 </div>
             </div>
         </div>
