@@ -14,11 +14,11 @@
         ]);
     }
 
-    // Monthly sponsorship levels (currency follows the visitor's region).
+    // Ways to support the hostel build (currency follows the visitor's region).
     $levels = [
-        ['amount' => 15, 'label' => 'A Safe Bed', 'note' => 'A clean bed, bedding and a secure roof for one child each month.'],
-        ['amount' => 35, 'label' => 'Full Board', 'note' => 'Accommodation plus three nutritious meals a day.'],
-        ['amount' => 53, 'label' => 'Complete Care', 'note' => 'Full board, schooling, guardianship and everyday essentials.'],
+        ['amount' => 15, 'label' => 'Buy a Brick', 'note' => 'Your donation will support the construction of a safe and lasting hostel for students.'],
+        ['amount' => 40, 'label' => 'Provide a Bed', 'note' => 'Help provide a student with a comfortable bed, mattress and bedding.'],
+        ['amount' => 100, 'label' => 'Help Create a Room', 'note' => 'Contribute towards building and furnishing a safe room where students can rest and study.'],
     ];
 
     // What each sponsorship makes possible.
@@ -98,10 +98,10 @@
 
             {{-- Left: levels --}}
             <div class="nf-reveal">
-                <h2 class="text-2xl font-bold text-navy-dark sm:text-3xl">Sponsor a Child&rsquo;s Place</h2>
+                <h2 class="text-2xl font-bold text-navy-dark sm:text-3xl">Help Us Build a Safe Home for Students</h2>
                 <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-                    A small monthly gift keeps a vulnerable child sheltered, fed and in education all year round. Choose a
-                    level that&rsquo;s right for you:
+                    Help us create secure and comfortable hostel accommodation where vulnerable students can live, study
+                    and build a brighter future. Choose how you would like to support this project:
                 </p>
 
                 <div class="mt-5 space-y-3">
@@ -109,7 +109,7 @@
                         <div class="flex items-center gap-4 rounded-xl border border-brand/15 bg-cream/50 p-4 transition-colors hover:border-brand/40">
                             <span class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-brand text-sm font-extrabold text-white">{{ money($l['amount'], 0) }}</span>
                             <div>
-                                <p class="font-bold text-navy-dark">{{ $l['label'] }} <span class="text-xs font-medium text-gray-400">/ month</span></p>
+                                <p class="font-bold text-navy-dark">{{ $l['label'] }}</p>
                                 <p class="text-xs leading-relaxed text-gray-500">{{ $l['note'] }}</p>
                             </div>
                         </div>
@@ -117,8 +117,8 @@
                 </div>
 
                 <p class="mt-5 text-xs leading-relaxed text-gray-400">
-                    Prefer a one-off gift? Any amount helps cover beds, meals and repairs &mdash; use the form above to give
-                    whatever you can.
+                    <span class="font-semibold text-gray-500">Every Contribution Makes a Difference.</span> Whether you
+                    sponsor a brick, a bed or a room, your generosity will help us create a safe home for students in need.
                 </p>
             </div>
 
