@@ -96,35 +96,8 @@
         </div>
     </section>
 
-    {{-- ===================== YOUR IMPACT (navy band) ===================== --}}
-    <section class="bg-navy">
-        <div class="nf-container py-14">
-            <div class="text-center">
-                <p class="text-sm font-semibold uppercase tracking-wider text-[#e9b9c6]">Your impact</p>
-                <h2 class="mt-2 text-2xl font-bold text-white sm:text-3xl">Every Pack Changes a Ramadan</h2>
-            </div>
-            <div class="mt-8 grid gap-5 sm:grid-cols-3">
-                <div class="rounded-2xl bg-white/5 p-6 text-center ring-1 ring-white/10">
-                    <p class="text-4xl font-extrabold text-white">{{ region('symbol') }}40</p>
-                    <p class="mt-1 text-sm text-white/70">feeds one family for the entire month</p>
-                </div>
-                <div class="rounded-2xl bg-white/5 p-6 text-center ring-1 ring-white/10">
-                    <p class="text-4xl font-extrabold text-white">30</p>
-                    <p class="mt-1 text-sm text-white/70">days of iftar and suhoor covered per pack</p>
-                </div>
-                <div class="rounded-2xl bg-white/5 p-6 text-center ring-1 ring-white/10">
-                    <p class="text-4xl font-extrabold text-white">100%</p>
-                    <p class="mt-1 text-sm text-white/70">of your donation reaches families in need</p>
-                </div>
-            </div>
-            <div class="mt-8 text-center">
-                <a href="#donate" class="btn-brand px-7 py-3">
-                    Give a Food Pack
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-            </div>
-        </div>
-    </section>
+    {{-- ===================== FEED A FAMILY CARD ===================== --}}
+    @include('partials.feed-a-family-card')
 
     {{-- ===================== STORY ===================== --}}
     <section class="py-16">
