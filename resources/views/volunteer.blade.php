@@ -129,7 +129,7 @@
 
                     {{-- Right: image --}}
                     <div class="relative min-h-[320px] lg:min-h-full">
-                        <img src="{{ asset('images/changinslives2.jpg') }}" alt="Children supported by Naeem Foundation"
+                        <img src="{{ asset('images/volunteerpage.jpeg') }}" alt="A Naeem Foundation volunteer"
                              class="absolute inset-0 h-full w-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-navy-dark/40 to-transparent"></div>
                         <div class="absolute inset-x-0 bottom-0 p-7 text-white">
