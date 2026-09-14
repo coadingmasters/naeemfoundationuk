@@ -33,13 +33,24 @@
         'Opportunities for professional development and career growth.',
         'A chance to make a significant impact in the community and improve lives.',
     ];
+
+    // Hero photo — admin-managed (Admin -> Hero Banners), falls back to the
+    // built-in default when no override is set. A separate mobile-specific
+    // photo can be set there too, used on phones.
+    $heroImage = \App\Support\PageHeroes::resolve('careers', 'images/aboutusandcareerpage.jpeg');
+    $mobileHeroImage = \App\Support\PageHeroes::resolveMobile('careers');
 @endphp
 
 @section('content')
 
     {{-- ===================== HERO ===================== --}}
     <section class="relative overflow-hidden">
-        <img src="{{ asset('images/about us hero banner.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover">
+        @if ($mobileHeroImage)
+            <img src="{{ asset($mobileHeroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover lg:hidden">
+            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 hidden h-full w-full object-cover lg:block">
+        @else
+            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover">
+        @endif
         <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-brand/80 to-brand/55"></div>
 
         <div class="nf-container relative pb-16 pt-24 text-center sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-44">

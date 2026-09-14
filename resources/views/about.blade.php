@@ -149,6 +149,10 @@
             'text' => 'Learn more about our thorough systems for monitoring and evaluating our programs’ success and impact. Discover how we evaluate and enhance our activities regularly. Our organization employees robust monitoring and evaluation frameworks to assess the effectiveness of our programs and interventions. Through data-driven analysis and stakeholder feedback, we continuously refine our strategies to ensure maximum impact and relevance. Explore our monitoring and evaluation processes to see how we strive for continuous improvement and accountability in achieving our goals.',
         ],
     ];
+
+    // Hero photo — admin-managed (Admin -> Hero Banners), falls back to the
+    // built-in default when no override is set.
+    $heroImage = \App\Support\PageHeroes::resolve('about', 'images/aboutusandcareerpage.jpeg');
 @endphp
 
 @section('content')
@@ -170,7 +174,7 @@
 
                 {{-- Image --}}
                 <div>
-                    <img src="{{ asset('images/about us hero banner.png') }}" alt="Naeem Foundation team"
+                    <img src="{{ asset($heroImage) }}" alt="Naeem Foundation team"
                          class="h-72 w-full rounded-xl object-cover shadow-md sm:h-96 lg:h-[440px]">
                 </div>
             </div>
