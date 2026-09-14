@@ -128,22 +128,8 @@
         </div>
     </section>
 
-    {{-- ===================== BE THE CHANGE (CTA) ===================== --}}
-    <section class="bg-navy">
-        <div class="nf-container py-14 text-center">
-            <p class="text-sm font-semibold uppercase tracking-wider text-[#e9b9c6]">Give your time</p>
-            <h2 class="mt-2 text-2xl font-bold text-white sm:text-3xl">Be the Change They Need</h2>
-            <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base">
-                Together, we can turn this crisis around. Your donation today not only provides nutritious meals but also
-                restores hope and dignity for fasting families. Join us in ensuring that everyone can observe Ramadan with
-                comfort and gratitude.
-            </p>
-            <a href="#donate" class="btn-brand mt-7 px-7 py-3">
-                Support the Cause
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-        </div>
-    </section>
+    {{-- ===================== FEED A FAMILY CARD ===================== --}}
+    @include('partials.feed-a-family-card')
 
     {{-- ===================== OUR PROJECTS (dynamic carousel) ===================== --}}
     <section class="py-16 sm:py-20">
