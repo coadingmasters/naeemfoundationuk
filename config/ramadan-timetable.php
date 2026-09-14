@@ -16,17 +16,20 @@
 */
 
 return [
-    'year' => 2026,
+    'year' => 2027,
     'location' => 'London, United Kingdom',
 
-    'starts_at' => '2026-02-18', // 1st fast
-    'ends_at' => '2026-03-19',   // 30th fast
-    'eid_at' => '2026-03-20',    // Eid al-Fitr
+    // PROVISIONAL — astronomical estimate only (lunar year runs ~10-11 days
+    // earlier than 2026's), not yet confirmed by moon sighting. Replace with
+    // the official dates as soon as they're announced.
+    'starts_at' => '2027-02-08', // 1st fast
+    'ends_at' => '2027-03-09',   // 30th fast
+    'eid_at' => '2027-03-10',    // Eid al-Fitr
 
     // Optional downloads. The button falls back to "print" when neither exists.
-    'pdf' => 'downloads/ramadan-timetable-2026.pdf',
+    'pdf' => 'downloads/ramadan-timetable-2027.pdf',
 
     'times' => [
-        // '2026-02-18' => ['5:33', '7:10', '12:20', '14:48', '17:24', '18:46'],
+        // '2027-02-08' => ['5:33', '7:10', '12:20', '14:48', '17:24', '18:46'],
     ],
 ];
