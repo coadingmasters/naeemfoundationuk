@@ -72,8 +72,15 @@
     {{-- ===================== FEED A FAMILY CARD ===================== --}}
     @php
         // Preset amounts. The full month's ration is the default selection.
-        $familyCost = 150;
-        $familyAmounts = [30, 50, $familyCost];
+        $familyCost = 100;
+        $familyAmounts = [50, 70, $familyCost];
+
+        // What each preset amount feeds, shown as a bullet under the amount picker.
+        $familyTiers = [
+            50 => 'Feeds a family of 3-4 people for a month.',
+            70 => 'Feeds a family of 4-6 people for a month.',
+            100 => 'Feeds a family of 6-8 people for a month.',
+        ];
 
         // Currencies come from the region config so this list can never claim
         // something the region switcher and PayPal don't actually support.
@@ -110,12 +117,16 @@
                                 @endforeach
                             </div>
 
-                            {{-- The month-long claim belongs to the top amount only, so
-                                 it stays tied to that figure rather than the selection. --}}
-                            <p class="mt-3 flex items-start gap-2 text-xs leading-relaxed text-white/65 sm:text-sm">
-                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-[#e9b9c6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-linecap="round"/></svg>
-                                <span>{{ money($familyCost, 0) }} provides a full ration pack &mdash; flour, rice, pulses, oil and essentials &mdash; feeding one family for a month.</span>
-                            </p>
+                            {{-- What each preset amount feeds — one line per tier, so the
+                                 donor sees this regardless of which amount they pick. --}}
+                            <ul class="mt-3 space-y-1.5 text-xs leading-relaxed text-white/65 sm:text-sm">
+                                @foreach ($familyAmounts as $a)
+                                    <li class="flex items-start gap-2">
+                                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-[#e9b9c6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-linecap="round"/></svg>
+                                        <span><span class="font-semibold text-white">{{ money($a, 0) }}</span> — {{ $familyTiers[$a] }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
 
                             {{-- Give once, or every month (the recurring option below). --}}
                             <p class="mt-6 text-xs font-semibold uppercase tracking-wider text-white/70">How often?</p>
