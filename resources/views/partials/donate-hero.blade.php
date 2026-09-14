@@ -1,5 +1,8 @@
 {{-- Split hero: image + heading on the left, donate widget on the right.
      Params: $heroImage, $heroTitle (HTML), $widgetCauses (array)
+     $widgetPartial (optional, e.g. 'partials.qurbani-panel'): renders this
+     instead of the panel/widget for a fully custom form. $widgetPartialData
+     (array) is passed to it alongside the usual 'image'.
 
      The heading now stands alone — the eyebrow pill and subtitle were dropped so
      the title can run large across the space up to the donate panel. Pages still
@@ -59,7 +62,11 @@
              Capped width keeps the card compact and gives the photo more space. --}}
         <div class="flex flex-col justify-center px-5 py-8 sm:px-8 lg:px-10 lg:pb-12 lg:pt-40">
             <div class="w-full lg:mx-auto lg:max-w-[28rem]">
-                @if (! empty($panel))
+                @if (! empty($widgetPartial))
+                    {{-- Fully custom widget (e.g. a fixed-price package picker
+                         that doesn't fit the panel/widget shape). --}}
+                    @include($widgetPartial, array_merge(['image' => $heroImage], $widgetPartialData ?? []))
+                @elseif (! empty($panel))
                     {{-- Reference-style panel (One-Off/Monthly/Yearly + cause dropdown). --}}
                     @include('partials.donate-panel', array_merge(['image' => $heroImage], $panel))
                 @else

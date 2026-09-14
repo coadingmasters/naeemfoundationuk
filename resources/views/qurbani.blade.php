@@ -22,7 +22,7 @@
         'heroEyebrow' => 'Qurbani',
         'heroTitle' => 'Give Your <span class="text-cream">Qurbani</span> with Purpose',
         'heroSubtitle' => 'Honour the Sunnah of sacrifice this Eid al-Adha. Your Qurbani provides fresh, quality meat to families who need it most — delivered with care and dignity.',
-        'widgetCauses' => ['Qurbani'],
+        'widgetPartial' => 'partials.qurbani-panel',
     ])
 
     {{-- ===================== INTRO + VIDEO ===================== --}}
