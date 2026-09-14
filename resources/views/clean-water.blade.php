@@ -72,8 +72,8 @@
         'tiersImage' => 'images/handpump.jpg',
         'tiers' => [
             ['amount' => 150, 'label' => 'A Hand Pump', 'cause' => 'Hand Pump', 'note' => 'A dedicated hand pump giving one family a safe, lasting water source.'],
-            ['amount' => 350, 'label' => 'A Family Well', 'cause' => 'Family Well', 'note' => 'A shallow well serving several families in a small community.', 'featured' => true],
-            ['amount' => 1500, 'label' => 'A Community Well', 'cause' => 'Community Well', 'note' => 'A deep well that can serve an entire village for years to come.'],
+            ['amount' => 1200, 'label' => 'A Family Well', 'cause' => 'Family Well', 'note' => 'A shallow well serving several families in a small community.', 'featured' => true],
+            ['amount' => 1500, 'label' => 'A Solar Community Well', 'cause' => 'Community Well', 'note' => 'A deep well that can serve an entire village for years to come.'],
         ],
     ])
 
