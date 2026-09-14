@@ -80,9 +80,7 @@
                     </p>
                     <ul class="mt-2 list-disc space-y-1 pl-6">
                         <li>Naeem Foundation is a registered charity in the UK.</li>
-                        <li>Donation Line: {{ region('phone') }}</li>
                         <li>Our registered address is: 2 Falcon Gate Shire Park Welwyn Garden City, AL7 1TW, United Kingdom.</li>
-                        <li>Donation Line: +44 2070788118 or +44 7960185682.</li>
                     </ul>
                 </div>
             </div>
@@ -91,11 +89,10 @@
             <div>
                 <h2 class="mb-4 text-xl font-bold text-navy sm:text-2xl">For donations, please use the following bank details:</h2>
                 <ul class="list-disc space-y-1 pl-6 text-sm leading-relaxed text-gray-700 sm:text-base">
-                    <li><span class="font-semibold">Bank:</span> Metro Bank</li>
+                    <li><span class="font-semibold">Bank:</span> Lloyds Bank</li>
                     <li><span class="font-semibold">Account name:</span> Naeem Foundation</li>
-                    <li><span class="font-semibold">Sort code:</span> 230580</li>
-                    <li><span class="font-semibold">Account number:</span> 46502817</li>
-                    <li><span class="font-semibold">IBAN number:</span> GB80MYMB23058046502817</li>
+                    <li><span class="font-semibold">Sort code:</span> 30-54-66</li>
+                    <li><span class="font-semibold">Account number:</span> 13783063</li>
                 </ul>
             </div>
 
