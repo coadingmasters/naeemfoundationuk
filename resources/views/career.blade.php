@@ -91,8 +91,8 @@
                         <a href="#apply" class="btn-brand mt-6">Join Us Now</a>
                     </div>
                     <div class="p-5 lg:py-6 lg:pr-6">
-                        <img src="{{ asset('images/zakatcenter.png') }}" alt="Naeem Foundation in the community"
-                             class="h-56 w-full rounded-xl object-cover sm:h-64 lg:h-72">
+                        <img src="{{ asset('images/careercenter.jpeg') }}" alt="Naeem Foundation in the community"
+                             class="aspect-[3/2] w-full rounded-xl object-cover">
                     </div>
                 </div>
             </div>
