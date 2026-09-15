@@ -1778,7 +1778,7 @@ function setupSlideCarousel(root, autoMs = 0) {
     if (!root) return;
     const track = root.querySelector('[data-track]');
     const slides = [...root.querySelectorAll('[data-slide]')];
-    if (!track || slides.length <= 1) return;
+    if (!track || slides.length === 0) return;
 
     let index = 0;
 
@@ -1805,12 +1805,17 @@ function setupSlideCarousel(root, autoMs = 0) {
         slides.forEach((s, n) => s.classList.toggle('is-active', n === index));
     };
 
-    root.querySelector('[data-prev]')?.addEventListener('click', () => go(index - 1));
-    root.querySelector('[data-next]')?.addEventListener('click', () => go(index + 1));
+    // Nothing to navigate or auto-advance to with just one slide — but it
+    // still needs go(0) below to reveal its content (title/subtitle/button
+    // fade in only once .is-active is applied).
+    if (slides.length > 1) {
+        root.querySelector('[data-prev]')?.addEventListener('click', () => go(index - 1));
+        root.querySelector('[data-next]')?.addEventListener('click', () => go(index + 1));
+    }
 
     go(0);
 
-    if (autoMs > 0) {
+    if (autoMs > 0 && slides.length > 1) {
         let timer = setInterval(() => go(index + 1), autoMs);
         root.addEventListener('mouseenter', () => clearInterval(timer));
         root.addEventListener('mouseleave', () => (timer = setInterval(() => go(index + 1), autoMs)));
