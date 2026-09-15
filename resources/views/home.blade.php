@@ -78,7 +78,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent"></div>
 
                         <div class="nf-container absolute inset-0 flex items-end pb-16 sm:pb-20 lg:pb-24">
-                            <div class="max-w-lg text-white" data-hero-content>
+                            <div class="max-w-xl text-white" data-hero-content>
                                 @if (!empty($slide->subtitle))
                                     <span class="mb-4 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg">
                                         <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
