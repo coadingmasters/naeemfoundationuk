@@ -77,15 +77,15 @@
                         <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent"></div>
 
-                        <div class="nf-container absolute inset-0 flex items-center">
-                            <div class="max-w-xl text-white" data-hero-content>
+                        <div class="nf-container absolute inset-0 flex items-end pb-16 sm:pb-20 lg:pb-24">
+                            <div class="max-w-lg text-white" data-hero-content>
                                 @if (!empty($slide->subtitle))
                                     <span class="mb-4 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg">
                                         <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
                                         {{ $slide->subtitle }}
                                     </span>
                                 @endif
-                                <h1 class="text-4xl font-extrabold leading-[1.1] text-white drop-shadow sm:text-5xl lg:text-6xl">
+                                <h1 class="text-3xl font-extrabold leading-[1.15] text-white drop-shadow [text-wrap:balance] sm:text-4xl lg:text-5xl">
                                     {!! nl2br(e($slide->title)) !!}
                                 </h1>
                                 @if (!empty($slide->button_text))
