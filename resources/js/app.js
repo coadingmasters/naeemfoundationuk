@@ -242,16 +242,19 @@ function setupRamadanScheduler() {
     const root = document.querySelector('[data-ramadan]');
     if (!root) return;
 
-    const nights = Number(root.dataset.nights) || 30;
+    let nights = Number(root.dataset.nights) || 30;
 
     const amountBtns = [...root.querySelectorAll('[data-rg-amount]')];
     const boostBtns = [...root.querySelectorAll('[data-rg-boost]')];
     const causeBtns = [...root.querySelectorAll('[data-rg-cause]')];
+    const durationBtns = [...root.querySelectorAll('[data-rg-duration]')];
     const custom = root.querySelector('[data-rg-custom]');
     const totalEl = root.querySelector('[data-rg-total]');
     const boostEl = root.querySelector('[data-rg-boost-amount]');
     const amountInput = root.querySelector('[data-rg-amount-input]');
     const causeInput = root.querySelector('[data-rg-cause-input]');
+    const nightsCountEl = root.querySelector('[data-rg-nights-count]');
+    const rangeEl = root.querySelector('[data-rg-range]');
     const submit = root.querySelector('[data-rg-submit]');
 
     let daily = Number(custom?.value) || 0;
@@ -269,10 +272,20 @@ function setupRamadanScheduler() {
         if (amountInput) amountInput.value = total.toFixed(2);
         if (causeInput) causeInput.value = `${cause} (Ramadan ${nights} Nights)`;
         if (submit) submit.disabled = !(total > 0);
+        if (nightsCountEl) nightsCountEl.textContent = nights;
 
         // Highlight the preset matching the current daily amount (if any).
         amountBtns.forEach((b) => b.classList.toggle('is-selected', Number(b.dataset.rgAmount) === daily));
     };
+
+    durationBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            nights = Number(btn.dataset.rgNights);
+            durationBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
+            if (rangeEl && btn.dataset.rgRange) rangeEl.textContent = btn.dataset.rgRange;
+            render();
+        });
+    });
 
     amountBtns.forEach((btn) => {
         btn.addEventListener('click', () => {

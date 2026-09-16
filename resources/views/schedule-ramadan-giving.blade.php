@@ -17,6 +17,27 @@
     $starts = \Illuminate\Support\Carbon::parse(config('ramadan.starts_at'));
     $ends = \Illuminate\Support\Carbon::parse(config('ramadan.ends_at'));
 
+    // How many nights "remaining" covers depends on today's date — computed
+    // once, server-side, so the JS never has to reason about "today" itself.
+    // Before Ramadan starts this is the full month; after it ends, 0 (button
+    // is hidden in that case since there's nothing left to schedule).
+    $today = \Illuminate\Support\Carbon::today();
+    $remainingNights = $today->lt($starts)
+        ? $starts->diffInDays($ends) + 1
+        : max(0, (int) $today->diffInDays($ends) + 1);
+
+    // Duration options the donor can pick — each changes how many nights the
+    // schedule covers (and so the total). "Odd Nights" is the 5 odd-numbered
+    // nights of the last ten days (21st, 23rd, 25th, 27th and 29th) — home to
+    // Laylat al-Qadr — a fixed set rather than a continuous range.
+    $lastTenStart = $ends->copy()->subDays(9);
+    $durations = array_values(array_filter([
+        ['key' => '30', 'label' => '30 Days', 'nights' => $nights, 'range' => $starts->format('j M').' to '.$ends->format('j M')],
+        ['key' => 'last10', 'label' => 'Last 10 Days', 'nights' => 10, 'range' => $lastTenStart->format('j M').' to '.$ends->format('j M')],
+        ['key' => 'odd', 'label' => 'Odd Nights', 'nights' => 5, 'range' => '21st, 23rd, 25th, 27th & 29th'],
+        $remainingNights > 0 ? ['key' => 'remaining', 'label' => 'Remaining Nights', 'nights' => $remainingNights, 'range' => ($today->lt($starts) ? $starts : $today)->format('j M').' to '.$ends->format('j M')] : null,
+    ]));
+
     // Cause icons (single-path SVGs)
     $causeIcons = [
         'Zakat' => 'M12 3v18M8 7h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h7',
@@ -61,11 +82,17 @@
                         </div>
                     </div>
 
-                    {{-- Nights tab --}}
-                    <div class="border-b border-gray-200">
-                        <span class="inline-block border-b-2 border-brand pb-2 text-base font-bold text-brand">
-                            {{ $nights }} Nights
-                        </span>
+                    {{-- Duration — how many nights the schedule covers. --}}
+                    <div>
+                        <h2 class="text-sm font-bold text-navy-dark">Choose a duration</h2>
+                        <div class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                            @foreach ($durations as $d)
+                                <button type="button" data-rg-duration="{{ $d['key'] }}" data-rg-nights="{{ $d['nights'] }}" data-rg-range="{{ $d['range'] }}"
+                                        class="nf-rg-option w-full {{ $d['key'] === '30' ? 'is-selected' : '' }}">
+                                    {{ $d['label'] }}
+                                </button>
+                            @endforeach
+                        </div>
                     </div>
 
                     {{-- Daily amount --}}
@@ -137,9 +164,9 @@
                         <div class="flex items-start justify-between">
                             <div>
                                 <p class="text-sm font-bold text-navy-dark">Total nights</p>
-                                <p class="text-xs text-gray-500">{{ $starts->format('j M') }} to {{ $ends->format('j M') }}</p>
+                                <p class="text-xs text-gray-500" data-rg-range>{{ $starts->format('j M') }} to {{ $ends->format('j M') }}</p>
                             </div>
-                            <p class="text-sm font-bold text-navy-dark">{{ $nights }} nights</p>
+                            <p class="text-sm font-bold text-navy-dark"><span data-rg-nights-count>{{ $nights }}</span> nights</p>
                         </div>
                     </div>
 
