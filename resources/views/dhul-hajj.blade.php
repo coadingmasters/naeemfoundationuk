@@ -22,7 +22,7 @@
         'heroEyebrow' => 'Islamic Giving',
         'heroTitle' => 'Support <span class="text-cream">Dhul Hajj</span> with Purpose',
         'heroSubtitle' => 'Help provide meaningful support for families and communities during the sacred season of Dhul Hajj with compassion, dignity and lasting impact.',
-        'widgetCauses' => ['Dhul Hajj'],
+        'widgetPartial' => 'partials.dhul-hajj-panel',
     ])
 
     {{-- ===================== INTRO + VIDEO ===================== --}}
