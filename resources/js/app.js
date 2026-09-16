@@ -254,7 +254,7 @@ function setupRamadanScheduler() {
     const amountInput = root.querySelector('[data-rg-amount-input]');
     const causeInput = root.querySelector('[data-rg-cause-input]');
     const nightsCountEl = root.querySelector('[data-rg-nights-count]');
-    const rangeEl = root.querySelector('[data-rg-range]');
+    const rangeEl = root.querySelector('p[data-rg-range]');
     const submit = root.querySelector('[data-rg-submit]');
 
     let daily = Number(custom?.value) || 0;
