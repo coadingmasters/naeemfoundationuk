@@ -30,12 +30,19 @@
     // schedule covers (and so the total). "Odd Nights" is the 5 odd-numbered
     // nights of the last ten days (21st, 23rd, 25th, 27th and 29th) — home to
     // Laylat al-Qadr — a fixed set rather than a continuous range.
+    //
+    // A daily recurring gift can only auto-charge consecutive days (PayPal
+    // can't skip specific dates), so "Odd Nights" covers the full 21st-29th
+    // span (9 nights) once Recurring is selected instead of just the 5 —
+    // every other duration already is a continuous range, so it's unchanged.
     $lastTenStart = $ends->copy()->subDays(9);
+    $oddRecurStart = $starts->copy()->addDays(20); // 21st night
+    $oddRecurEnd = $starts->copy()->addDays(28); // 29th night
     $durations = array_values(array_filter([
-        ['key' => '30', 'label' => '30 Days', 'nights' => $nights, 'range' => $starts->format('j M').' to '.$ends->format('j M')],
-        ['key' => 'last10', 'label' => 'Last 10 Days', 'nights' => 10, 'range' => $lastTenStart->format('j M').' to '.$ends->format('j M')],
-        ['key' => 'odd', 'label' => 'Odd Nights', 'nights' => 5, 'range' => '21st, 23rd, 25th, 27th & 29th'],
-        $remainingNights > 0 ? ['key' => 'remaining', 'label' => 'Remaining Nights', 'nights' => $remainingNights, 'range' => ($today->lt($starts) ? $starts : $today)->format('j M').' to '.$ends->format('j M')] : null,
+        ['key' => '30', 'label' => '30 Days', 'nights' => $nights, 'range' => $starts->format('j M').' to '.$ends->format('j M'), 'recurNights' => $nights, 'recurRange' => $starts->format('j M').' to '.$ends->format('j M')],
+        ['key' => 'last10', 'label' => 'Last 10 Days', 'nights' => 10, 'range' => $lastTenStart->format('j M').' to '.$ends->format('j M'), 'recurNights' => 10, 'recurRange' => $lastTenStart->format('j M').' to '.$ends->format('j M')],
+        ['key' => 'odd', 'label' => 'Odd Nights', 'nights' => 5, 'range' => '21st, 23rd, 25th, 27th & 29th', 'recurNights' => (int) $oddRecurStart->diffInDays($oddRecurEnd) + 1, 'recurRange' => $oddRecurStart->format('j M').' to '.$oddRecurEnd->format('j M')],
+        $remainingNights > 0 ? ['key' => 'remaining', 'label' => 'Remaining Nights', 'nights' => $remainingNights, 'range' => ($today->lt($starts) ? $starts : $today)->format('j M').' to '.$ends->format('j M'), 'recurNights' => $remainingNights, 'recurRange' => ($today->lt($starts) ? $starts : $today)->format('j M').' to '.$ends->format('j M')] : null,
     ]));
 
     // Cause icons (single-path SVGs)
@@ -63,7 +70,7 @@
             <form method="POST" action="{{ route('donate.add') }}" data-ramadan data-nights="{{ $nights }}"
                   class="mt-10 grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
                 @csrf
-                <input type="hidden" name="frequency" value="one-off">
+                <input type="hidden" name="frequency" data-rg-frequency-input value="one-off">
                 <input type="hidden" name="image" value="images/changinslives2.jpg">
                 <input type="hidden" name="cause" data-rg-cause-input value="{{ $defaultCause }} (Ramadan {{ $nights }} Nights)">
                 <input type="hidden" name="amount" data-rg-amount-input value="{{ $defaultDaily * $nights }}">
@@ -82,12 +89,26 @@
                         </div>
                     </div>
 
+                    {{-- One-off vs daily recurring. --}}
+                    <div>
+                        <h2 class="text-sm font-bold text-navy-dark">How would you like to give?</h2>
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            <button type="button" data-rg-freq="one-off" class="nf-rg-option w-full is-selected">One-Off</button>
+                            <button type="button" data-rg-freq="daily" class="nf-rg-option w-full">Daily Recurring</button>
+                        </div>
+                        <p class="mt-2 text-xs leading-relaxed text-gray-500" data-rg-freq-hint>
+                            Charged once as a single payment covering the whole schedule.
+                        </p>
+                    </div>
+
                     {{-- Duration — how many nights the schedule covers. --}}
                     <div>
                         <h2 class="text-sm font-bold text-navy-dark">Choose a duration</h2>
                         <div class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
                             @foreach ($durations as $d)
-                                <button type="button" data-rg-duration="{{ $d['key'] }}" data-rg-nights="{{ $d['nights'] }}" data-rg-range="{{ $d['range'] }}"
+                                <button type="button" data-rg-duration="{{ $d['key'] }}"
+                                        data-rg-nights="{{ $d['nights'] }}" data-rg-range="{{ $d['range'] }}"
+                                        data-rg-recur-nights="{{ $d['recurNights'] }}" data-rg-recur-range="{{ $d['recurRange'] }}"
                                         class="nf-rg-option w-full {{ $d['key'] === '30' ? 'is-selected' : '' }}">
                                     {{ $d['label'] }}
                                 </button>
@@ -124,8 +145,10 @@
                                    class="w-full border-0 bg-transparent p-0 text-xl font-bold text-navy-dark focus:outline-none focus:ring-0">
                         </div>
 
-                        {{-- 27th night boost --}}
-                        <div class="mt-5 rounded-xl border border-brand/20 bg-brand/5 p-4 text-center">
+                        {{-- 27th night boost — one-off only: a daily recurring gift charges
+                             the same amount every time, so it can't add extra on just one
+                             night by itself. --}}
+                        <div class="mt-5 rounded-xl border border-brand/20 bg-brand/5 p-4 text-center" data-rg-boost-wrap>
                             <p class="text-sm font-bold text-navy-dark">Increase my donation on the 27th night</p>
                             <p class="mt-1 text-xs text-gray-600">
                                 Add <span class="font-bold text-brand" data-rg-boost-amount>{{ region('symbol') }}0.00</span> for the 27th night
@@ -171,9 +194,12 @@
                     </div>
 
                     <div class="mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
-                        <p class="text-base font-bold text-navy-dark">Total</p>
+                        <p class="text-base font-bold text-navy-dark" data-rg-total-label>Total</p>
                         <p class="text-xl font-extrabold text-brand" data-rg-total>{{ region('symbol') }}0.00</p>
                     </div>
+                    <p class="mt-2 hidden text-xs leading-relaxed text-gray-500" data-rg-recur-note>
+                        PayPal will automatically take this each day until you cancel — you can cancel any time.
+                    </p>
 
                     {{-- Continue --}}
                     <button type="submit" data-rg-submit

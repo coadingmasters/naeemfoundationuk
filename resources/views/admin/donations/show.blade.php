@@ -85,10 +85,10 @@
                     <div>
                         <dt class="text-xs font-medium text-gray-400">Type</dt>
                         <dd>
-                            @if (in_array($donation->frequency, ['monthly', 'weekly'], true))
+                            @if (in_array($donation->frequency, ['daily', 'weekly', 'monthly', 'yearly'], true))
                                 <span class="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-bold text-brand">
                                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M17 2l4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    {{ ucfirst($donation->frequency) }} {{ $m($donation->total) }}{{ $donation->frequency === 'weekly' ? '/wk' : '/mo' }}
+                                    {{ ucfirst($donation->frequency) }} {{ $m($donation->total) }}{{ match ($donation->frequency) { 'daily' => '/day', 'weekly' => '/wk', 'yearly' => '/yr', default => '/mo' } }}
                                 </span>
                             @else
                                 <span class="font-semibold text-navy-dark">One-off</span>

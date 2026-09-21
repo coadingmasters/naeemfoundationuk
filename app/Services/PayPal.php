@@ -178,14 +178,15 @@ class PayPal
 
     /**
      * Find or create a recurring billing plan for this exact amount + currency +
-     * interval (WEEK or MONTH), so the donor is charged the same amount every
-     * period. Plans are cached in paypal_plans (scoped by mode) and reused.
+     * interval (DAY, WEEK, MONTH or YEAR), so the donor is charged the same
+     * amount every period. Plans are cached in paypal_plans (scoped by mode)
+     * and reused.
      */
     public function ensureRecurringPlan(float $amount, string $currency, string $interval = 'MONTH'): string
     {
         $amount = round($amount, 2);
-        $interval = in_array(strtoupper($interval), ['WEEK', 'MONTH', 'YEAR'], true) ? strtoupper($interval) : 'MONTH';
-        $word = match ($interval) { 'WEEK' => 'Weekly', 'YEAR' => 'Yearly', default => 'Monthly' };
+        $interval = in_array(strtoupper($interval), ['DAY', 'WEEK', 'MONTH', 'YEAR'], true) ? strtoupper($interval) : 'MONTH';
+        $word = match ($interval) { 'DAY' => 'Daily', 'WEEK' => 'Weekly', 'YEAR' => 'Yearly', default => 'Monthly' };
 
         $existing = \App\Models\PayPalPlan::query()
             ->where('mode', $this->mode())

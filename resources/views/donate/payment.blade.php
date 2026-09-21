@@ -164,7 +164,14 @@
                             </label>
 
 
-                            @php $recurWord = ($recurFrequency ?? 'monthly') === 'weekly' ? 'week' : 'month'; @endphp
+                            @php
+                                $recurWord = match ($recurFrequency ?? 'monthly') {
+                                    'daily' => 'day',
+                                    'weekly' => 'week',
+                                    'yearly' => 'year',
+                                    default => 'month',
+                                };
+                            @endphp
                             @if ($isRecurring)
                                 <div class="mt-5 flex items-start gap-2 rounded-xl border border-brand/25 bg-brand/5 p-4 text-sm text-navy-dark">
                                     <svg class="mt-0.5 h-5 w-5 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2l4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg>

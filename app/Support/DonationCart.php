@@ -116,12 +116,12 @@ class DonationCart
         return self::items() === [];
     }
 
-    /** The recurring frequency of the basket: 'monthly', 'weekly', 'yearly', or 'one-off'. */
+    /** The recurring frequency of the basket: 'daily', 'weekly', 'monthly', 'yearly', or 'one-off'. */
     public static function frequency(): string
     {
         foreach (self::items() as $item) {
             $f = $item['frequency'] ?? 'one-off';
-            if (in_array($f, ['monthly', 'weekly', 'yearly'], true)) {
+            if (in_array($f, ['daily', 'weekly', 'monthly', 'yearly'], true)) {
                 return $f;
             }
         }
@@ -129,7 +129,7 @@ class DonationCart
         return 'one-off';
     }
 
-    /** Is this a recurring (monthly or weekly) gift? */
+    /** Is this a recurring (daily, weekly, monthly or yearly) gift? */
     public static function isRecurring(): bool
     {
         return self::frequency() !== 'one-off';
@@ -139,6 +139,7 @@ class DonationCart
     public static function intervalUnit(): ?string
     {
         return match (self::frequency()) {
+            'daily' => 'DAY',
             'weekly' => 'WEEK',
             'monthly' => 'MONTH',
             'yearly' => 'YEAR',

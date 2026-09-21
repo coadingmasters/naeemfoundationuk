@@ -42,8 +42,18 @@
                     @php
                         $recurring = $recurring ?? false;
                         $frequency = $frequency ?? 'monthly';
-                        $recurWord = $frequency === 'weekly' ? 'week' : 'month';
-                        $recurShort = $frequency === 'weekly' ? '/wk' : '/mo';
+                        $recurWord = match ($frequency) {
+                            'daily' => 'day',
+                            'weekly' => 'week',
+                            'yearly' => 'year',
+                            default => 'month',
+                        };
+                        $recurShort = match ($frequency) {
+                            'daily' => '/day',
+                            'weekly' => '/wk',
+                            'yearly' => '/yr',
+                            default => '/mo',
+                        };
                     @endphp
                     <p class="mt-3 text-base text-gray-600 sm:text-lg">
                         @if ($recurring)

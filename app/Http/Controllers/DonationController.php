@@ -39,7 +39,7 @@ class DonationController extends Controller
         $data = $request->validate([
             'cause' => ['required', 'string', 'max:120'],
             'amount' => ['required', 'numeric', 'min:1', 'max:1000000'],
-            'frequency' => ['nullable', 'in:one-off,monthly,weekly,yearly'],
+            'frequency' => ['nullable', 'in:one-off,daily,weekly,monthly,yearly'],
             'currency' => ['nullable', 'string', 'max:8'],
             'image' => ['nullable', 'string', 'max:255'],
             // Set when donating from an orphan's profile — tags the line so admins

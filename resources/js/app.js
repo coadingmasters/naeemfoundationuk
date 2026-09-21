@@ -248,10 +248,16 @@ function setupRamadanScheduler() {
     const boostBtns = [...root.querySelectorAll('[data-rg-boost]')];
     const causeBtns = [...root.querySelectorAll('[data-rg-cause]')];
     const durationBtns = [...root.querySelectorAll('[data-rg-duration]')];
+    const freqBtns = [...root.querySelectorAll('[data-rg-freq]')];
     const custom = root.querySelector('[data-rg-custom]');
     const totalEl = root.querySelector('[data-rg-total]');
+    const totalLabelEl = root.querySelector('[data-rg-total-label]');
     const boostEl = root.querySelector('[data-rg-boost-amount]');
+    const boostWrap = root.querySelector('[data-rg-boost-wrap]');
+    const recurNoteEl = root.querySelector('[data-rg-recur-note]');
+    const freqHintEl = root.querySelector('[data-rg-freq-hint]');
     const amountInput = root.querySelector('[data-rg-amount-input]');
+    const frequencyInput = root.querySelector('[data-rg-frequency-input]');
     const causeInput = root.querySelector('[data-rg-cause-input]');
     const nightsCountEl = root.querySelector('[data-rg-nights-count]');
     const rangeEl = root.querySelector('p[data-rg-range]');
@@ -259,18 +265,37 @@ function setupRamadanScheduler() {
 
     let daily = Number(custom?.value) || 0;
     let boost = 0;
+    let freq = 'one-off';
     let cause = causeBtns.find((b) => b.classList.contains('is-selected'))?.dataset.rgCause ?? '';
 
     const money = (n) => `${window.NF_CURRENCY || '£'}${n.toFixed(2)}`;
 
+    // Re-reads a duration button's nights/range for the current freq mode —
+    // "Odd Nights" covers 5 nights one-off but 9 (21st-29th) once recurring,
+    // since a daily auto-charge can't skip specific dates (see the button's
+    // data-rg-recur-* attributes, set server-side in the blade).
+    const applyDuration = (btn) => {
+        const n = freq === 'one-off' ? btn.dataset.rgNights : (btn.dataset.rgRecurNights || btn.dataset.rgNights);
+        const range = freq === 'one-off' ? btn.dataset.rgRange : (btn.dataset.rgRecurRange || btn.dataset.rgRange);
+        nights = Number(n);
+        if (rangeEl && range) rangeEl.textContent = range;
+    };
+
     const render = () => {
-        const extra = daily * (boost / 100);
-        const total = daily * nights + extra;
+        const extra = freq === 'one-off' ? daily * (boost / 100) : 0;
+        const total = freq === 'one-off' ? daily * nights + extra : daily;
 
         if (boostEl) boostEl.textContent = money(extra);
         if (totalEl) totalEl.textContent = money(total);
+        if (totalLabelEl) totalLabelEl.textContent = freq === 'one-off' ? 'Total' : 'Per day';
+        if (recurNoteEl) recurNoteEl.classList.toggle('hidden', freq === 'one-off');
         if (amountInput) amountInput.value = total.toFixed(2);
-        if (causeInput) causeInput.value = `${cause} (Ramadan ${nights} Nights)`;
+        if (frequencyInput) frequencyInput.value = freq;
+        if (causeInput) {
+            causeInput.value = freq === 'one-off'
+                ? `${cause} (Ramadan ${nights} Nights)`
+                : `${cause} (Ramadan Daily Giving)`;
+        }
         if (submit) submit.disabled = !(total > 0);
         if (nightsCountEl) nightsCountEl.textContent = nights;
 
@@ -280,9 +305,31 @@ function setupRamadanScheduler() {
 
     durationBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
-            nights = Number(btn.dataset.rgNights);
             durationBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
-            if (rangeEl && btn.dataset.rgRange) rangeEl.textContent = btn.dataset.rgRange;
+            applyDuration(btn);
+            render();
+        });
+    });
+
+    freqBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            freq = btn.dataset.rgFreq;
+            freqBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
+
+            if (boostWrap) boostWrap.classList.toggle('hidden', freq !== 'one-off');
+            if (freq !== 'one-off') {
+                boost = 0;
+                boostBtns.forEach((b) => b.classList.toggle('is-selected', Number(b.dataset.rgBoost) === 0));
+            }
+            if (freqHintEl) {
+                freqHintEl.textContent = freq === 'one-off'
+                    ? 'Charged once as a single payment covering the whole schedule.'
+                    : 'Charged automatically every day — cancel any time.';
+            }
+
+            const activeDuration = durationBtns.find((b) => b.classList.contains('is-selected'));
+            if (activeDuration) applyDuration(activeDuration);
+
             render();
         });
     });

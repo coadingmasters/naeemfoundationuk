@@ -136,8 +136,8 @@
                                 <td class="px-5 py-3">
                                     <p class="font-bold text-navy-dark">
                                         {{ $symbol }}{{ number_format((float) $d->total, 2) }}
-                                        @if (in_array($d->frequency, ['monthly', 'weekly'], true))
-                                            <span class="ml-0.5 rounded-full bg-brand/10 px-1.5 py-0.5 text-[10px] font-bold text-brand">{{ $d->frequency === 'weekly' ? '/wk' : '/mo' }}</span>
+                                        @if (in_array($d->frequency, ['daily', 'weekly', 'monthly', 'yearly'], true))
+                                            <span class="ml-0.5 rounded-full bg-brand/10 px-1.5 py-0.5 text-[10px] font-bold text-brand">{{ match ($d->frequency) { 'daily' => '/day', 'weekly' => '/wk', 'yearly' => '/yr', default => '/mo' } }}</span>
                                         @endif
                                     </p>
                                     @if ((float) $d->fee > 0)
