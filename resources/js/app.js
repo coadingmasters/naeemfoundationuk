@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPaymentForm();
     setupPayPal();
     setupRamadanScheduler();
+    setupFridayScheduler();
     setupPrintButtons();
     setupHeader();
     setupOrgField();
@@ -358,6 +359,83 @@ function setupRamadanScheduler() {
     causeBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
             cause = btn.dataset.rgCause;
+            causeBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
+            render();
+        });
+    });
+
+    render();
+}
+
+/* ---------- Friday giving scheduler ---------- */
+function setupFridayScheduler() {
+    const root = document.querySelector('[data-friday]');
+    if (!root) return;
+
+    const amountBtns = [...root.querySelectorAll('[data-fg-amount]')];
+    const causeBtns = [...root.querySelectorAll('[data-fg-cause]')];
+    const freqBtns = [...root.querySelectorAll('[data-fg-freq]')];
+    const custom = root.querySelector('[data-fg-custom]');
+    const totalEl = root.querySelector('[data-fg-total]');
+    const totalLabelEl = root.querySelector('[data-fg-total-label]');
+    const recurNoteEl = root.querySelector('[data-fg-recur-note]');
+    const freqHintEl = root.querySelector('[data-fg-freq-hint]');
+    const amountInput = root.querySelector('[data-fg-amount-input]');
+    const frequencyInput = root.querySelector('[data-fg-frequency-input]');
+    const causeInput = root.querySelector('[data-fg-cause-input]');
+    const submit = root.querySelector('[data-fg-submit]');
+
+    let amount = Number(custom?.value) || 0;
+    let freq = 'one-off';
+    let cause = causeBtns.find((b) => b.classList.contains('is-selected'))?.dataset.fgCause ?? '';
+
+    const money = (n) => `${window.NF_CURRENCY || '£'}${n.toFixed(2)}`;
+
+    const render = () => {
+        if (totalEl) totalEl.textContent = money(amount);
+        if (totalLabelEl) totalLabelEl.textContent = freq === 'one-off' ? 'Total' : 'Per Friday';
+        if (recurNoteEl) recurNoteEl.classList.toggle('hidden', freq === 'one-off');
+        if (amountInput) amountInput.value = amount.toFixed(2);
+        if (frequencyInput) frequencyInput.value = freq;
+        if (causeInput) {
+            causeInput.value = freq === 'one-off'
+                ? `${cause} (Friday Giving)`
+                : `${cause} (Every Friday)`;
+        }
+        if (submit) submit.disabled = !(amount > 0);
+
+        amountBtns.forEach((b) => b.classList.toggle('is-selected', Number(b.dataset.fgAmount) === amount));
+    };
+
+    freqBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            freq = btn.dataset.fgFreq;
+            freqBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
+            if (freqHintEl) {
+                freqHintEl.textContent = freq === 'one-off'
+                    ? 'Charged once as a single payment.'
+                    : 'Charged automatically every Friday — cancel any time.';
+            }
+            render();
+        });
+    });
+
+    amountBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            amount = Number(btn.dataset.fgAmount);
+            if (custom) custom.value = amount;
+            render();
+        });
+    });
+
+    custom?.addEventListener('input', () => {
+        amount = Math.max(0, Number(custom.value) || 0);
+        render();
+    });
+
+    causeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            cause = btn.dataset.fgCause;
             causeBtns.forEach((b) => b.classList.toggle('is-selected', b === btn));
             render();
         });

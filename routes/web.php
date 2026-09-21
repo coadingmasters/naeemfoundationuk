@@ -96,6 +96,7 @@ Route::get('/cambodia-education-welfare', [CambodiaEducationController::class, '
 Route::get('/prosthetic-limb', [ProstheticLimbController::class, 'index'])->name('prosthetic-limb');
 Route::get('/ramadan-calendar', [RamadanTimetableController::class, 'index'])->name('ramadan-calendar');
 Route::view('/schedule-ramadan-giving', 'schedule-ramadan-giving')->name('schedule-ramadan-giving');
+Route::view('/schedule-friday-giving', 'schedule-friday-giving')->name('schedule-friday-giving');
 Route::get('/zakat-ul-fitr', [ZakatUlFitrController::class, 'index'])->name('zakat-ul-fitr');
 Route::get('/eid-gifts-for-children', [EidGiftsController::class, 'index'])->name('eid-gifts');
 Route::get('/ramadan-food-packs', [RamadanFoodPacksController::class, 'index'])->name('ramadan-food-packs');

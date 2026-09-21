@@ -33,7 +33,7 @@ class PageHeroes
             'cambodia-education-welfare', 'education-sponsorships', 'hostel-for-students-orphans',
             'clean-water', 'widows', 'lillah', 'aqiqah', 'kaffarah', 'dhul-hajj', 'qurbani',
             'prosthetic-limb', 'eid-gifts', 'ramadan-food-packs', 'hajj', 'volunteer',
-            'about', 'careers', 'history',
+            'about', 'careers', 'history', 'schedule-friday-giving',
         ];
 
         $labels = PageVideos::pages();
