@@ -71,7 +71,7 @@
         <div class="overflow-hidden">
             <div class="nf-track flex" data-track>
                 @foreach ($heroSlides as $slide)
-                    <div class="relative h-[400px] w-full shrink-0 sm:h-[480px] lg:h-[560px]" data-slide>
+                    <div class="relative h-[460px] w-full shrink-0 sm:h-[540px] lg:h-[640px]" data-slide>
                         <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover">
                         {{-- Brand-tinted gradient for legible, professional contrast --}}
                         <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent"></div>
