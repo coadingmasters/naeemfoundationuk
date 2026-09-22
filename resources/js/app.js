@@ -1178,10 +1178,6 @@ function setupAddressLookup() {
             if (e.key === 'Enter') { e.preventDefault(); hideSuggest(); find(); }
             if (e.key === 'Escape') hideSuggest();
         });
-        if (select) select.addEventListener('change', () => {
-            const idx = parseInt(select.value, 10);
-            if (!Number.isNaN(idx)) apply(results[idx]);
-        });
 
         // ---- Live postcode suggestions as the donor types (free, UK) ----
         const suggestEl = root.querySelector('[data-address-suggest]');
