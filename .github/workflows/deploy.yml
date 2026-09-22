@@ -118,6 +118,20 @@ jobs:
       - name: Install rsync + sshpass
         run: sudo apt-get update && sudo apt-get install -y rsync sshpass
 
+      # public/build/ is git-tracked on this server (it's a plain `git pull`
+      # deploy, not an rsynced-from-a-separate-source-tree setup like
+      # Hostinger), so pull FIRST — discarding any local drift left by a
+      # previous run's asset upload — then overwrite with this run's fresh
+      # build. Doing it the other way round makes `git pull` fail with a
+      # merge conflict against the files the previous upload just wrote.
+      - name: Pull code, migrate and clear caches on the server
+        env:
+          SSHPASS: ${{ secrets.VPS_SSH_PASSWORD }}
+        run: |
+          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
+          sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
+            "cd ${APP_PATH} && git checkout -- public/build && git clean -fd public/build && git pull origin main && php artisan migrate --force && php artisan view:clear && php artisan cache:clear"
+
       - name: Upload compiled assets to the server
         env:
           SSHPASS: ${{ secrets.VPS_SSH_PASSWORD }}
@@ -135,11 +149,6 @@ jobs:
           # Annual report PDFs — NO --delete, so admin-uploaded reports are never removed
           sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
             public/reports/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/reports/"
-
-      - name: Pull code, migrate, seed and clear caches on the server
-        env:
-          SSHPASS: ${{ secrets.VPS_SSH_PASSWORD }}
-        run: |
-          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
+          # Fix ownership back to the cPanel account user after root-owned rsync.
           sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
-            "cd ${APP_PATH} && git pull origin main && php artisan migrate --force && php artisan view:clear && php artisan cache:clear"
+            "chown -R naeeupql:naeeupql ${APP_PATH}"
