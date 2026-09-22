@@ -86,3 +86,60 @@ jobs:
              printf 'MAIL_MAILER=smtp\nMAIL_HOST=smtp.gmail.com\nMAIL_PORT=587\nMAIL_USERNAME=%s\nMAIL_PASSWORD=%s\nMAIL_ENCRYPTION=tls\nMAIL_FROM_ADDRESS=%s\n' '${MAIL_USERNAME}' '${MAIL_PASSWORD}' '${MAIL_FROM_ADDRESS}' >> .env && \
              php artisan config:clear"
           echo "Mail settings applied to the server .env."
+
+  deploy-vps:
+    runs-on: ubuntu-latest
+
+    env:
+      SERVER_HOST: 209.74.88.19
+      SERVER_PORT: 22
+      SERVER_USER: root
+      APP_PATH: /home/naeeupql/naeemfoundation
+      # public_html is a symlink straight to APP_PATH/public on this server,
+      # so compiled assets/images are rsynced directly into the app's own
+      # public/ folder — there's no separate served-docroot copy to keep in
+      # sync like there is on Hostinger.
+      PUBLIC_PATH: /home/naeeupql/naeemfoundation/public
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build front-end assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install rsync + sshpass
+        run: sudo apt-get update && sudo apt-get install -y rsync sshpass
+
+      - name: Upload compiled assets to the server
+        env:
+          SSHPASS: ${{ secrets.VPS_SSH_PASSWORD }}
+        run: |
+          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
+          # Compiled CSS/JS (safe to mirror with --delete)
+          sshpass -e rsync -avz --delete -e "ssh ${SSH_OPTS}" \
+            public/build/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/build/"
+          # Images — NO --delete, so admin-uploaded hero images are never removed
+          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
+            public/images/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/images/"
+          # Self-hosted fonts (e.g. Geogrotesque) — NO --delete
+          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
+            public/fonts/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/fonts/"
+          # Annual report PDFs — NO --delete, so admin-uploaded reports are never removed
+          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
+            public/reports/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/reports/"
+
+      - name: Pull code, migrate, seed and clear caches on the server
+        env:
+          SSHPASS: ${{ secrets.VPS_SSH_PASSWORD }}
+        run: |
+          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
+          sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
+            "cd ${APP_PATH} && git pull origin main && php artisan migrate --force && php artisan view:clear && php artisan cache:clear"
