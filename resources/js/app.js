@@ -704,7 +704,9 @@ async function initGooglePay(ctx, container) {
     }
     if (!config || !config.isEligible) return;
 
-    const client = new google.payments.api.PaymentsClient({ environment: config.environment || 'TEST' });
+    // PayPal's own config response has no `environment` field to read here —
+    // driven by our own live/sandbox mode instead (see partials/paypal-sdk).
+    const client = new google.payments.api.PaymentsClient({ environment: window.NF_GOOGLEPAY_ENV || 'TEST' });
     const ready = await client
         .isReadyToPay({ apiVersion: 2, apiVersionMinor: 0, allowedPaymentMethods: config.allowedPaymentMethods })
         .catch(() => null);

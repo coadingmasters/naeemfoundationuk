@@ -18,7 +18,13 @@
     @unless ($nfSubscription)
         {{-- Google Pay's own JS (needed by the PayPal googlepay component). --}}
         <script src="https://pay.google.com/gp/p/js/pay.js" data-nf-googlepay-sdk></script>
-        <script>window.NF_APP_NAME = @json(config('app.name'));</script>
+        <script>
+            window.NF_APP_NAME = @json(config('app.name'));
+            // PayPal's Googlepay().config() response doesn't actually include an
+            // `environment` field, so Google Pay's own client needs to be told
+            // directly — driven by our own live/sandbox mode, not guessed.
+            window.NF_GOOGLEPAY_ENV = @json($nfPaypal->mode() === 'live' ? 'PRODUCTION' : 'TEST');
+        </script>
     @endunless
 @else
     {{-- No credentials configured — tell the visitor rather than showing dead buttons. --}}
