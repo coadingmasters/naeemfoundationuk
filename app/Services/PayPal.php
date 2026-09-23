@@ -118,7 +118,12 @@ class PayPal
      */
     public function captureOrder(string $orderId): array
     {
-        $res = $this->request()->post($this->cfg['base_url']."/v2/checkout/orders/{$orderId}/capture");
+        // No params to send, but PayPal rejects a truly empty body as
+        // malformed JSON — Laravel's post() with no $data defaults to `[]`,
+        // which json_encodes to `[]` (an array) rather than `{}` (an
+        // object), and PayPal's schema requires the latter.
+        $res = $this->request()->withBody('{}', 'application/json')
+            ->post($this->cfg['base_url']."/v2/checkout/orders/{$orderId}/capture");
 
         if (! $res->successful()) {
             $this->logFailure('capture order', $res);
