@@ -14,6 +14,7 @@ class HeroSlide extends Model
         'title',
         'subtitle',
         'image',
+        'image_position',
         'button_text',
         'button_url',
         'sort_order',

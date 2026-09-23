@@ -65,6 +65,17 @@
                     @endif
                 </div>
             </div>
+
+            <div class="mt-5">
+                <label for="image_position" class="mb-1.5 block text-sm font-semibold text-navy-dark">Image position</label>
+                <select id="image_position" name="image_position"
+                        class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
+                    @foreach (['left' => 'Left (subject near the left edge)', 'center' => 'Center', 'right' => 'Right'] as $value => $label)
+                        <option value="{{ $value }}" {{ old('image_position', $slide->image_position ?? 'left') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <p class="mt-1 text-xs text-gray-400">These photos are very wide and get cropped to fit the screen — choose whichever side keeps the subject visible instead of cut off.</p>
+            </div>
         </div>
     </div>
 

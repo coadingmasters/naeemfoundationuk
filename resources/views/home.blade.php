@@ -13,6 +13,7 @@
         $heroSlides = collect([
             (object) [
                 'image' => 'images/homepagehero.png',
+                'image_position' => 'left',
                 'title' => "CHANGING LIVES\nTOGETHER",
                 'subtitle' => 'Naeem Foundation',
                 'button_text' => 'Donate Now',
@@ -20,6 +21,11 @@
             ],
         ]);
     }
+
+    // These photos are exported extra-wide so any screen size can crop them —
+    // where the subject actually sits in that wide frame varies photo to
+    // photo, so each slide picks its own crop anchor (Admin -> Hero Slides).
+    $heroPositionClasses = ['left' => 'object-left', 'center' => 'object-center', 'right' => 'object-right'];
 
     // Latest Appeals are managed in the admin dashboard, per region. Empty regions
     // simply hide the section — no default fallback.
@@ -72,7 +78,7 @@
             <div class="nf-track flex" data-track>
                 @foreach ($heroSlides as $slide)
                     <div class="relative h-[460px] w-full shrink-0 sm:h-[540px] lg:h-[640px]" data-slide>
-                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover object-left sm:object-center">
+                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover {{ $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left' }}">
                         {{-- Brand-tinted gradient for legible, professional contrast --}}
                         <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent"></div>
