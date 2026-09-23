@@ -111,8 +111,8 @@
                 {{-- Left: sticky image --}}
                 <div>
                     <div class="lg:sticky lg:top-36">
-                        <img src="{{ asset('images/changinslives1.jpg') }}" alt="Our team at work"
-                             class="h-72 w-full rounded-2xl object-cover shadow-md sm:h-96 lg:h-[460px]">
+                        <img src="{{ asset('images/careercenterr.jpeg') }}" alt="Our team at work"
+                             class="aspect-[64/35] w-full rounded-2xl object-cover shadow-md">
                     </div>
                 </div>
 
