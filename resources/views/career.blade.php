@@ -112,7 +112,7 @@
                 <div>
                     <div class="lg:sticky lg:top-36">
                         <img src="{{ asset('images/careercenterr.jpeg') }}" alt="Our team at work"
-                             class="aspect-[64/35] w-full rounded-2xl object-cover shadow-md">
+                             class="aspect-[3/2] w-full rounded-2xl object-cover shadow-md">
                     </div>
                 </div>
 
