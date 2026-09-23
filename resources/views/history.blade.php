@@ -70,7 +70,7 @@
 
                     {{-- Image --}}
                     <div class="p-5 lg:py-6 lg:pr-6">
-                        <img src="{{ asset($heroImage) }}" alt="Naeem Foundation in the community"
+                        <img src="{{ asset('images/historycenter.jpeg') }}" alt="Naeem Foundation in the community"
                              class="aspect-video w-full rounded-xl object-cover">
                     </div>
                 </div>
