@@ -36,12 +36,10 @@
 @section('content')
 
     {{-- ===================== HERO ===================== --}}
-    {{-- Top padding on phones clears the fixed 116px header, which otherwise
-         sits on top of the heading. --}}
-    <section class="relative overflow-hidden bg-navy pt-[116px] lg:pt-0">
+    <section class="relative overflow-hidden bg-navy">
         <div class="grid items-stretch lg:grid-cols-2">
             {{-- Left brand panel --}}
-            <div class="relative flex flex-col justify-center bg-gradient-to-br from-brand to-brand-dark px-6 py-10 sm:px-10 lg:px-14 lg:pb-20 lg:pt-40">
+            <div class="relative flex flex-col justify-center bg-gradient-to-br from-brand to-brand-dark px-6 pb-12 pt-[128px] sm:px-10 lg:px-14 lg:pb-20 lg:pt-40">
                 <div class="pointer-events-none absolute -left-16 -top-16 h-56 w-56 rounded-full bg-white/5"></div>
                 <div class="relative max-w-lg text-white">
                     <h1 class="mt-5 text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
@@ -66,12 +64,15 @@
                 </div>
             </div>
 
-            {{-- Right image. On phones it comes first, in normal flow at its
-                 own aspect ratio so the whole photo shows (no crop, no tint). --}}
-            <div class="relative order-first lg:order-none lg:min-h-full">
-                <img src="{{ asset($mobileHeroImage ?: $heroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba" class="block h-auto w-full lg:hidden">
-                <img src="{{ asset($heroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba" class="absolute inset-0 hidden h-full w-full object-cover lg:block">
-                <div class="absolute inset-0 hidden bg-gradient-to-l from-transparent to-brand/30 lg:block"></div>
+            {{-- Right image --}}
+            <div class="relative min-h-[280px] lg:min-h-full">
+                @if ($mobileHeroImage)
+                    <img src="{{ asset($mobileHeroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba" class="absolute inset-0 h-full w-full object-cover lg:hidden">
+                    <img src="{{ asset($heroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba" class="absolute inset-0 hidden h-full w-full object-cover lg:block">
+                @else
+                    <img src="{{ asset($heroImage) }}" alt="Pilgrims performing Tawaf around the Kaaba" class="absolute inset-0 h-full w-full object-cover">
+                @endif
+                <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent lg:bg-gradient-to-l lg:from-transparent lg:to-brand/30"></div>
             </div>
         </div>
 

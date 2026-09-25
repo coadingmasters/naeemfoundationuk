@@ -13,18 +13,19 @@
 @section('content')
 
     {{-- ===================== ANIMATED HERO ===================== --}}
-    {{-- Phones: photo in normal flow at its own aspect ratio (whole image
-         shows, no tint), text on a navy band beneath; the top padding clears
-         the fixed 116px header. Desktop: full-bleed tinted photo behind the text. --}}
-    <section class="relative isolate overflow-hidden bg-navy-dark pt-[116px] lg:pt-0">
-        <img src="{{ asset($mobileHeroImage ?: $heroImage) }}" alt="" class="block h-auto w-full lg:hidden">
-        <img src="{{ asset($heroImage) }}" alt="" class="nf-kenburns absolute inset-0 hidden h-full w-full object-cover lg:block">
-        <div class="absolute inset-0 hidden bg-gradient-to-br from-navy-dark/90 via-navy/80 to-brand/70 lg:block"></div>
+    <section class="relative isolate overflow-hidden bg-navy-dark">
+        @if ($mobileHeroImage)
+            <img src="{{ asset($mobileHeroImage) }}" alt="" class="nf-kenburns absolute inset-0 h-full w-full object-cover lg:hidden">
+            <img src="{{ asset($heroImage) }}" alt="" class="nf-kenburns absolute inset-0 hidden h-full w-full object-cover lg:block">
+        @else
+            <img src="{{ asset($heroImage) }}" alt="" class="nf-kenburns absolute inset-0 h-full w-full object-cover">
+        @endif
+        <div class="absolute inset-0 bg-gradient-to-br from-navy-dark/90 via-navy/80 to-brand/70"></div>
 
-        <div class="nf-float pointer-events-none absolute -right-20 top-10 hidden h-64 w-64 rounded-full bg-brand/30 blur-3xl lg:block"></div>
-        <div class="nf-float pointer-events-none absolute -left-16 bottom-24 hidden h-56 w-56 rounded-full bg-white/10 blur-3xl lg:block" style="animation-delay: 1.5s"></div>
+        <div class="nf-float pointer-events-none absolute -right-20 top-10 h-64 w-64 rounded-full bg-brand/30 blur-3xl"></div>
+        <div class="nf-float pointer-events-none absolute -left-16 bottom-24 h-56 w-56 rounded-full bg-white/10 blur-3xl" style="animation-delay: 1.5s"></div>
 
-        <div class="relative z-10 nf-container flex flex-col items-center justify-center px-4 pb-20 pt-4 text-center sm:pb-24 lg:min-h-[380px] lg:pb-28 lg:pt-[11.5rem]">
+        <div class="relative z-10 nf-container flex min-h-[320px] flex-col items-center justify-center px-4 pb-24 pt-36 text-center sm:min-h-[380px] sm:pb-28 lg:pt-[11.5rem]">
 
             <div class="nf-pop mt-6 rounded-2xl bg-white px-8 py-4 shadow-2xl shadow-navy-dark/40 sm:px-12 sm:py-5" style="animation-delay: .1s">
                 <h1 class="text-3xl font-extrabold text-navy-dark sm:text-4xl lg:text-5xl">Become a <span class="text-brand">charity</span> volunteer</h1>

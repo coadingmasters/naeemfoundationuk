@@ -44,15 +44,16 @@
 @section('content')
 
     {{-- ===================== HERO ===================== --}}
-    {{-- Phones: photo in normal flow at its own aspect ratio (whole image
-         shows, no tint), text on a navy band beneath; the top padding clears
-         the fixed 116px header. Desktop: full-bleed tinted photo behind the text. --}}
-    <section class="relative overflow-hidden bg-navy pt-[116px] lg:bg-transparent lg:pt-0">
-        <img src="{{ asset($mobileHeroImage ?: $heroImage) }}" alt="" class="block h-auto w-full lg:hidden">
-        <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 hidden h-full w-full object-cover lg:block">
-        <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/90 via-brand/80 to-brand/55 lg:block"></div>
+    <section class="relative overflow-hidden">
+        @if ($mobileHeroImage)
+            <img src="{{ asset($mobileHeroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover lg:hidden">
+            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 hidden h-full w-full object-cover lg:block">
+        @else
+            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover">
+        @endif
+        <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-brand/80 to-brand/55"></div>
 
-        <div class="nf-container relative pb-10 pt-8 text-center sm:pb-12 lg:pb-24 lg:pt-44">
+        <div class="nf-container relative pb-16 pt-24 text-center sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-44">
             <div class="mx-auto max-w-2xl text-white nf-reveal">
                 <h1 class="mt-5 text-4xl font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
                     This is What <span class="text-cream">We Do</span>
