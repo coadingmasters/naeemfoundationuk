@@ -73,29 +73,34 @@
 @section('content')
 
     {{-- ===================== HERO SLIDER ===================== --}}
-    <section class="group relative overflow-hidden" data-carousel="hero">
+    {{-- Phones/tablets: each slide is the photo at its own aspect ratio (so the
+         whole image shows) with the text on a navy band beneath it — laid
+         over a tall slide, these wide photos get zoomed down to a thin slice.
+         The top padding clears the fixed 116px header. Desktop (lg) keeps the
+         full-bleed photo with the text laid over it. --}}
+    <section class="group relative overflow-hidden bg-navy pt-[116px] lg:bg-transparent lg:pt-0" data-carousel="hero">
         <div class="overflow-hidden">
             <div class="nf-track flex" data-track>
                 @foreach ($heroSlides as $slide)
-                    <div class="relative h-[460px] w-full shrink-0 sm:h-[540px] lg:h-[640px]" data-slide>
-                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover {{ $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left' }}">
-                        {{-- Brand-tinted gradient for legible, professional contrast --}}
-                        <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent"></div>
+                    <div class="relative w-full shrink-0 lg:h-[640px]" data-slide>
+                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="block h-auto w-full lg:h-full lg:object-cover {{ $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left' }}">
+                        {{-- Brand-tinted gradient for legible, professional contrast (desktop, where text sits on the photo) --}}
+                        <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent lg:block"></div>
+                        <div class="absolute inset-0 hidden bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent lg:block"></div>
 
-                        <div class="nf-container absolute inset-0 flex items-end pb-16 sm:pb-20 lg:pb-24">
-                            <div class="max-w-xl text-white" data-hero-content>
+                        <div class="nf-container pb-14 pt-6 sm:pb-16 lg:absolute lg:inset-0 lg:flex lg:items-end lg:pb-24 lg:pt-0">
+                            <div class="text-white lg:max-w-xl" data-hero-content>
                                 @if (!empty($slide->subtitle))
-                                    <span class="mb-4 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg">
+                                    <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg lg:mb-4">
                                         <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
                                         {{ $slide->subtitle }}
                                     </span>
                                 @endif
-                                <h1 class="text-3xl font-extrabold leading-[1.15] text-white drop-shadow [text-wrap:balance] sm:text-4xl lg:text-5xl">
+                                <h1 class="text-xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl lg:text-5xl lg:leading-[1.15]">
                                     {!! nl2br(e($slide->title)) !!}
                                 </h1>
                                 @if (!empty($slide->button_text))
-                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-7 px-6 py-3 text-base shadow-xl">
+                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-4 px-5 py-2.5 text-sm shadow-xl lg:mt-7 lg:px-6 lg:py-3 lg:text-base">
                                         {{ $slide->button_text }}
                                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </a>

@@ -12,44 +12,45 @@
 @section('content')
 
     {{-- ===================== HERO + DONATE WIDGET ===================== --}}
-    <section class="relative overflow-hidden">
-        {{-- Full-bleed photo behind the whole hero (heading AND the donate
-             widget), with one light, even tint — matches partials/donate-hero.
-             Hero photos are exported wide (1920x450) with the subject on the
-             left and a plain/faded area on the right made to be cropped, so
-             the crop anchors left. --}}
-        @if ($mobileHeroImage)
-            <img src="{{ asset($mobileHeroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover object-left lg:hidden">
-            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 hidden h-full w-full object-cover object-left lg:block">
-        @else
-            <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 h-full w-full object-cover object-left">
-        @endif
-        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.35),rgba(18,45,60,0.55)_45%,rgba(18,45,60,0.4))]"></div>
+    <section class="relative overflow-hidden bg-navy pt-[116px] lg:bg-transparent lg:pt-0">
+        {{-- Phones: photo in normal flow at its own aspect ratio so the whole
+             image shows (matches partials/donate-hero); top padding clears
+             the fixed 116px header. --}}
+        <img src="{{ asset($mobileHeroImage ?: $heroImage) }}" alt="" class="block h-auto w-full lg:hidden">
+
+        {{-- Desktop: full-bleed photo behind the whole hero (heading AND the
+             donate widget), with one light, even tint. Hero photos are
+             exported wide (1920x450) with the subject on the left and a
+             plain/faded area on the right made to be cropped, so the crop
+             anchors left. --}}
+        <img src="{{ asset($heroImage) }}" alt="" class="absolute inset-0 hidden h-full w-full object-cover object-left lg:block">
+        <div class="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(to_bottom,rgba(18,45,60,0.35),rgba(18,45,60,0.55)_45%,rgba(18,45,60,0.4))] lg:block"></div>
 
         {{-- Decorative glows --}}
-        <div class="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand/25 blur-3xl"></div>
-        <div class="pointer-events-none absolute -left-24 -bottom-10 h-72 w-72 rounded-full bg-white/5 blur-3xl"></div>
+        <div class="pointer-events-none absolute -right-24 top-0 hidden h-72 w-72 rounded-full bg-brand/25 blur-3xl lg:block"></div>
+        <div class="pointer-events-none absolute -left-24 -bottom-10 hidden h-72 w-72 rounded-full bg-white/5 blur-3xl lg:block"></div>
 
         {{-- Wider image column + capped card keeps the widget compact. --}}
         <div class="relative grid items-stretch lg:grid-cols-[1.55fr_1fr]">
-            {{-- Heading. Matches the shared donate-hero treatment: the title
-                 is centred in the photo panel, with the padding-top clearing the
-                 fixed header and items-center balancing what's left. --}}
-            <div class="relative flex min-h-[420px] items-center pt-24 sm:min-h-[480px] lg:min-h-[560px] lg:pt-28">
-                <div class="relative w-full px-6 py-10 sm:px-8 lg:px-10">
+            {{-- Heading. Matches the shared donate-hero treatment: on desktop
+                 the title is centred in the photo panel; on phones it's a navy
+                 band under the photo. --}}
+            <div class="relative flex items-center lg:min-h-[560px] lg:pt-28">
+                <div class="relative w-full px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
                     <div class="nf-reveal mx-auto max-w-4xl text-center text-white">
-                        <h1 class="nf-hero-title text-4xl font-extrabold leading-[1.04] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-6xl">
+                        <h1 class="nf-hero-title text-3xl font-extrabold leading-[1.1] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-6xl lg:leading-[1.04]">
                             Purify Your Wealth, <span class="text-cream">Transform Lives</span>
                         </h1>
-                        <span class="nf-hero-rule mx-auto mt-7 block h-1 rounded-full bg-brand" aria-hidden="true"></span>
+                        <span class="nf-hero-rule mx-auto mt-5 block h-1 rounded-full bg-brand lg:mt-7" aria-hidden="true"></span>
                     </div>
                 </div>
             </div>
 
-            {{-- Donate widget (extra top padding on desktop so it clears the fixed header) --}}
-            <div class="relative flex flex-col justify-center px-5 py-8 sm:px-10 lg:px-12 lg:pb-12 lg:pt-40" data-donate>
-                <h2 class="text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">Zakat Donations 2026</h2>
-                <p class="mt-2 max-w-md text-sm leading-relaxed text-white/70">
+            {{-- Donate widget (extra top padding on desktop so it clears the
+                 fixed header). Plain light background on phones — no tint. --}}
+            <div class="relative flex flex-col justify-center bg-cream px-5 py-8 sm:px-10 lg:bg-transparent lg:px-12 lg:pb-12 lg:pt-40" data-donate>
+                <h2 class="text-2xl font-extrabold leading-tight text-navy-dark sm:text-3xl lg:text-4xl lg:text-white">Zakat Donations 2026</h2>
+                <p class="mt-2 max-w-md text-sm leading-relaxed text-gray-600 lg:text-white/70">
                     Purify your wealth with 2.5% that brings food, water and hope to families in need.
                 </p>
 
