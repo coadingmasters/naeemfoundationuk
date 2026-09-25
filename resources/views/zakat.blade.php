@@ -54,7 +54,7 @@
                 </p>
 
                 <form method="POST" action="{{ route('donate.add') }}" data-donate-form
-                      class="mt-5 w-full rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 sm:p-6 lg:max-w-[28rem]">
+                      class="mt-5 w-full rounded-2xl bg-white p-5 shadow-2xl shadow-navy-dark/40 max-lg:bg-white/55 max-lg:backdrop-blur-sm sm:p-6 lg:max-w-[28rem]">
                     @csrf
                     <input type="hidden" name="image" value="{{ $heroImage }}">
 
