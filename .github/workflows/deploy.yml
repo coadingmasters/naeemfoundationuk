@@ -150,5 +150,9 @@ jobs:
           sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
             public/reports/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/reports/"
           # Fix ownership back to the cPanel account user after root-owned rsync.
+          # public_html is a symlink into APP_PATH/public, and Apache serves it
+          # as `nobody` — so both folders on that path must stay world-
+          # traversable. If they end up 750 with the account's own group, the
+          # whole site returns 403.
           sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
-            "chown -R naeeupql:naeeupql ${APP_PATH}"
+            "chown -R naeeupql:naeeupql ${APP_PATH} && chmod 755 ${APP_PATH} ${PUBLIC_PATH}"
