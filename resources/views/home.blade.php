@@ -25,7 +25,7 @@
     // These photos are exported extra-wide so any screen size can crop them —
     // where the subject actually sits in that wide frame varies photo to
     // photo, so each slide picks its own crop anchor (Admin -> Hero Slides).
-    $heroPositionClasses = ['left' => 'object-left', 'center' => 'object-center', 'right' => 'object-right'];
+    $heroPositionClasses = ['left' => 'object-left', 'mid-left' => 'object-[25%_50%]', 'center' => 'object-center', 'mid-right' => 'object-[75%_50%]', 'right' => 'object-right'];
 
     // Latest Appeals are managed in the admin dashboard, per region. Empty regions
     // simply hide the section — no default fallback.

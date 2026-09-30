@@ -84,7 +84,7 @@
                 <label for="image_position" class="mb-1.5 block text-sm font-semibold text-navy-dark">Image position</label>
                 <select id="image_position" name="image_position"
                         class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    @foreach (['left' => 'Left (subject near the left edge)', 'center' => 'Center', 'right' => 'Right'] as $value => $label)
+                    @foreach (['left' => 'Left (subject at the left edge)', 'mid-left' => 'Center-left', 'center' => 'Center', 'mid-right' => 'Center-right', 'right' => 'Right'] as $value => $label)
                         <option value="{{ $value }}" {{ old('image_position', $slide->image_position ?? 'left') === $value ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>

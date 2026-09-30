@@ -101,7 +101,7 @@ class HeroSlideController extends Controller
             'button_text' => ['nullable', 'string', 'max:60'],
             'button_url' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
-            'image_position' => ['nullable', 'in:left,center,right'],
+            'image_position' => ['nullable', 'in:left,mid-left,center,mid-right,right'],
             'mobile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
     }
