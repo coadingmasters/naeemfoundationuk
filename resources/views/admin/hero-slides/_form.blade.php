@@ -67,6 +67,20 @@
             </div>
 
             <div class="mt-5">
+                <label for="mobile_image" class="mb-1.5 block text-sm font-semibold text-navy-dark">Mobile image <span class="text-gray-400">(optional)</span></label>
+                @if ($slide->mobile_image)
+                    <img src="{{ asset($slide->mobile_image) }}" alt="Current mobile image" class="mb-2 h-28 w-auto rounded-lg ring-1 ring-gray-200">
+                    <label class="mb-2 flex items-center gap-2 text-xs text-gray-600">
+                        <input type="checkbox" name="remove_mobile_image" value="1" class="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand">
+                        Remove mobile image (phones will use the main image)
+                    </label>
+                @endif
+                <input id="mobile_image" name="mobile_image" type="file" accept="image/jpeg,image/png,image/webp"
+                       class="block w-full text-sm text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-cream file:px-4 file:py-2 file:text-sm file:font-semibold file:text-navy-dark hover:file:bg-cream/70">
+                <p class="mt-1 text-xs text-gray-400">Shown on phones instead of the main image, always in full. A 4:3 photo (e.g. 1200×900) fills the phone slide exactly.</p>
+            </div>
+
+            <div class="mt-5">
                 <label for="image_position" class="mb-1.5 block text-sm font-semibold text-navy-dark">Image position</label>
                 <select id="image_position" name="image_position"
                         class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">

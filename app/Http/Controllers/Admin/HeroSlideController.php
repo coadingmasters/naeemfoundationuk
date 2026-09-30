@@ -37,6 +37,9 @@ class HeroSlideController extends Controller
             ? (int) $request->input('sort_order')
             : $this->nextSortOrder(HeroSlide::class);
         $data['image'] = $this->storeUploadedImage($request->file('image'), self::UPLOAD_DIR, 'hero');
+        $data['mobile_image'] = $request->hasFile('mobile_image')
+            ? $this->storeUploadedImage($request->file('mobile_image'), self::UPLOAD_DIR, 'hero-mobile')
+            : null;
         $data['is_active'] = $request->boolean('is_active');
 
         HeroSlide::create($data);
@@ -64,6 +67,14 @@ class HeroSlideController extends Controller
             $data['image'] = $this->storeUploadedImage($request->file('image'), self::UPLOAD_DIR, 'hero');
         }
 
+        if ($request->hasFile('mobile_image')) {
+            $this->deleteUploadedImage($heroSlide->mobile_image, self::UPLOAD_DIR);
+            $data['mobile_image'] = $this->storeUploadedImage($request->file('mobile_image'), self::UPLOAD_DIR, 'hero-mobile');
+        } elseif ($request->boolean('remove_mobile_image')) {
+            $this->deleteUploadedImage($heroSlide->mobile_image, self::UPLOAD_DIR);
+            $data['mobile_image'] = null;
+        }
+
         $heroSlide->update($data);
 
         return redirect()->route('admin.hero-slides.index')
@@ -73,6 +84,7 @@ class HeroSlideController extends Controller
     public function destroy(HeroSlide $heroSlide): RedirectResponse
     {
         $this->deleteUploadedImage($heroSlide->image, self::UPLOAD_DIR);
+        $this->deleteUploadedImage($heroSlide->mobile_image, self::UPLOAD_DIR);
         $heroSlide->delete();
 
         return redirect()->route('admin.hero-slides.index')
@@ -90,6 +102,7 @@ class HeroSlideController extends Controller
             'button_url' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'image_position' => ['nullable', 'in:left,center,right'],
+            'mobile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
     }
 }

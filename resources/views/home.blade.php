@@ -73,17 +73,24 @@
 @section('content')
 
     {{-- ===================== HERO SLIDER ===================== --}}
-    {{-- Phones/tablets: each slide is the photo at its own aspect ratio (so the
-         whole image shows) with the text on a navy band beneath it — laid
-         over a tall slide, these wide photos get zoomed down to a thin slice.
-         The top padding clears the fixed 116px header. Desktop (lg) keeps the
-         full-bleed photo with the text laid over it. --}}
+    {{-- Phones/tablets: each slide opens with a full-width 4:3 photo box. The
+         photo is never cropped (object-contain) — the phone-specific upload
+         when a slide has one, else the wide desktop photo — and a blurred copy
+         of it fills whatever space is left, so a wide photo doesn't read as a
+         thin strip. Text sits on a navy band beneath. The top padding clears
+         the fixed 116px header. Desktop (lg) keeps the full-bleed photo with
+         the text laid over it. --}}
     <section class="group relative overflow-hidden bg-navy pt-[116px] lg:bg-transparent lg:pt-0" data-carousel="hero">
         <div class="overflow-hidden">
             <div class="nf-track flex" data-track>
                 @foreach ($heroSlides as $slide)
+                    @php $phoneImage = asset(($slide->mobile_image ?? null) ?: $slide->image); @endphp
                     <div class="relative w-full shrink-0 lg:h-[640px]" data-slide>
-                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="block h-auto w-full lg:h-full lg:object-cover {{ $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left' }}">
+                        <div class="relative aspect-[4/3] w-full overflow-hidden lg:hidden">
+                            <img src="{{ $phoneImage }}" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full scale-125 object-cover opacity-80 blur-2xl">
+                            <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="relative h-full w-full object-contain">
+                        </div>
+                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="hidden h-full w-full object-cover lg:block {{ $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left' }}">
                         {{-- Brand-tinted gradient for legible, professional contrast (desktop, where text sits on the photo) --}}
                         <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent lg:block"></div>
                         <div class="absolute inset-0 hidden bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent lg:block"></div>
