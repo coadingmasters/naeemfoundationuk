@@ -73,24 +73,29 @@
 @section('content')
 
     {{-- ===================== HERO SLIDER ===================== --}}
-    {{-- Phones/tablets: each slide opens with its photo, full width at its own
-         aspect ratio so nothing is cropped — the phone-specific upload when a
-         slide has one, else the wide desktop photo. Text sits on a navy band
-         beneath. The top padding clears the fixed 116px header. Desktop (lg)
-         keeps the full-bleed photo with the text laid over it. --}}
-    <section class="group relative overflow-hidden bg-navy pt-[116px] lg:bg-transparent lg:pt-0" data-carousel="hero">
+    {{-- Full-bleed photo with the heading and button laid over it, on every
+         screen size. Phones use the slide's phone-specific upload when it has
+         one, and get a lighter tint — just enough at the top for the header
+         icons and at the bottom for the text. The slide's Image position
+         (Admin -> Hero Slides) picks which side of a wide photo stays in view. --}}
+    <section class="group relative overflow-hidden" data-carousel="hero">
         <div class="overflow-hidden">
             <div class="nf-track flex" data-track>
                 @foreach ($heroSlides as $slide)
-                    @php $phoneImage = asset(($slide->mobile_image ?? null) ?: $slide->image); @endphp
-                    <div class="relative w-full shrink-0 lg:h-[640px]" data-slide>
-                        <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="block h-auto w-full lg:hidden">
-                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="hidden h-full w-full object-cover lg:block {{ $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left' }}">
-                        {{-- Brand-tinted gradient for legible, professional contrast (desktop, where text sits on the photo) --}}
+                    @php
+                        $phoneImage = asset(($slide->mobile_image ?? null) ?: $slide->image);
+                        $slidePosition = $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left';
+                    @endphp
+                    <div class="relative h-[440px] w-full shrink-0 sm:h-[520px] lg:h-[640px]" data-slide>
+                        <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover lg:hidden {{ $slidePosition }}">
+                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="hidden h-full w-full object-cover lg:block {{ $slidePosition }}">
+                        {{-- Phones: light tint, darker only behind the header icons and the text --}}
+                        <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.45),rgba(18,45,60,0)_32%,rgba(18,45,60,0)_45%,rgba(18,45,60,0.85))] lg:hidden"></div>
+                        {{-- Brand-tinted gradient for legible, professional contrast (desktop) --}}
                         <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent lg:block"></div>
                         <div class="absolute inset-0 hidden bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent lg:block"></div>
 
-                        <div class="nf-container pb-10 pt-5 sm:pb-12 lg:absolute lg:inset-0 lg:flex lg:items-end lg:pb-24 lg:pt-0">
+                        <div class="nf-container absolute inset-0 flex items-end pb-12 sm:pb-16 lg:pb-24">
                             <div class="text-white lg:max-w-xl" data-hero-content>
                                 @if (!empty($slide->subtitle))
                                     <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg lg:mb-4">
@@ -98,7 +103,7 @@
                                         {{ $slide->subtitle }}
                                     </span>
                                 @endif
-                                <h1 class="text-xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl lg:text-5xl lg:leading-[1.15]">
+                                <h1 class="text-2xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl lg:text-5xl lg:leading-[1.15]">
                                     {!! nl2br(e($slide->title)) !!}
                                 </h1>
                                 @if (!empty($slide->button_text))

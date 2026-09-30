@@ -77,7 +77,7 @@
                 @endif
                 <input id="mobile_image" name="mobile_image" type="file" accept="image/jpeg,image/png,image/webp"
                        class="block w-full text-sm text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-cream file:px-4 file:py-2 file:text-sm file:font-semibold file:text-navy-dark hover:file:bg-cream/70">
-                <p class="mt-1 text-xs text-gray-400">Shown on phones instead of the main image, always in full width with nothing cut off. A taller photo (e.g. 1200×900) shows bigger on phones.</p>
+                <p class="mt-1 text-xs text-gray-400">Shown on phones instead of the main image. The phone slide is roughly square-ish (about 9:10), so a photo around 1080×1200 fits it without trimming the sides.</p>
             </div>
 
             <div class="mt-5">
