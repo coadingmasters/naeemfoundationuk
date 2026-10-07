@@ -1,139 +1,90 @@
+@extends('emails.layout')
+
 @php
-    $brand = '#740a2e';
-    $navy = '#183b4f';
-    $navyDark = '#122d3c';
-    $cream = '#f4efe6';
-    $muted = '#6b7280';
-    $money = fn ($n) => ($symbol ?? '£') . number_format((float) $n, 2);
+    $money = fn ($n) => ($symbol ?? '£').number_format((float) $n, 2);
+    $label = 'font-size:12px; color:#6b7280; padding:7px 0;';
+    $value = 'font-size:13px; color:#122d3c; font-weight:600; padding:7px 0; text-align:right;';
 @endphp
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Your order confirmation</title>
-</head>
-<body style="margin:0; padding:0; background-color:{{ $cream }}; -webkit-font-smoothing:antialiased; font-family:'Segoe UI', Arial, Helvetica, sans-serif; color:{{ $navyDark }};">
 
-    <!-- Preheader (hidden) -->
-    <div style="display:none; max-height:0; overflow:hidden; opacity:0;">
-        Thank you for your order of {{ $money($subtotal) }}. Reference {{ $reference }}.
-    </div>
+@section('title', 'Your order confirmation')
+@section('preheader', 'Thank you for your order of '.$money($subtotal).'. Order '.$reference.'.')
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:{{ $cream }};">
+@section('content')
+    <tr>
+        <td style="padding-top:30px;">
+            <h1 style="margin:0; font-size:22px; line-height:1.3; font-weight:700; color:#122d3c;">Thank you for your order</h1>
+            <p style="margin:14px 0 0; font-size:14px; line-height:1.7; color:#374151;">
+                Dear {{ $name ?: 'Customer' }},
+            </p>
+            <p style="margin:10px 0 0; font-size:14px; line-height:1.7; color:#374151;">
+                Your payment has been received and your order is confirmed. Every purchase from our shop supports the
+                work of {{ config('app.name') }}. Please keep this email for your records.
+            </p>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-top:24px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf7f2; border:1px solid #ece7e1; border-radius:8px;">
+                <tr>
+                    <td style="padding:20px 22px;">
+                        <div style="font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#6b7280;">Order total</div>
+                        <div style="margin-top:4px; font-size:30px; font-weight:700; color:#740a2e;">{{ $money($subtotal) }}</div>
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px; border-top:1px solid #ece7e1;">
+                            <tr><td style="{{ $label }}">Order number</td><td style="{{ $value }}">{{ $reference }}</td></tr>
+                            <tr><td style="{{ $label }}">Date</td><td style="{{ $value }}">{{ now()->timezone('Europe/London')->format('j F Y') }}</td></tr>
+                            <tr><td style="{{ $label }}">Payment</td><td style="{{ $value }}">Paid via PayPal</td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-top:26px;">
+            <div style="font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#122d3c; padding-bottom:8px; border-bottom:2px solid #740a2e;">Order summary</div>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                @foreach ($items as $item)
+                    <tr>
+                        <td style="padding:11px 0; border-bottom:1px solid #f0ece6; font-size:14px; color:#122d3c;">
+                            {{ $item['name'] }}
+                            @if (($item['qty'] ?? 1) > 1)
+                                <span style="color:#6b7280;">&times; {{ $item['qty'] }}</span>
+                            @endif
+                        </td>
+                        <td style="padding:11px 0; border-bottom:1px solid #f0ece6; font-size:14px; text-align:right; color:#122d3c; white-space:nowrap;">
+                            {{ $money($item['line'] ?? (($item['price'] ?? 0) * ($item['qty'] ?? 1))) }}
+                        </td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td style="padding:12px 0 0; font-size:15px; font-weight:700; color:#122d3c;">Total paid</td>
+                    <td style="padding:12px 0 0; font-size:15px; font-weight:700; text-align:right; color:#740a2e;">{{ $money($subtotal) }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    @if ($address)
         <tr>
-            <td align="center" style="padding:28px 12px;">
-
-                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px; max-width:600px; background-color:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 6px 24px rgba(18,45,60,0.10);">
-
-                    <!-- Header -->
-                    <tr>
-                        <td style="background-color:{{ $navy }}; padding:28px 32px; text-align:center;">
-                            <div style="font-size:20px; font-weight:800; letter-spacing:0.5px; color:#ffffff;">{{ config('app.name') }}</div>
-                            <div style="margin-top:4px; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:#e9b9c6;">Building Hopes &amp; Futures</div>
-                        </td>
-                    </tr>
-
-                    <!-- Success band -->
-                    <tr>
-                        <td style="padding:32px 32px 8px; text-align:center;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" align="center">
-                                <tr>
-                                    <td style="width:56px; height:56px; background-color:{{ $brand }}; border-radius:9999px; text-align:center; vertical-align:middle; color:#ffffff; font-size:28px; line-height:56px;">&#10003;</td>
-                                </tr>
-                            </table>
-                            <h1 style="margin:18px 0 6px; font-size:24px; color:{{ $navyDark }};">Thank you for your order</h1>
-                            <p style="margin:0; font-size:15px; color:{{ $muted }};">
-                                {{ $name ?: 'Valued customer' }} — your order has been received and every purchase supports our work.
-                            </p>
-                        </td>
-                    </tr>
-
-                    <!-- Reference -->
-                    <tr>
-                        <td style="padding:22px 32px 4px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:{{ $cream }}; border-radius:12px;">
-                                <tr>
-                                    <td style="padding:18px 22px; text-align:center;">
-                                        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:{{ $muted }};">Order total</div>
-                                        <div style="margin-top:4px; font-size:32px; font-weight:800; color:{{ $brand }};">{{ $money($subtotal) }}</div>
-                                        <div style="margin-top:4px; font-size:12px; color:{{ $muted }};">Reference: <strong style="color:{{ $navyDark }};">{{ $reference }}</strong></div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-
-                    <!-- Items -->
-                    <tr>
-                        <td style="padding:22px 32px 6px;">
-                            <div style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:{{ $navy }}; border-bottom:2px solid {{ $brand }}; padding-bottom:8px;">Order summary</div>
-
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:6px;">
-                                @foreach ($items as $item)
-                                    <tr>
-                                        <td style="padding:10px 0; border-bottom:1px solid #eef2f5; font-size:14px; color:{{ $navyDark }};">
-                                            <strong>{{ $item['name'] }}</strong>
-                                            @if (($item['qty'] ?? 1) > 1)
-                                                <span style="color:{{ $muted }};">&times; {{ $item['qty'] }}</span>
-                                            @endif
-                                        </td>
-                                        <td style="padding:10px 0; border-bottom:1px solid #eef2f5; font-size:14px; text-align:right; font-weight:600; color:{{ $navyDark }};">
-                                            {{ $money($item['line'] ?? (($item['price'] ?? 0) * ($item['qty'] ?? 1))) }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-
-                                <tr>
-                                    <td style="padding:12px 0 0; font-size:16px; font-weight:800; color:{{ $navyDark }};">Total</td>
-                                    <td style="padding:12px 0 0; font-size:16px; font-weight:800; text-align:right; color:{{ $brand }};">{{ $money($subtotal) }}</td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-
-                    @if ($address)
-                        <tr>
-                            <td style="padding:18px 32px 0;">
-                                <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:{{ $muted }};">Delivery address</div>
-                                <p style="margin:4px 0 0; font-size:14px; line-height:1.5; color:{{ $navyDark }};">{!! nl2br(e($address)) !!}</p>
-                            </td>
-                        </tr>
-                    @endif
-
-                    <!-- Message -->
-                    <tr>
-                        <td style="padding:24px 32px 8px;">
-                            <p style="margin:0 0 12px; font-size:14px; line-height:1.65; color:{{ $navyDark }};">
-                                Our team will be in touch shortly to confirm your total (including delivery) and arrange secure
-                                payment. Please keep this email for your records.
-                            </p>
-                            <p style="margin:0; font-size:14px; line-height:1.65; color:{{ $navyDark }};">
-                                Any questions? Reply to this email or contact us at
-                                <a href="mailto:donate@naeemfoundation.co.uk" style="color:{{ $brand }}; font-weight:600;">donate@naeemfoundation.co.uk</a>.
-                            </p>
-                        </td>
-                    </tr>
-
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:24px 32px 30px;">
-                            <hr style="border:none; border-top:1px solid #eef2f5; margin:0 0 16px;">
-                            <p style="margin:0; font-size:12px; line-height:1.6; color:{{ $muted }};">
-                                {{ config('app.name') }} — a registered charity in the UK (No. 1199466).<br>
-                                2 Falcon Gate, Shire Park, Welwyn Garden City, AL7 1TW, United Kingdom.<br>
-                                +44 20 7078 8118
-                            </p>
-                            <p style="margin:12px 0 0; font-size:11px; color:{{ $muted }};">
-                                &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-
+            <td style="padding-top:22px;">
+                <div style="font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#122d3c;">Delivery address</div>
+                <p style="margin:6px 0 0; font-size:14px; line-height:1.6; color:#374151;">{!! nl2br(e($address)) !!}</p>
             </td>
         </tr>
-    </table>
-</body>
-</html>
+    @endif
+
+    <tr>
+        <td style="padding-top:26px;">
+            <p style="margin:0; font-size:14px; line-height:1.7; color:#374151;">
+                Our team will be in touch to arrange delivery. If you have any questions, simply reply to this email or contact us at
+                <a href="mailto:{{ config('contact.email') }}" style="color:#740a2e; font-weight:600; text-decoration:none;">{{ config('contact.email') }}</a>.
+            </p>
+            <p style="margin:20px 0 0; font-size:14px; line-height:1.6; color:#374151;">
+                With thanks,<br>
+                <strong style="color:#122d3c;">The {{ config('app.name') }} Team</strong>
+            </p>
+        </td>
+    </tr>
+@endsection
