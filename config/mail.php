@@ -115,4 +115,16 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Owner Notifications
+    |--------------------------------------------------------------------------
+    |
+    | Who is told about every new donation and shop order. Comma-separated
+    | in MAIL_NOTIFY_ADDRESS to send to more than one inbox.
+    |
+    */
+
+    'notify' => array_values(array_filter(array_map('trim', explode(',', (string) env('MAIL_NOTIFY_ADDRESS', 'donate@naeemfoundation.co.uk'))))),
+
 ];

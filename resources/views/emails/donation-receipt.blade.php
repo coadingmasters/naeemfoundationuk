@@ -80,8 +80,8 @@
                                             @if (($item['qty'] ?? 1) > 1)
                                                 <span style="color:{{ $muted }};">&times; {{ $item['qty'] }}</span>
                                             @endif
-                                            @if (($item['frequency'] ?? 'one-off') === 'monthly')
-                                                <span style="color:{{ $brand }}; font-size:12px;"> / monthly</span>
+                                            @if (in_array($item['frequency'] ?? 'one-off', ['daily', 'weekly', 'monthly', 'yearly'], true))
+                                                <span style="color:{{ $brand }}; font-size:12px;"> / {{ $item['frequency'] }}</span>
                                             @endif
                                         </td>
                                         <td style="padding:10px 0; border-bottom:1px solid #eef2f5; font-size:14px; text-align:right; font-weight:600; color:{{ $navyDark }};">

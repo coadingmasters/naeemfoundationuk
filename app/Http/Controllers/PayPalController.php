@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Mail\DonationReceipt;
+use App\Mail\NewDonationAlert;
+use App\Mail\NewOrderAlert;
 use App\Mail\OrderReceipt;
 use App\Models\Donation;
 use App\Models\Order;
@@ -12,6 +14,7 @@ use App\Support\DonationCart;
 use App\Support\ProductCart;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
@@ -143,6 +146,7 @@ class PayPalController extends Controller
         }
 
         $this->sendDonationReceipt($donation, $summary, (string) $pending['currency']);
+        $this->notifyOwnerOfDonation($donation, $summary, (string) $pending['currency'], (string) $capture['capture_id'], false);
 
         // Paid — only now is it safe to empty the basket.
         DonationCart::clear();
@@ -252,7 +256,7 @@ class PayPalController extends Controller
                         'payment_provider' => 'paypal',
                         'subscription_id' => $subscriptionId,
                         'subscription_status' => $status,
-                        'next_billing_at' => $nextBilling ? \Illuminate\Support\Carbon::parse($nextBilling) : null,
+                        'next_billing_at' => $nextBilling ? Carbon::parse($nextBilling) : null,
                         'paid_at' => now(),
                     ])
                     ->save();
@@ -262,6 +266,7 @@ class PayPalController extends Controller
         }
 
         $this->sendDonationReceipt($donation, $summary, (string) $pending['currency']);
+        $this->notifyOwnerOfDonation($donation, $summary, (string) $pending['currency'], $subscriptionId, true);
 
         DonationCart::clear();
         session()->forget(['donation', 'donation_consent']);
@@ -412,6 +417,22 @@ class PayPalController extends Controller
             // Never block a paid order on a mail failure.
         }
 
+        if ($notify = config('mail.notify')) {
+            try {
+                Mail::to($notify)->send(new NewOrderAlert(
+                    reference: $reference,
+                    details: $details,
+                    items: $orderItems,
+                    subtotal: (float) $pending['total'],
+                    currency: (string) $pending['currency'],
+                    symbol: $symbol,
+                    paymentId: (string) $capture['capture_id'],
+                ));
+            } catch (Throwable $e) {
+                Log::error('Shop owner notification failed', ['reference' => $reference, 'error' => $e->getMessage()]);
+            }
+        }
+
         ProductCart::clear();
         session()->forget(['shop.details', 'shop.pending_payment', 'shop.reference']);
 
@@ -480,7 +501,7 @@ class PayPalController extends Controller
                     'subscription_status' => $status ?: $donation->subscription_status,
                     // A cancelled/expired subscription is no longer an active gift.
                     'status' => in_array($status, ['CANCELLED', 'EXPIRED', 'SUSPENDED'], true) ? 'cancelled' : $donation->status,
-                    'next_billing_at' => $nextBilling ? \Illuminate\Support\Carbon::parse($nextBilling) : $donation->next_billing_at,
+                    'next_billing_at' => $nextBilling ? Carbon::parse($nextBilling) : $donation->next_billing_at,
                 ])->save();
             }
         } catch (Throwable $e) {
@@ -546,6 +567,33 @@ class PayPalController extends Controller
             ));
         } catch (Throwable $e) {
             // Mail transport unavailable — the donation still completes.
+        }
+    }
+
+    /** Let the charity know a donation has come in (separate from the donor's receipt). */
+    private function notifyOwnerOfDonation(array $donation, array $summary, string $currency, string $paymentId, bool $recurring): void
+    {
+        $notify = config('mail.notify');
+
+        if (! $notify) {
+            return;
+        }
+
+        try {
+            Mail::to($notify)->send(new NewDonationAlert(
+                reference: $donation['reference'],
+                details: $donation['details'] ?? [],
+                items: $summary['items'],
+                subtotal: (float) $summary['subtotal'],
+                fee: (float) $summary['fee'],
+                total: (float) $summary['total'],
+                currency: $currency,
+                currencySymbol: ['GBP' => '£', 'USD' => '$', 'CAD' => 'CA$'][$currency] ?? '£',
+                paymentId: $paymentId,
+                recurring: $recurring,
+            ));
+        } catch (Throwable $e) {
+            Log::error('Donation owner notification failed', ['reference' => $donation['reference'], 'error' => $e->getMessage()]);
         }
     }
 }
