@@ -81,6 +81,7 @@ return [
         'heading' => 'Schedule Givings',
         'items' => [
             ['title' => 'Ramadan Giving', 'route' => 'schedule-ramadan-giving'],
+            ['title' => 'Daily Giving', 'route' => 'schedule-daily-giving'],
             ['title' => 'Friday Giving', 'route' => 'schedule-friday-giving'],
             ['title' => 'Monthly Giving', 'route' => 'schedule-monthly-giving'],
             ['title' => 'Dhul Hajj Giving', 'route' => 'dhul-hajj', 'anchor' => '#donate'],

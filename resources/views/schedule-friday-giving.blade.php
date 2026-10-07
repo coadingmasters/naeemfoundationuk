@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    // One page, two schedules: every Friday (default) or every month.
+    // One page, three schedules: every Friday (default), every day or every month.
     $mode = $mode ?? 'friday';
     $copy = [
         'friday' => [
@@ -16,6 +16,19 @@
             'per' => 'Per Friday',
             'hint' => 'Charged automatically every Friday — cancel any time.',
             'note' => 'PayPal will automatically take this every Friday until you cancel — you can cancel any time.',
+        ],
+        'daily' => [
+            'page' => 'schedule-daily-giving',
+            'title' => 'Schedule Your Daily Giving',
+            'heading' => 'Automate your giving<br>every day',
+            'intro' => 'Charity given every day protects you every day. Set a small amount once and we&rsquo;ll take it daily — or give just once, whenever you&rsquo;re ready.',
+            'frequency' => 'daily',
+            'button' => 'Every Day',
+            'oneoff_label' => 'Daily Giving',
+            'recur_label' => 'Every Day',
+            'per' => 'Per day',
+            'hint' => 'Charged automatically every day — cancel any time.',
+            'note' => 'PayPal will automatically take this every day until you cancel — you can cancel any time.',
         ],
         'monthly' => [
             'page' => 'schedule-monthly-giving',
