@@ -19,7 +19,7 @@
                  'icon' => '<path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" stroke-linejoin="round"/><path d="M17 9h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2M8 9h6M8 13h6M8 17h3" stroke-linecap="round" stroke-linejoin="round"/>'],
             ],
         ],
-        ['label' => 'Givings', 'mega' => true, 'active' => request()->routeIs('give.*', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well', 'dhul-hajj', 'qurbani')],
+        ['label' => 'Givings', 'mega' => true, 'active' => request()->routeIs('give.*', 'schedule-ramadan-giving', 'schedule-friday-giving', 'zakat', 'zakat-ul-fitr', 'eid-gifts', 'ramadan-food-packs', 'fidya', 'sadaqah', 'sehri-iftar', 'water-well', 'dhul-hajj', 'qurbani')],
         // Hidden for now (not removed) — restore by uncommenting this entry.
         // ['label' => 'Community Centre', 'url' => route('community-centre'), 'active' => request()->routeIs('community-centre')],
         ['label' => 'Zakat Calculator', 'url' => route('zakat-calculator'), 'active' => request()->routeIs('zakat-calculator')],
@@ -40,7 +40,7 @@
     ];
 
     // Resolve a giving menu item to its URL (dedicated route or auto placeholder).
-    $givingUrl = fn ($item) => ! empty($item['route']) ? route($item['route']) : route('give.'.$item['slug']);
+    $givingUrl = fn ($item) => (! empty($item['route']) ? route($item['route']) : route('give.'.$item['slug'])).($item['anchor'] ?? '');
 
     // Giving mega-menu link columns (Projects, Appeals, Islamic Giving, Ramadan, Qurbani).
     $megaColumns = [
@@ -48,7 +48,9 @@
         ['heading' => config('giving.appeals.heading'), 'items' => config('giving.appeals.items')],
         ['heading' => config('giving.islamic.heading'), 'items' => config('giving.islamic.items')],
         ['heading' => config('giving.ramadan.heading'), 'items' => config('giving.ramadan.items')],
-        ['heading' => config('giving.qurbani.heading'), 'items' => config('giving.qurbani.items')],
+        // Qurbani is short, so Schedule Givings stacks underneath it in the same column.
+        ['heading' => config('giving.qurbani.heading'), 'items' => config('giving.qurbani.items'),
+         'sub' => ['heading' => config('giving.schedule.heading'), 'items' => config('giving.schedule.items')]],
     ];
     $megaPromo = [
         'image' => 'images/givngdropdown.jpeg',
@@ -156,6 +158,17 @@
                                                     </a>
                                                 @endforeach
                                             </div>
+                                            @if (! empty($col['sub']))
+                                                <span class="nf-mega__head mt-6">{{ $col['sub']['heading'] }}</span>
+                                                <div class="nf-mega__list">
+                                                    @foreach ($col['sub']['items'] as $g)
+                                                        <a href="{{ $givingUrl($g) }}" class="nf-mega__item">
+                                                            <span class="flex-1 leading-tight">{{ $g['title'] }}</span>
+                                                            {!! $arrowSvg !!}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                     @endforeach
 
@@ -276,6 +289,12 @@
                                     @foreach ($col['items'] as $g)
                                         <a href="{{ $givingUrl($g) }}" class="nf-drawer__sub">{{ $g['title'] }}</a>
                                     @endforeach
+                                    @if (! empty($col['sub']))
+                                        <p class="nf-drawer__group">{{ $col['sub']['heading'] }}</p>
+                                        @foreach ($col['sub']['items'] as $g)
+                                            <a href="{{ $givingUrl($g) }}" class="nf-drawer__sub">{{ $g['title'] }}</a>
+                                        @endforeach
+                                    @endif
                                 @endforeach
                             @else
                                 @foreach ($item['children'] as $child)
