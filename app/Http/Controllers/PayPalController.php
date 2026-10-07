@@ -415,6 +415,7 @@ class PayPalController extends Controller
             ));
         } catch (Throwable $e) {
             // Never block a paid order on a mail failure.
+            Log::error('Shop order receipt email failed', ['reference' => $reference, 'error' => $e->getMessage()]);
         }
 
         if ($notify = config('mail.notify')) {
@@ -567,6 +568,7 @@ class PayPalController extends Controller
             ));
         } catch (Throwable $e) {
             // Mail transport unavailable — the donation still completes.
+            Log::error('Donation receipt email failed', ['reference' => $donation['reference'], 'error' => $e->getMessage()]);
         }
     }
 
