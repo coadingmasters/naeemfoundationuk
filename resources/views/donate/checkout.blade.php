@@ -50,8 +50,8 @@
                                     <h3 class="truncate text-base font-bold text-navy-dark">{{ $item['cause'] }}</h3>
                                     <p class="text-xs text-gray-500">
                                         {{ money($item['amount']) }} each
-                                        @if (($item['frequency'] ?? 'one-off') === 'monthly')
-                                            <span class="font-semibold text-brand">/ monthly</span>
+                                        @if (in_array($item['frequency'] ?? 'one-off', ['daily', 'weekly', 'monthly', 'yearly'], true))
+                                            <span class="font-semibold text-brand">/ {{ $item['frequency'] }}</span>
                                         @endif
                                     </p>
 

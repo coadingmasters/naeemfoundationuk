@@ -37,8 +37,8 @@
                             <p class="truncate text-sm font-bold text-navy-dark">{{ $item['cause'] }}</p>
                             <p class="text-xs text-gray-500">
                                 {{ money($item['amount']) }} each
-                                @if (($item['frequency'] ?? 'one-off') === 'monthly')
-                                    <span class="font-semibold text-brand">/ monthly</span>
+                                @if (in_array($item['frequency'] ?? 'one-off', ['daily', 'weekly', 'monthly', 'yearly'], true))
+                                    <span class="font-semibold text-brand">/ {{ $item['frequency'] }}</span>
                                 @endif
                             </p>
                             <div class="mt-1.5 flex items-center justify-between gap-2">
