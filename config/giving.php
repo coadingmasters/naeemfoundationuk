@@ -57,7 +57,6 @@ return [
         'heading' => 'Ramadan Giving',
         'items' => [
             ['title' => 'Ramadan Calendar', 'route' => 'ramadan-calendar'],
-            ['title' => 'Schedule Your Ramadan Giving', 'route' => 'schedule-ramadan-giving'],
             ['title' => 'Ramadan Food Bags', 'route' => 'ramadan-food-packs'],
             ['title' => 'Seher & Iftar', 'route' => 'sehri-iftar'],
             ['title' => 'Fidya', 'route' => 'fidya'],
@@ -81,10 +80,10 @@ return [
     'schedule' => [
         'heading' => 'Schedule Givings',
         'items' => [
-            ['title' => 'Schedule Your Ramadan Giving', 'route' => 'schedule-ramadan-giving'],
-            ['title' => 'Schedule Your Friday Giving', 'route' => 'schedule-friday-giving'],
-            ['title' => 'Schedule Your Monthly Giving', 'route' => 'schedule-monthly-giving'],
-            ['title' => 'Schedule Your Dhul Hajj Giving', 'route' => 'dhul-hajj', 'anchor' => '#donate'],
+            ['title' => 'Ramadan Giving', 'route' => 'schedule-ramadan-giving'],
+            ['title' => 'Friday Giving', 'route' => 'schedule-friday-giving'],
+            ['title' => 'Monthly Giving', 'route' => 'schedule-monthly-giving'],
+            ['title' => 'Dhul Hajj Giving', 'route' => 'dhul-hajj', 'anchor' => '#donate'],
         ],
     ],
 
