@@ -1,6 +1,39 @@
 @extends('layouts.app')
 
-@section('title', 'Schedule Your Friday Giving — ' . config('app.name'))
+@php
+    // One page, two schedules: every Friday (default) or every month.
+    $mode = $mode ?? 'friday';
+    $copy = [
+        'friday' => [
+            'page' => 'schedule-friday-giving',
+            'title' => 'Schedule Your Friday Giving',
+            'heading' => 'Automate your giving<br>every Friday',
+            'intro' => 'Jumu&rsquo;ah is the most blessed day of the week for charity. Set your amount once and we&rsquo;ll take care of the rest — or give just once, whenever you&rsquo;re ready.',
+            'frequency' => 'weekly',
+            'button' => 'Every Friday',
+            'oneoff_label' => 'Friday Giving',
+            'recur_label' => 'Every Friday',
+            'per' => 'Per Friday',
+            'hint' => 'Charged automatically every Friday — cancel any time.',
+            'note' => 'PayPal will automatically take this every Friday until you cancel — you can cancel any time.',
+        ],
+        'monthly' => [
+            'page' => 'schedule-monthly-giving',
+            'title' => 'Schedule Your Monthly Giving',
+            'heading' => 'Automate your giving<br>every month',
+            'intro' => 'Regular giving is beloved to Allah, even if it is small. Set your amount once and we&rsquo;ll take it each month — or give just once, whenever you&rsquo;re ready.',
+            'frequency' => 'monthly',
+            'button' => 'Every Month',
+            'oneoff_label' => 'Monthly Giving',
+            'recur_label' => 'Every Month',
+            'per' => 'Per month',
+            'hint' => 'Charged automatically every month — cancel any time.',
+            'note' => 'PayPal will automatically take this every month until you cancel — you can cancel any time.',
+        ],
+    ][$mode];
+@endphp
+
+@section('title', $copy['title'] . ' — ' . config('app.name'))
 
 {{-- Light hero → keep the header solid. --}}
 @section('header-solid', 'yes')
@@ -14,8 +47,8 @@
 
     // Banner photo — admin-managed (Admin -> Hero Banners), falls back to the
     // built-in default when no override is set.
-    $heroImage = \App\Support\PageHeroes::resolve('schedule-friday-giving', 'images/givngdropdown.jpeg');
-    $mobileHeroImage = \App\Support\PageHeroes::resolveMobile('schedule-friday-giving');
+    $heroImage = \App\Support\PageHeroes::resolve($copy['page'], 'images/givngdropdown.jpeg');
+    $mobileHeroImage = \App\Support\PageHeroes::resolveMobile($copy['page']);
 
     // Cause icons (single-path SVGs) — same set as the Ramadan scheduler.
     $causeIcons = [
@@ -35,11 +68,10 @@
                 {{-- Text --}}
                 <div>
                     <h1 class="text-4xl font-extrabold leading-[1.1] text-brand sm:text-5xl lg:text-6xl">
-                        Automate your giving<br>every Friday
+                        {!! $copy['heading'] !!}
                     </h1>
                     <p class="mt-6 max-w-md text-base leading-relaxed text-gray-600">
-                        Jumu&rsquo;ah is the most blessed day of the week for charity. Set your amount once and
-                        we&rsquo;ll take care of the rest — or give just once, whenever you&rsquo;re ready.
+                        {!! $copy['intro'] !!}
                     </p>
                 </div>
 
@@ -61,11 +93,13 @@
         <div class="nf-container">
 
             <form method="POST" action="{{ route('donate.add') }}" data-friday
+                  data-fg-oneoff-label="{{ $copy['oneoff_label'] }}" data-fg-recur-label="{{ $copy['recur_label'] }}"
+                  data-fg-per="{{ $copy['per'] }}" data-fg-hint="{{ $copy['hint'] }}"
                   class="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
                 @csrf
                 <input type="hidden" name="frequency" data-fg-frequency-input value="one-off">
                 <input type="hidden" name="image" value="images/changinslives2.jpg">
-                <input type="hidden" name="cause" data-fg-cause-input value="{{ $defaultCause }} (Friday Giving)">
+                <input type="hidden" name="cause" data-fg-cause-input value="{{ $defaultCause }} ({{ $copy['oneoff_label'] }})">
                 <input type="hidden" name="amount" data-fg-amount-input value="{{ $defaultAmount }}">
 
                 {{-- ================= LEFT ================= --}}
@@ -82,12 +116,12 @@
                         </div>
                     </div>
 
-                    {{-- One-off vs every Friday --}}
+                    {{-- One-off vs recurring --}}
                     <div>
                         <h2 class="text-sm font-bold text-navy-dark">How would you like to give?</h2>
                         <div class="mt-3 grid grid-cols-2 gap-2">
                             <button type="button" data-fg-freq="one-off" class="nf-rg-option w-full is-selected">One-Off</button>
-                            <button type="button" data-fg-freq="weekly" class="nf-rg-option w-full">Every Friday</button>
+                            <button type="button" data-fg-freq="{{ $copy['frequency'] }}" class="nf-rg-option w-full">{{ $copy['button'] }}</button>
                         </div>
                         <p class="mt-2 text-xs leading-relaxed text-gray-500" data-fg-freq-hint>
                             Charged once as a single payment.
@@ -146,7 +180,7 @@
                         <p class="text-xl font-extrabold text-brand" data-fg-total>{{ region('symbol') }}0.00</p>
                     </div>
                     <p class="mt-2 hidden text-xs leading-relaxed text-gray-500" data-fg-recur-note>
-                        PayPal will automatically take this every Friday until you cancel — you can cancel any time.
+                        {{ $copy['note'] }}
                     </p>
 
                     {{-- Continue --}}

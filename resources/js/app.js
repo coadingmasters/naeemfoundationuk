@@ -385,6 +385,14 @@ function setupFridayScheduler() {
     const causeInput = root.querySelector('[data-fg-cause-input]');
     const submit = root.querySelector('[data-fg-submit]');
 
+    // Wording differs between the Friday and monthly versions of the page.
+    const labels = {
+        oneOff: root.dataset.fgOneoffLabel || 'Friday Giving',
+        recur: root.dataset.fgRecurLabel || 'Every Friday',
+        per: root.dataset.fgPer || 'Per Friday',
+        hint: root.dataset.fgHint || 'Charged automatically every Friday — cancel any time.',
+    };
+
     let amount = Number(custom?.value) || 0;
     let freq = 'one-off';
     let cause = causeBtns.find((b) => b.classList.contains('is-selected'))?.dataset.fgCause ?? '';
@@ -393,14 +401,14 @@ function setupFridayScheduler() {
 
     const render = () => {
         if (totalEl) totalEl.textContent = money(amount);
-        if (totalLabelEl) totalLabelEl.textContent = freq === 'one-off' ? 'Total' : 'Per Friday';
+        if (totalLabelEl) totalLabelEl.textContent = freq === 'one-off' ? 'Total' : labels.per;
         if (recurNoteEl) recurNoteEl.classList.toggle('hidden', freq === 'one-off');
         if (amountInput) amountInput.value = amount.toFixed(2);
         if (frequencyInput) frequencyInput.value = freq;
         if (causeInput) {
             causeInput.value = freq === 'one-off'
-                ? `${cause} (Friday Giving)`
-                : `${cause} (Every Friday)`;
+                ? `${cause} (${labels.oneOff})`
+                : `${cause} (${labels.recur})`;
         }
         if (submit) submit.disabled = !(amount > 0);
 
@@ -414,7 +422,7 @@ function setupFridayScheduler() {
             if (freqHintEl) {
                 freqHintEl.textContent = freq === 'one-off'
                     ? 'Charged once as a single payment.'
-                    : 'Charged automatically every Friday — cancel any time.';
+                    : labels.hint;
             }
             render();
         });
