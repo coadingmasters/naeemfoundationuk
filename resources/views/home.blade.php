@@ -42,6 +42,12 @@
         });
     };
 
+    // Banner mode when most slides are very wide banners: the slider then takes
+    // their shape (the typical banner ratio) instead of a fixed height.
+    $slideRatios = $heroSlides->map(fn ($s) => $imageRatio($s->image ?? null))->filter();
+    $bannerHero = $slideRatios->isNotEmpty() && $slideRatios->filter(fn ($r) => $r > 2.6)->count() * 2 > $slideRatios->count();
+    $heroRatio = $bannerHero ? round($slideRatios->filter(fn ($r) => $r > 2.6)->median(), 4) : null;
+
     // Latest Appeals are managed in the admin dashboard, per region. Empty regions
     // simply hide the section — no default fallback.
     $appeals = ($appeals ?? collect());
@@ -85,99 +91,117 @@
     ];
 @endphp
 
+{{-- Banner slides start below a solid header so it never covers the picture. --}}
+@if ($bannerHero)
+    @section('header-solid', 'yes')
+@endif
+
 @section('content')
 
     {{-- ===================== HERO SLIDER ===================== --}}
-    {{-- Normal photos fill the hero with the heading and button laid over them.
-         Very wide banners (e.g. 1600×375) can't fill it without cutting off
-         their sides, so they're shown whole between the header and the text,
-         on a soft blurred copy of themselves. Phones use the slide's phone
-         upload when it has one; Image position (Admin -> Hero Slides) picks
-         which side of a cropped photo stays in view. --}}
-    <section class="group relative overflow-hidden" data-carousel="hero">
-        <div class="overflow-hidden">
-            <div class="nf-track flex" data-track>
-                @foreach ($heroSlides as $slide)
-                    @php
-                        $phonePath = ($slide->mobile_image ?? null) ?: $slide->image;
-                        $phoneImage = asset($phonePath);
-                        $slidePosition = $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left';
-                        // Wider than the hero box by a long way -> show whole (banner mode).
-                        $bannerPhone = ($imageRatio($phonePath) ?? 1) > 1.6;
-                        $bannerDesktop = ($imageRatio($slide->image) ?? 1) > 2.6;
-                    @endphp
-                    <div class="relative h-[440px] w-full shrink-0 sm:h-[520px] lg:h-[640px]" data-slide>
-                        {{-- Phones & tablets --}}
-                        @if ($bannerPhone)
-                            <div class="absolute inset-0 overflow-hidden lg:hidden">
-                                <img src="{{ $phoneImage }}" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full scale-125 object-cover blur-2xl">
-                                <div class="absolute inset-0 bg-navy-dark/55"></div>
-                                <div class="absolute inset-x-0 top-[116px] bottom-[170px] flex items-center justify-center sm:bottom-[150px]">
-                                    <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-contain">
-                                </div>
-                            </div>
-                        @else
-                            <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover lg:hidden {{ $slidePosition }}">
-                            {{-- Light tint, darker only behind the header icons and the text --}}
-                            <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.45),rgba(18,45,60,0)_32%,rgba(18,45,60,0)_45%,rgba(18,45,60,0.85))] lg:hidden"></div>
-                        @endif
-
-                        {{-- Desktop --}}
-                        @if ($bannerDesktop)
-                            <div class="absolute inset-0 hidden overflow-hidden lg:block">
-                                <img src="{{ asset($slide->image) }}" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl">
-                                <div class="absolute inset-0 bg-navy-dark/60"></div>
-                                <div class="absolute inset-x-0 top-[132px] bottom-[150px] flex items-center justify-center">
-                                    <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-contain">
-                                </div>
-                            </div>
-                        @else
-                            <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="hidden h-full w-full object-cover lg:block {{ $slidePosition }}">
-                            {{-- Brand-tinted gradient for legible, professional contrast --}}
-                            <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent lg:block"></div>
-                            <div class="absolute inset-0 hidden bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent lg:block"></div>
-                        @endif
-
-                        {{-- Banner mode on desktop: heading and button sit side by side under the banner. --}}
-                        <div class="nf-container absolute inset-0 flex items-end pb-12 sm:pb-16 {{ $bannerDesktop ? 'lg:pb-14' : 'lg:pb-24' }}">
-                            <div class="text-white {{ $bannerDesktop ? 'lg:flex lg:w-full lg:items-center lg:justify-between lg:gap-8' : 'lg:max-w-xl' }}" data-hero-content>
+    @if ($bannerHero)
+        {{-- Wide banner uploads (e.g. 1600×375): the slider takes the banner's own
+             shape so every image shows whole and edge to edge — nothing cropped,
+             no empty bands. The header sits above it (solid) so it never covers
+             the picture, and each slide's heading and button sit in a strip
+             underneath, clear of any text designed into the banner. --}}
+        <section class="group relative overflow-hidden bg-white" data-carousel="hero">
+            <div class="overflow-hidden">
+                <div class="nf-track flex" data-track>
+                    @foreach ($heroSlides as $slide)
+                        <div class="w-full shrink-0" data-slide>
+                            <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}"
+                                 class="block w-full object-cover" style="aspect-ratio: {{ $heroRatio }};">
+                            <div class="nf-container flex flex-col items-start gap-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:py-6" data-hero-content>
                                 <div>
                                     @if (!empty($slide->subtitle))
-                                        <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg lg:mb-4 {{ $bannerDesktop ? 'lg:mb-2' : '' }}">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                                        <span class="mb-2 inline-flex items-center gap-2 rounded-full bg-brand px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
                                             {{ $slide->subtitle }}
                                         </span>
                                     @endif
-                                    <h1 class="text-2xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl {{ $bannerDesktop ? 'lg:text-3xl' : 'lg:text-5xl lg:leading-[1.15]' }}">
+                                    <h1 class="text-xl font-extrabold leading-tight text-navy-dark [text-wrap:balance] sm:text-2xl lg:text-3xl">
                                         {!! nl2br(e($slide->title)) !!}
                                     </h1>
                                 </div>
                                 @if (!empty($slide->button_text))
-                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-4 px-5 py-2.5 text-sm shadow-xl lg:px-6 lg:py-3 lg:text-base {{ $bannerDesktop ? 'lg:mt-0 lg:shrink-0' : 'lg:mt-7' }}">
+                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand shrink-0 px-5 py-2.5 text-sm shadow-md lg:px-6 lg:py-3 lg:text-base">
                                         {{ $slide->button_text }}
                                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </a>
                                 @endif
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
-        </div>
 
-        {{-- Arrows (fade in on hover) --}}
-        <button type="button" data-prev aria-label="Previous slide"
-                class="absolute left-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur transition hover:bg-brand focus:opacity-100 group-hover:opacity-100 sm:left-6">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button type="button" data-next aria-label="Next slide"
-                class="absolute right-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur transition hover:bg-brand focus:opacity-100 group-hover:opacity-100 sm:right-6">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+            {{-- Arrows and dots sit on the banner itself (its height is 100vw ÷ ratio). --}}
+            <button type="button" data-prev aria-label="Previous slide" style="top: calc(100vw / {{ $heroRatio }} / 2);"
+                    class="absolute left-3 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/25 text-white opacity-0 backdrop-blur transition hover:bg-brand focus:opacity-100 group-hover:opacity-100 sm:left-6">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" data-next aria-label="Next slide" style="top: calc(100vw / {{ $heroRatio }} / 2);"
+                    class="absolute right-3 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/25 text-white opacity-0 backdrop-blur transition hover:bg-brand focus:opacity-100 group-hover:opacity-100 sm:right-6">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="absolute inset-x-0 flex justify-center gap-2 [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.6))]" style="top: calc(100vw / {{ $heroRatio }} - 1.5rem);" data-dots></div>
+        </section>
+    @else
+        <section class="group relative overflow-hidden" data-carousel="hero">
+            <div class="overflow-hidden">
+                <div class="nf-track flex" data-track>
+                    @foreach ($heroSlides as $slide)
+                        @php
+                            $phoneImage = asset(($slide->mobile_image ?? null) ?: $slide->image);
+                            $slidePosition = $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left';
+                        @endphp
+                        <div class="relative h-[440px] w-full shrink-0 sm:h-[520px] lg:h-[640px]" data-slide>
+                            <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover lg:hidden {{ $slidePosition }}">
+                            <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="hidden h-full w-full object-cover lg:block {{ $slidePosition }}">
+                            {{-- Phones: light tint, darker only behind the header icons and the text --}}
+                            <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.45),rgba(18,45,60,0)_32%,rgba(18,45,60,0)_45%,rgba(18,45,60,0.85))] lg:hidden"></div>
+                            {{-- Brand-tinted gradient for legible, professional contrast (desktop) --}}
+                            <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent lg:block"></div>
+                            <div class="absolute inset-0 hidden bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent lg:block"></div>
 
-        {{-- Dots --}}
-        <div class="absolute inset-x-0 bottom-5 flex justify-center gap-2" data-dots></div>
-    </section>
+                            <div class="nf-container absolute inset-0 flex items-end pb-12 sm:pb-16 lg:pb-24">
+                                <div class="text-white lg:max-w-xl" data-hero-content>
+                                    @if (!empty($slide->subtitle))
+                                        <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg lg:mb-4">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                                            {{ $slide->subtitle }}
+                                        </span>
+                                    @endif
+                                    <h1 class="text-2xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl lg:text-5xl lg:leading-[1.15]">
+                                        {!! nl2br(e($slide->title)) !!}
+                                    </h1>
+                                    @if (!empty($slide->button_text))
+                                        <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-4 px-5 py-2.5 text-sm shadow-xl lg:mt-7 lg:px-6 lg:py-3 lg:text-base">
+                                            {{ $slide->button_text }}
+                                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Arrows (fade in on hover) --}}
+            <button type="button" data-prev aria-label="Previous slide"
+                    class="absolute left-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur transition hover:bg-brand focus:opacity-100 group-hover:opacity-100 sm:left-6">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" data-next aria-label="Next slide"
+                    class="absolute right-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur transition hover:bg-brand focus:opacity-100 group-hover:opacity-100 sm:right-6">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            {{-- Dots --}}
+            <div class="absolute inset-x-0 bottom-5 flex justify-center gap-2" data-dots></div>
+        </section>
+    @endif
 
     {{-- ===================== QUICK DONATE BAR (sticky, bottom) ===================== --}}
     <section class="nf-quickbar" data-quickbar>
