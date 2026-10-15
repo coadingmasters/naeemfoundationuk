@@ -85,6 +85,8 @@ Route::view('/hostel-for-students-orphans', 'hostel-for-students-orphans')->name
 Route::view('/clean-water', 'clean-water')->name('clean-water');
 Route::get('/orphans-sponsorships', [\App\Http\Controllers\OrphanController::class, 'index'])->name('orphans-sponsorships');
 Route::get('/orphans/{orphan}', [\App\Http\Controllers\OrphanController::class, 'show'])->name('orphans.show');
+// Students from the Binoria sponsorship API (see App\Services\SponsorStudents).
+Route::get('/sponsor-a-student/{id}', [\App\Http\Controllers\OrphanController::class, 'student'])->whereNumber('id')->name('sponsor-students.show');
 Route::view('/food-appeal', 'food-appeal')->name('food-appeal');
 Route::view('/widows', 'widows')->name('widows');
 Route::view('/sadaqah-jariyah', 'sadaqah-jariyah')->name('sadaqah-jariyah');

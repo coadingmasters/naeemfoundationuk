@@ -8,9 +8,19 @@
 
     $facts = array_filter([
         'DOB' => $orphan->dob,
+        'Age' => $orphan->age ?? null,
         'Location' => $orphan->location,
-        'Grade' => $orphan->grade,
+        ($orphan->student_id ?? null) ? 'Status' : 'Grade' => $orphan->grade,
     ]);
+
+    // Students from the Binoria API have no orphan record to tag the gift to, so
+    // their name and Binoria reference travel in the cause line instead — it
+    // shows on the basket, receipt, owner email and admin.
+    $studentRef = $orphan->student_id ?? null;
+    // One option per donation type, so Sadaqah / Zakat / Lillah is recorded too.
+    $panelCauses = $studentRef
+        ? array_map(fn ($type) => 'Sponsor '.\Illuminate\Support\Str::limit($orphan->name, 50, '').' (Ref '.$studentRef.') – '.$type, ['Sadaqah', 'Zakat', 'Lillah'])
+        : ['Sadaqah', 'Zakat', 'Lillah'];
 @endphp
 
 @section('content')
@@ -25,7 +35,7 @@
             <a href="{{ route('orphans-sponsorships') }}"
                class="nf-reveal inline-flex items-center gap-2 text-sm font-semibold text-white/70 transition hover:text-white">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                All orphans
+                {{ $studentRef ? 'All children' : 'All orphans' }}
             </a>
 
             <div class="mt-6 grid items-start gap-10 lg:grid-cols-[1fr_27rem] lg:gap-14">
@@ -74,7 +84,7 @@
                 <div class="nf-reveal" data-reveal-delay="120">
                     @include('partials.donate-panel', [
                         'panelTitle' => $orphan->name,
-                        'causes' => ['Sadaqah', 'Zakat', 'Lillah'],
+                        'causes' => $panelCauses,
                         'oneOffAmounts' => [20, 50, 100],
                         'monthlyDefault' => $monthly,
                         'yearlyDefault' => $monthly * 12,

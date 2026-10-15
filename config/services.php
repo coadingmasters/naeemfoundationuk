@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    // Jamia Binoria's student sponsorship API — feeds the "Sponsor an Orphan"
+    // cards (see App\Services\SponsorStudents).
+    'sponsor_api' => [
+        'url' => env('SPONSOR_API_URL', 'https://binoria.org/eNazimOnline'),
+        'key' => env('SPONSOR_API_KEY'),
+    ],
+
 ];

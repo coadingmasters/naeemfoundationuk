@@ -20,7 +20,7 @@
                     {{-- Clones are hidden from assistive tech, so keep them out of
                          the tab order too — a focusable child inside aria-hidden
                          is invalid and traps keyboard users on a duplicate. --}}
-                    <a href="{{ route('orphans.show', $orphan) }}" @if ($isClone) tabindex="-1" @endif
+                    <a href="{{ $orphan->url ?? route('orphans.show', $orphan) }}" @if ($isClone) tabindex="-1" @endif
                        class="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-xl hover:shadow-navy/10">
                         {{-- Portrait --}}
                         <div class="relative aspect-[4/5] overflow-hidden bg-gradient-to-b from-cream to-cream/50">
@@ -51,6 +51,9 @@
                                         <svg class="h-3.5 w-3.5 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4"/></svg>
                                         <span class="truncate">{{ $orphan->location }}</span>
                                     </p>
+                                @endif
+                                @if (! empty($orphan->age))
+                                    <p class="mt-1 text-xs text-gray-500">Age {{ $orphan->age }}</p>
                                 @endif
                             </div>
 
