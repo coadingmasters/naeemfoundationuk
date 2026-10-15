@@ -27,6 +27,21 @@
     // photo, so each slide picks its own crop anchor (Admin -> Hero Slides).
     $heroPositionClasses = ['left' => 'object-left', 'mid-left' => 'object-[25%_50%]', 'center' => 'object-center', 'mid-right' => 'object-[75%_50%]', 'right' => 'object-right'];
 
+    // Width ÷ height of an uploaded image (cached per file version), so very wide
+    // banners can be shown whole instead of cropped to fill the hero.
+    $imageRatio = function (?string $path): ?float {
+        $file = $path ? public_path($path) : null;
+        if (! $file || ! is_file($file)) {
+            return null;
+        }
+
+        return \Illuminate\Support\Facades\Cache::rememberForever('img-ratio:'.$path.':'.filemtime($file), function () use ($file) {
+            $size = @getimagesize($file);
+
+            return $size && $size[1] > 0 ? $size[0] / $size[1] : null;
+        });
+    };
+
     // Latest Appeals are managed in the admin dashboard, per region. Empty regions
     // simply hide the section — no default fallback.
     $appeals = ($appeals ?? collect());
@@ -73,41 +88,72 @@
 @section('content')
 
     {{-- ===================== HERO SLIDER ===================== --}}
-    {{-- Full-bleed photo with the heading and button laid over it, on every
-         screen size. Phones use the slide's phone-specific upload when it has
-         one, and get a lighter tint — just enough at the top for the header
-         icons and at the bottom for the text. The slide's Image position
-         (Admin -> Hero Slides) picks which side of a wide photo stays in view. --}}
+    {{-- Normal photos fill the hero with the heading and button laid over them.
+         Very wide banners (e.g. 1600×375) can't fill it without cutting off
+         their sides, so they're shown whole between the header and the text,
+         on a soft blurred copy of themselves. Phones use the slide's phone
+         upload when it has one; Image position (Admin -> Hero Slides) picks
+         which side of a cropped photo stays in view. --}}
     <section class="group relative overflow-hidden" data-carousel="hero">
         <div class="overflow-hidden">
             <div class="nf-track flex" data-track>
                 @foreach ($heroSlides as $slide)
                     @php
-                        $phoneImage = asset(($slide->mobile_image ?? null) ?: $slide->image);
+                        $phonePath = ($slide->mobile_image ?? null) ?: $slide->image;
+                        $phoneImage = asset($phonePath);
                         $slidePosition = $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left';
+                        // Wider than the hero box by a long way -> show whole (banner mode).
+                        $bannerPhone = ($imageRatio($phonePath) ?? 1) > 1.6;
+                        $bannerDesktop = ($imageRatio($slide->image) ?? 1) > 2.6;
                     @endphp
                     <div class="relative h-[440px] w-full shrink-0 sm:h-[520px] lg:h-[640px]" data-slide>
-                        <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover lg:hidden {{ $slidePosition }}">
-                        <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="hidden h-full w-full object-cover lg:block {{ $slidePosition }}">
-                        {{-- Phones: light tint, darker only behind the header icons and the text --}}
-                        <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.45),rgba(18,45,60,0)_32%,rgba(18,45,60,0)_45%,rgba(18,45,60,0.85))] lg:hidden"></div>
-                        {{-- Brand-tinted gradient for legible, professional contrast (desktop) --}}
-                        <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent lg:block"></div>
-                        <div class="absolute inset-0 hidden bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent lg:block"></div>
+                        {{-- Phones & tablets --}}
+                        @if ($bannerPhone)
+                            <div class="absolute inset-0 overflow-hidden lg:hidden">
+                                <img src="{{ $phoneImage }}" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full scale-125 object-cover blur-2xl">
+                                <div class="absolute inset-0 bg-navy-dark/55"></div>
+                                <div class="absolute inset-x-0 top-[116px] bottom-[170px] flex items-center justify-center sm:bottom-[150px]">
+                                    <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-contain">
+                                </div>
+                            </div>
+                        @else
+                            <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover lg:hidden {{ $slidePosition }}">
+                            {{-- Light tint, darker only behind the header icons and the text --}}
+                            <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.45),rgba(18,45,60,0)_32%,rgba(18,45,60,0)_45%,rgba(18,45,60,0.85))] lg:hidden"></div>
+                        @endif
 
-                        <div class="nf-container absolute inset-0 flex items-end pb-12 sm:pb-16 lg:pb-24">
-                            <div class="text-white lg:max-w-xl" data-hero-content>
-                                @if (!empty($slide->subtitle))
-                                    <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg lg:mb-4">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
-                                        {{ $slide->subtitle }}
-                                    </span>
-                                @endif
-                                <h1 class="text-2xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl lg:text-5xl lg:leading-[1.15]">
-                                    {!! nl2br(e($slide->title)) !!}
-                                </h1>
+                        {{-- Desktop --}}
+                        @if ($bannerDesktop)
+                            <div class="absolute inset-0 hidden overflow-hidden lg:block">
+                                <img src="{{ asset($slide->image) }}" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl">
+                                <div class="absolute inset-0 bg-navy-dark/60"></div>
+                                <div class="absolute inset-x-0 top-[132px] bottom-[150px] flex items-center justify-center">
+                                    <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-contain">
+                                </div>
+                            </div>
+                        @else
+                            <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="hidden h-full w-full object-cover lg:block {{ $slidePosition }}">
+                            {{-- Brand-tinted gradient for legible, professional contrast --}}
+                            <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent lg:block"></div>
+                            <div class="absolute inset-0 hidden bg-gradient-to-t from-navy-dark/60 via-transparent to-transparent lg:block"></div>
+                        @endif
+
+                        {{-- Banner mode on desktop: heading and button sit side by side under the banner. --}}
+                        <div class="nf-container absolute inset-0 flex items-end pb-12 sm:pb-16 {{ $bannerDesktop ? 'lg:pb-14' : 'lg:pb-24' }}">
+                            <div class="text-white {{ $bannerDesktop ? 'lg:flex lg:w-full lg:items-center lg:justify-between lg:gap-8' : 'lg:max-w-xl' }}" data-hero-content>
+                                <div>
+                                    @if (!empty($slide->subtitle))
+                                        <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg lg:mb-4 {{ $bannerDesktop ? 'lg:mb-2' : '' }}">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                                            {{ $slide->subtitle }}
+                                        </span>
+                                    @endif
+                                    <h1 class="text-2xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl {{ $bannerDesktop ? 'lg:text-3xl' : 'lg:text-5xl lg:leading-[1.15]' }}">
+                                        {!! nl2br(e($slide->title)) !!}
+                                    </h1>
+                                </div>
                                 @if (!empty($slide->button_text))
-                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-4 px-5 py-2.5 text-sm shadow-xl lg:mt-7 lg:px-6 lg:py-3 lg:text-base">
+                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-4 px-5 py-2.5 text-sm shadow-xl lg:px-6 lg:py-3 lg:text-base {{ $bannerDesktop ? 'lg:mt-0 lg:shrink-0' : 'lg:mt-7' }}">
                                         {{ $slide->button_text }}
                                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </a>
