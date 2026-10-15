@@ -109,22 +109,52 @@
             <div class="overflow-hidden">
                 <div class="nf-track flex" data-track>
                     @foreach ($heroSlides as $slide)
+                        @php
+                            // A title of just "." / "-" means "no heading" (designed banners carry their own text).
+                            $hasTitle = trim((string) $slide->title, " .-\t\n\r") !== '';
+                            $hasButton = ! empty($slide->button_text);
+                        @endphp
                         <div class="flex w-full shrink-0 flex-col" data-slide>
-                            <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}"
-                                 class="block w-full object-cover" style="aspect-ratio: {{ $heroRatio }};">
-                            <div class="nf-container flex flex-1 flex-col items-start justify-center gap-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:py-6" data-hero-content>
-                                <div>
-                                    @if (!empty($slide->subtitle))
-                                        <span class="mb-2 inline-flex items-center gap-2 rounded-full bg-brand px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
-                                            {{ $slide->subtitle }}
-                                        </span>
-                                    @endif
-                                    <h1 class="text-xl font-extrabold leading-tight text-navy-dark [text-wrap:balance] sm:text-2xl lg:text-3xl">
+                            <div class="relative">
+                                <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}"
+                                     class="block w-full object-cover" style="aspect-ratio: {{ $heroRatio }};">
+
+                                {{-- Desktop: heading and button over the photo's left side --}}
+                                @if ($hasTitle || $hasButton)
+                                    <div class="absolute inset-0 hidden bg-gradient-to-r from-navy-dark/80 via-navy-dark/30 to-transparent lg:block"></div>
+                                    <div class="nf-container absolute inset-0 hidden items-center lg:flex">
+                                        <div class="max-w-xl text-white">
+                                            @if (!empty($slide->subtitle))
+                                                <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg">
+                                                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                                                    {{ $slide->subtitle }}
+                                                </span>
+                                            @endif
+                                            @if ($hasTitle)
+                                                <h1 class="text-2xl font-extrabold leading-[1.15] text-white drop-shadow [text-wrap:balance] xl:text-4xl">
+                                                    {!! nl2br(e($slide->title)) !!}
+                                                </h1>
+                                            @endif
+                                            @if ($hasButton)
+                                                <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-5 px-6 py-3 text-base shadow-xl">
+                                                    {{ $slide->button_text }}
+                                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- Phones & tablets: the banner is too short to write on, so a compact row underneath --}}
+                            <div class="nf-container flex flex-1 items-center justify-between gap-4 py-3 lg:hidden" data-hero-content>
+                                @if ($hasTitle)
+                                    <h1 class="text-base font-extrabold leading-snug text-navy-dark [text-wrap:balance] sm:text-xl">
                                         {!! nl2br(e($slide->title)) !!}
                                     </h1>
-                                </div>
-                                @if (!empty($slide->button_text))
-                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand shrink-0 px-5 py-2.5 text-sm shadow-md lg:px-6 lg:py-3 lg:text-base">
+                                @endif
+                                @if ($hasButton)
+                                    <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand shrink-0 px-4 py-2 text-sm shadow-md">
                                         {{ $slide->button_text }}
                                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </a>
