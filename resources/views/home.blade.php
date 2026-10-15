@@ -109,10 +109,10 @@
             <div class="overflow-hidden">
                 <div class="nf-track flex" data-track>
                     @foreach ($heroSlides as $slide)
-                        <div class="w-full shrink-0" data-slide>
+                        <div class="flex w-full shrink-0 flex-col" data-slide>
                             <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}"
                                  class="block w-full object-cover" style="aspect-ratio: {{ $heroRatio }};">
-                            <div class="nf-container flex flex-col items-start gap-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:py-6" data-hero-content>
+                            <div class="nf-container flex flex-1 flex-col items-start justify-center gap-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:py-6" data-hero-content>
                                 <div>
                                     @if (!empty($slide->subtitle))
                                         <span class="mb-2 inline-flex items-center gap-2 rounded-full bg-brand px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
