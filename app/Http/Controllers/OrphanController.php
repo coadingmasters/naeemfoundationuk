@@ -20,16 +20,39 @@ class OrphanController extends Controller
     public function index(Request $request)
     {
         $students = $this->students->all();
+        $filters = null;
+        $countries = collect();
 
         if ($students !== null && $students->isNotEmpty()) {
+            // Filtered here rather than through the API's own filters: its
+            // fiscal_status filter errors and its search skips English names.
+            $filters = [
+                'q' => trim((string) $request->query('q', '')),
+                'country' => (string) $request->query('country', ''),
+                'status' => (string) $request->query('status', ''),
+            ];
+            $countries = $students->countBy('country')->sortKeys();
+
+            $matches = $students
+                ->when($filters['q'] !== '', function ($list) use ($filters) {
+                    $q = mb_strtolower($filters['q']);
+
+                    return $list->filter(fn ($s) => $s->id === $filters['q']
+                        || str_contains(mb_strtolower($s->name), $q)
+                        || str_contains(mb_strtolower($s->name_alt ?? ''), $q));
+                })
+                ->when($filters['country'] !== '', fn ($list) => $list->where('country', $filters['country']))
+                ->when(in_array($filters['status'], ['Needy', 'Zakat Eligible'], true), fn ($list) => $list->where('status', $filters['status']))
+                ->values();
+
             $page = LengthAwarePaginator::resolveCurrentPage();
-            $orphans = new LengthAwarePaginator(
-                $this->asCards($students->forPage($page, 12)),
-                $students->count(),
+            $orphans = (new LengthAwarePaginator(
+                $this->asCards($matches->forPage($page, 12)),
+                $matches->count(),
                 12,
                 $page,
                 ['path' => route('orphans-sponsorships')],
-            );
+            ))->appends(array_filter($filters));
         } else {
             $orphans = Orphan::active()->ordered()->paginate(12);
         }
@@ -39,7 +62,7 @@ class OrphanController extends Controller
             return view('partials.orphan-list', compact('orphans'));
         }
 
-        return view('orphans-sponsorships', compact('orphans'));
+        return view('orphans-sponsorships', compact('orphans', 'filters', 'countries'));
     }
 
     /** A single orphan's profile + a donation widget scoped to them. */

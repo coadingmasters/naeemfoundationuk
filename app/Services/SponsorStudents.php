@@ -21,9 +21,9 @@ use Throwable;
  */
 class SponsorStudents
 {
-    private const CACHE_KEY = 'sponsor-students';
+    private const CACHE_KEY = 'sponsor-students:v2';
 
-    private const STALE_KEY = 'sponsor-students:last-good';
+    private const STALE_KEY = 'sponsor-students:v2:last-good';
 
     /** Binoria's fiscal_status_id values. */
     private const STATUS = [1 => 'Wealthy', 2 => 'Needy', 3 => 'Zakat Eligible'];
@@ -112,6 +112,8 @@ class SponsorStudents
         return [
             'id' => (string) ($r['student_id'] ?? ''),
             'name' => trim(preg_replace('/\s+/', ' ', (string) $name)),
+            // Urdu name — only used so the site search also matches it.
+            'name_alt' => trim(preg_replace('/\s+/', ' ', (string) ($r['student_name'] ?? ''))),
             'country' => trim((string) ($r['country_name'] ?? '')),
             'flag' => (string) ($r['flag_emoji'] ?? ''),
             'age' => $age,

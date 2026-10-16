@@ -1,5 +1,10 @@
 {{-- Orphan cards grid + pagination. Rendered on first load AND returned on its
      own for AJAX page changes (see OrphanController + setupAjaxPagination). --}}
+@if ($orphans->isEmpty())
+    <p class="rounded-2xl border border-dashed border-gray-200 py-12 text-center text-sm text-gray-500">
+        No children match your search. Try another name, country or status.
+    </p>
+@endif
 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
     @foreach ($orphans as $orphan)
         <a href="{{ $orphan->url ?? route('orphans.show', $orphan) }}"

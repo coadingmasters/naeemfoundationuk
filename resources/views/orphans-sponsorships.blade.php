@@ -110,6 +110,42 @@
                 <h2 class="mt-2 text-2xl font-bold text-navy-dark sm:text-3xl">Children Waiting for a Sponsor</h2>
             </div>
 
+            {{-- Filters (only for the Binoria API list — the admin fallback has none) --}}
+            @if (! empty($filters))
+                @php $field = 'h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30'; @endphp
+                <form method="GET" action="{{ route('orphans-sponsorships') }}#orphans"
+                      class="mb-8 grid gap-3 rounded-2xl border border-gray-100 bg-cream/40 p-4 sm:grid-cols-2 lg:grid-cols-[1fr_14rem_12rem_auto] lg:items-end">
+                    <label class="block">
+                        <span class="mb-1 block text-xs font-semibold text-gray-600">Search</span>
+                        <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="Name or reference number" class="{{ $field }}">
+                    </label>
+                    <label class="block">
+                        <span class="mb-1 block text-xs font-semibold text-gray-600">Country</span>
+                        <select name="country" class="{{ $field }}" onchange="this.form.submit()">
+                            <option value="">All countries</option>
+                            @foreach ($countries as $country => $count)
+                                <option value="{{ $country }}" @selected($filters['country'] === $country)>{{ $country }} ({{ $count }})</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <label class="block">
+                        <span class="mb-1 block text-xs font-semibold text-gray-600">Status</span>
+                        <select name="status" class="{{ $field }}" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            @foreach (['Zakat Eligible', 'Needy'] as $status)
+                                <option value="{{ $status }}" @selected($filters['status'] === $status)>{{ $status }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <div class="flex gap-2 sm:col-span-2 lg:col-span-1">
+                        <button type="submit" class="btn-brand h-11 flex-1 justify-center px-5 text-sm lg:flex-none">Search</button>
+                        @if (array_filter($filters))
+                            <a href="{{ route('orphans-sponsorships') }}#orphans" class="grid h-11 place-items-center rounded-lg border border-gray-300 bg-white px-4 text-sm font-semibold text-navy transition hover:bg-gray-50">Clear</a>
+                        @endif
+                    </div>
+                </form>
+            @endif
+
             {{-- This container is swapped in place on page changes — no reload. --}}
             <div data-orphan-list>
                 @include('partials.orphan-list')
