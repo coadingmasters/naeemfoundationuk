@@ -31,7 +31,8 @@ class OrphanController extends Controller
                 'country' => (string) $request->query('country', ''),
                 'status' => (string) $request->query('status', ''),
             ];
-            $countries = $students->countBy('country')->sortKeys();
+            // Students whose country Binoria left blank can still be found, just not by country.
+            $countries = $students->filter(fn ($s) => $s->country !== '')->countBy('country')->sortKeys();
 
             $matches = $students
                 ->when($filters['q'] !== '', function ($list) use ($filters) {
@@ -99,6 +100,10 @@ class OrphanController extends Controller
             'grade' => $s->status,
             'location' => trim($s->flag.' '.$s->country),
             'age' => $s->age,
+            'gender' => $s->gender,
+            'is_orphan' => $s->orphan,
+            'country' => $s->country,
+            'flag' => $s->flag,
             'dob' => null,
             'story' => null,
             'monthly_amount' => null,

@@ -20,6 +20,9 @@
                     {{-- Clones are hidden from assistive tech, so keep them out of
                          the tab order too — a focusable child inside aria-hidden
                          is invalid and traps keyboard users on a duplicate. --}}
+                    @if (! empty($orphan->student_id))
+                        @include('partials.student-card', ['noTab' => $isClone])
+                    @else
                     <a href="{{ $orphan->url ?? route('orphans.show', $orphan) }}" @if ($isClone) tabindex="-1" @endif
                        class="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-xl hover:shadow-navy/10">
                         {{-- Portrait --}}
@@ -63,6 +66,7 @@
                             </span>
                         </div>
                     </a>
+                    @endif
                 </div>
             @endforeach
         </div>

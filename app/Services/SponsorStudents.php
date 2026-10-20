@@ -21,9 +21,9 @@ use Throwable;
  */
 class SponsorStudents
 {
-    private const CACHE_KEY = 'sponsor-students:v2';
+    private const CACHE_KEY = 'sponsor-students:v3';
 
-    private const STALE_KEY = 'sponsor-students:v2:last-good';
+    private const STALE_KEY = 'sponsor-students:v3:last-good';
 
     /** Binoria's fiscal_status_id values. */
     private const STATUS = [1 => 'Wealthy', 2 => 'Needy', 3 => 'Zakat Eligible'];
@@ -117,6 +117,11 @@ class SponsorStudents
             'country' => trim((string) ($r['country_name'] ?? '')),
             'flag' => (string) ($r['flag_emoji'] ?? ''),
             'age' => $age,
+            // Binoria: student_gender 1 = male, 2 = female.
+            'gender' => match ((int) ($r['student_gender'] ?? 0)) {
+                1 => 'Male', 2 => 'Female', default => null
+            },
+            'orphan' => (string) ($r['is_orphan'] ?? '0') === '1',
             'status' => self::STATUS[(int) ($r['fiscal_status_id'] ?? 0)] ?? null,
         ];
     }

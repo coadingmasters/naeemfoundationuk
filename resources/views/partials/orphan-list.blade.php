@@ -7,6 +7,11 @@
 @endif
 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
     @foreach ($orphans as $orphan)
+        {{-- Students from the Binoria API use the compact sponsorship card. --}}
+        @if (! empty($orphan->student_id))
+            @include('partials.student-card')
+            @continue
+        @endif
         <a href="{{ $orphan->url ?? route('orphans.show', $orphan) }}"
            class="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-xl hover:shadow-navy/10">
             {{-- Portrait --}}
