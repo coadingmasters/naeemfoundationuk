@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 /**
@@ -23,7 +24,11 @@ class SponsorStudents
 {
     private const CACHE_KEY = 'sponsor-students:v3';
 
-    private const STALE_KEY = 'sponsor-students:v3:last-good';
+    /**
+     * The last good list, kept as a file (not in the cache) so clearing the
+     * cache on a deploy can't lose it while Binoria's API is down.
+     */
+    private const LAST_GOOD_FILE = 'sponsor-students.json';
 
     /** Binoria's fiscal_status_id values. */
     private const STATUS = [1 => 'Wealthy', 2 => 'Needy', 3 => 'Zakat Eligible'];
@@ -40,16 +45,27 @@ class SponsorStudents
             return null;
         }
 
-        $students = Cache::remember(self::CACHE_KEY, now()->addMinutes(30), function () {
+        $students = Cache::get(self::CACHE_KEY);
+
+        if ($students === null) {
             $fresh = $this->fetch();
+
             if ($fresh !== null) {
-                Cache::forever(self::STALE_KEY, $fresh);
+                Storage::disk('local')->put(self::LAST_GOOD_FILE, json_encode($fresh));
+                $students = $fresh;
+                Cache::put(self::CACHE_KEY, $students, now()->addMinutes(30));
+            } else {
+                // API down: serve the last good list, and only retry every few
+                // minutes so visitors aren't kept waiting on a failing API.
+                $saved = Storage::disk('local')->exists(self::LAST_GOOD_FILE)
+                    ? json_decode((string) Storage::disk('local')->get(self::LAST_GOOD_FILE), true)
+                    : null;
+                $students = is_array($saved) ? $saved : [];
+                Cache::put(self::CACHE_KEY, $students, now()->addMinutes(5));
             }
+        }
 
-            return $fresh ?? Cache::get(self::STALE_KEY);
-        });
-
-        return $students === null ? null : collect($students)->map(fn ($s) => (object) $s);
+        return $students === [] ? null : collect($students)->map(fn ($s) => (object) $s);
     }
 
     /** One student by their Binoria id, or null. */
@@ -63,7 +79,7 @@ class SponsorStudents
     {
         try {
             $response = Http::asForm()
-                ->timeout(20)
+                ->timeout(10)
                 ->withHeaders(['X-API-SPONSOR-KEY' => config('services.sponsor_api.key')])
                 ->post(rtrim(config('services.sponsor_api.url'), '/').'/GetStudentSponsor', [
                     'searchText' => '',

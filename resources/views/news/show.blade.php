@@ -51,7 +51,7 @@
 
             @if ($post->image_url)
                 <img src="{{ $post->image_url }}" alt="{{ $post->title }}"
-                     class="nf-reveal mx-auto max-w-4xl rounded-2xl object-cover shadow-lg">
+                     class="nf-reveal mx-auto w-full max-w-4xl rounded-2xl object-cover shadow-lg">
             @endif
 
             <div class="mx-auto mt-10 max-w-3xl">
