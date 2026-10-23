@@ -5,6 +5,7 @@
     $money = fn ($n) => $sym.number_format((float) $n, 2);
     $freqWord = ['daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly', 'yearly' => 'Yearly'];
     $isRecurring = collect($items)->contains(fn ($i) => isset($freqWord[$i['frequency'] ?? '']));
+    $hasOneOff = collect($items)->contains(fn ($i) => ! isset($freqWord[$i['frequency'] ?? '']));
     $label = 'font-size:12px; color:#6b7280; padding:7px 0;';
     $value = 'font-size:13px; color:#122d3c; font-weight:600; padding:7px 0; text-align:right;';
 @endphp
@@ -104,8 +105,13 @@
         <tr>
             <td style="padding-top:16px;">
                 <p style="margin:0; font-size:13px; line-height:1.6; color:#4b5563;">
-                    <strong style="color:#122d3c;">About your regular gift:</strong> PayPal will collect it automatically on schedule
-                    until you choose to stop. You can cancel at any time from your PayPal account or by contacting us.
+                    <strong style="color:#122d3c;">About your regular gift:</strong> PayPal will collect the items marked
+                    {{ collect($items)->pluck('frequency')->filter(fn ($f) => isset($freqWord[$f]))->map(fn ($f) => $freqWord[$f])->unique()->implode(' / ') }}
+                    automatically on schedule until you choose to stop.
+                    @if ($hasOneOff)
+                        Your one-off items were charged once only and will not be taken again.
+                    @endif
+                    You can cancel at any time from your PayPal account or by contacting us.
                 </p>
             </td>
         </tr>

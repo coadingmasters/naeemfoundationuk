@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToRegion;
 use Illuminate\Database\Eloquent\Model;
 
 class Donation extends Model
 {
-    use \App\Models\Concerns\BelongsToRegion;
+    use BelongsToRegion;
 
     protected $fillable = [
         'region',
@@ -33,6 +34,7 @@ class Donation extends Model
         'payment_provider',
         'payment_id',
         'subscription_id',
+        'recurring_amount',
         'subscription_status',
         'next_billing_at',
         'paid_at',
@@ -49,5 +51,6 @@ class Donation extends Model
         'subtotal' => 'decimal:2',
         'fee' => 'decimal:2',
         'total' => 'decimal:2',
+        'recurring_amount' => 'decimal:2',
     ];
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\PayPalPlan;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -78,8 +79,8 @@ class PayPal
     /**
      * Create an order and return PayPal's order ID.
      *
-     * @param  float   $amount     Charged total, already calculated server-side.
-     * @param  string  $currency   ISO code — GBP / USD / CAD.
+     * @param  float  $amount  Charged total, already calculated server-side.
+     * @param  string  $currency  ISO code — GBP / USD / CAD.
      * @param  string  $reference  Our own reference, echoed back on capture.
      */
     public function createOrder(float $amount, string $currency, string $reference, string $description = ''): string
@@ -187,17 +188,22 @@ class PayPal
      * amount every period. Plans are cached in paypal_plans (scoped by mode)
      * and reused.
      */
-    public function ensureRecurringPlan(float $amount, string $currency, string $interval = 'MONTH'): string
+    public function ensureRecurringPlan(float $amount, string $currency, string $interval = 'MONTH', float $setupFee = 0): string
     {
         $amount = round($amount, 2);
+        // One-off gifts in the same basket: charged once, at sign-up, never repeated.
+        $setupFee = max(0, round($setupFee, 2));
         $interval = in_array(strtoupper($interval), ['DAY', 'WEEK', 'MONTH', 'YEAR'], true) ? strtoupper($interval) : 'MONTH';
-        $word = match ($interval) { 'DAY' => 'Daily', 'WEEK' => 'Weekly', 'YEAR' => 'Yearly', default => 'Monthly' };
+        $word = match ($interval) {
+            'DAY' => 'Daily', 'WEEK' => 'Weekly', 'YEAR' => 'Yearly', default => 'Monthly'
+        };
 
-        $existing = \App\Models\PayPalPlan::query()
+        $existing = PayPalPlan::query()
             ->where('mode', $this->mode())
             ->where('currency', $currency)
             ->where('amount', $amount)
             ->where('interval', $interval)
+            ->where('setup_fee', $setupFee)
             ->first();
 
         if ($existing) {
@@ -208,7 +214,7 @@ class PayPal
 
         $res = $this->request()->post($this->cfg['base_url'].'/v1/billing/plans', [
             'product_id' => $productId,
-            'name' => $word.' gift '.$currency.' '.number_format($amount, 2),
+            'name' => $word.' gift '.$currency.' '.number_format($amount, 2).($setupFee > 0 ? ' + one-off '.number_format($setupFee, 2) : ''),
             'description' => $word.' recurring donation of '.$currency.' '.number_format($amount, 2),
             'status' => 'ACTIVE',
             'billing_cycles' => [[
@@ -223,11 +229,15 @@ class PayPal
                     ],
                 ],
             ]],
-            'payment_preferences' => [
+            'payment_preferences' => array_filter([
                 'auto_bill_outstanding' => true,
-                'setup_fee_failure_action' => 'CONTINUE',
+                'setup_fee' => $setupFee > 0
+                    ? ['value' => number_format($setupFee, 2, '.', ''), 'currency_code' => $currency]
+                    : null,
+                // If the one-off part fails to charge, don't start the subscription.
+                'setup_fee_failure_action' => $setupFee > 0 ? 'CANCEL' : 'CONTINUE',
                 'payment_failure_threshold' => 3,
-            ],
+            ], fn ($v) => $v !== null),
         ]);
 
         if (! $res->successful()) {
@@ -237,11 +247,12 @@ class PayPal
 
         $planId = (string) $res->json('id');
 
-        \App\Models\PayPalPlan::create([
+        PayPalPlan::create([
             'mode' => $this->mode(),
             'currency' => $currency,
             'amount' => $amount,
             'interval' => $interval,
+            'setup_fee' => $setupFee,
             'product_id' => $productId,
             'plan_id' => $planId,
         ]);

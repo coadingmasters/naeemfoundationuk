@@ -17,11 +17,13 @@ class PayPalPlan extends Model
         'currency',
         'amount',
         'interval',
+        'setup_fee',
         'product_id',
         'plan_id',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'setup_fee' => 'decimal:2',
     ];
 }

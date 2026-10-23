@@ -129,6 +129,47 @@ class DonationCart
         return 'one-off';
     }
 
+    /**
+     * Every distinct recurring frequency in the basket. PayPal can run only one
+     * schedule per subscription, so more than one can't be paid together.
+     *
+     * @return array<int, string>
+     */
+    public static function recurringFrequencies(): array
+    {
+        return array_values(array_unique(array_filter(
+            array_map(fn ($i) => $i['frequency'] ?? 'one-off', self::items()),
+            fn ($f) => $f !== 'one-off',
+        )));
+    }
+
+    /** Sum of the recurring lines only (what repeats every period). */
+    public static function recurringSubtotal(): float
+    {
+        return round(array_sum(array_map(
+            fn ($i) => ($i['frequency'] ?? 'one-off') !== 'one-off' ? (float) $i['amount'] * (int) $i['qty'] : 0,
+            self::items(),
+        )), 2);
+    }
+
+    /**
+     * The amount PayPal takes every period: the recurring lines (+ their share
+     * of the fee when the donor covers it). One-off lines in the same basket are
+     * charged once, as the subscription's setup fee — never repeated.
+     */
+    public static function recurringAmount(bool $coverFee = false): float
+    {
+        $recurring = self::recurringSubtotal();
+
+        return round($recurring + ($coverFee ? round($recurring * self::FEE_RATE, 2) : 0), 2);
+    }
+
+    /** What's charged once on day one: the one-off lines (+ their fee share). */
+    public static function oneOffAmount(bool $coverFee = false): float
+    {
+        return max(0, round(self::total($coverFee) - self::recurringAmount($coverFee), 2));
+    }
+
     /** Is this a recurring (daily, weekly, monthly or yearly) gift? */
     public static function isRecurring(): bool
     {

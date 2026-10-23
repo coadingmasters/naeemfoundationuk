@@ -174,13 +174,21 @@ class PayPalController extends Controller
             return response()->json(['error' => 'Your basket has expired. Please start again.'], 422);
         }
 
+        // One subscription can only repeat on one schedule.
+        if (count(DonationCart::recurringFrequencies()) > 1) {
+            return response()->json(['error' => 'Your basket has regular gifts on different schedules (e.g. weekly and monthly). Please remove one and give it separately.'], 422);
+        }
+
         $coverFee = $request->boolean('cover_fee');
-        $amount = DonationCart::total($coverFee);
+        // Only the recurring lines repeat; any one-off lines in the same basket
+        // are the subscription's setup fee — charged once, today.
+        $amount = DonationCart::recurringAmount($coverFee);
+        $setupFee = DonationCart::oneOffAmount($coverFee);
         $currency = (string) Country::get('currency', 'GBP');
-        $interval = DonationCart::intervalUnit() ?? 'MONTH'; // WEEK or MONTH
+        $interval = DonationCart::intervalUnit() ?? 'MONTH';
 
         try {
-            $planId = $this->paypal->ensureRecurringPlan($amount, $currency, $interval);
+            $planId = $this->paypal->ensureRecurringPlan($amount, $currency, $interval, $setupFee);
         } catch (Throwable $e) {
             return response()->json(['error' => 'Could not set up recurring giving. Please try again.'], 502);
         }
@@ -189,6 +197,7 @@ class PayPalController extends Controller
             'plan_id' => $planId,
             'cover_fee' => $coverFee,
             'amount' => $amount,
+            'setup_fee' => $setupFee,
             'currency' => $currency,
             'frequency' => DonationCart::frequency(),
         ]]);
@@ -236,7 +245,8 @@ class PayPalController extends Controller
             'items' => DonationCart::items(),
             'subtotal' => DonationCart::subtotal(),
             'fee' => $coverFee ? DonationCart::fee() : 0.0,
-            'total' => (float) $pending['amount'],
+            // Charged today: the recurring amount plus any one-off lines.
+            'total' => round((float) $pending['amount'] + (float) ($pending['setup_fee'] ?? 0), 2),
         ];
         $nextBilling = $sub['billing_info']['next_billing_time'] ?? null;
 
@@ -250,6 +260,7 @@ class PayPalController extends Controller
                         'subtotal' => $summary['subtotal'],
                         'fee' => $summary['fee'],
                         'total' => $summary['total'],
+                        'recurring_amount' => (float) $pending['amount'],
                         'cover_fee' => $coverFee,
                         'frequency' => $pending['frequency'] ?? 'monthly',
                         'status' => 'active',
@@ -273,6 +284,8 @@ class PayPalController extends Controller
         session(['donation_completed' => [
             'reference' => $donation['reference'],
             'total' => $summary['total'],
+            'recurring_amount' => (float) $pending['amount'],
+            'one_off' => (float) ($pending['setup_fee'] ?? 0),
             'recurring' => true,
             'frequency' => $pending['frequency'] ?? 'monthly',
         ]]);

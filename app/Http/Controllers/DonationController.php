@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use App\Support\Country;
 use App\Support\DonationCart;
+use App\Support\ProductCart;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -114,8 +116,8 @@ class DonationController extends Controller
     {
         return response()->json([
             'message' => $message,
-            'count' => DonationCart::count() + \App\Support\ProductCart::count(),
-            'product_count' => \App\Support\ProductCart::count(),
+            'count' => DonationCart::count() + ProductCart::count(),
+            'product_count' => ProductCart::count(),
             'subtotal' => DonationCart::subtotal(),
             'html' => view('partials.cart-body')->render(),
         ]);
@@ -179,7 +181,7 @@ class DonationController extends Controller
             'cover_fee' => false,
             'frequency' => DonationCart::frequency(),
             'items' => DonationCart::items(),
-            'currency' => \App\Support\Country::get('currency', 'GBP'),
+            'currency' => Country::get('currency', 'GBP'),
             'subtotal' => DonationCart::subtotal(),
             'fee' => 0,
             'total' => DonationCart::subtotal(),
@@ -249,6 +251,11 @@ class DonationController extends Controller
             // Recurring gifts (monthly/weekly) become a PayPal subscription.
             'isRecurring' => DonationCart::isRecurring(),
             'recurFrequency' => DonationCart::frequency(), // 'monthly' | 'weekly' | 'one-off'
+            // Mixed baskets: only the recurring lines repeat; one-off lines are charged once.
+            'recurringPart' => DonationCart::recurringSubtotal(),
+            'oneOffPart' => round($subtotal - DonationCart::recurringSubtotal(), 2),
+            // PayPal runs one schedule per subscription — weekly + monthly can't be paid together.
+            'mixedSchedules' => count(DonationCart::recurringFrequencies()) > 1,
         ]);
     }
 

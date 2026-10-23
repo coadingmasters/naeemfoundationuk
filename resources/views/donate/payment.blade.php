@@ -172,16 +172,31 @@
                                     default => 'month',
                                 };
                             @endphp
-                            @if ($isRecurring)
+                            @if ($mixedSchedules ?? false)
+                                <div class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                                    Your basket has regular gifts on <strong>different schedules</strong> (for example weekly and monthly).
+                                    PayPal can only set up one schedule per payment — please go back to your basket, remove one of them and give it separately.
+                                </div>
+                            @elseif ($isRecurring)
                                 <div class="mt-5 flex items-start gap-2 rounded-xl border border-brand/25 bg-brand/5 p-4 text-sm text-navy-dark">
                                     <svg class="mt-0.5 h-5 w-5 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2l4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    <span>You&rsquo;re setting up a <strong>{{ $recurFrequency }} gift of {{ money($total) }}</strong>. PayPal will
-                                    automatically take this each {{ $recurWord }} until you cancel — you can cancel any time.</span>
+                                    @if (($oneOffPart ?? 0) > 0)
+                                        <span>Today PayPal will take your <strong>one-off gifts of {{ money($oneOffPart) }}</strong> once, plus the first
+                                        <strong>{{ $recurFrequency }} gift of {{ money($recurringPart) }}</strong>. After that, only the
+                                        {{ money($recurringPart) }} is taken each {{ $recurWord }} until you cancel — you can cancel any time.
+                                        <span class="text-gray-500">(Plus 1.4% if you cover the fee.)</span></span>
+                                    @else
+                                        <span>You&rsquo;re setting up a <strong>{{ $recurFrequency }} gift of {{ money($recurringPart) }}</strong>. PayPal will
+                                        automatically take this each {{ $recurWord }} until you cancel — you can cancel any time.
+                                        <span class="text-gray-500">(Plus 1.4% if you cover the fee.)</span></span>
+                                    @endif
                                 </div>
                             @endif
 
                             <div class="mt-7">
-                                @if ($isRecurring)
+                                @if ($mixedSchedules ?? false)
+                                    {{-- No payment until the basket has a single schedule. --}}
+                                @elseif ($isRecurring)
                                     <x-paypal-buttons
                                         mode="subscription"
                                         :order-url="route('paypal.subscription.plan')"

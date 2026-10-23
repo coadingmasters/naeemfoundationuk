@@ -67,7 +67,10 @@
                     <div class="mt-8 inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-2xl bg-white px-6 py-4 shadow-lg shadow-black/5">
                         <span class="text-sm text-gray-600">
                             {{ $recurring ? ucfirst($frequency).' gift:' : 'Donation:' }}
-                            <span class="font-bold text-navy-dark">{{ money($total) }}{{ $recurring ? $recurShort : '' }}</span>
+                            <span class="font-bold text-navy-dark">{{ money($recurring ? ($recurring_amount ?? $total) : $total) }}{{ $recurring ? $recurShort : '' }}</span>
+                            @if ($recurring && ($one_off ?? 0) > 0)
+                                <span class="text-gray-400">&middot;</span> One-off today: <span class="font-bold text-navy-dark">{{ money($one_off) }}</span>
+                            @endif
                         </span>
 
                         <span class="hidden h-5 w-px bg-gray-200 sm:block" aria-hidden="true"></span>
