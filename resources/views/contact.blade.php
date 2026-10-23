@@ -166,7 +166,7 @@
                                     </span>
                                     <span>
                                         <span class="block text-xs uppercase tracking-wide text-white/50">{{ region('charity_label') }}</span>
-                                        <span class="mt-0.5 block font-semibold">{{ region('charity_no') }} &middot; {{ region('name') }}</span>
+                                        <span class="mt-0.5 block font-semibold">{{ region('charity_no') }} &middot; United Kingdom</span>
                                     </span>
                                 </li>
                             </ul>
