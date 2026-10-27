@@ -106,9 +106,12 @@
                                         {{ $slide->subtitle }}
                                     </span>
                                 @endif
-                                <h1 class="text-2xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl lg:text-5xl lg:leading-[1.15]">
-                                    {!! nl2br(e($slide->title)) !!}
-                                </h1>
+                                {{-- A title of just "." means "no heading" — for banners that carry their own text. --}}
+                                @if (trim((string) $slide->title, " .-\n\r\t") !== '')
+                                    <h1 class="text-2xl font-extrabold leading-[1.2] text-white drop-shadow [text-wrap:balance] sm:text-3xl lg:text-5xl lg:leading-[1.15]">
+                                        {!! nl2br(e($slide->title)) !!}
+                                    </h1>
+                                @endif
                                 @if (!empty($slide->button_text))
                                     <a href="{{ $donateLink($slide->button_url) }}" class="btn-brand mt-4 px-5 py-2.5 text-sm shadow-xl lg:mt-7 lg:px-6 lg:py-3 lg:text-base">
                                         {{ $slide->button_text }}
