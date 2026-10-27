@@ -85,9 +85,12 @@
                     @php
                         $phoneImage = asset(($slide->mobile_image ?? null) ?: $slide->image);
                         $slidePosition = $heroPositionClasses[$slide->image_position ?? 'left'] ?? 'object-left';
+                        // A dedicated phone image is already composed for phones, so keep it
+                        // centred — Image position is for cropping the wide desktop banner.
+                        $phonePosition = filled($slide->mobile_image ?? null) ? 'object-center' : $slidePosition;
                     @endphp
                     <div class="relative h-[440px] w-full shrink-0 sm:h-[520px] lg:h-[640px]" data-slide>
-                        <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover lg:hidden {{ $slidePosition }}">
+                        <img src="{{ $phoneImage }}" alt="{{ $slide->subtitle ?? '' }}" class="h-full w-full object-cover lg:hidden {{ $phonePosition }}">
                         <img src="{{ asset($slide->image) }}" alt="{{ $slide->subtitle ?? '' }}" class="hidden h-full w-full object-cover lg:block {{ $slidePosition }}">
                         {{-- Phones: light tint, darker only behind the header icons and the text --}}
                         <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(18,45,60,0.45),rgba(18,45,60,0)_32%,rgba(18,45,60,0)_45%,rgba(18,45,60,0.85))] lg:hidden"></div>
