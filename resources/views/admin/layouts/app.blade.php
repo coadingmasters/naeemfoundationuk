@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Dashboard') — {{ config('app.name') }} Admin</title>
+    @include('partials.favicons')
     {{-- Apply the saved theme before paint to avoid a flash. --}}
     <script>
         (function () {

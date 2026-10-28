@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('app.name'))</title>
+    @include('partials.favicons')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 {{-- Active region drives client-side currency + phone defaults (read by app.js). --}}
