@@ -68,16 +68,24 @@ class CrmDonationsTest extends TestCase
         $this->assertFalse($crm->enabledFor('GBP'));
     }
 
-    public function test_cart_reference_is_stable_for_the_same_basket_and_changes_when_it_changes(): void
+    public function test_cart_reference_is_stable_for_an_exact_repeat_and_changes_when_anything_changes(): void
     {
-        $basket = $this->mixedBasket();
-        $same = $basket;
-        $edited = $basket;
-        $edited[0]['amount'] = 60;
+        $crm = new CrmDonations;
+        $ref = fn (array $donor, array $basket, string $donation = 'NF-ABC') => $crm->buildPayload($donor, $basket, $donation, 'https://x.test/t', 'United Kingdom')['cartReference'];
 
-        $this->assertSame(CrmDonations::cartReference('NF-ABC', $basket), CrmDonations::cartReference('NF-ABC', $same));
-        $this->assertNotSame(CrmDonations::cartReference('NF-ABC', $basket), CrmDonations::cartReference('NF-ABC', $edited));
-        $this->assertLessThanOrEqual(64, strlen(CrmDonations::cartReference('NF-ABCDEFGHIJ', $basket)), 'payment_id is varchar(64).');
+        $basket = $this->mixedBasket();
+        $editedAmount = $basket;
+        $editedAmount[0]['amount'] = 60;
+        $editedDonor = $this->donor();
+        $editedDonor['phone'] = '+447111111111';
+        $noGiftAid = $this->donor();
+        $noGiftAid['gift_aid'] = false;
+
+        $this->assertSame($ref($this->donor(), $basket), $ref($this->donor(), $basket), 'A double-click must reuse the same cart.');
+        $this->assertNotSame($ref($this->donor(), $basket), $ref($this->donor(), $editedAmount));
+        $this->assertNotSame($ref($this->donor(), $basket), $ref($editedDonor, $basket), 'Changed donor details must not reuse the old cart (the CRM refuses that).');
+        $this->assertNotSame($ref($this->donor(), $basket), $ref($noGiftAid, $basket));
+        $this->assertLessThanOrEqual(64, strlen($ref($this->donor(), $basket, 'NF-ABCDEFGHIJ')), 'payment_id is varchar(64).');
     }
 
     #[DataProvider('campaigns')]
@@ -153,6 +161,19 @@ class CrmDonationsTest extends TestCase
         $this->expectException(CrmException::class);
 
         (new CrmDonations)->buildPayload($this->donor(), $basket, 'NF-ABC', 'https://x.test/t', 'United Kingdom');
+    }
+
+    public function test_sending_the_same_cart_again_returns_the_same_checkout_link(): void
+    {
+        Http::fake([self::URL => Http::response([
+            'cartId' => 'c1', 'cartReference' => 'x', 'status' => 'pending', 'duplicate' => true,
+            'redirectUrl' => 'https://pay.example.test/checkout/xyz', 'redirectExpiresAt' => '2026-10-30T12:00:00Z',
+        ], 200)]);
+
+        $crm = new CrmDonations;
+        $payload = $crm->buildPayload($this->donor(), $this->mixedBasket(), 'NF-ABC', 'https://x.test/t', 'United Kingdom');
+
+        $this->assertSame('https://pay.example.test/checkout/xyz', $crm->createCart('GBP', $payload)['redirectUrl']);
     }
 
     public function test_create_cart_sends_a_correctly_signed_request_and_returns_the_checkout_link(): void

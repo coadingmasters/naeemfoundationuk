@@ -87,19 +87,16 @@ class CrmDonations
     }
 
     /**
-     * A CRM cart reference is unique per cart, and re-sending one returns the
-     * SAME cart. So it must change whenever the basket changes (donor edits
-     * amounts) but stay stable for a double-click on the same basket.
+     * A CRM cart reference is unique per cart, and re-sending one with different
+     * contents is refused ("already used for a different cart"). So it must
+     * change whenever ANYTHING we send changes (gifts, donor details) but stay
+     * stable for an exact repeat, such as a double-click.
      *
-     * @param  array<int, array<string, mixed>>  $items
+     * @param  array<string, mixed>  $contents  Everything that makes the cart what it is.
      */
-    public static function cartReference(string $donationReference, array $items): string
+    public static function cartReference(string $donationReference, array $contents): string
     {
-        $fingerprint = array_map(fn ($i) => [
-            $i['cause'] ?? '', (float) ($i['amount'] ?? 0), (int) ($i['qty'] ?? 1), $i['frequency'] ?? 'one-off',
-        ], $items);
-
-        return $donationReference.'-'.substr(sha1(json_encode($fingerprint)), 0, 8);
+        return $donationReference.'-'.substr(sha1(json_encode($contents)), 0, 8);
     }
 
     /** @return array{id: string, type: string} */
@@ -132,8 +129,6 @@ class CrmDonations
      */
     public function buildPayload(array $donor, array $items, string $donationReference, string $returnUrl, string $country): array
     {
-        $cartReference = self::cartReference($donationReference, $items);
-
         $lines = [];
         foreach ($items as $item) {
             $frequency = $item['frequency'] ?? 'one-off';
@@ -159,6 +154,21 @@ class CrmDonations
             throw new CrmException('Too many different donations in one basket (maximum '.self::MAX_ITEMS.').');
         }
 
+        $address = trim(($donor['billing_address'] ?? '').(! empty($donor['city']) ? ', '.$donor['city'] : ''));
+
+        $donorBlock = [
+            'email' => $donor['email'] ?? '',
+            'firstName' => $donor['first_name'] ?? '',
+            'lastName' => $donor['last_name'] ?? '',
+            'phoneNumber' => $donor['phone'] ?? '',
+            'address' => $address,
+            'postcode' => $donor['postcode'] ?? '',
+            'country' => $country,
+            'isGiftAid' => (bool) ($donor['gift_aid'] ?? false),
+        ];
+
+        $cartReference = self::cartReference($donationReference, [$returnUrl, $donorBlock, array_values($lines)]);
+
         $cartItems = [];
         foreach (array_values($lines) as $n => $line) {
             $row = [
@@ -176,27 +186,16 @@ class CrmDonations
             $cartItems[] = $row;
         }
 
-        $address = trim(($donor['billing_address'] ?? '').(! empty($donor['city']) ? ', '.$donor['city'] : ''));
-
         return [
             'cartReference' => $cartReference,
             'returnUrl' => $returnUrl,
-            'donor' => [
-                'email' => $donor['email'] ?? '',
-                'firstName' => $donor['first_name'] ?? '',
-                'lastName' => $donor['last_name'] ?? '',
-                'phoneNumber' => $donor['phone'] ?? '',
-                'address' => $address,
-                'postcode' => $donor['postcode'] ?? '',
-                'country' => $country,
-                'isGiftAid' => (bool) ($donor['gift_aid'] ?? false),
-            ],
+            'donor' => $donorBlock,
             'items' => $cartItems,
         ];
     }
 
     /**
-     * Create the cart on the CRM. Returns the 201 body
+     * Create the cart on the CRM. Returns the 201 (or 200 for a repeat) body
      * (cartId, cartReference, status, redirectUrl, redirectExpiresAt, items[]).
      *
      * @param  array<string, mixed>  $payload
@@ -220,7 +219,8 @@ class CrmDonations
             throw new CrmException('Could not reach the donation service.', 0, $e);
         }
 
-        if ($response->status() !== 201 || ! is_array($response->json())) {
+        // 201 = new cart; 200 = the same cart sent again (double-click, refresh) — same body.
+        if (! in_array($response->status(), [200, 201], true) || ! is_array($response->json())) {
             // The body never contains our secrets — safe to log for diagnosis.
             Log::error('CRM cart rejected', [
                 'cart' => $payload['cartReference'] ?? null,
