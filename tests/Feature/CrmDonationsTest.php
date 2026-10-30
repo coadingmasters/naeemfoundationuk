@@ -90,11 +90,13 @@ class CrmDonationsTest extends TestCase
         return [
             'zakat' => ['Zakat', 'e21d1288-021d-461b-9e87-5cee3e44ac19', 'Zakat'],
             'sadaqah' => ['Give Sadaqah', '9b7a5dda-930a-4092-8514-7c13b4ef548b', 'Sadaqah'],
-            'zakat ul fitr is not plain zakat' => ['Zakat ul Fitr', '285251a7-ffd8-4160-b0a1-edfbd05c562e', 'Zakat ul Fitr'],
-            'water pump' => ['Water Handpump Share', '51d722b0-78d3-4d89-8847-60fcb93b1bae', 'Water Handpump Share'],
-            'binoria beats generic water' => ['Binoria Water Campaign', '0c386a0c-262d-4cdc-b5fe-98a9fe38fd59', 'Binoria Water Campaign'],
-            'food' => ['Emergency Food Pack', 'd3bdf595-1f96-4fa6-a268-64a698064cc6', 'Emergency Food Pack'],
-            'unmapped falls back to the general campaign' => ['Orphan Cloth', '1da40652-0671-44f7-a5a8-6b786d0413f7', 'Orphan Cloth'],
+            'zakat ul fitr is not plain zakat' => ['Zakat ul Fitr', '285251a7-ffd8-4160-b0a1-edfbd05c562e', 'Fitrana'],
+            'water pump' => ['Water Handpump Share', '51d722b0-78d3-4d89-8847-60fcb93b1bae', 'General'],
+            'binoria beats generic water' => ['Binoria Water Campaign', '0c386a0c-262d-4cdc-b5fe-98a9fe38fd59', 'General'],
+            'food' => ['Emergency Food Pack', 'd3bdf595-1f96-4fa6-a268-64a698064cc6', 'General'],
+            'fidya' => ['Fidya', '8a50340c-e938-4523-a824-35d94d377bad', 'Fidya'],
+            'qurbani' => ['Qurbani 2026', '8da79768-f673-4ec6-8ba5-3d8bb16902b7', 'Qurbani'],
+            'unmapped falls back to the general campaign (type must be one the CRM accepts)' => ['Where Most Needed', '1da40652-0671-44f7-a5a8-6b786d0413f7', 'General'],
         ];
     }
 
@@ -143,7 +145,9 @@ class CrmDonationsTest extends TestCase
 
     public function test_more_than_ten_distinct_lines_is_refused(): void
     {
-        $basket = array_map(fn ($n) => ['cause' => 'Custom cause '.$n, 'amount' => 5, 'qty' => 1, 'frequency' => 'one-off'], range(1, 11));
+        $basket = array_map(fn ($cause) => ['cause' => $cause, 'amount' => 5, 'qty' => 1, 'frequency' => 'one-off'], [
+            'Gaza', 'Flood', 'Cambodia', 'Prosthetic Limb', 'Binoria', 'Water Pump', 'Iftar', 'Ration', 'Food Pack', 'Health Care', 'Education',
+        ]);
 
         $this->expectException(CrmException::class);
 

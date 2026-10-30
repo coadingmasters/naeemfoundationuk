@@ -85,12 +85,12 @@ class CrmDonations
         foreach (config('crm.campaigns', []) as $rule) {
             foreach ($rule['match'] as $word) {
                 if (str_contains($needle, $word)) {
-                    return ['id' => $rule['id'], 'type' => $rule['type'] ?: $cause];
+                    return ['id' => $rule['id'], 'type' => $rule['type'] ?: 'General'];
                 }
             }
         }
 
-        return ['id' => config('crm.default_campaign'), 'type' => $cause];
+        return ['id' => config('crm.default_campaign'), 'type' => 'General'];
     }
 
     /**
