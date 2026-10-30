@@ -41,6 +41,8 @@
                     </h1>
                     @php
                         $recurring = $recurring ?? false;
+                        $pending = $pending ?? false;   // CRM payment not yet confirmed as paid
+                        $viaCrm = $viaCrm ?? false;
                         $frequency = $frequency ?? 'monthly';
                         $recurWord = match ($frequency) {
                             'daily' => 'day',
@@ -56,7 +58,9 @@
                         };
                     @endphp
                     <p class="mt-3 text-base text-gray-600 sm:text-lg">
-                        @if ($recurring)
+                        @if ($pending)
+                            We have received your donation and are confirming the payment. Thank you for your generosity.
+                        @elseif ($recurring)
                             Your {{ $frequency }} gift is now set up — thank you for your ongoing support.
                         @else
                             Your contribution is making a real difference.
@@ -77,8 +81,8 @@
 
                         <span class="text-sm text-gray-600">
                             Status:
-                            <span class="ml-1 inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-0.5 font-semibold text-green-700">
-                                {{ $recurring ? 'Active' : 'Successful' }}
+                            <span class="ml-1 inline-flex items-center gap-1 rounded-md px-2 py-0.5 font-semibold {{ $pending ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700' }}">
+                                {{ $pending ? 'Processing' : ($recurring ? 'Active' : 'Successful') }}
                                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                     <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
@@ -86,7 +90,11 @@
                         </span>
                     </div>
 
-                    @if ($recurring)
+                    @if ($recurring && $viaCrm)
+                        <p class="mx-auto mt-4 max-w-md text-xs leading-relaxed text-gray-500">
+                            Your regular gift will be collected each {{ $recurWord }}. You can stop it at any time by contacting us.
+                        </p>
+                    @elseif ($recurring)
                         <p class="mx-auto mt-4 max-w-md text-xs leading-relaxed text-gray-500">
                             PayPal will automatically take this amount each {{ $recurWord }}. You can cancel any time from your PayPal account or by contacting us.
                         </p>
@@ -99,7 +107,11 @@
                     {{-- Email confirmation note --}}
                     <p class="mx-auto mt-6 flex max-w-sm items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-xs text-gray-600 shadow-sm">
                         <svg class="h-4 w-4 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16v12H4zM4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        A receipt has been emailed to you. Please keep it for your records.
+                        @if ($pending)
+                            We&rsquo;ll email your receipt as soon as the payment is confirmed.
+                        @else
+                            A receipt has been emailed to you. Please keep it for your records.
+                        @endif
                     </p>
                 </div>
             </div>

@@ -151,6 +151,10 @@ Route::get('/donate/checkout', [DonationController::class, 'checkout'])->name('d
 Route::post('/donate/checkout', [DonationController::class, 'store'])->name('donate.store');
 Route::get('/donate/payment', [DonationController::class, 'payment'])->name('donate.payment');
 Route::get('/donate/thank-you', [DonationController::class, 'thankYou'])->name('donate.thank-you');
+// CRM-hosted checkout (config/crm.php): send the basket to the CRM, donor pays there and lands back on thank-you.
+Route::post('/donate/crm/start', [\App\Http\Controllers\CrmDonationController::class, 'start'])
+    ->middleware('throttle:10,1')
+    ->name('donate.crm.start');
 Route::post('/donate/paypal/order', [PayPalController::class, 'donationOrder'])->name('paypal.donation.order');
 Route::post('/donate/paypal/capture', [PayPalController::class, 'donationCapture'])->name('paypal.donation.capture');
 Route::post('/donate/paypal/subscription/plan', [PayPalController::class, 'subscriptionPlan'])->name('paypal.subscription.plan');

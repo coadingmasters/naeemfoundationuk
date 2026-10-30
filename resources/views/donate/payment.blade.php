@@ -151,7 +151,8 @@
                         @endif
 
                         <div class="mt-5">
-                            {{-- Cover the transaction fee --}}
+                            {{-- Cover the transaction fee (PayPal flow only — the CRM has no fee option) --}}
+                            @unless ($useCrm ?? false)
                             <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-navy/15 bg-cream/60 p-4">
                                 <input type="checkbox" name="cover_fee" value="1" data-cover-fee @checked($coverFee)
                                        class="mt-0.5 h-5 w-5 shrink-0 rounded border-navy/30 text-brand focus:ring-2 focus:ring-brand/30">
@@ -162,6 +163,7 @@
                                     so that we receive your full donation?
                                 </span>
                             </label>
+                            @endunless
 
 
                             @php
@@ -172,7 +174,37 @@
                                     default => 'month',
                                 };
                             @endphp
-                            @if ($mixedSchedules ?? false)
+                            @if ($useCrm ?? false)
+                                @php
+                                    $schedWord = ['one-off' => 'One-time', 'daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly', 'yearly' => 'Yearly'];
+                                    $schedEvery = ['daily' => 'day', 'weekly' => 'week', 'monthly' => 'month', 'yearly' => 'year'];
+                                    $hasDirectDebit = collect($schedules)->contains(fn ($x) => in_array($x['frequency'], ['weekly', 'monthly', 'yearly'], true));
+                                @endphp
+                                <div class="mt-5 rounded-xl border border-brand/25 bg-brand/5 p-4 text-sm text-navy-dark">
+                                    <p class="font-semibold">Your gifts</p>
+                                    <ul class="mt-2 space-y-1.5">
+                                        @foreach ($schedules as $row)
+                                            <li class="flex items-start justify-between gap-3">
+                                                <span>{{ $schedWord[$row['frequency']] }}
+                                                    <span class="text-gray-500">
+                                                        @if ($row['frequency'] === 'one-off') &mdash; charged once
+                                                        @else &mdash; repeats every {{ $schedEvery[$row['frequency']] }} until you cancel
+                                                        @endif
+                                                    </span>
+                                                </span>
+                                                <strong>{{ money($row['amount']) }}</strong>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <p class="mt-3 text-xs leading-relaxed text-gray-600">
+                                        You&rsquo;ll pay securely on our donation partner&rsquo;s page, then come straight back here.
+                                        @if ($hasDirectDebit)
+                                            Weekly, monthly and yearly gifts are set up by Direct Debit, so you may be asked to set that up first.
+                                        @endif
+                                        You can stop a regular gift at any time by contacting us.
+                                    </p>
+                                </div>
+                            @elseif ($mixedSchedules ?? false)
                                 <div class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
                                     Your basket has regular gifts on <strong>different schedules</strong> (for example weekly and monthly).
                                     PayPal can only set up one schedule per payment — please go back to your basket, remove one of them and give it separately.
@@ -194,7 +226,15 @@
                             @endif
 
                             <div class="mt-7">
-                                @if ($mixedSchedules ?? false)
+                                @if ($useCrm ?? false)
+                                    <form method="POST" action="{{ route('donate.crm.start') }}">
+                                        @csrf
+                                        <button type="submit" class="btn-brand w-full justify-center py-3.5 text-base">
+                                            Donate {{ money($subtotal) }} securely
+                                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                    </form>
+                                @elseif ($mixedSchedules ?? false)
                                     {{-- No payment until the basket has a single schedule. --}}
                                 @elseif ($isRecurring)
                                     <x-paypal-buttons
@@ -225,6 +265,8 @@
 
 @endsection
 
-@push('scripts')
-    @include('partials.paypal-sdk', ['paypalSubscription' => $isRecurring])
-@endpush
+@unless ($useCrm ?? false)
+    @push('scripts')
+        @include('partials.paypal-sdk', ['paypalSubscription' => $isRecurring])
+    @endpush
+@endunless
