@@ -1321,6 +1321,9 @@ body:has(.nf-quickbar) .nf-cookie {
     }
 }
 .nf-cookie__card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     pointer-events: auto;
     width: 100%;
     max-width: 30rem;
@@ -1336,7 +1339,80 @@ body:has(.nf-quickbar) .nf-cookie {
 .nf-cookie.is-visible .nf-cookie__card {
     opacity: 1;
     transform: translateY(0) scale(1);
+    /* Springy slide-up entrance (the static state above is the resting pose,
+       so closing still transitions smoothly back down). */
+    animation: nf-cookie-in 0.85s ease-out backwards;
 }
+
+/* Animated brand strip along the top edge */
+.nf-cookie__card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-brand), var(--color-navy), var(--color-brand));
+    background-size: 200% 100%;
+    animation: nf-cookie-strip 4s linear infinite;
+}
+/* Soft cream glow drifting in the corner, behind the content */
+.nf-cookie__card::after {
+    content: "";
+    position: absolute;
+    right: -3rem;
+    top: -3rem;
+    z-index: -1;
+    height: 9rem;
+    width: 9rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(244, 239, 230, 0.95), rgba(244, 239, 230, 0) 70%);
+    pointer-events: none;
+    animation: nf-cookie-drift 7s ease-in-out infinite;
+}
+
+@keyframes nf-cookie-in {
+    0%   { opacity: 0; transform: translateY(70px) scale(0.92) rotate(-1.5deg); }
+    55%  { opacity: 1; transform: translateY(-9px) scale(1.015) rotate(0.4deg); }
+    78%  { transform: translateY(3px) scale(0.998) rotate(0); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+@keyframes nf-cookie-strip {
+    from { background-position: 0 0; }
+    to   { background-position: -200% 0; }
+}
+@keyframes nf-cookie-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(-0.9rem, 0.7rem) scale(1.12); }
+}
+@keyframes nf-cookie-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes nf-cookie-pop {
+    0%   { opacity: 0; transform: scale(0) rotate(-40deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes nf-cookie-wiggle {
+    0%, 70%, 100% { transform: rotate(0); }
+    76% { transform: rotate(-14deg); }
+    82% { transform: rotate(11deg); }
+    88% { transform: rotate(-6deg); }
+    94% { transform: rotate(3deg); }
+}
+@keyframes nf-cookie-ring {
+    0%   { transform: scale(1); opacity: 0.55; }
+    80%, 100% { transform: scale(1.65); opacity: 0; }
+}
+@keyframes nf-cookie-glow {
+    0%, 100% { box-shadow: 0 8px 18px rgba(116, 10, 46, 0.25); }
+    50%      { box-shadow: 0 8px 26px rgba(116, 10, 46, 0.5), 0 0 0 5px rgba(116, 10, 46, 0.1); }
+}
+@keyframes nf-cookie-shine {
+    0%, 55% { transform: translateX(-130%) skewX(-20deg); }
+    100%    { transform: translateX(260%) skewX(-20deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .nf-cookie__card {
         transition: opacity 0.2s ease;
@@ -1436,6 +1512,85 @@ body:has(.nf-quickbar) .nf-cookie {
     color: var(--color-brand);
 }
 
+/* Staggered reveal. These replay every time a view becomes visible (the card
+   is display:none until shown, and the inactive view is [hidden]), so opening
+   the preferences panel animates in as well. fill-mode "backwards" only holds
+   the start pose during the delay, so hover transforms still work afterwards. */
+.nf-cookie__icon {
+    position: relative;
+    animation: nf-cookie-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s backwards,
+        nf-cookie-wiggle 5s ease-in-out 1.6s infinite;
+}
+.nf-cookie__icon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 2px solid var(--color-brand);
+    pointer-events: none;
+    animation: nf-cookie-ring 2.6s ease-out 1s infinite;
+}
+.nf-cookie__title,
+.nf-cookie__text {
+    animation: nf-cookie-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.nf-cookie__title { animation-delay: 0.4s; }
+.nf-cookie__text  { animation-delay: 0.5s; }
+
+.nf-cookie__cat {
+    animation: nf-cookie-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.nf-cookie__cat:nth-child(1) { animation-delay: 0.15s; }
+.nf-cookie__cat:nth-child(2) { animation-delay: 0.25s; }
+.nf-cookie__cat:nth-child(3) { animation-delay: 0.35s; }
+
+.nf-cookie__btn {
+    position: relative;
+    overflow: hidden;
+    animation: nf-cookie-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.nf-cookie__btn:nth-child(1) { animation-delay: 0.6s; }
+.nf-cookie__btn:nth-child(2) { animation-delay: 0.7s; }
+.nf-cookie__btn:nth-child(3) { animation-delay: 0.8s; }
+.nf-cookie__btn:active {
+    transform: scale(0.96);
+}
+/* "Accept All" breathes with a glow and a periodic gloss sweep */
+.nf-cookie__btn--primary {
+    animation: nf-cookie-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.6s backwards,
+        nf-cookie-glow 2.8s ease-in-out 1.4s infinite;
+}
+.nf-cookie__btn--primary::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    pointer-events: none;
+    animation: nf-cookie-shine 3.6s ease-in-out 1.6s infinite;
+}
+.nf-cookie__btn--text {
+    overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nf-cookie__card,
+    .nf-cookie__card::before,
+    .nf-cookie__card::after,
+    .nf-cookie__icon,
+    .nf-cookie__icon::after,
+    .nf-cookie__title,
+    .nf-cookie__text,
+    .nf-cookie__cat,
+    .nf-cookie__btn,
+    .nf-cookie__btn--primary,
+    .nf-cookie__btn--primary::after {
+        animation: none !important;
+    }
+}
+
 /* Toggle switch */
 .nf-switch {
     position: relative;
@@ -1468,7 +1623,7 @@ body:has(.nf-quickbar) .nf-cookie {
     border-radius: 9999px;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-    transition: transform 0.2s ease;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .nf-switch input:checked + span {
     background: var(--color-brand);
