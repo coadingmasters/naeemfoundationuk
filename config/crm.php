@@ -25,6 +25,13 @@ return [
     'timeout' => 20,
 
     /*
+    | Private test link. While 'enabled' is false the CRM checkout is hidden
+    | from donors, but anyone who opens /donate/crm-preview/{this token} gets it
+    | in their own browser session only. Leave empty to disable the link.
+    */
+    'preview_token' => env('CRM_PREVIEW_TOKEN'),
+
+    /*
     | One API key + signing secret per CRM branch. The branch decides the
     | currency, so credentials are keyed by currency. A currency with no
     | credentials keeps using the site's own PayPal flow, so regions can be

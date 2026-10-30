@@ -28,10 +28,20 @@ class CrmDonations
     /** The CRM accepts 1–10 items per cart. */
     public const MAX_ITEMS = 10;
 
-    /** Is the CRM flow switched on AND configured for this currency? */
+    /**
+     * Is the CRM flow active for this visitor AND configured for this currency?
+     * Active = switched on for everyone, or this browser opened the private
+     * preview link (so it can be tested without touching real donors).
+     */
     public function enabledFor(string $currency): bool
     {
-        return (bool) config('crm.enabled') && $this->credentials($currency) !== null;
+        return ((bool) config('crm.enabled') || $this->previewActive()) && $this->credentials($currency) !== null;
+    }
+
+    /** Did this browser session opt in via the private preview link? */
+    public function previewActive(): bool
+    {
+        return request()->hasSession() && (bool) request()->session()->get('crm_preview');
     }
 
     /** @return array{api_key: string, signing_secret: string}|null */

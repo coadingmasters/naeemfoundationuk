@@ -32,6 +32,35 @@ class CrmDonationController extends Controller
 
     public function __construct(private CrmDonations $crm) {}
 
+    /** Private test link: turn the CRM checkout on for THIS browser only. */
+    public function preview(string $token): RedirectResponse
+    {
+        $this->abortUnlessPreviewToken($token);
+
+        session(['crm_preview' => true]);
+
+        return redirect()->route('donate.make')
+            ->with('success', 'CRM test mode is ON for this browser only. Add a donation and continue to payment.');
+    }
+
+    /** Turn the private test mode back off for this browser. */
+    public function previewOff(string $token): RedirectResponse
+    {
+        $this->abortUnlessPreviewToken($token);
+
+        session()->forget('crm_preview');
+
+        return redirect()->route('donate.make')->with('success', 'CRM test mode is OFF for this browser.');
+    }
+
+    private function abortUnlessPreviewToken(string $token): void
+    {
+        $expected = (string) config('crm.preview_token');
+
+        // 404 (not 403) so the link's existence isn't revealed to anyone guessing.
+        abort_if($expected === '' || ! hash_equals($expected, $token), 404);
+    }
+
     /** "Donate" on the payment step: create the CRM cart and send the donor to pay. */
     public function start(Request $request): RedirectResponse
     {

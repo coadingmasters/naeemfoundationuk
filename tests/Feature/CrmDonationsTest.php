@@ -306,4 +306,54 @@ class CrmDonationsTest extends TestCase
         $response->assertRedirect(route('donate.payment'));
         Http::assertNothingSent();
     }
+
+    // ------------------------------------------------------- private test link
+
+    public function test_preview_link_turns_the_crm_on_for_that_browser_only_while_it_is_off_for_everyone(): void
+    {
+        config(['crm.enabled' => false, 'crm.preview_token' => 'secret-token-123']);
+
+        // A normal visitor: PayPal, no CRM button.
+        $this->withSession($this->sessionBasket())->get(route('donate.payment'))
+            ->assertOk()->assertDontSee(route('donate.crm.start'), false);
+
+        // The tester opens the private link...
+        $this->get('/donate/crm-preview/secret-token-123')->assertRedirect(route('donate.make'));
+        $this->assertTrue(session('crm_preview'));
+
+        // ...and now sees the CRM checkout, with a test-mode notice.
+        $this->withSession($this->sessionBasket() + ['crm_preview' => true])->get(route('donate.payment'))
+            ->assertOk()
+            ->assertSee(route('donate.crm.start'), false)
+            ->assertSee('CRM test mode');
+    }
+
+    public function test_preview_link_is_a_404_with_the_wrong_token_or_when_no_token_is_set(): void
+    {
+        config(['crm.preview_token' => 'secret-token-123']);
+        $this->get('/donate/crm-preview/wrong')->assertNotFound();
+        $this->assertNull(session('crm_preview'));
+
+        config(['crm.preview_token' => null]);
+        $this->get('/donate/crm-preview/anything')->assertNotFound();
+        $this->get('/donate/crm-preview/')->assertNotFound();
+    }
+
+    public function test_preview_link_can_be_switched_off_again(): void
+    {
+        config(['crm.preview_token' => 'secret-token-123']);
+
+        $this->withSession(['crm_preview' => true])->get('/donate/crm-preview/secret-token-123/off')
+            ->assertRedirect(route('donate.make'));
+
+        $this->assertNull(session('crm_preview'));
+    }
+
+    public function test_preview_cannot_work_without_credentials(): void
+    {
+        config(['crm.enabled' => false, 'crm.preview_token' => 't', 'crm.branches.GBP' => ['api_key' => null, 'signing_secret' => null]]);
+
+        $this->withSession($this->sessionBasket() + ['crm_preview' => true])->get(route('donate.payment'))
+            ->assertOk()->assertDontSee(route('donate.crm.start'), false);
+    }
 }

@@ -1,4 +1,4 @@
-name: Deploy to Hostinger
+name: Deploy to live (naeemfoundation.co.uk)
 
 # Runs automatically on every push to main (e.g. when you run `bash deploy.sh`
 # from your Codespace), and can also be triggered manually from the Actions tab.
@@ -13,80 +13,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    env:
-      SERVER_HOST: 145.79.26.12
-      SERVER_PORT: 65002
-      SERVER_USER: u721035936
-      APP_PATH: ~/domains/naeemfoundation.qubexistech.com/naeemfoundation
-      PUBLIC_PATH: /home/u721035936/domains/naeemfoundation.qubexistech.com/public_html
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Build front-end assets
-        run: |
-          npm ci
-          npm run build
-
-      - name: Install rsync + sshpass
-        run: sudo apt-get update && sudo apt-get install -y rsync sshpass
-
-      - name: Upload compiled assets to the server
-        env:
-          SSHPASS: ${{ secrets.SSH_PASSWORD }}
-        run: |
-          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
-          # Compiled CSS/JS (safe to mirror with --delete)
-          sshpass -e rsync -avz --delete -e "ssh ${SSH_OPTS}" \
-            public/build/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/build/"
-          # Images — NO --delete, so admin-uploaded hero images are never removed
-          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
-            public/images/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/images/"
-          # Self-hosted fonts (e.g. Geogrotesque) — NO --delete
-          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
-            public/fonts/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/fonts/"
-          # Annual report PDFs — NO --delete, so admin-uploaded reports are never removed
-          sshpass -e rsync -avz -e "ssh ${SSH_OPTS}" \
-            public/reports/ "${SERVER_USER}@${SERVER_HOST}:${PUBLIC_PATH}/reports/"
-
-      - name: Pull code, migrate, seed and clear caches on the server
-        env:
-          SSHPASS: ${{ secrets.SSH_PASSWORD }}
-        run: |
-          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
-          sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
-            "cd ${APP_PATH} && git pull origin main && php artisan migrate --force && php artisan db:seed --force && php artisan view:clear && php artisan cache:clear"
-
-      # Writes the SMTP settings into the server's .env from GitHub Secrets, so
-      # donation receipts actually send in production. Skipped if no secret is set.
-      - name: Configure mail on the server
-        env:
-          SSHPASS: ${{ secrets.SSH_PASSWORD }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
-        run: |
-          if [ -z "${MAIL_PASSWORD}" ]; then
-            echo "No MAIL_PASSWORD secret set — skipping mail configuration."
-            exit 0
-          fi
-          SSH_OPTS="-p ${SERVER_PORT} -o StrictHostKeyChecking=no"
-          sshpass -e ssh ${SSH_OPTS} "${SERVER_USER}@${SERVER_HOST}" \
-            "cd ${APP_PATH} && \
-             sed -i '/^MAIL_MAILER=/d;/^MAIL_HOST=/d;/^MAIL_PORT=/d;/^MAIL_USERNAME=/d;/^MAIL_PASSWORD=/d;/^MAIL_ENCRYPTION=/d;/^MAIL_FROM_ADDRESS=/d' .env && \
-             printf 'MAIL_MAILER=smtp\nMAIL_HOST=smtp.gmail.com\nMAIL_PORT=587\nMAIL_USERNAME=%s\nMAIL_PASSWORD=%s\nMAIL_ENCRYPTION=tls\nMAIL_FROM_ADDRESS=%s\n' '${MAIL_USERNAME}' '${MAIL_PASSWORD}' '${MAIL_FROM_ADDRESS}' >> .env && \
-             php artisan config:clear"
-          echo "Mail settings applied to the server .env."
-
   deploy-vps:
     runs-on: ubuntu-latest
 

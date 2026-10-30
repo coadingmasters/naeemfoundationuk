@@ -140,6 +140,12 @@
                     <div class="rounded-2xl bg-gray-50 p-6 shadow-sm ring-1 ring-black/5 sm:p-7 lg:p-8">
                         <h2 class="text-lg font-bold text-navy sm:text-xl">Add Payment Details</h2>
 
+                        @if (($useCrm ?? false) && session('crm_preview') && ! config('crm.enabled'))
+                            <div class="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                                <strong>CRM test mode</strong> &mdash; only you can see this. Payments here go through the CRM&rsquo;s test checkout.
+                            </div>
+                        @endif
+
                         @if ($errors->any())
                             <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                                 <ul class="list-inside list-disc space-y-1">

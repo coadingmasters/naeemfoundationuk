@@ -155,6 +155,11 @@ Route::get('/donate/thank-you', [DonationController::class, 'thankYou'])->name('
 Route::post('/donate/crm/start', [\App\Http\Controllers\CrmDonationController::class, 'start'])
     ->middleware('throttle:10,1')
     ->name('donate.crm.start');
+// Private test link (needs CRM_PREVIEW_TOKEN): CRM checkout for this browser only, real donors unaffected.
+Route::get('/donate/crm-preview/{token}', [\App\Http\Controllers\CrmDonationController::class, 'preview'])
+    ->middleware('throttle:20,1')->name('donate.crm.preview');
+Route::get('/donate/crm-preview/{token}/off', [\App\Http\Controllers\CrmDonationController::class, 'previewOff'])
+    ->middleware('throttle:20,1')->name('donate.crm.preview.off');
 Route::post('/donate/paypal/order', [PayPalController::class, 'donationOrder'])->name('paypal.donation.order');
 Route::post('/donate/paypal/capture', [PayPalController::class, 'donationCapture'])->name('paypal.donation.capture');
 Route::post('/donate/paypal/subscription/plan', [PayPalController::class, 'subscriptionPlan'])->name('paypal.subscription.plan');
