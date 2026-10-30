@@ -23,6 +23,7 @@ class CrmDonationsTest extends TestCase
 
         config([
             'crm.enabled' => true,
+            'crm.recurring' => true,
             'crm.webhook_url' => self::URL,
             'crm.branches.GBP' => ['api_key' => 'dwk_test_key', 'signing_secret' => 'dwsec_test_secret'],
             'crm.branches.USD' => ['api_key' => null, 'signing_secret' => null],
@@ -268,6 +269,37 @@ class CrmDonationsTest extends TestCase
         $response->assertOk();
         $response->assertDontSee(route('donate.crm.start'), false);
         $response->assertSee('cover_fee', false);
+    }
+
+    public function test_recurring_baskets_stay_on_paypal_while_crm_recurring_is_off(): void
+    {
+        config(['crm.recurring' => false]);
+        $crm = new CrmDonations;
+        $oneTime = [['cause' => 'Zakat', 'amount' => 5, 'qty' => 1, 'frequency' => 'one-off']];
+
+        $this->assertTrue($crm->enabledForBasket('GBP', $oneTime));
+        $this->assertFalse($crm->enabledForBasket('GBP', $this->mixedBasket()));
+
+        config(['crm.recurring' => true]);
+        $this->assertTrue($crm->enabledForBasket('GBP', $this->mixedBasket()));
+
+        config(['crm.enabled' => false, 'crm.recurring' => false]);
+        $this->assertFalse($crm->enabledForBasket('GBP', $oneTime));
+    }
+
+    public function test_payment_step_and_start_use_paypal_for_a_recurring_basket_while_crm_recurring_is_off(): void
+    {
+        config(['crm.recurring' => false]);
+        Http::fake();
+
+        $this->withSession($this->sessionBasket())->get(route('donate.payment'))
+            ->assertOk()
+            ->assertDontSee(route('donate.crm.start'), false)
+            ->assertSee('cover_fee', false);
+
+        $this->withSession($this->sessionBasket())->post(route('donate.crm.start'))
+            ->assertRedirect(route('donate.payment'));
+        Http::assertNothingSent();
     }
 
     public function test_start_sends_the_basket_to_the_crm_and_redirects_the_donor_to_pay(): void

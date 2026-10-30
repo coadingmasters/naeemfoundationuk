@@ -38,6 +38,31 @@ class CrmDonations
         return ((bool) config('crm.enabled') || $this->previewActive()) && $this->credentials($currency) !== null;
     }
 
+    /**
+     * Should THIS basket go through the CRM? Same as enabledFor(), plus: a basket
+     * with a recurring gift stays on the site's PayPal flow until CRM_RECURRING is on.
+     *
+     * @param  array<int, array<string, mixed>>  $items
+     */
+    public function enabledForBasket(string $currency, array $items): bool
+    {
+        if (! $this->enabledFor($currency)) {
+            return false;
+        }
+
+        if (config('crm.recurring')) {
+            return true;
+        }
+
+        foreach ($items as $item) {
+            if (($item['frequency'] ?? 'one-off') !== 'one-off') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /** Did this browser session opt in via the private preview link? */
     public function previewActive(): bool
     {

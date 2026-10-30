@@ -24,6 +24,12 @@ return [
 
     'timeout' => 20,
 
+    // Recurring gifts (weekly/monthly/yearly) are paid through the CRM's
+    // GoCardless connection. While that is not working, keep this false: a
+    // basket with a recurring gift then stays on the site's own PayPal flow so
+    // donors never hit an error. Set CRM_RECURRING=true once GoCardless works.
+    'recurring' => env('CRM_RECURRING', false),
+
     /*
     | Private test link. While 'enabled' is false the CRM checkout is hidden
     | from donors, but anyone who opens /donate/crm-preview/{this token} gets it

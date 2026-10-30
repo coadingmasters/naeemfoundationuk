@@ -237,7 +237,7 @@ class DonationController extends Controller
 
         // CRM flow: the CRM takes the payment (one-off AND recurring lines can share a
         // basket), so the PayPal-only restrictions and the cover-the-fee box don't apply.
-        $useCrm = app(CrmDonations::class)->enabledFor((string) Country::get('currency', 'GBP'));
+        $useCrm = app(CrmDonations::class)->enabledForBasket((string) Country::get('currency', 'GBP'), DonationCart::items());
 
         $subtotal = DonationCart::subtotal();
         $feeAmount = DonationCart::fee();

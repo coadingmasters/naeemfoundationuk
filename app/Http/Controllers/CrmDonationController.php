@@ -78,11 +78,12 @@ class CrmDonationController extends Controller
 
         $currency = (string) Country::get('currency', 'GBP');
 
-        if (! $this->crm->enabledFor($currency)) {
+        $items = DonationCart::items();
+
+        if (! $this->crm->enabledForBasket($currency, $items)) {
             return redirect()->route('donate.payment');
         }
 
-        $items = DonationCart::items();
         $details = $session['details'] ?? [];
         $reference = $session['reference'];
 
