@@ -184,7 +184,6 @@
                                 @php
                                     $schedWord = ['one-off' => 'One-time', 'daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly', 'yearly' => 'Yearly'];
                                     $schedEvery = ['daily' => 'day', 'weekly' => 'week', 'monthly' => 'month', 'yearly' => 'year'];
-                                    $hasDirectDebit = collect($schedules)->contains(fn ($x) => in_array($x['frequency'], ['weekly', 'monthly', 'yearly'], true));
                                 @endphp
                                 <div class="mt-5 rounded-xl border border-brand/25 bg-brand/5 p-4 text-sm text-navy-dark">
                                     <p class="font-semibold">Your gifts</p>
@@ -204,9 +203,6 @@
                                     </ul>
                                     <p class="mt-3 text-xs leading-relaxed text-gray-600">
                                         You&rsquo;ll pay securely on our donation partner&rsquo;s page, then come straight back here.
-                                        @if ($hasDirectDebit)
-                                            Weekly, monthly and yearly gifts are set up by Direct Debit, so you may be asked to set that up first.
-                                        @endif
                                         You can stop a regular gift at any time by contacting us.
                                     </p>
                                 </div>
