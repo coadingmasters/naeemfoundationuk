@@ -99,9 +99,16 @@ class CrmDonationController extends Controller
         } catch (CrmException $e) {
             Log::error('CRM checkout could not start', ['reference' => $reference, 'error' => $e->getMessage()]);
 
+            $message = 'We could not start your payment just now. Nothing has been charged — please try again in a moment or contact us.';
+
+            // The private test link also sees the CRM's own reason, so it can be passed on.
+            if (session('crm_preview')) {
+                $message .= ' [CRM test: '.$e->getMessage().']';
+            }
+
             return redirect()
                 ->route('donate.payment')
-                ->withErrors(['crm' => 'We could not start your payment just now. Nothing has been charged — please try again in a moment or contact us.']);
+                ->withErrors(['crm' => $message]);
         }
 
         // Keep our own record in step: pending until the CRM confirms payment.

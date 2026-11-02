@@ -228,7 +228,9 @@ class CrmDonations
                 'body' => mb_substr($response->body(), 0, 1000),
             ]);
 
-            throw new CrmException('The donation service did not accept the basket (HTTP '.$response->status().').');
+            $reason = trim((string) $response->json('message', ''));
+
+            throw new CrmException('The donation service did not accept the basket (HTTP '.$response->status().')'.($reason !== '' ? ': '.mb_substr($reason, 0, 300) : '.'));
         }
 
         $redirect = (string) $response->json('redirectUrl', '');
