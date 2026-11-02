@@ -33,6 +33,7 @@ class Donation extends Model
         'status',
         'payment_provider',
         'payment_id',
+        'crm_details',
         'subscription_id',
         'recurring_amount',
         'subscription_status',
@@ -43,6 +44,7 @@ class Donation extends Model
     protected $casts = [
         'items' => 'array',
         'contact_consent' => 'array',
+        'crm_details' => 'array',
         'paid_at' => 'datetime',
         'next_billing_at' => 'datetime',
         'gift_aid' => 'boolean',

@@ -128,6 +128,7 @@ class CrmDonationController extends Controller
                         'status' => 'pending',
                         'payment_provider' => 'crm',
                         'payment_id' => $payload['cartReference'],
+                        'crm_details' => self::crmDetails($cart),
                     ])
                     ->save();
             }
@@ -171,6 +172,10 @@ class CrmDonationController extends Controller
 
         $paid = $state === 'paid';
 
+        if (isset($remote)) {
+            $this->saveCrmDetails($donation, $remote, $request);
+        }
+
         if ($paid) {
             $this->markPaid($donation);
         }
@@ -184,6 +189,47 @@ class CrmDonationController extends Controller
         }
 
         return view('donate.thank-you', $this->viewData($donation, $paid, $state));
+    }
+
+    /**
+     * What the CRM said about the cart: its ids, the provider each gift went through
+     * and its own status. Kept on our donation row for the admin.
+     *
+     * @param  array<string, mixed>  $cart
+     * @return array<string, mixed>
+     */
+    private static function crmDetails(array $cart, array $previous = []): array
+    {
+        $items = array_map(fn ($i) => [
+            'donation_id' => $i['donationId'] ?? null,
+            'frequency' => $i['frequency'] ?? null,
+            'provider' => $i['paymentProvider'] ?? $i['provider'] ?? null,
+            'first_payment_by_card' => (bool) ($i['firstPaymentByCard'] ?? false),
+            'status' => $i['status'] ?? null,
+        ], (array) ($cart['items'] ?? []));
+
+        return array_filter([
+            'cart_id' => $cart['cartId'] ?? ($previous['cart_id'] ?? null),
+            'cart_status' => $cart['status'] ?? ($previous['cart_status'] ?? null),
+            'providers' => array_values(array_unique(array_filter(array_column($items, 'provider')))),
+            'items' => $items ?: ($previous['items'] ?? []),
+            'checked_at' => isset($previous['checked_at']) ? $previous['checked_at'] : null,
+        ], fn ($v) => $v !== null);
+    }
+
+    /** Refresh the stored CRM details from the CRM's answer when the donor comes back. */
+    private function saveCrmDetails(Donation $donation, array $remote, Request $request): void
+    {
+        try {
+            $details = self::crmDetails($remote, (array) $donation->crm_details);
+            $details['checked_at'] = now()->toDateTimeString();
+
+            Donation::withoutGlobalScope('region')
+                ->whereKey($donation->getKey())
+                ->update(['crm_details' => json_encode($details)]);
+        } catch (Throwable $e) {
+            Log::error('CRM details update failed', ['reference' => $donation->reference, 'error' => $e->getMessage()]);
+        }
     }
 
     /** Mark paid exactly once, and only the winner of that race sends the emails. */

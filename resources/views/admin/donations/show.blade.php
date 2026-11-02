@@ -97,7 +97,12 @@
                     </div>
                     <div>
                         <dt class="text-xs font-medium text-gray-400">Method</dt>
-                        <dd class="font-semibold text-navy-dark">{{ $donation->payment_provider ? ucfirst($donation->payment_provider) : '—' }}</dd>
+                        <dd class="font-semibold text-navy-dark">@if ($donation->payment_provider === 'crm')
+                                CRM{{ ! empty($donation->crm_details['providers']) ? ' · '.implode(', ', $donation->crm_details['providers']) : '' }}
+                            @else
+                                {{ $donation->payment_provider ? ucfirst($donation->payment_provider) : '—' }}
+                            @endif
+                        </dd>
                     </div>
                     <div>
                         <dt class="text-xs font-medium text-gray-400">Status</dt>
@@ -106,7 +111,17 @@
                     <div class="sm:col-span-2">
                         <dt class="text-xs font-medium text-gray-400">Transaction ID</dt>
                         <dd class="break-all font-mono text-xs text-navy-dark">{{ $donation->payment_id ?: '—' }}</dd>
-                        @if ($donation->payment_id)
+                        @if ($donation->payment_provider === 'crm')
+                            <p class="mt-1 text-xs text-gray-400">
+                                This is the CRM cart reference. Find it in the CRM under Donations.
+                                @if (! empty($donation->crm_details['cart_id']))
+                                    <br>CRM cart ID: <span class="font-mono">{{ $donation->crm_details['cart_id'] }}</span>
+                                @endif
+                                @if (! empty($donation->crm_details['cart_status']))
+                                    <br>CRM status: {{ $donation->crm_details['cart_status'] }}
+                                @endif
+                            </p>
+                        @elseif ($donation->payment_id)
                             <p class="mt-1 text-xs text-gray-400">Search this ID in your PayPal dashboard to find the transaction.</p>
                         @endif
                     </div>
