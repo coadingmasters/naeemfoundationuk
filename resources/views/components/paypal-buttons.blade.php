@@ -9,13 +9,15 @@
     @param string $captureUrl   Route that finalises it (capture, or subscription record)
     @param string|null $form    Optional selector of a details form to send
     @param string $mode         'order' (one-off) or 'subscription' (monthly)
+    @param string|null $line    Basket line this subscription is for (one subscription per regular gift)
 --}}
-@props(['orderUrl', 'captureUrl', 'form' => null, 'mode' => 'order'])
+@props(['orderUrl', 'captureUrl', 'form' => null, 'mode' => 'order', 'line' => null])
 
 <div class="nf-pay"
      data-paypal
      data-paypal-mode="{{ $mode }}"
      @if ($form) data-form="{{ $form }}" @endif
+     @if ($line) data-line="{{ $line }}" @endif
      data-order-url="{{ $orderUrl }}"
      data-capture-url="{{ $captureUrl }}">
 

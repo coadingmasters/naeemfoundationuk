@@ -210,6 +210,24 @@
                                         You can stop a regular gift at any time by contacting us.
                                     </p>
                                 </div>
+                            @elseif ($splitLine ?? null)
+                                @php
+                                    $splitEvery = ['daily' => 'day', 'weekly' => 'week', 'monthly' => 'month', 'yearly' => 'year'][$splitLine['frequency']] ?? 'month';
+                                    $splitAmount = \App\Support\DonationCart::lineSubtotal($splitLine);
+                                @endphp
+                                <div class="mt-5 rounded-xl border border-brand/25 bg-brand/5 p-4 text-sm text-navy-dark">
+                                    <p class="font-semibold">Regular gift {{ $splitStep }} of {{ $splitOf }}</p>
+                                    <p class="mt-1">
+                                        <strong>{{ $splitLine['cause'] }}</strong> &mdash; {{ money($splitAmount) }} every {{ $splitEvery }}, until you cancel.
+                                        @if ($splitStep === 1 && ($oneOffPart ?? 0) > 0)
+                                            Your one-off gifts of {{ money($oneOffPart) }} are taken today with this first one.
+                                        @endif
+                                    </p>
+                                    <p class="mt-2 text-xs text-gray-600">
+                                        Each regular gift is its own PayPal subscription, so you can stop any one of them without affecting the others.
+                                        @if ($splitStep < $splitOf) After this one you&rsquo;ll set up the next. @endif
+                                    </p>
+                                </div>
                             @elseif ($mixedSchedules ?? false)
                                 <div class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
                                     Your basket has regular gifts on <strong>different schedules</strong> (for example weekly and monthly).
@@ -240,6 +258,12 @@
                                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </button>
                                     </form>
+                                @elseif ($splitLine ?? null)
+                                    <x-paypal-buttons
+                                        mode="subscription"
+                                        :line="$splitLine['id']"
+                                        :order-url="route('paypal.subscription.plan')"
+                                        :capture-url="route('paypal.subscription.record')" />
                                 @elseif ($mixedSchedules ?? false)
                                     {{-- No payment until the basket has a single schedule. --}}
                                 @elseif ($isRecurring)

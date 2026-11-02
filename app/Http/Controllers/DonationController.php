@@ -259,8 +259,12 @@ class DonationController extends Controller
             // Mixed baskets: only the recurring lines repeat; one-off lines are charged once.
             'recurringPart' => DonationCart::recurringSubtotal(),
             'oneOffPart' => round($subtotal - DonationCart::recurringSubtotal(), 2),
-            // PayPal runs one schedule per subscription — weekly + monthly can't be paid together.
-            'mixedSchedules' => ! $useCrm && count(DonationCart::recurringFrequencies()) > 1,
+            // Two or more regular gifts on PayPal: each is its own subscription, set up one at a time.
+            'splitLine' => ! $useCrm && DonationCart::splitRecurring() ? DonationCart::nextSplitLine() : null,
+            'splitStep' => count((array) session('donation.subscribed_lines', [])) + 1,
+            'splitOf' => count(DonationCart::recurringLines()),
+            // With one subscription per gift there is no "different schedules" problem any more.
+            'mixedSchedules' => ! $useCrm && ! DonationCart::splitRecurring() && count(DonationCart::recurringFrequencies()) > 1,
             'useCrm' => $useCrm,
             // One summary line per schedule, for the CRM wording (e.g. one-time, monthly, weekly).
             'schedules' => $useCrm ? $this->schedules() : [],

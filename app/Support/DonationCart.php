@@ -179,12 +179,74 @@ class DonationCart
     /** The PayPal interval unit for the basket, or null for a one-off. */
     public static function intervalUnit(): ?string
     {
-        return match (self::frequency()) {
+        return self::intervalUnitFor(self::frequency());
+    }
+
+    /** The PayPal interval unit for one frequency, or null for a one-off. */
+    public static function intervalUnitFor(string $frequency): ?string
+    {
+        return match ($frequency) {
             'daily' => 'DAY',
             'weekly' => 'WEEK',
             'monthly' => 'MONTH',
             'yearly' => 'YEAR',
             default => null,
         };
+    }
+
+    /**
+     * The basket's recurring lines, in basket order.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function recurringLines(): array
+    {
+        return array_values(array_filter(
+            self::items(),
+            fn ($i) => ($i['frequency'] ?? 'one-off') !== 'one-off',
+        ));
+    }
+
+    /**
+     * Two or more recurring lines: each is set up as its OWN PayPal subscription, so
+     * every gift keeps its own schedule and can be cancelled on its own.
+     */
+    public static function splitRecurring(): bool
+    {
+        return count(self::recurringLines()) >= 2;
+    }
+
+    /**
+     * The recurring line the donor sets up next: the first one without a subscription
+     * yet. Gifts are set up one at a time, in basket order, so the basket's one-off part
+     * is charged exactly once (with the first subscription).
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function nextSplitLine(): ?array
+    {
+        $done = (array) session('donation.subscribed_lines', []);
+
+        foreach (self::recurringLines() as $line) {
+            if (! isset($done[$line['id']])) {
+                return $line;
+            }
+        }
+
+        return null;
+    }
+
+    /** One line's total (amount x quantity). */
+    public static function lineSubtotal(array $item): float
+    {
+        return round((float) ($item['amount'] ?? 0) * (int) ($item['qty'] ?? 1), 2);
+    }
+
+    /** What one recurring line is charged each period (+ its fee share when the donor covers it). */
+    public static function lineRecurringAmount(array $item, bool $coverFee = false): float
+    {
+        $line = self::lineSubtotal($item);
+
+        return round($line + ($coverFee ? round($line * self::FEE_RATE, 2) : 0), 2);
     }
 }

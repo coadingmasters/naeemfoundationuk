@@ -174,6 +174,11 @@ class PayPalController extends Controller
             return response()->json(['error' => 'Your basket has expired. Please start again.'], 422);
         }
 
+        // Two or more recurring gifts: one PayPal subscription each, set up one at a time.
+        if (DonationCart::splitRecurring()) {
+            return $this->splitSubscriptionPlan($request, $donation);
+        }
+
         // One subscription can only repeat on one schedule.
         if (count(DonationCart::recurringFrequencies()) > 1) {
             return response()->json(['error' => 'Your basket has regular gifts on different schedules (e.g. weekly and monthly). Please remove one and give it separately.'], 422);
@@ -211,6 +216,10 @@ class PayPalController extends Controller
     /** Record an approved monthly subscription and complete the donation. */
     public function subscriptionRecord(Request $request): JsonResponse
     {
+        if (DonationCart::splitRecurring()) {
+            return $this->splitSubscriptionRecord($request);
+        }
+
         $donation = session('donation');
         $pending = session('donation.pending_subscription');
 
@@ -291,6 +300,196 @@ class PayPalController extends Controller
         ]]);
 
         return response()->json(['redirect' => route('donate.thank-you')]);
+    }
+
+    // ------------------------------------------- one subscription per recurring gift
+
+    /** Reference for the n-th subscription of a basket: the first keeps the basket's own reference. */
+    private function splitReference(string $reference, int $step): string
+    {
+        return $step === 1 ? $reference : $reference.'-'.$step;
+    }
+
+    /** Create (or reuse) the plan for the NEXT recurring gift only. */
+    private function splitSubscriptionPlan(Request $request, array $donation): JsonResponse
+    {
+        $line = DonationCart::nextSplitLine();
+
+        if (! $line || (string) $request->input('line') !== (string) $line['id']) {
+            return response()->json(['error' => 'Please set up your regular gifts one at a time, in the order shown.'], 422);
+        }
+
+        $done = (array) session('donation.subscribed_lines', []);
+        $coverFee = $request->boolean('cover_fee');
+        $amount = DonationCart::lineRecurringAmount($line, $coverFee);
+        // The basket's one-off gifts are charged once, with the first subscription only.
+        $setupFee = $done === [] ? DonationCart::oneOffAmount($coverFee) : 0.0;
+        $currency = (string) Country::get('currency', 'GBP');
+        $frequency = (string) $line['frequency'];
+
+        try {
+            $planId = $this->paypal->ensureRecurringPlan(
+                $amount,
+                $currency,
+                DonationCart::intervalUnitFor($frequency) ?? 'MONTH',
+                $setupFee,
+            );
+        } catch (Throwable $e) {
+            return response()->json(['error' => 'Could not set up recurring giving. Please try again.'], 502);
+        }
+
+        session(['donation.pending_subscriptions.'.$line['id'] => [
+            'plan_id' => $planId,
+            'cover_fee' => $coverFee,
+            'amount' => $amount,
+            'setup_fee' => $setupFee,
+            'currency' => $currency,
+            'frequency' => $frequency,
+        ]]);
+
+        return response()->json([
+            'plan_id' => $planId,
+            'reference' => $this->splitReference($donation['reference'], count($done) + 1),
+        ]);
+    }
+
+    /**
+     * Record one approved subscription as its own donation (its own reference, its own
+     * PayPal subscription id, so PayPal's webhook and the admin's cancel button work on
+     * that gift alone). After the last gift the basket is emptied.
+     */
+    private function splitSubscriptionRecord(Request $request): JsonResponse
+    {
+        $donation = session('donation');
+        $line = DonationCart::nextSplitLine();
+        $pending = $line ? session('donation.pending_subscriptions.'.$line['id']) : null;
+
+        if (! $donation || ! $line || ! $pending || (string) $request->input('line') !== (string) $line['id']) {
+            return response()->json(['error' => 'Your session has expired. Please start again.'], 422);
+        }
+
+        $subscriptionId = (string) $request->input('subscription_id');
+
+        if ($subscriptionId === '') {
+            return response()->json(['error' => 'This subscription could not be verified.'], 422);
+        }
+
+        try {
+            $sub = $this->paypal->getSubscription($subscriptionId);
+        } catch (Throwable $e) {
+            return response()->json(['error' => 'Could not confirm your regular gift.'], 502);
+        }
+
+        $status = (string) ($sub['status'] ?? '');
+
+        if (($sub['plan_id'] ?? null) !== ($pending['plan_id'] ?? null) || ! in_array($status, ['ACTIVE', 'APPROVAL_PENDING', 'APPROVED'], true)) {
+            Log::error('PayPal subscription verify failed', ['reference' => $donation['reference'], 'status' => $status]);
+
+            return response()->json(['error' => 'Your regular gift could not be verified. Please contact us.'], 422);
+        }
+
+        $done = (array) session('donation.subscribed_lines', []);
+        $step = count($done) + 1;
+        $reference = $this->splitReference($donation['reference'], $step);
+        $coverFee = (bool) $pending['cover_fee'];
+
+        // This gift's own row: the line itself, plus (first row only) the one-off gifts.
+        $oneOffItems = $done === [] ? array_values(array_filter(
+            DonationCart::items(),
+            fn ($i) => ($i['frequency'] ?? 'one-off') === 'one-off',
+        )) : [];
+        $rowItems = array_merge($oneOffItems, [$line]);
+        $subtotal = round(array_sum(array_map(fn ($i) => DonationCart::lineSubtotal($i), $rowItems)), 2);
+        $summary = [
+            'items' => $rowItems,
+            'subtotal' => $subtotal,
+            'fee' => $coverFee ? round($subtotal * DonationCart::FEE_RATE, 2) : 0.0,
+            // Charged today: the recurring amount plus any one-off gifts.
+            'total' => round((float) $pending['amount'] + (float) $pending['setup_fee'], 2),
+        ];
+        $nextBilling = $sub['billing_info']['next_billing_time'] ?? null;
+
+        try {
+            $this->saveSplitDonationRow($donation, $step, $reference, $summary, $pending, $subscriptionId, $status, $nextBilling, $coverFee);
+        } catch (Throwable $e) {
+            Log::error('PayPal subscription save failed', ['reference' => $reference, 'error' => $e->getMessage()]);
+        }
+
+        $rowDonation = ['reference' => $reference] + $donation;
+        $this->sendDonationReceipt($rowDonation, $summary, (string) $pending['currency']);
+        $this->notifyOwnerOfDonation($rowDonation, $summary, (string) $pending['currency'], $subscriptionId, true);
+
+        $done[$line['id']] = [
+            'reference' => $reference,
+            'total' => $summary['total'],
+            'amount' => (float) $pending['amount'],
+            'setup_fee' => (float) $pending['setup_fee'],
+            'frequency' => $pending['frequency'],
+        ];
+        session(['donation.subscribed_lines' => $done]);
+        session()->forget('donation.pending_subscriptions.'.$line['id']);
+
+        if (DonationCart::nextSplitLine()) {
+            // More gifts to set up: back to the payment step for the next one.
+            return response()->json(['redirect' => route('donate.payment')]);
+        }
+
+        $gifts = array_values($done);
+        DonationCart::clear();
+        session()->forget(['donation', 'donation_consent']);
+        session(['donation_completed' => [
+            'reference' => $donation['reference'],
+            'total' => round(array_sum(array_column($gifts, 'total')), 2),
+            'recurring_amount' => round(array_sum(array_column($gifts, 'amount')), 2),
+            'one_off' => round(array_sum(array_column($gifts, 'setup_fee')), 2),
+            'recurring' => true,
+            'frequency' => $gifts[0]['frequency'],
+            'gifts' => count($gifts),
+            'mixed_frequencies' => count(array_unique(array_column($gifts, 'frequency'))) > 1,
+        ]]);
+
+        return response()->json(['redirect' => route('donate.thank-you')]);
+    }
+
+    /** The first gift fills the donation row made at checkout; later ones get a row of their own. */
+    private function saveSplitDonationRow(array $donation, int $step, string $reference, array $summary, array $pending, string $subscriptionId, string $status, ?string $nextBilling, bool $coverFee): void
+    {
+        if (! Schema::hasTable('donations')) {
+            return;
+        }
+
+        $fields = [
+            'items' => $summary['items'],
+            'subtotal' => $summary['subtotal'],
+            'fee' => $summary['fee'],
+            'total' => $summary['total'],
+            'recurring_amount' => (float) $pending['amount'],
+            'cover_fee' => $coverFee,
+            'frequency' => $pending['frequency'],
+            'status' => 'active',
+            'payment_provider' => 'paypal',
+            'subscription_id' => $subscriptionId,
+            'subscription_status' => $status,
+            'next_billing_at' => $nextBilling ? Carbon::parse($nextBilling) : null,
+            'paid_at' => now(),
+        ];
+
+        $base = Donation::withoutGlobalScope('region')->where('reference', $donation['reference'])->first();
+
+        if (! $base) {
+            return;
+        }
+
+        if ($step === 1) {
+            $base->fill($fields)->save();
+
+            return;
+        }
+
+        Donation::create($base->only([
+            'region', 'first_name', 'last_name', 'email', 'phone', 'billing_address', 'city', 'postcode',
+            'gift_aid', 'contact_consent', 'on_behalf_of_organisation', 'organisation_name', 'currency',
+        ]) + ['reference' => $reference] + $fields);
     }
 
     // -------------------------------------------------------------------- shop

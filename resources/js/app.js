@@ -604,6 +604,9 @@ function setupPayPal() {
         const coverFee = document.querySelector('[data-cover-fee]');
         if (coverFee) payload.cover_fee = coverFee.checked ? 1 : 0;
 
+        // One subscription per regular gift: say which gift this button is for.
+        if (root.dataset.line) payload.line = root.dataset.line;
+
         if (formSelector) {
             const form = document.querySelector(formSelector);
             if (form && !form.reportValidity()) {
@@ -658,7 +661,7 @@ function setupPayPal() {
             }
             return actions.subscription.create({ plan_id: plan.plan_id, custom_id: plan.reference });
         };
-        config.onApprove = (data) => finish({ subscription_id: data.subscriptionID });
+        config.onApprove = (data) => finish({ subscription_id: data.subscriptionID, line: root.dataset.line });
     } else {
         // One-off: create an order, then capture it.
         config.createOrder = async () => {

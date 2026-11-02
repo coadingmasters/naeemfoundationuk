@@ -60,6 +60,8 @@
                     <p class="mt-3 text-base text-gray-600 sm:text-lg">
                         @if ($pending)
                             We have received your donation and are confirming the payment. Thank you for your generosity.
+                        @elseif ($recurring && ($gifts ?? 1) > 1)
+                            Your {{ $gifts }} regular gifts are now set up — thank you for your ongoing support.
                         @elseif ($recurring)
                             Your {{ $frequency }} gift is now set up — thank you for your ongoing support.
                         @else
@@ -70,8 +72,13 @@
                     {{-- Status pill --}}
                     <div class="mt-8 inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-2xl bg-white px-6 py-4 shadow-lg shadow-black/5">
                         <span class="text-sm text-gray-600">
-                            {{ $recurring ? ucfirst($frequency).' gift:' : 'Donation:' }}
-                            <span class="font-bold text-navy-dark">{{ money($recurring ? ($recurring_amount ?? $total) : $total) }}{{ $recurring ? $recurShort : '' }}</span>
+                            @if ($recurring && ($gifts ?? 1) > 1)
+                                Regular gifts ({{ $gifts }}):
+                                <span class="font-bold text-navy-dark">{{ money($recurring_amount ?? $total) }}{{ ($mixed_frequencies ?? false) ? ' in total' : $recurShort }}</span>
+                            @else
+                                {{ $recurring ? ucfirst($frequency).' gift:' : 'Donation:' }}
+                                <span class="font-bold text-navy-dark">{{ money($recurring ? ($recurring_amount ?? $total) : $total) }}{{ $recurring ? $recurShort : '' }}</span>
+                            @endif
                             @if ($recurring && ($one_off ?? 0) > 0)
                                 <span class="text-gray-400">&middot;</span> One-off today: <span class="font-bold text-navy-dark">{{ money($one_off) }}</span>
                             @endif
@@ -93,6 +100,10 @@
                     @if ($recurring && $viaCrm)
                         <p class="mx-auto mt-4 max-w-md text-xs leading-relaxed text-gray-500">
                             Your regular gift will be collected each {{ $recurWord }}. You can stop it at any time by contacting us.
+                        </p>
+                    @elseif ($recurring && ($gifts ?? 1) > 1)
+                        <p class="mx-auto mt-4 max-w-md text-xs leading-relaxed text-gray-500">
+                            Each regular gift is its own PayPal subscription and is taken on its own schedule. You can cancel any of them at any time from your PayPal account or by contacting us.
                         </p>
                     @elseif ($recurring)
                         <p class="mx-auto mt-4 max-w-md text-xs leading-relaxed text-gray-500">
