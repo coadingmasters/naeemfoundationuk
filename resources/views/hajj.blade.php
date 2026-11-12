@@ -162,6 +162,84 @@
         </div>
     </section>
 
+    {{-- ===================== DONATE FOR HAJJ (preset amounts + custom) ===================== --}}
+    @php
+        $hajjAmounts = [5, 10, 15, 20, 50, 100];
+        $hajjDefault = 10;
+    @endphp
+    <section id="donate" class="scroll-mt-24 pb-16">
+        <div class="nf-container">
+            <div class="mx-auto max-w-xl rounded-2xl bg-white p-6 shadow-xl shadow-navy-dark/10 ring-1 ring-navy/5 sm:p-8" data-hajj-donate>
+                <p class="text-center text-sm font-semibold text-brand">Donate for Hajj</p>
+                <h3 class="mt-2 text-center text-2xl font-bold text-navy-dark sm:text-3xl">Help Someone Reach the Holy Land</h3>
+                <p class="mt-3 text-center text-sm leading-relaxed text-gray-600">
+                    Give what you can — every amount helps a pilgrim fulfil this pillar of Islam. Choose an amount or enter your own.
+                </p>
+
+                <form method="POST" action="{{ route('donate.add') }}" data-cart-skip data-hajj-form class="mt-6">
+                    @csrf
+                    <input type="hidden" name="image" value="images/hajj-kaaba.jpg">
+                    <input type="hidden" name="frequency" value="one-off">
+                    <input type="hidden" name="cause" value="Hajj Donation">
+                    <input type="hidden" name="amount" value="{{ $hajjDefault }}" data-hajj-amount>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        @foreach ($hajjAmounts as $amount)
+                            <button type="button" data-hajj-choice="{{ $amount }}"
+                                    class="nf-choice py-2.5 {{ $amount === $hajjDefault ? 'is-selected' : '' }}">{{ region('symbol') }}{{ $amount }}</button>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="hajj-custom" class="mb-1.5 block text-sm font-bold text-navy-dark">Custom amount</label>
+                        <input id="hajj-custom" type="number" min="1" step="1" inputmode="numeric" data-whole-number data-hajj-custom
+                               placeholder="Enter your amount ({{ region('symbol') }})"
+                               class="h-11 w-full rounded-md border border-gray-300 px-3 text-sm text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30">
+                    </div>
+
+                    <button type="submit" class="btn-navy mt-5 w-full py-3">
+                        Donate Now
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+
+                    @include('partials.payment-icons')
+                </form>
+            </div>
+        </div>
+    </section>
+
+    @push('scripts')
+    <script>
+        // Hajj donate box — a preset button or the custom field sets the amount.
+        (function () {
+            const form = document.querySelector('[data-hajj-form]');
+            if (!form) return;
+
+            const amountInput = form.querySelector('[data-hajj-amount]');
+            const customInput = form.querySelector('[data-hajj-custom]');
+            const buttons = [...form.querySelectorAll('[data-hajj-choice]')];
+
+            buttons.forEach((btn) => btn.addEventListener('click', () => {
+                amountInput.value = btn.dataset.hajjChoice;
+                customInput.value = '';
+                buttons.forEach((b) => b.classList.toggle('is-selected', b === btn));
+            }));
+
+            customInput.addEventListener('input', () => {
+                buttons.forEach((b) => b.classList.remove('is-selected'));
+                amountInput.value = customInput.value;
+            });
+
+            form.addEventListener('submit', (e) => {
+                if (!(Number(amountInput.value) >= 1)) {
+                    e.preventDefault();
+                    customInput.focus();
+                }
+            });
+        })();
+    </script>
+    @endpush
+
     {{-- ===================== STEPS OF HAJJ (VIDEO GALLERY) ===================== --}}
     @if ($stepVideos->isNotEmpty())
         <section class="bg-cream py-16 sm:py-20">
