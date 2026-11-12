@@ -17,12 +17,14 @@ class Country
         return config('countries.list', []);
     }
 
-    /** The active region code, falling back to the configured default. */
+    /**
+     * The active region code. The site serves the UK only, so this is always the
+     * default (GB) — an old nf_region cookie from when visitors could pick a
+     * region is ignored.
+     */
     public static function code(): string
     {
-        $code = request()->cookie(self::COOKIE);
-
-        return array_key_exists($code, self::all()) ? $code : config('countries.default', 'GB');
+        return config('countries.default', 'GB');
     }
 
     /** The active region's config array. */
@@ -37,10 +39,10 @@ class Country
         return self::current()[$key] ?? $default;
     }
 
-    /** Has the visitor explicitly chosen a region yet? Drives the first-visit popup. */
+    /** The UK is fixed, so a region is always "chosen" (there is no first-visit popup). */
     public static function chosen(): bool
     {
-        return array_key_exists(request()->cookie(self::COOKIE), self::all());
+        return true;
     }
 
     /** Format a money amount with the active region's currency symbol. */

@@ -19,8 +19,6 @@
 
     @include('partials.footer')
 
-    {{-- First-visit region / currency chooser (UK · US · Canada) --}}
-    @include('partials.country-popup')
 
     {{-- Cookie consent (shows once until the visitor chooses) --}}
     @include('partials.cookie-consent')

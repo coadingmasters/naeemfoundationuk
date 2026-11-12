@@ -55,13 +55,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/region/{code}', function (string $code) {
-    abort_unless(array_key_exists($code, config('countries.list')), 404);
-
-    return redirect()->back()->withCookie(
-        cookie()->forever(\App\Support\Country::COOKIE, $code)
-    );
-})->name('region.set');
 Route::view('/about', 'about')->name('about');
 Route::view('/history', 'history')->name('history');
 Route::view('/careers', 'career')->name('careers');
