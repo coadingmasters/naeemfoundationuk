@@ -606,6 +606,7 @@ class PayPalController extends Controller
                     'items' => $orderItems,
                     'subtotal' => $pending['total'],
                     'currency' => $pending['currency'],
+                    'region' => Country::code(),
                     'status' => 'paid',
                     'payment_provider' => 'paypal',
                     'payment_id' => $capture['capture_id'],

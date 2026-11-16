@@ -3,8 +3,9 @@
 namespace App\Support;
 
 /**
- * Resolves the visitor's active region (UK / US / Canada) from a cookie and
- * exposes its currency, phone number, charity details and Gift Aid setting.
+ * Resolves the active region (UK / Canada) from the domain the site is served
+ * on and exposes its currency, phone, email, address, charity details and
+ * Gift Aid setting.
  */
 class Country
 {
@@ -18,13 +19,18 @@ class Country
     }
 
     /**
-     * The active region code. The site serves the UK only, so this is always the
-     * default (GB) — an old nf_region cookie from when visitors could pick a
-     * region is ignored.
+     * The active region code, decided by the domain (naeemfoundation.ca -> CA,
+     * everything else -> the default, GB). Visitors don't choose; an old
+     * nf_region cookie from when they could is ignored.
      */
     public static function code(): string
     {
-        return config('countries.default', 'GB');
+        $host = strtolower(request()->getHost());
+        $code = config('countries.hosts', [])[$host] ?? null;
+
+        return $code !== null && array_key_exists($code, self::all())
+            ? $code
+            : config('countries.default', 'GB');
     }
 
     /** The active region's config array. */
@@ -39,7 +45,7 @@ class Country
         return self::current()[$key] ?? $default;
     }
 
-    /** The UK is fixed, so a region is always "chosen" (there is no first-visit popup). */
+    /** The region is fixed by the domain, so it is always "chosen" (there is no first-visit popup). */
     public static function chosen(): bool
     {
         return true;

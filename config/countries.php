@@ -4,16 +4,26 @@
 |--------------------------------------------------------------------------
 | Regions / countries the site operates in
 |--------------------------------------------------------------------------
-| The visitor picks one on first visit (see the country popup). The choice
-| is stored in a cookie and drives the currency, phone number, charity
-| registration number and Gift Aid availability across the whole site.
+| The region comes from the domain the visitor is on (see `hosts`). It drives
+| the currency, phone number, email, address, charity registration number,
+| social links and Gift Aid availability across the whole site.
 |
-| Content stays English everywhere — only these region-specific values change.
+| Pages and content are the same everywhere — only these values change.
 */
 
 return [
-    // Fallback used until the visitor chooses a region.
+    // Used for every domain not listed in `hosts` (naeemfoundation.co.uk).
     'default' => 'GB',
+
+    // Domain -> region. A visitor on naeemfoundation.ca sees Canadian details.
+    'hosts' => [
+        'naeemfoundation.ca' => 'CA',
+        'www.naeemfoundation.ca' => 'CA',
+    ],
+
+    // Admin-managed content (causes, appeals, slides…) is shared: every domain
+    // shows this region's content, whatever its currency.
+    'content_region' => 'GB',
 
     'list' => [
         'GB' => [
@@ -26,6 +36,16 @@ return [
             'locale' => 'en_GB',
             'dial' => '+44',
             'phone' => '+44 20 7078 8118',
+            'footer_phone' => '+44 7960185682 : +44 7960185682',
+            'mobile' => '+44 7960 185682',
+            'email' => 'donate@naeemfoundation.co.uk',
+            'hajj_email' => 'hajj@naeemfoundation.co.uk',
+            'address' => [
+                '2 Falcon Gate, Shire Park',
+                'Welwyn Garden City, AL7 1TW',
+                'United Kingdom',
+            ],
+            'website' => 'https://naeemfoundation.co.uk',
             'charity_no' => '1199466',
             'charity_label' => 'Registered Charity No.',
             'gift_aid' => true,
@@ -54,10 +74,31 @@ return [
             'symbol' => 'CA$',
             'locale' => 'en_CA',
             'dial' => '+1',
-            // Same donation line for every region (no separate US/Canada office).
-            'phone' => '+44 20 7078 8118',
-            'charity_no' => '1199466',
-            'charity_label' => 'UK Registered Charity No.',
+            'phone' => '+1 437 333 4342',
+            'footer_phone' => '+1 437 333 4342',
+            'mobile' => '+1 437 333 4342',
+            'email' => 'contact@naeemfoundation.ca',
+            'hajj_email' => 'contact@naeemfoundation.ca',
+            'address' => [
+                '1403 Hill Street',
+                'Milton, ON, L9T 6M6',
+                'Canada',
+            ],
+            'website' => 'https://naeemfoundation.ca',
+            // Social profiles for this domain (only the ones listed show).
+            'social' => [
+                'facebook' => 'https://www.facebook.com/naeemfoundationcanada',
+                'instagram' => 'https://www.instagram.com/naeemfoundationcanada/',
+            ],
+            // Shown in the footer for bank-transfer donations (as on the old .ca site).
+            'bank' => [
+                'Bank' => 'TD Canada Trust',
+                'Account name' => 'Naeem Foundation Canada',
+                'Account number' => '18685239071',
+                'SWIFT / BIC' => 'TDOMCATTTOR',
+            ],
+            'charity_no' => '721376226RR0001',
+            'charity_label' => 'Charity No.',
             'gift_aid' => false, // Gift Aid is a UK-only tax relief.
         ],
     ],

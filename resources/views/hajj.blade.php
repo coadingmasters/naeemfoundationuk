@@ -286,8 +286,8 @@
                 </p>
                 <div class="mt-6 rounded-xl border border-brand/15 bg-cream/60 p-4 text-sm text-gray-700">
                     <p>For Hajj-e-Badal, contact us:</p>
-                    <p class="mt-1"><span class="font-semibold text-navy-dark">Email:</span> <a href="mailto:hajj@naeemfoundation.co.uk" class="hover:underline">hajj@naeemfoundation.co.uk</a></p>
-                    <p><span class="font-semibold text-navy-dark">Phone:</span> +44 2070788118 · +44 7960185682</p>
+                    <p class="mt-1"><span class="font-semibold text-navy-dark">Email:</span> <a href="mailto:{{ region('hajj_email') }}" class="hover:underline">{{ region('hajj_email') }}</a></p>
+                    <p><span class="font-semibold text-navy-dark">Phone:</span> {{ region('code') === 'GB' ? '+44 2070788118 · +44 7960185682' : region('phone') }}</p>
                 </div>
             </div>
             <div>

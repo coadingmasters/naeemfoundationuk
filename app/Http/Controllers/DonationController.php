@@ -183,6 +183,9 @@ class DonationController extends Controller
             'frequency' => DonationCart::frequency(),
             'items' => DonationCart::items(),
             'currency' => Country::get('currency', 'GBP'),
+            // The domain's region (not the shared content region), so each
+            // country's donations can be told apart in the admin.
+            'region' => Country::code(),
             'subtotal' => DonationCart::subtotal(),
             'fee' => 0,
             'total' => DonationCart::subtotal(),
@@ -191,7 +194,7 @@ class DonationController extends Controller
 
         try {
             if (Schema::hasTable('donations')) {
-                Donation::updateOrCreate(['reference' => $reference], $payload);
+                Donation::withoutGlobalScope('region')->updateOrCreate(['reference' => $reference], $payload);
             }
         } catch (Throwable $e) {
             // Never block the donor if persistence fails; the payment step still runs.

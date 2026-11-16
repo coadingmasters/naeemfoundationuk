@@ -180,7 +180,7 @@
                     <div class="mt-6 space-y-3 text-sm text-gray-700 sm:text-base">
                         <p class="flex items-start gap-3">
                             <svg class="mt-0.5 h-5 w-5 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5"/></svg>
-                            2 Falcon Gate, Shire Park, Welwyn Garden City, AL7 1TW, United Kingdom
+                            {{ implode(', ', config('contact.address')) }}
                         </p>
                         <p class="flex items-center gap-3">
                             <svg class="h-5 w-5 shrink-0 text-brand" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
@@ -188,7 +188,7 @@
                         </p>
                         <p class="flex items-center gap-3">
                             <svg class="h-5 w-5 shrink-0 text-brand" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
-                            <a href="mailto:donate@naeemfoundation.co.uk" class="hover:text-brand">donate@naeemfoundation.co.uk</a>
+                            <a href="mailto:{{ config('contact.email') }}" class="hover:text-brand">{{ config('contact.email') }}</a>
                         </p>
                     </div>
                 </div>

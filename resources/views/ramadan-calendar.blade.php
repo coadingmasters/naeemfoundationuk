@@ -94,7 +94,7 @@
 
                 <div class="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-white/85">
                     <span>{{ region('phone') }}</span>
-                    <span>naeemfoundation.co.uk</span>
+                    <span>{{ parse_url(config('contact.website'), PHP_URL_HOST) }}</span>
                 </div>
             </div>
 

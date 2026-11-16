@@ -43,13 +43,22 @@
             <div class="space-y-2 text-sm text-white/85">
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.24 1.02l-2.21 2.2Z"/></svg>
-                    +44 7960185682 : +44 7960185682
+                    {{ region('footer_phone') }}
                 </p>
                 <p class="flex items-center gap-2">
                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
-                    donate@naeemfoundation.co.uk
+                    {{ config('contact.email') }}
                 </p>
             </div>
+
+            @if (region('bank'))
+                <div class="mt-5 max-w-xs rounded-lg bg-white/10 p-3 text-xs leading-relaxed text-white/85">
+                    <p class="mb-1 text-sm font-bold text-white">Donate by bank transfer</p>
+                    @foreach (region('bank') as $label => $value)
+                        <p><span class="text-white/60">{{ $label }}:</span> {{ $value }}</p>
+                    @endforeach
+                </div>
+            @endif
 
             {{-- Social icons come from config/social.php — see the socials() helper. --}}
             @if (socials())
