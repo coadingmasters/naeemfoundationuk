@@ -62,6 +62,8 @@ DB_PORT=3306
 DB_DATABASE=${DB_NAME}
 DB_USERNAME=${DB_USER}
 DB_PASSWORD="${DB_PASS}"
+# This install is the Canadian site: its admin-managed content belongs to Canada.
+CONTENT_REGION=CA
 # Some shared hosts default to MyISAM, which can't hold Laravel's indexes.
 DB_ENGINE=InnoDB
 

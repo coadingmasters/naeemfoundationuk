@@ -21,9 +21,11 @@ return [
         'www.naeemfoundation.ca' => 'CA',
     ],
 
-    // Admin-managed content (causes, appeals, slides…) is shared: every domain
-    // shows this region's content, whatever its currency.
-    'content_region' => 'GB',
+    // Admin-managed content (causes, appeals, slides…) is scoped to this region.
+    // One install serving both domains shows the same content on each (GB); a
+    // separate install for Canada sets CONTENT_REGION=CA in its .env, so its admin
+    // manages Canadian content.
+    'content_region' => env('CONTENT_REGION', 'GB'),
 
     'list' => [
         'GB' => [
