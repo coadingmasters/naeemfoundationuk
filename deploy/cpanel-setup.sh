@@ -62,6 +62,8 @@ DB_PORT=3306
 DB_DATABASE=${DB_NAME}
 DB_USERNAME=${DB_USER}
 DB_PASSWORD="${DB_PASS}"
+# Some shared hosts default to MyISAM, which can't hold Laravel's indexes.
+DB_ENGINE=InnoDB
 
 SESSION_DRIVER=database
 SESSION_LIFETIME=120
