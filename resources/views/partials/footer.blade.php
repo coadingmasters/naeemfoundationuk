@@ -20,12 +20,15 @@
         ['label' => 'Privacy Policy', 'url' => route('privacy-policy')],
     ];
 
-    $bankDetails = [
-        'Account Details' => 'Lloyds Bank',
-        'Account Name' => 'Naeem Foundation',
-        'Account Number' => '13783063',
-        'Sort Code' => '30-54-66',
-    ];
+    // This domain's own bank-transfer details (config/countries.php).
+    $bank = (array) region('bank', []);
+    $bankDetails = array_filter([
+        'Account Details' => $bank['bank'] ?? null,
+        'Account Name' => $bank['account_name'] ?? null,
+        'Account Number' => $bank['account_number'] ?? null,
+        'Sort Code' => $bank['sort_code'] ?? null,
+        'SWIFT / BIC' => $bank['swift'] ?? null,
+    ]);
 @endphp
 
 <footer class="bg-brand text-white">
@@ -50,15 +53,6 @@
                     {{ config('contact.email') }}
                 </p>
             </div>
-
-            @if (region('bank'))
-                <div class="mt-5 max-w-xs rounded-lg bg-white/10 p-3 text-xs leading-relaxed text-white/85">
-                    <p class="mb-1 text-sm font-bold text-white">Donate by bank transfer</p>
-                    @foreach (region('bank') as $label => $value)
-                        <p><span class="text-white/60">{{ $label }}:</span> {{ $value }}</p>
-                    @endforeach
-                </div>
-            @endif
 
             {{-- Social icons come from config/social.php — see the socials() helper. --}}
             @if (socials())
@@ -94,6 +88,7 @@
         </div>
 
         {{-- Make a Donation --}}
+        @if ($bankDetails)
         <div class="col-span-2 lg:col-span-4">
             <h4 class="mb-4 text-lg font-bold text-white">Make a Donation</h4>
             <div class="space-y-3 rounded-lg bg-white p-5 text-sm text-navy-dark">
@@ -102,6 +97,7 @@
                 @endforeach
             </div>
         </div>
+        @endif
     </div>
 
     {{-- Bottom bar --}}

@@ -48,6 +48,13 @@ return [
                 'United Kingdom',
             ],
             'website' => 'https://naeemfoundation.co.uk',
+            // Bank-transfer details shown in the footer and on the privacy page.
+            'bank' => [
+                'bank' => 'Lloyds Bank',
+                'account_name' => 'Naeem Foundation',
+                'sort_code' => '30-54-66',
+                'account_number' => '13783063',
+            ],
             'charity_no' => '1199466',
             'charity_label' => 'Registered Charity No.',
             'gift_aid' => true,
@@ -92,12 +99,12 @@ return [
                 'facebook' => 'https://www.facebook.com/naeemfoundationcanada',
                 'instagram' => 'https://www.instagram.com/naeemfoundationcanada/',
             ],
-            // Shown in the footer for bank-transfer donations (as on the old .ca site).
+            // Bank-transfer details shown in the footer and on the privacy page.
             'bank' => [
-                'Bank' => 'TD Canada Trust',
-                'Account name' => 'Naeem Foundation Canada',
-                'Account number' => '18685239071',
-                'SWIFT / BIC' => 'TDOMCATTTOR',
+                'bank' => 'TD Canada Trust',
+                'account_name' => 'Naeem Foundation Canada',
+                'account_number' => '18685239071',
+                'swift' => 'TDOMCATTTOR',
             ],
             'charity_no' => '721376226RR0001',
             'charity_label' => 'Charity No.',

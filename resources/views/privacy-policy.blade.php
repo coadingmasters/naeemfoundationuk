@@ -85,16 +85,27 @@
                 </div>
             </div>
 
-            {{-- Bank details --}}
+            {{-- Bank details (this domain's own) --}}
+            @php
+                $bank = (array) region('bank', []);
+                $bankRows = array_filter([
+                    'Bank' => $bank['bank'] ?? null,
+                    'Account name' => $bank['account_name'] ?? null,
+                    'Sort code' => $bank['sort_code'] ?? null,
+                    'Account number' => $bank['account_number'] ?? null,
+                    'SWIFT / BIC' => $bank['swift'] ?? null,
+                ]);
+            @endphp
+            @if ($bankRows)
             <div>
                 <h2 class="mb-4 text-xl font-bold text-navy sm:text-2xl">For donations, please use the following bank details:</h2>
                 <ul class="list-disc space-y-1 pl-6 text-sm leading-relaxed text-gray-700 sm:text-base">
-                    <li><span class="font-semibold">Bank:</span> Lloyds Bank</li>
-                    <li><span class="font-semibold">Account name:</span> Naeem Foundation</li>
-                    <li><span class="font-semibold">Sort code:</span> 30-54-66</li>
-                    <li><span class="font-semibold">Account number:</span> 13783063</li>
+                    @foreach ($bankRows as $label => $value)
+                        <li><span class="font-semibold">{{ $label }}:</span> {{ $value }}</li>
+                    @endforeach
                 </ul>
             </div>
+            @endif
 
         </div>
     </section>

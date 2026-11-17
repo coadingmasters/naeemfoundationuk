@@ -95,18 +95,39 @@ class DomainRegionTest extends TestCase
         $this->assertStringNotContainsString('+44', $html);
     }
 
-    public function test_the_canadian_footer_shows_its_bank_details_and_the_uk_one_does_not(): void
+    public function test_each_domain_shows_only_its_own_bank_details(): void
     {
         $this->visit('https://naeemfoundation.ca/');
         $ca = view('partials.footer')->render();
-        $this->assertStringContainsString('TD Canada Trust', $ca);
+        $this->assertSame(1, substr_count($ca, 'TD Canada Trust'));
+        $this->assertStringContainsString('18685239071', $ca);
+        $this->assertStringNotContainsString('Lloyds', $ca);
+        $this->assertStringNotContainsString('13783063', $ca);
+        $this->assertStringNotContainsString('30-54-66', $ca);
         $this->assertStringContainsString('+1 437 333 4342', $ca);
         $this->assertStringNotContainsString('naeemfoundation.co.uk', $ca);
 
         $this->visit('https://naeemfoundation.co.uk/');
         $uk = view('partials.footer')->render();
+        $this->assertStringContainsString('Lloyds Bank', $uk);
+        $this->assertStringContainsString('13783063', $uk);
+        $this->assertStringContainsString('30-54-66', $uk);
         $this->assertStringNotContainsString('TD Canada Trust', $uk);
         $this->assertStringContainsString('donate@naeemfoundation.co.uk', $uk);
         $this->assertStringContainsString('+44 7960185682 : +44 7960185682', $uk);
+    }
+
+    public function test_the_privacy_page_bank_details_follow_the_domain(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+        $ca = view('privacy-policy')->render();
+        $this->assertStringContainsString('TD Canada Trust', $ca);
+        $this->assertStringNotContainsString('Lloyds', $ca);
+
+        $this->visit('https://naeemfoundation.co.uk/');
+        $uk = view('privacy-policy')->render();
+        $this->assertStringContainsString('Lloyds Bank', $uk);
+        $this->assertStringContainsString('13783063', $uk);
+        $this->assertStringNotContainsString('TD Canada Trust', $uk);
     }
 }
