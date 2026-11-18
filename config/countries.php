@@ -59,6 +59,7 @@ return [
             'charity_label' => 'Registered Charity No.',
             'gift_aid' => true,
             'fundraising_regulator' => true, // UK-only regulator badge.
+            'show_vacancy' => true,          // Careers page shows the open role + CV form.
             'show_team' => true,             // About page "Talented Team" (board) section.
         ],
         'US' => [

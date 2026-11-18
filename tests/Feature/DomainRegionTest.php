@@ -151,4 +151,19 @@ class DomainRegionTest extends TestCase
         $this->visit('https://naeemfoundation.co.uk/');
         $this->assertStringContainsString('Talented Team Behind Our Services', view('about')->render());
     }
+
+    public function test_careers_page_swaps_the_vacancy_for_volunteering_on_canada(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+        $ca = view('career', ['errors' => new \Illuminate\Support\ViewErrorBag])->render();
+        $this->assertStringNotContainsString('Charitable Organization Manager', $ca);
+        $this->assertStringNotContainsString('Fill Out The Form', $ca);
+        $this->assertStringContainsString('Join as a Volunteer', $ca);
+        $this->assertStringContainsString('/volunteer', $ca);
+
+        $this->visit('https://naeemfoundation.co.uk/');
+        $uk = view('career', ['errors' => new \Illuminate\Support\ViewErrorBag])->render();
+        $this->assertStringContainsString('Charitable Organization Manager', $uk);
+        $this->assertStringContainsString('Fill Out The Form', $uk);
+    }
 }

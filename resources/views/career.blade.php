@@ -3,6 +3,9 @@
 @section('title', 'Careers — ' . config('app.name'))
 
 @php
+    // Regions with no open vacancy (Canada) invite people to volunteer instead.
+    $hasVacancy = (bool) region('show_vacancy', false);
+    $ctaUrl = $hasVacancy ? '#apply' : route('volunteer');
     $features = [
         ['no' => '01', 'title' => 'Meaningful Impact', 'text' => 'At Naeem Foundation, your work directly contributes to improving the lives of individuals and communities in need.'],
         ['no' => '02', 'title' => 'Collaborative Environment', 'text' => 'Join a supportive team of passionate individuals who are dedicated to making a difference.'],
@@ -61,8 +64,8 @@
                 <p class="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
                     Join a team dedicated to making a difference in the lives of individuals and communities in need.
                 </p>
-                <a href="#apply" class="btn-white mt-7 px-7 py-3">
-                    Apply Now
+                <a href="{{ $ctaUrl }}" class="btn-white mt-7 px-7 py-3">
+                    {{ $hasVacancy ? 'Apply Now' : 'Join as a Volunteer' }}
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
 
@@ -88,7 +91,7 @@
                             pressing social challenges and create lasting change. If you're passionate about making a
                             positive impact, consider a career with us.
                         </p>
-                        <a href="#apply" class="btn-brand mt-6">Join Us Now</a>
+                        <a href="{{ $ctaUrl }}" class="btn-brand mt-6">{{ $hasVacancy ? 'Join Us Now' : 'Join as a Volunteer' }}</a>
                     </div>
                     <div class="p-5 lg:py-6 lg:pr-6">
                         <img src="{{ asset('images/careercenter.jpeg') }}" alt="Naeem Foundation in the community"
@@ -130,6 +133,7 @@
         </div>
     </section>
 
+    @if ($hasVacancy)
     {{-- ===================== OPEN ROLE ===================== --}}
     <section class="py-12 sm:py-14">
         <div class="nf-container">
@@ -252,6 +256,26 @@
             </form>
         </div>
     </section>
+
+    @else
+    {{-- ===================== JOIN AS A VOLUNTEER (no open vacancy) ===================== --}}
+    <section id="apply" class="py-12 sm:py-14">
+        <div class="nf-container">
+            <div class="mx-auto max-w-3xl rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-sm sm:p-10">
+                <p class="text-sm font-semibold uppercase tracking-wider text-brand">Be a part of the team</p>
+                <h2 class="mt-2 text-3xl font-bold text-navy-dark sm:text-4xl">Join as a Volunteer</h2>
+                <p class="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-gray-600 sm:text-base">
+                    We have no open vacancies right now, but there are many ways to help. Give a little of your time,
+                    share your skills and be part of the work that changes lives in our community.
+                </p>
+                <a href="{{ route('volunteer') }}" class="btn-brand mt-7 px-7 py-3">
+                    Join as a Volunteer
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    @endif
 
     {{-- ===================== CTA ===================== --}}
     <section class="bg-navy">
