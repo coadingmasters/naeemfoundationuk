@@ -17,7 +17,7 @@
     // Monthly sponsorship levels (currency follows the visitor's region).
     // Course lengths confirmed by Naeem Foundation. One flat monthly rate covers
     // every level, so the figure lives here once rather than per row.
-    $levelAmount = 53;
+    $levelAmount = (int) region('sponsor_monthly', 53);
     $levels = [
         ['label' => 'Hafiz / Hafiza', 'duration' => '2.5-year course', 'note' => 'Sponsor a student memorising the Holy Qur’an.'],
         ['label' => 'Alim / Alima', 'duration' => '8-year course', 'note' => 'Sponsor an Islamic scholar in training.'],
@@ -48,8 +48,8 @@
             'causes' => ['Alim', 'Hafiz', 'Mufti'],
             'causeStyle' => 'buttons',
             'oneOffAmounts' => [30, 50, 100],
-            'monthlyDefault' => 53,
-            'yearlyDefault' => 636,
+            'monthlyDefault' => $levelAmount,
+            'yearlyDefault' => $levelAmount * 12,
             // Sponsorship is an ongoing commitment, so the panel opens on Monthly.
             'defaultFreq' => 'monthly',
             // Which giving type the sponsorship is paid from. Sadaqah leads: it is

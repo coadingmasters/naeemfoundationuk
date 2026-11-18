@@ -61,6 +61,7 @@ return [
             'fundraising_regulator' => true, // UK-only regulator badge.
             'show_vacancy' => true,          // Careers page shows the open role + CV form.
             'show_annual_report' => true,    // Annual Report page + its menu/footer links.
+            'sponsor_monthly' => 53,         // Default monthly student/orphan sponsorship (local currency).
             'show_team' => true,             // About page "Talented Team" (board) section.
         ],
         'US' => [
@@ -113,6 +114,7 @@ return [
             'charity_no' => '721376226RR0001',
             'charity_label' => 'Charity No.',
             'gift_aid' => false, // Gift Aid is a UK-only tax relief.
+            'sponsor_monthly' => 100,        // CA$100 / month (CA$1,200 / year).
         ],
     ],
 ];

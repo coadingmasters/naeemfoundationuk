@@ -177,4 +177,18 @@ class DomainRegionTest extends TestCase
         $this->assertStringContainsString('Annual Report', view('partials.header')->render());
         $this->assertStringContainsString('Annual Report', view('partials.footer')->render());
     }
+
+    public function test_student_sponsorship_default_follows_the_domain(): void
+    {
+        $args = ['orphans' => collect(), 'errors' => new \Illuminate\Support\ViewErrorBag];
+
+        $this->visit('https://naeemfoundation.ca/');
+        $ca = view('education-sponsorships', $args)->render();
+        $this->assertStringContainsString('data-monthly="100" data-yearly="1200"', $ca);
+        $this->assertStringNotContainsString('data-monthly="53"', $ca);
+
+        $this->visit('https://naeemfoundation.co.uk/');
+        $uk = view('education-sponsorships', $args)->render();
+        $this->assertStringContainsString('data-monthly="53" data-yearly="636"', $uk);
+    }
 }
