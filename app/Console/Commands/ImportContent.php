@@ -46,9 +46,21 @@ class ImportContent extends Command
             return file_exists(public_path(ltrim($path, '/'))) ? $path : $source.'/'.ltrim($path, '/');
         };
 
+        // Links back to the source site's own pages become relative, so they
+        // stay on this site ("https://source/" -> "/").
+        $host = preg_replace('/^www\./', '', (string) parse_url($source, PHP_URL_HOST));
+        $link = function (?string $url) use ($host): ?string {
+            if (blank($url) || ! preg_match('#^https?://(www\.)?'.preg_quote($host, '#').'(?=[/?\#]|$)#i', $url, $m)) {
+                return $url;
+            }
+
+            return substr($url, strlen($m[0])) ?: '/';
+        };
+
         foreach ($feed['hero_slides'] ?? [] as $row) {
             $row['image'] = $image($row['image']);
             $row['mobile_image'] = $image($row['mobile_image'] ?? null);
+            $row['button_url'] = $link($row['button_url'] ?? null);
             HeroSlide::withoutGlobalScope('region')->updateOrCreate(
                 ['region' => $own, 'title' => $row['title'], 'subtitle' => $row['subtitle'], 'image' => $row['image']],
                 $row + ['is_active' => true],
@@ -57,6 +69,7 @@ class ImportContent extends Command
 
         foreach ($feed['appeals'] ?? [] as $row) {
             $row['image'] = $image($row['image']);
+            $row['link'] = $link($row['link'] ?? null);
             Appeal::withoutGlobalScope('region')->updateOrCreate(
                 ['region' => $own, 'slug' => $row['slug']],
                 $row + ['is_active' => true],
@@ -65,6 +78,7 @@ class ImportContent extends Command
 
         foreach ($feed['causes'] ?? [] as $row) {
             $row['image'] = $image($row['image']);
+            $row['link'] = $link($row['link'] ?? null);
             Cause::withoutGlobalScope('region')->updateOrCreate(
                 ['region' => $own, 'title' => $row['title']],
                 $row + ['is_active' => true],
