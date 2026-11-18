@@ -1,7 +1,9 @@
 {{-- Accepted payment methods row (Fundraising Regulator + card schemes). --}}
 <div class="mt-6 flex flex-wrap items-center justify-center gap-3 border-t border-gray-100 pt-5">
-    {{-- Fundraising Regulator --}}
-    <img src="{{ asset('images/firstpaymenticon.png') }}" alt="Registered with Fundraising Regulator" class="h-10 w-auto sm:h-11">
+    {{-- Fundraising Regulator (UK only) --}}
+    @if (region('fundraising_regulator', false))
+        <img src="{{ asset('images/firstpaymenticon.png') }}" alt="Registered with Fundraising Regulator" class="h-10 w-auto sm:h-11">
+    @endif
 
     {{-- Visa --}}
     <span class="grid h-9 w-14 place-items-center rounded-md bg-white shadow-sm ring-1 ring-gray-200" title="Visa">

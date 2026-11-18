@@ -130,4 +130,16 @@ class DomainRegionTest extends TestCase
         $this->assertStringContainsString('13783063', $uk);
         $this->assertStringNotContainsString('TD Canada Trust', $uk);
     }
+
+    public function test_the_fundraising_regulator_badge_is_uk_only(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+        $this->assertStringNotContainsString('Fundraising Regulator', view('partials.footer')->render());
+        $this->assertStringNotContainsString('Fundraising Regulator', view('partials.payment-icons')->render());
+        $this->assertStringContainsString('VISA', view('partials.payment-icons')->render());
+
+        $this->visit('https://naeemfoundation.co.uk/');
+        $this->assertStringContainsString('Fundraising Regulator', view('partials.footer')->render());
+        $this->assertStringContainsString('Fundraising Regulator', view('partials.payment-icons')->render());
+    }
 }

@@ -58,6 +58,7 @@ return [
             'charity_no' => '1199466',
             'charity_label' => 'Registered Charity No.',
             'gift_aid' => true,
+            'fundraising_regulator' => true, // UK-only regulator badge.
         ],
         'US' => [
             'code' => 'US',

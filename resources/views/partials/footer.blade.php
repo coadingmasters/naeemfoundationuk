@@ -102,12 +102,13 @@
 
     {{-- Bottom bar --}}
     <div class="border-t border-white/15">
-        <div class="nf-container flex flex-col items-center justify-between gap-4 py-5 sm:flex-row">
+        <div class="nf-container flex flex-col items-center gap-4 py-5 sm:flex-row {{ region('fundraising_regulator', false) ? 'justify-between' : 'justify-center' }}">
             <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-white/85">
                 <p>&copy;NaeemFoundation. All rights reserved.</p>
                 <button type="button" data-cookie-open class="underline transition-colors hover:text-white">Cookie Settings</button>
             </div>
 
+            @if (region('fundraising_regulator', false))
             {{-- Fundraising Regulator badge --}}
             <div class="inline-flex items-center gap-2 rounded-md bg-white px-3 py-1.5 text-navy-dark">
                 <span class="grid h-8 w-8 place-items-center rounded-full bg-brand text-[11px] font-bold text-white">FR</span>
@@ -115,6 +116,7 @@
                     Registered with<br>Fundraising Regulator
                 </span>
             </div>
+            @endif
         </div>
     </div>
 </footer>
