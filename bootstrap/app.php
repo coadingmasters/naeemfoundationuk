@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'admin.region' => \App\Http\Middleware\SetAdminRegion::class,
+            'region.feature' => \App\Http\Middleware\RequireRegionFeature::class,
             'super' => \App\Http\Middleware\EnsureSuperAdmin::class,
         ]);
 

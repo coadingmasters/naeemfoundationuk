@@ -15,10 +15,12 @@
             </svg>
         </span>
         <p class="mt-3 text-sm font-semibold text-navy-dark">Your basket is empty</p>
-        <p class="mt-1 text-xs text-gray-500">Choose a cause to give, or browse the shop.</p>
-        <div class="mt-4 grid grid-cols-2 gap-2">
+        <p class="mt-1 text-xs text-gray-500">Choose a cause to give{{ region('show_shop', false) ? ', or browse the shop' : '' }}.</p>
+        <div class="mt-4 grid {{ region('show_shop', false) ? 'grid-cols-2' : 'grid-cols-1' }} gap-2">
             <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-semibold text-navy transition hover:bg-gray-50">Causes</a>
-            <a href="{{ route('shop') }}" class="btn-brand justify-center py-2">Shop</a>
+            @if (region('show_shop', false))
+                <a href="{{ route('shop') }}" class="btn-brand justify-center py-2">Shop</a>
+            @endif
         </div>
     </div>
 @else

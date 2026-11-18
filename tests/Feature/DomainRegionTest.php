@@ -191,4 +191,22 @@ class DomainRegionTest extends TestCase
         $uk = view('education-sponsorships', $args)->render();
         $this->assertStringContainsString('data-monthly="53" data-yearly="636"', $uk);
     }
+
+    public function test_shop_is_not_linked_on_canada(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+        $this->assertStringNotContainsString('>Shop<', view('partials.header')->render());
+        $this->assertStringNotContainsString('>Shop<', view('partials.footer')->render());
+
+        $this->visit('https://naeemfoundation.co.uk/');
+        $this->assertStringContainsString('Shop', view('partials.header')->render());
+        $this->assertStringContainsString('>Shop<', view('partials.footer')->render());
+    }
+
+    public function test_shop_and_annual_report_routes_404_on_canada(): void
+    {
+        $this->get('https://naeemfoundation.ca/shop')->assertNotFound();
+        $this->get('https://naeemfoundation.ca/shop/cart')->assertNotFound();
+        $this->get('https://naeemfoundation.ca/annual-report')->assertNotFound();
+    }
 }

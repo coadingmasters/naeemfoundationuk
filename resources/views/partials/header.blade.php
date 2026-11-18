@@ -24,8 +24,9 @@
         // ['label' => 'Community Centre', 'url' => route('community-centre'), 'active' => request()->routeIs('community-centre')],
         ['label' => 'Zakat Calculator', 'url' => route('zakat-calculator'), 'active' => request()->routeIs('zakat-calculator')],
         ['label' => 'Hajj 2027', 'url' => route('hajj'), 'active' => request()->routeIs('hajj')],
-        ['label' => 'Shop', 'url' => route('shop'), 'active' => request()->routeIs('shop', 'shop.*')],
+        ['label' => 'Shop', 'url' => route('shop'), 'active' => request()->routeIs('shop', 'shop.*'), 'only' => 'show_shop'],
     ];
+    $navGroups = array_values(array_filter($navGroups, fn ($g) => empty($g['only']) || region($g['only'], false)));
 
     // Regions without annual reports (Canada) drop that menu entry.
     if (! region('show_annual_report', false)) {

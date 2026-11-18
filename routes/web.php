@@ -108,14 +108,17 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/volunteer', [VolunteerController::class, 'index'])->name('volunteer');
 Route::post('/volunteer', [VolunteerController::class, 'store'])->name('volunteer.store');
-Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-Route::get('/shop/cart', [ProductCartController::class, 'index'])->name('shop.cart');
-Route::post('/shop/cart/add', [ProductCartController::class, 'add'])->name('shop.cart.add');
-Route::patch('/shop/cart/{id}', [ProductCartController::class, 'update'])->name('shop.cart.update');
-Route::delete('/shop/cart/{id}', [ProductCartController::class, 'remove'])->name('shop.cart.remove');
-Route::get('/shop/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
-Route::get('/shop/order-complete', [ShopController::class, 'orderComplete'])->name('shop.order-complete');
-Route::get('/shop/{product}', [ShopController::class, 'show'])->name('shop.show');
+// The Shop is switched off per region (config/countries.php show_shop).
+Route::middleware('region.feature:show_shop')->group(function () {
+    Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+    Route::get('/shop/cart', [ProductCartController::class, 'index'])->name('shop.cart');
+    Route::post('/shop/cart/add', [ProductCartController::class, 'add'])->name('shop.cart.add');
+    Route::patch('/shop/cart/{id}', [ProductCartController::class, 'update'])->name('shop.cart.update');
+    Route::delete('/shop/cart/{id}', [ProductCartController::class, 'remove'])->name('shop.cart.remove');
+    Route::get('/shop/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
+    Route::get('/shop/order-complete', [ShopController::class, 'orderComplete'])->name('shop.order-complete');
+    Route::get('/shop/{product}', [ShopController::class, 'show'])->name('shop.show');
+});
 Route::view('/make-a-donation', 'donate.make')->name('donate.make');
 Route::get('/appeals/{appeal}', function (\App\Models\Appeal $appeal) {
     abort_unless($appeal->is_active, 404);
@@ -157,8 +160,10 @@ Route::post('/donate/paypal/order', [PayPalController::class, 'donationOrder'])-
 Route::post('/donate/paypal/capture', [PayPalController::class, 'donationCapture'])->name('paypal.donation.capture');
 Route::post('/donate/paypal/subscription/plan', [PayPalController::class, 'subscriptionPlan'])->name('paypal.subscription.plan');
 Route::post('/donate/paypal/subscription/record', [PayPalController::class, 'subscriptionRecord'])->name('paypal.subscription.record');
-Route::post('/shop/paypal/order', [PayPalController::class, 'shopOrder'])->name('paypal.shop.order');
-Route::post('/shop/paypal/capture', [PayPalController::class, 'shopCapture'])->name('paypal.shop.capture');
+Route::middleware('region.feature:show_shop')->group(function () {
+    Route::post('/shop/paypal/order', [PayPalController::class, 'shopOrder'])->name('paypal.shop.order');
+    Route::post('/shop/paypal/capture', [PayPalController::class, 'shopCapture'])->name('paypal.shop.capture');
+});
 Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])->name('paypal.webhook');
 $givingRegistered = [];
 foreach (config('giving') as $group) {
