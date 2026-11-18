@@ -14,11 +14,12 @@
         ['label' => 'Hajj 2027', 'url' => route('hajj')],
         ['label' => 'Ask a Mufti', 'url' => route('ask-mufti')],
         ['label' => 'Volunteer', 'url' => route('volunteer')],
-        ['label' => 'Annual Report', 'url' => route('annual-report')],
+        ['label' => 'Annual Report', 'url' => route('annual-report'), 'only' => 'show_annual_report'],
         ['label' => 'Careers', 'url' => route('careers')],
         ['label' => 'Contact Us', 'url' => route('contact')],
         ['label' => 'Privacy Policy', 'url' => route('privacy-policy')],
     ];
+    $usefulLinks = array_values(array_filter($usefulLinks, fn ($l) => empty($l['only']) || region($l['only'], false)));
 
     // This domain's own bank-transfer details (config/countries.php).
     $bank = (array) region('bank', []);

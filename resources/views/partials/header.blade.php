@@ -27,6 +27,18 @@
         ['label' => 'Shop', 'url' => route('shop'), 'active' => request()->routeIs('shop', 'shop.*')],
     ];
 
+    // Regions without annual reports (Canada) drop that menu entry.
+    if (! region('show_annual_report', false)) {
+        foreach ($navGroups as $gi => $group) {
+            if (isset($group['children'])) {
+                $navGroups[$gi]['children'] = array_values(array_filter(
+                    $group['children'],
+                    fn ($c) => $c['label'] !== 'Annual Report'
+                ));
+            }
+        }
+    }
+
     // Top-level icons, used by the mobile drawer.
     $navIcons = [
         'Who We Are' => '<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0" stroke-linecap="round"/>',

@@ -10,6 +10,8 @@ class AnnualReportController extends Controller
 {
     public function index()
     {
+        abort_unless(region('show_annual_report', false), 404);
+
         // Resilient fetch so the page never breaks before migrations run.
         $reports = collect();
 

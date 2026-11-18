@@ -166,4 +166,15 @@ class DomainRegionTest extends TestCase
         $this->assertStringContainsString('Charitable Organization Manager', $uk);
         $this->assertStringContainsString('Fill Out The Form', $uk);
     }
+
+    public function test_annual_report_is_not_linked_or_served_on_canada(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+        $this->assertStringNotContainsString('Annual Report', view('partials.header')->render());
+        $this->assertStringNotContainsString('Annual Report', view('partials.footer')->render());
+
+        $this->visit('https://naeemfoundation.co.uk/');
+        $this->assertStringContainsString('Annual Report', view('partials.header')->render());
+        $this->assertStringContainsString('Annual Report', view('partials.footer')->render());
+    }
 }

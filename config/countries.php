@@ -60,6 +60,7 @@ return [
             'gift_aid' => true,
             'fundraising_regulator' => true, // UK-only regulator badge.
             'show_vacancy' => true,          // Careers page shows the open role + CV form.
+            'show_annual_report' => true,    // Annual Report page + its menu/footer links.
             'show_team' => true,             // About page "Talented Team" (board) section.
         ],
         'US' => [
