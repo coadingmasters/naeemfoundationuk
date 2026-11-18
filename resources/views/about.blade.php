@@ -297,7 +297,8 @@
         </div>
     </section>
 
-    {{-- ===================== TEAM ===================== --}}
+    {{-- ===================== TEAM (UK board; hidden where a region has none yet) ===================== --}}
+    @if (region('show_team', false))
     <section class="pt-14">
         <div class="nf-container">
             <h2 class="text-2xl font-bold text-brand">The Talented Team Behind Our Services</h2>
@@ -342,6 +343,7 @@
             </div>
         </div>
     </section>
+    @endif
 
     {{-- ===================== ORGANOGRAM ===================== --}}
     <section class="py-16">

@@ -12,7 +12,7 @@
 
     <div class="ml-auto flex items-center gap-3">
         {{-- Region context: super admin can switch; region admins see a locked badge --}}
-        @if (! empty($adminIsSuper))
+        @if (! empty($adminIsSuper) && count($regions ?? []) > 1)
             <details class="relative">
                 <summary class="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-semibold text-navy-dark transition hover:bg-gray-50 dark:border-white/10 dark:hover:bg-white/10 [&::-webkit-details-marker]:hidden">
                     <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 6 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-6-3.5-9s1-6.5 3.5-9z"/></svg>

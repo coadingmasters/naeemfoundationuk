@@ -24,13 +24,21 @@ class SetAdminRegion
             RegionContext::set($user->region, false);
         } else {
             // Super admin — a chosen region, or "all regions" (aggregate).
-            $chosen = $request->session()->get('admin_region');
+            // Each site manages only its own region (CONTENT_REGION), so there is
+            // nothing to switch between: pin to it.
+            $chosen = config('countries.content_region') ?: $request->session()->get('admin_region');
 
             if ($chosen && array_key_exists($chosen, config('countries.list', []))) {
                 RegionContext::set($chosen, false);
             } else {
                 RegionContext::set(null, true);
             }
+        }
+
+        // Admin dropdowns/prompts list only this site's region.
+        $own = config('countries.content_region');
+        if ($own && isset(config('countries.list', [])[$own])) {
+            View::share('regions', array_intersect_key(\App\Support\Country::all(), [$own => true]));
         }
 
         // Expose to admin views (topbar switcher, "adding as region X" hints, etc.).

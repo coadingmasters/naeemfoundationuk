@@ -142,4 +142,13 @@ class DomainRegionTest extends TestCase
         $this->assertStringContainsString('Fundraising Regulator', view('partials.footer')->render());
         $this->assertStringContainsString('Fundraising Regulator', view('partials.payment-icons')->render());
     }
+
+    public function test_about_team_section_is_hidden_on_canada_only(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+        $this->assertStringNotContainsString('Talented Team Behind Our Services', view('about')->render());
+
+        $this->visit('https://naeemfoundation.co.uk/');
+        $this->assertStringContainsString('Talented Team Behind Our Services', view('about')->render());
+    }
 }
