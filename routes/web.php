@@ -55,6 +55,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/content-feed.json', \App\Http\Controllers\ContentFeedController::class)->name('content.feed');
 Route::view('/about', 'about')->name('about');
 Route::view('/history', 'history')->name('history');
 Route::view('/careers', 'career')->name('careers');
