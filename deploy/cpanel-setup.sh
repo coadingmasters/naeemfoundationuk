@@ -92,6 +92,10 @@ PAYPAL_LIVE_CLIENT_ID=
 PAYPAL_LIVE_CLIENT_SECRET=
 PAYPAL_LIVE_WEBHOOK_ID=
 
+# Jamia Binoria sponsorship API: the student/orphan list. Copy the key from the UK server's .env.
+SPONSOR_API_URL=https://binoria.org/eNazimOnline
+SPONSOR_API_KEY=
+
 CRM_ENABLED=false
 CRM_RECURRING=false
 ENV
