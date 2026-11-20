@@ -4,7 +4,7 @@
 
 @php
     $year = config('ramadan-timetable.year');
-    $location = config('ramadan-timetable.location');
+    $location = region('timetable_location') ?: config('ramadan-timetable.location');
 
     // Offer the PDF when it has been uploaded; otherwise let the donor print.
     $pdf = config('ramadan-timetable.pdf');

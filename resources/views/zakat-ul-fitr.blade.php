@@ -99,7 +99,9 @@
                     <ul class="mt-4 space-y-2.5 text-sm text-gray-600 sm:text-base">
                         <li class="flex gap-2"><span class="font-bold text-brand">›</span><span>Reaches underprivileged families, widows and orphans.</span></li>
                         <li class="flex gap-2"><span class="font-bold text-brand">›</span><span>Delivered before Eid so no one is left hungry on the day.</span></li>
-                        <li class="flex gap-2"><span class="font-bold text-brand">›</span><span><span class="font-semibold text-navy-dark">Gift Aid:</span> UK taxpayers can add 25% at no extra cost — just tick the box.</span></li>
+                        @if (region('gift_aid'))
+                            <li class="flex gap-2"><span class="font-bold text-brand">›</span><span><span class="font-semibold text-navy-dark">Gift Aid:</span> UK taxpayers can add 25% at no extra cost — just tick the box.</span></li>
+                        @endif
                     </ul>
                     <p class="mt-4 text-sm font-semibold text-navy-dark">
                         Make a difference in someone’s Eid — together, let’s make this Eid a time of happiness for all.

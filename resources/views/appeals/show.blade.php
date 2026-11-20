@@ -80,9 +80,10 @@
                             </span>
                             <div>
                                 <p class="text-sm font-bold text-navy-dark">100% Donation Policy</p>
-                                <p class="mt-0.5 text-xs text-gray-500">Every penny reaches those in need.</p>
+                                <p class="mt-0.5 text-xs text-gray-500">Every {{ region('minor_unit', 'penny') }} reaches those in need.</p>
                             </div>
                         </div>
+                        @if (region('gift_aid'))
                         <div class="flex items-start gap-3">
                             <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/10 text-brand">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 8h18M6 12h12M8 16h8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -92,6 +93,7 @@
                                 <p class="mt-0.5 text-xs text-gray-500">Boost your gift at no extra cost.</p>
                             </div>
                         </div>
+                        @endif
                         <div class="flex items-start gap-3">
                             <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/10 text-brand">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke-linecap="round" stroke-linejoin="round"/></svg>

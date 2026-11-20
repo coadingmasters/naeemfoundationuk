@@ -79,7 +79,7 @@
                             @foreach ([
                                 ['Single Donations:', 'Suggested amounts '.implode(', ', array_map(fn ($a) => money($a, 0), $familyAmounts)).'.'],
                                 ['Recurring Donations:', 'Set up a monthly contribution to feed a family every month.'],
-                                ['Currency Options:', $currencies.' — set by your region at the top of the page.'],
+                                ['Currency:', region('currency').' — shown in '.region('symbol').' on this site.'],
                             ] as $j => $opt)
                                 <li class="nf-reveal flex gap-2" data-reveal-delay="{{ 140 + $j * 90 }}">
                                     <span class="font-semibold text-[#e9b9c6]">&rsaquo;</span>

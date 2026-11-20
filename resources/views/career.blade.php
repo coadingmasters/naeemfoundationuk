@@ -226,7 +226,7 @@
                            class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
                     <input type="email" name="email" required placeholder="Email" value="{{ old('email') }}"
                            class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
-                    <input type="text" name="postcode" placeholder="Postcode" value="{{ old('postcode') }}"
+                    <input type="text" name="postcode" placeholder="{{ region('postal_label', 'Postcode') }}" value="{{ old('postcode') }}"
                            class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
                     <textarea name="address" rows="4" placeholder="Enter your address"
                               class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30 sm:col-span-2">{{ old('address') }}</textarea>

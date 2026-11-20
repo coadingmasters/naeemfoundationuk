@@ -10,7 +10,7 @@
     $usefulLinks = [
         ['label' => 'About Us', 'url' => route('about')],
         ['label' => 'Shop', 'url' => route('shop'), 'only' => 'show_shop'],
-        ['label' => 'Community Centre', 'url' => route('community-centre')],
+        ['label' => 'Community Centre', 'url' => route('community-centre'), 'only' => 'show_community_centre'],
         ['label' => 'Hajj 2027', 'url' => route('hajj')],
         ['label' => 'Ask a Mufti', 'url' => route('ask-mufti')],
         ['label' => 'Volunteer', 'url' => route('volunteer')],

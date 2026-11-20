@@ -63,6 +63,13 @@ return [
             'show_annual_report' => true,    // Annual Report page + its menu/footer links.
             'sponsor_monthly' => 53,         // Default monthly student/orphan sponsorship (local currency).
             'show_shop' => true,             // Shop pages, menu and footer link.
+            'in_country' => 'the UK',        // "registered charity in ..."
+            'postal_label' => 'Postcode',
+            'timezone' => 'Europe/London',
+            'unit' => 'pound',
+            'minor_unit' => 'penny',
+            'timetable_location' => 'London, United Kingdom',
+            'show_community_centre' => true,
             'show_team' => true,             // About page "Talented Team" (board) section.
         ],
         'US' => [
@@ -115,6 +122,13 @@ return [
             'charity_no' => '721376226RR0001',
             'charity_label' => 'Charity No.',
             'gift_aid' => false, // Gift Aid is a UK-only tax relief.
+            'in_country' => 'Canada',
+            'postal_label' => 'Postal code',
+            'timezone' => 'America/Toronto',
+            'unit' => 'dollar',
+            'minor_unit' => 'cent',
+            'timetable_location' => 'Milton, Ontario, Canada',
+            'show_community_centre' => false, // Not offered in Canada: no footer link.
             'sponsor_monthly' => 100,        // CA$100 / month (CA$1,200 / year).
         ],
     ],

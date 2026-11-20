@@ -150,8 +150,12 @@
                 <div class="relative">
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Multiply Your Rewards This Ramadan</h2>
                     <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base">
-                        Give a food pack and share in the reward of every fast it helps a family keep. Add Gift Aid as a
-                        UK taxpayer and increase your donation by 25% — at no extra cost to you.
+                        Give a food pack and share in the reward of every fast it helps a family keep.
+                        @if (region('gift_aid'))
+                            Add Gift Aid as a UK taxpayer and increase your donation by 25% — at no extra cost to you.
+                        @else
+                            Every gift multiplies the reward — and the meals reach families who need them most.
+                        @endif
                     </p>
                     <a href="#donate" class="btn-brand mt-7 px-7 py-3">
                         Donate a Food Pack

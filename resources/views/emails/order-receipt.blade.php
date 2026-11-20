@@ -32,7 +32,7 @@
                         <div style="margin-top:4px; font-size:30px; font-weight:700; color:#740a2e;">{{ $money($subtotal) }}</div>
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px; border-top:1px solid #ece7e1;">
                             <tr><td style="{{ $label }}">Order number</td><td style="{{ $value }}">{{ $reference }}</td></tr>
-                            <tr><td style="{{ $label }}">Date</td><td style="{{ $value }}">{{ now()->timezone('Europe/London')->format('j F Y') }}</td></tr>
+                            <tr><td style="{{ $label }}">Date</td><td style="{{ $value }}">{{ now()->timezone(region('timezone', 'Europe/London'))->format('j F Y') }}</td></tr>
                             <tr><td style="{{ $label }}">Payment</td><td style="{{ $value }}">Paid via PayPal</td></tr>
                         </table>
                     </td>

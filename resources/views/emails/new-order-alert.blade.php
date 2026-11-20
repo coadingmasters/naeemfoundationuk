@@ -27,7 +27,7 @@
                         <div style="font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#6b7280;">Order total — paid</div>
                         <div style="margin-top:4px; font-size:30px; font-weight:700; color:#740a2e;">{{ $money($subtotal) }} <span style="font-size:13px; font-weight:600; color:#6b7280;">{{ $currency }}</span></div>
                         <div style="margin-top:6px; font-size:12px; color:#6b7280;">
-                            Order <strong style="color:#122d3c;">{{ $reference }}</strong> &middot; {{ now()->timezone('Europe/London')->format('j M Y, H:i') }} UK time
+                            Order <strong style="color:#122d3c;">{{ $reference }}</strong> &middot; {{ now()->timezone(region('timezone', 'Europe/London'))->format('j M Y, H:i') }} UK time
                         </div>
                     </td>
                 </tr>

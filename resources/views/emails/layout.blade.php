@@ -88,7 +88,7 @@
                                         @if ($internal)
                                             Internal notification from the {{ config('app.name') }} website — not sent to the donor.
                                         @else
-                                            {{ config('app.name') }} is a registered charity in the UK (No. {{ $c['charity_no'] }}).
+                                            {{ config('app.name') }} is a registered charity in {{ region('in_country', 'the UK') }} (No. {{ $c['charity_no'] }}).
                                             You are receiving this email because of an action you took on our website.
                                         @endif
                                         <br>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.

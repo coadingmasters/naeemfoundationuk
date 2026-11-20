@@ -92,7 +92,7 @@
                         <ul class="mt-3 space-y-3 text-sm text-gray-600 sm:text-base">
                             <li class="flex gap-2"><span class="font-bold text-brand">›</span><span><span class="font-semibold text-navy-dark">Cleanses our wealth:</span> it purifies our income, making it more fruitful and beneficial.</span></li>
                             <li class="flex gap-2"><span class="font-bold text-brand">›</span><span><span class="font-semibold text-navy-dark">Cures illness:</span> “Treat your sick ones with charity.”</span></li>
-                            <li class="flex gap-2"><span class="font-bold text-brand">›</span><span><span class="font-semibold text-navy-dark">Multiplies rewards:</span> every penny, every effort, is multiplied by Allah (SWT) — like a ripple effect of goodness.</span></li>
+                            <li class="flex gap-2"><span class="font-bold text-brand">›</span><span><span class="font-semibold text-navy-dark">Multiplies rewards:</span> every {{ region('minor_unit', 'penny') }}, every effort, is multiplied by Allah (SWT) — like a ripple effect of goodness.</span></li>
                         </ul>
                     </div>
                 </div>

@@ -79,7 +79,7 @@
                         <a href="mailto:{{ config('contact.email') }}" class="font-medium text-navy underline hover:text-brand">{{ config('contact.email') }}</a>
                     </p>
                     <ul class="mt-2 list-disc space-y-1 pl-6">
-                        <li>Naeem Foundation is a registered charity in the UK.</li>
+                        <li>Naeem Foundation is a registered charity in {{ region('in_country', 'the UK') }}.</li>
                         <li>Our registered address is: {{ implode(', ', config('contact.address')) }}.</li>
                     </ul>
                 </div>

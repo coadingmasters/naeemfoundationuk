@@ -179,7 +179,7 @@
                     @php
                         $why = [
                             'You are matched with one child and follow their progress.',
-                            'Every penny is spent on the child you chose — 100% reaches them.',
+                            'Every '.region('minor_unit', 'penny').' is spent on the child you chose — 100% reaches them.',
                             'Give monthly for ongoing care, or a one-off gift for urgent needs.',
                         ];
                     @endphp

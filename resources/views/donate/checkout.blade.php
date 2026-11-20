@@ -151,7 +151,7 @@
                     </div>
 
                     @php
-                        $postLabel = region('code') === 'US' ? 'ZIP Code' : 'Postcode';
+                        $postLabel = region('code') === 'US' ? 'ZIP Code' : region('postal_label', 'Postcode');
                         $countryName = region('name');
 
                         // Until a full house-by-house provider is configured, lead with

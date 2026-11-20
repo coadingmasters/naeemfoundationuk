@@ -46,7 +46,7 @@
                                       class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25 @error('address') border-red-300 @enderror">{{ old('address') }}</textarea>
                         </div>
                         <div class="mt-4">
-                            <input name="postcode" value="{{ old('postcode') }}" required placeholder="{{ region('code') === 'US' ? 'ZIP code *' : 'Postcode *' }}"
+                            <input name="postcode" value="{{ old('postcode') }}" required placeholder="{{ region('code') === 'US' ? 'ZIP code *' : region('postal_label', 'Postcode').' *' }}"
                                    class="h-12 w-full rounded-lg border border-gray-200 bg-white px-4 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25 @error('postcode') border-red-300 @enderror">
                         </div>
 

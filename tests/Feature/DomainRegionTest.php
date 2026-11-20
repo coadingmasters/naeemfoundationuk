@@ -209,4 +209,34 @@ class DomainRegionTest extends TestCase
         $this->get('https://naeemfoundation.ca/shop/cart')->assertNotFound();
         $this->get('https://naeemfoundation.ca/annual-report')->assertNotFound();
     }
+
+    public function test_no_uk_wording_on_canada_static_pages(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+        $errors = new \Illuminate\Support\ViewErrorBag;
+        $banned = ['£', 'GBP', 'Gift Aid', 'UK taxpayer', 'in the UK', 'Welwyn', 'co.uk', '+44', 'Fundraising Regulator', 'Community Centre', 'Postcode', 'Lloyds', 'pounds', 'every pound', 'Every penny', 'London', 'GBP'];
+
+        $rendered = 0;
+        foreach (['privacy-policy', 'contact', 'schedule-ramadan-giving', 'schedule-friday-giving', 'ramadan-food-packs', 'zakat-ul-fitr', 'food-appeal', 'sadaqah', 'ramadan-calendar', 'partials.footer', 'partials.header'] as $name) {
+            try {
+                $html = view($name, ['errors' => $errors, 'orphans' => collect(), 'projects' => collect(), 'rows' => [], 'hasTimes' => false])->render();
+            } catch (\Throwable $e) {
+                continue; // needs data this DB-less test does not have
+            }
+            $rendered++;
+            foreach ($banned as $word) {
+                $this->assertStringNotContainsString($word, $html, "$name still shows \"$word\" on the Canada domain");
+            }
+        }
+        $this->assertGreaterThanOrEqual(10, $rendered, 'too many pages could not be rendered to check');
+    }
+
+    public function test_community_centre_link_is_uk_only_in_the_footer(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+        $this->assertStringNotContainsString('Community Centre', view('partials.footer')->render());
+
+        $this->visit('https://naeemfoundation.co.uk/');
+        $this->assertStringContainsString('Community Centre', view('partials.footer')->render());
+    }
 }

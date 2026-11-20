@@ -137,11 +137,11 @@
                         {{-- Custom amount --}}
                         <div class="mt-4 flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
                             <span class="flex items-center gap-1.5 border-r border-gray-200 pr-3 text-sm font-semibold text-navy-dark">
-                                🇬🇧 GBP
+                                {{ region('flag') }} {{ region('currency') }}
                             </span>
                             <span class="text-xl font-bold text-navy-dark">{{ region('symbol') }}</span>
                             <input type="number" min="1" step="0.01" value="{{ $defaultDaily }}" data-rg-custom
-                                   aria-label="Daily amount in pounds"
+                                   aria-label="Daily amount in {{ region('currency') }}"
                                    class="w-full border-0 bg-transparent p-0 text-xl font-bold text-navy-dark focus:outline-none focus:ring-0">
                         </div>
 
@@ -212,7 +212,7 @@
                     </button>
 
                     <p class="mt-4 text-center text-xs leading-relaxed text-gray-500">
-                        You’ll confirm your Gift Aid declaration, donor details and payment on the next steps.
+                        You’ll confirm your {{ region('gift_aid') ? 'Gift Aid declaration, ' : '' }}donor details and payment on the next steps.
                         By continuing you agree to our
                         <a href="{{ route('privacy-policy') }}" class="font-semibold text-navy underline hover:text-brand">Privacy Policy</a>.
                     </p>

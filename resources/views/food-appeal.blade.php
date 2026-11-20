@@ -22,7 +22,7 @@
     ];
 
     $atWork = [
-        ['title' => 'Feeding Families', 'text' => 'Bulk, discounted purchasing means every pound provides more meals for more families.'],
+        ['title' => 'Feeding Families', 'text' => 'Bulk, discounted purchasing means every '.region('unit', 'pound').' provides more meals for more families.'],
         ['title' => 'Supporting Communities', 'text' => 'Buying from local suppliers strengthens the very communities we serve.'],
         ['title' => 'Health & Wellbeing', 'text' => 'Nutritious food and hygiene essentials protect families from illness and hardship.'],
         ['title' => 'Lasting Change', 'text' => 'Every gift creates a ripple of change towards a future free from hunger.'],
