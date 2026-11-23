@@ -239,4 +239,34 @@ class DomainRegionTest extends TestCase
         $this->visit('https://naeemfoundation.co.uk/');
         $this->assertStringContainsString('Community Centre', view('partials.footer')->render());
     }
+
+    public function test_canada_has_three_local_project_pages_and_menu_entries(): void
+    {
+        $this->visit('https://naeemfoundation.ca/');
+
+        $this->assertTrue((bool) region('show_local_projects', false));
+
+        foreach (['youth' => 'Youth Leadership', 'food' => 'Food Assistance Program', 'women' => 'Women'] as $key => $needle) {
+            $html = view('local-project', ['project' => $key, 'errors' => new \Illuminate\Support\ViewErrorBag])->render();
+            $this->assertStringContainsString($needle, $html, $key);
+        }
+
+        $menu = view('partials.header', ['errors' => new \Illuminate\Support\ViewErrorBag])->render();
+        $this->assertStringContainsString('Youth Leadership &amp; Community Development', $menu);
+        $this->assertStringContainsString('Food Assistance Program', $menu);
+        $this->assertStringContainsString('Women&#039;s Growth &amp; Community Project', $menu);
+    }
+
+    public function test_the_uk_does_not_get_the_local_project_pages_or_menu_entries(): void
+    {
+        $this->visit('https://naeemfoundation.co.uk/');
+
+        $this->assertFalse((bool) region('show_local_projects', false));
+
+        $menu = view('partials.header', ['errors' => new \Illuminate\Support\ViewErrorBag])->render();
+        $this->assertStringNotContainsString('Food Assistance Program', $menu);
+        $this->assertStringNotContainsString('Youth Leadership', $menu);
+        // …while its own giving menu is untouched.
+        $this->assertStringContainsString('Education Sponsorships', $menu);
+    }
 }

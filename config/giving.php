@@ -26,6 +26,10 @@ return [
             ['title' => 'Clean Water', 'route' => 'clean-water'],
             ['title' => 'Orphans Sponsorships', 'route' => 'orphans-sponsorships'],
             ['title' => 'Cambodia Education & Welfare', 'route' => 'cambodia-education-welfare'],
+            // Canada only (flag: show_local_projects in config/countries.php).
+            ['title' => 'Youth Leadership & Community Development', 'route' => 'local.youth', 'only' => 'show_local_projects'],
+            ['title' => 'Food Assistance Program', 'route' => 'local.food', 'only' => 'show_local_projects'],
+            ['title' => "Women's Growth & Community Project", 'route' => 'local.women', 'only' => 'show_local_projects'],
         ],
     ],
 

@@ -165,6 +165,12 @@ Route::middleware('region.feature:show_shop')->group(function () {
     Route::post('/shop/paypal/order', [PayPalController::class, 'shopOrder'])->name('paypal.shop.order');
     Route::post('/shop/paypal/capture', [PayPalController::class, 'shopCapture'])->name('paypal.shop.capture');
 });
+// Canada's local project pages — 404 on every other domain (flag: show_local_projects).
+Route::middleware('region.feature:show_local_projects')->group(function () {
+    Route::view('/youth-leadership-community-development', 'local-project', ['project' => 'youth'])->name('local.youth');
+    Route::view('/food-assistance-program', 'local-project', ['project' => 'food'])->name('local.food');
+    Route::view('/womens-growth-community-project', 'local-project', ['project' => 'women'])->name('local.women');
+});
 Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])->name('paypal.webhook');
 $givingRegistered = [];
 foreach (config('giving') as $group) {

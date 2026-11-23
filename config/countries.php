@@ -129,6 +129,7 @@ return [
             'minor_unit' => 'cent',
             'timetable_location' => 'Milton, Ontario, Canada',
             'show_community_centre' => false, // Not offered in Canada: no footer link.
+            'show_local_projects' => true,   // Canada's three local project pages (Giving menu + routes).
             'sponsor_monthly' => 100,        // CA$100 / month (CA$1,200 / year).
         ],
     ],

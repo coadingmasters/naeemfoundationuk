@@ -74,6 +74,15 @@
         'url' => route('donate.make'),
     ];
 
+    // Drop menu items that belong to another region (items can carry 'only' => '<region flag>').
+    $onlyHere = fn ($items) => array_values(array_filter((array) $items, fn ($i) => empty($i['only']) || region($i['only'], false)));
+    foreach ($megaColumns as $ci => $col) {
+        $megaColumns[$ci]['items'] = $onlyHere($col['items']);
+        if (! empty($col['sub'])) {
+            $megaColumns[$ci]['sub']['items'] = $onlyHere($col['sub']['items']);
+        }
+    }
+
     $arrowSvg = '<svg class="nf-mega__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
     // Transparent overlay by default; light-hero pages request a solid header
