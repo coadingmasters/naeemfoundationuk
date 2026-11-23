@@ -60,6 +60,24 @@ return [
     ],
 
     /*
+    | "Donation API" — the site takes the payment itself (PayPal), then reports
+    | the PAID donation to the CRM so it is recorded there. Nothing is charged
+    | by the CRM and the donor is not redirected. It has its own key + secret
+    | (different from the hosted-checkout ones above); a currency with no
+    | record keys is simply not reported. Independent of 'enabled' above.
+    */
+    'record' => [
+        'enabled' => env('CRM_RECORD_ENABLED', true),
+        'url' => env('CRM_RECORD_URL', 'https://api.lumrick.com/api/webhooks/donations'),
+        'timeout' => 10,
+        'branches' => [
+            'GBP' => ['api_key' => env('CRM_RECORD_GBP_API_KEY'), 'signing_secret' => env('CRM_RECORD_GBP_SIGNING_SECRET')],
+            'USD' => ['api_key' => env('CRM_RECORD_USD_API_KEY'), 'signing_secret' => env('CRM_RECORD_USD_SIGNING_SECRET')],
+            'CAD' => ['api_key' => env('CRM_RECORD_CAD_API_KEY'), 'signing_secret' => env('CRM_RECORD_CAD_SIGNING_SECRET')],
+        ],
+    ],
+
+    /*
     | Site cause -> CRM campaign. A cause title is matched (case-insensitive)
     | against the 'match' words in order — first hit wins, so keep the more
     | specific rules first. 'type' is the CRM donationType. The CRM only accepts

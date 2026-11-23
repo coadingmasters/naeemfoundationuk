@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Donation;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 /**
  * Server-to-server client for the CRM's donation-cart webhook.
@@ -129,6 +132,30 @@ class CrmDonations
      */
     public function buildPayload(array $donor, array $items, string $donationReference, string $returnUrl, string $country): array
     {
+        $lines = $this->mergeLines($items);
+        $donorBlock = $this->donorBlock($donor, $country);
+
+        $cartReference = self::cartReference($donationReference, [$returnUrl, $donorBlock, array_values($lines)]);
+
+        return [
+            'cartReference' => $cartReference,
+            'returnUrl' => $returnUrl,
+            'donor' => $donorBlock,
+            'items' => $this->cartItems($lines, $cartReference),
+        ];
+    }
+
+    /**
+     * Group basket lines by campaign + type + frequency (quantity folded into the
+     * amount) to stay within the CRM's item limit.
+     *
+     * @param  array<int, array<string, mixed>>  $items
+     * @return array<string, array{campaignId: string, donationType: string, frequency: string, amount: float}>
+     *
+     * @throws CrmException
+     */
+    private function mergeLines(array $items): array
+    {
         $lines = [];
         foreach ($items as $item) {
             $frequency = $item['frequency'] ?? 'one-off';
@@ -154,9 +181,15 @@ class CrmDonations
             throw new CrmException('Too many different donations in one basket (maximum '.self::MAX_ITEMS.').');
         }
 
+        return $lines;
+    }
+
+    /** @return array<string, mixed> */
+    private function donorBlock(array $donor, string $country): array
+    {
         $address = trim(($donor['billing_address'] ?? '').(! empty($donor['city']) ? ', '.$donor['city'] : ''));
 
-        $donorBlock = [
+        return [
             'email' => $donor['email'] ?? '',
             'firstName' => $donor['first_name'] ?? '',
             'lastName' => $donor['last_name'] ?? '',
@@ -166,9 +199,15 @@ class CrmDonations
             'country' => $country,
             'isGiftAid' => (bool) ($donor['gift_aid'] ?? false),
         ];
+    }
 
-        $cartReference = self::cartReference($donationReference, [$returnUrl, $donorBlock, array_values($lines)]);
-
+    /**
+     * @param  array<string, array<string, mixed>>  $lines
+     * @param  array<string, mixed>  $extra  Added to every item (e.g. the payment reference).
+     * @return array<int, array<string, mixed>>
+     */
+    private function cartItems(array $lines, string $cartReference, array $extra = []): array
+    {
         $cartItems = [];
         foreach (array_values($lines) as $n => $line) {
             $row = [
@@ -177,7 +216,7 @@ class CrmDonations
                 'amount' => round($line['amount'], 2),
                 'donationType' => $line['donationType'],
                 'frequency' => $line['frequency'],
-            ];
+            ] + $extra;
 
             if ($line['frequency'] !== 'OneTime') {
                 $row['interval'] = 1; // every 1 day/week/month/year
@@ -186,12 +225,114 @@ class CrmDonations
             $cartItems[] = $row;
         }
 
+        return $cartItems;
+    }
+
+    // ------------------------------------------------------------------
+    // "Donation API": the site takes the payment itself (PayPal), then tells
+    // the CRM so it can record the gift as PAID. Nothing is charged by the CRM
+    // and the donor is not redirected. Separate key + secret from the cart API.
+    // ------------------------------------------------------------------
+
+    /** @return array{api_key: string, signing_secret: string}|null */
+    public function recordCredentials(string $currency): ?array
+    {
+        $branch = config('crm.record.branches.'.strtoupper($currency));
+
+        if (empty($branch['api_key']) || empty($branch['signing_secret'])) {
+            return null;
+        }
+
+        return ['api_key' => $branch['api_key'], 'signing_secret' => $branch['signing_secret']];
+    }
+
+    /** Should a paid donation in this currency be reported to the CRM? */
+    public function recordingEnabledFor(string $currency): bool
+    {
+        return (bool) config('crm.record.enabled', true) && $this->recordCredentials($currency) !== null;
+    }
+
+    /**
+     * The body for a donation that has ALREADY been paid on this site.
+     * The reference is stable, so sending the same donation twice is harmless.
+     *
+     * @param  array<string, mixed>  $donor  Checkout details.
+     * @param  array<int, array<string, mixed>>  $items
+     * @return array<string, mixed>
+     *
+     * @throws CrmException
+     */
+    public function buildRecordPayload(array $donor, array $items, string $reference, string $country, string $provider, string $paymentId): array
+    {
+        $lines = $this->mergeLines($items);
+
         return [
-            'cartReference' => $cartReference,
-            'returnUrl' => $returnUrl,
-            'donor' => $donorBlock,
-            'items' => $cartItems,
+            'cartReference' => $reference,
+            'donor' => $this->donorBlock($donor, $country),
+            'items' => $this->cartItems($lines, $reference, [
+                'paymentProvider' => $provider,
+                'paymentReference' => $paymentId,
+            ]),
         ];
+    }
+
+    /** Remember on our donation row whether the CRM has been told (never throws). */
+    public static function saveRecordState(string $reference, array $state): void
+    {
+        try {
+            if (! Schema::hasTable('donations')) {
+                return;
+            }
+
+            $row = Donation::withoutGlobalScope('region')->where('reference', $reference)->first();
+
+            if ($row) {
+                $row->crm_details = array_merge((array) $row->crm_details, $state);
+                $row->save();
+            }
+        } catch (Throwable $e) {
+            Log::error('CRM record state not saved', ['reference' => $reference, 'error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Tell the CRM a donation was paid. Returns the CRM's reply.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     *
+     * @throws CrmException
+     */
+    public function recordPaid(string $currency, array $payload): array
+    {
+        $credentials = $this->recordCredentials($currency)
+            ?? throw new CrmException('The CRM donation API is not configured for '.strtoupper($currency).'.');
+        $body = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+
+        try {
+            $response = Http::withHeaders($this->headers($credentials, $body))
+                ->withBody($body, 'application/json')
+                ->timeout((int) config('crm.record.timeout', 10))
+                ->retry(2, 300, fn ($e) => $e instanceof ConnectionException, throw: false)
+                ->post(config('crm.record.url'));
+        } catch (ConnectionException $e) {
+            throw new CrmException('Could not reach the CRM.', 0, $e);
+        }
+
+        // 200/201 = recorded (200 = this reference was already recorded); 409 = same.
+        if (! in_array($response->status(), [200, 201, 409], true)) {
+            Log::error('CRM record rejected', [
+                'reference' => $payload['cartReference'] ?? null,
+                'status' => $response->status(),
+                'body' => mb_substr($response->body(), 0, 1000),
+            ]);
+
+            $reason = trim((string) $response->json('message', ''));
+
+            throw new CrmException('The CRM did not accept the donation (HTTP '.$response->status().')'.($reason !== '' ? ': '.mb_substr($reason, 0, 300) : '.'));
+        }
+
+        return (array) $response->json();
     }
 
     /**

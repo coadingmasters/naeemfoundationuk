@@ -8,6 +8,7 @@ use App\Mail\NewOrderAlert;
 use App\Mail\OrderReceipt;
 use App\Models\Donation;
 use App\Models\Order;
+use App\Services\CrmDonations;
 use App\Services\PayPal;
 use App\Support\Country;
 use App\Support\DonationCart;
@@ -147,6 +148,7 @@ class PayPalController extends Controller
 
         $this->sendDonationReceipt($donation, $summary, (string) $pending['currency']);
         $this->notifyOwnerOfDonation($donation, $summary, (string) $pending['currency'], (string) $capture['capture_id'], false);
+        $this->recordInCrm($donation, $summary, (string) $pending['currency'], (string) $capture['capture_id']);
 
         // Paid — only now is it safe to empty the basket.
         DonationCart::clear();
@@ -287,6 +289,7 @@ class PayPalController extends Controller
 
         $this->sendDonationReceipt($donation, $summary, (string) $pending['currency']);
         $this->notifyOwnerOfDonation($donation, $summary, (string) $pending['currency'], $subscriptionId, true);
+        $this->recordInCrm($donation, $summary, (string) $pending['currency'], $subscriptionId);
 
         DonationCart::clear();
         session()->forget(['donation', 'donation_consent']);
@@ -418,6 +421,7 @@ class PayPalController extends Controller
         $rowDonation = ['reference' => $reference] + $donation;
         $this->sendDonationReceipt($rowDonation, $summary, (string) $pending['currency']);
         $this->notifyOwnerOfDonation($rowDonation, $summary, (string) $pending['currency'], $subscriptionId, true);
+        $this->recordInCrm($rowDonation, $summary, (string) $pending['currency'], $subscriptionId);
 
         $done[$line['id']] = [
             'reference' => $reference,
@@ -783,6 +787,43 @@ class PayPalController extends Controller
             // Mail transport unavailable — the donation still completes.
             Log::error('Donation receipt email failed', ['reference' => $donation['reference'], 'error' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * Report the PAID donation to the CRM ("Donation API"). The donor has already
+     * paid, so this must never break their checkout: any failure is logged and
+     * kept on the donation row, and `php artisan crm:record-donations` re-sends it.
+     *
+     * @param  array<string, mixed>  $donation  Session donation (reference + checkout details).
+     * @param  array<string, mixed>  $summary
+     */
+    private function recordInCrm(array $donation, array $summary, string $currency, string $paymentId): void
+    {
+        try {
+            $crm = app(CrmDonations::class);
+
+            if (! $crm->recordingEnabledFor($currency)) {
+                return;
+            }
+
+            $payload = $crm->buildRecordPayload(
+                $donation['details'] ?? [],
+                $summary['items'],
+                $donation['reference'],
+                (string) Country::get('name', 'United Kingdom'),
+                'PayPal',
+                $paymentId,
+            );
+            $crm->recordPaid($currency, $payload);
+
+            $state = ['recorded_at' => now()->toDateTimeString(), 'record_error' => null];
+        } catch (Throwable $e) {
+            Log::error('CRM record failed', ['reference' => $donation['reference'], 'error' => $e->getMessage()]);
+
+            $state = ['record_error' => mb_substr($e->getMessage(), 0, 300), 'record_failed_at' => now()->toDateTimeString()];
+        }
+
+        CrmDonations::saveRecordState($donation['reference'], $state);
     }
 
     /** Let the charity know a donation has come in (separate from the donor's receipt). */
