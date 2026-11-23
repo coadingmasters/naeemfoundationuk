@@ -15,7 +15,7 @@ use Tests\TestCase;
  */
 class CrmDonationsTest extends TestCase
 {
-    private const URL = 'https://crmbackend.rentpe.co.uk/api/webhooks/donations/cart';
+    private const URL = 'https://api.lumrick.com/api/webhooks/donations/cart';
 
     protected function setUp(): void
     {

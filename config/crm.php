@@ -20,7 +20,8 @@ return [
     'enabled' => env('CRM_ENABLED', false),
 
     // Same URL for every branch — the API key decides which branch is used.
-    'webhook_url' => env('CRM_WEBHOOK_URL', 'https://crmbackend.rentpe.co.uk/api/webhooks/donations/cart'),
+    // (The old crmbackend.rentpe.co.uk host now answers "Invalid API key".)
+    'webhook_url' => env('CRM_WEBHOOK_URL', 'https://api.lumrick.com/api/webhooks/donations/cart'),
 
     'timeout' => 20,
 
