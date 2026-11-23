@@ -56,4 +56,14 @@ class UploadExtensionTest extends TestCase
     {
         $this->assertContains($this->ext(UploadedFile::fake()->image('photo.jpg')), ['jpg', 'jpeg']);
     }
+
+    public function test_an_mp4_video_is_still_accepted(): void
+    {
+        // Minimal MP4 header ("ftyp" box) so content sniffing sees a real video.
+        $mp4 = "\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom".str_repeat("\x00", 64);
+
+        $this->assertContains($this->ext($this->upload('clip.mp4', $mp4)), ['mp4', 'm4v']);
+        // …but a PHP file renamed to .mp4 is not stored as PHP either.
+        $this->assertNotContains($this->ext($this->upload('x.mp4', 'plain text')), ['php', 'phtml', 'phar']);
+    }
 }

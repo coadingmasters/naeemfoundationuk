@@ -42,7 +42,9 @@ trait HandlesImageUploads
      */
     protected function safeExtension(UploadedFile $file): string
     {
-        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf', 'doc', 'docx', 'odt', 'rtf', 'txt', 'zip'];
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf', 'doc', 'docx', 'odt', 'rtf', 'txt', 'zip',
+            // the admin video uploads
+            'mp4', 'm4v', 'mov', 'webm', 'ogg', 'ogv', 'mpeg', 'mpg', 'avi'];
 
         $guessed = strtolower((string) $file->guessExtension());
         if (in_array($guessed, $allowed, true)) {
