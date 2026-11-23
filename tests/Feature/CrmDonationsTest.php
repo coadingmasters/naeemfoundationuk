@@ -97,15 +97,15 @@ class CrmDonationsTest extends TestCase
     public static function campaigns(): array
     {
         return [
-            'zakat' => ['Zakat', 'e21d1288-021d-461b-9e87-5cee3e44ac19', 'Zakat'],
-            'sadaqah' => ['Give Sadaqah', '9b7a5dda-930a-4092-8514-7c13b4ef548b', 'Sadaqah'],
-            'zakat ul fitr is not plain zakat' => ['Zakat ul Fitr', '285251a7-ffd8-4160-b0a1-edfbd05c562e', 'Fitrana'],
-            'water pump' => ['Water Handpump Share', '51d722b0-78d3-4d89-8847-60fcb93b1bae', 'General'],
-            'binoria beats generic water' => ['Binoria Water Campaign', '0c386a0c-262d-4cdc-b5fe-98a9fe38fd59', 'General'],
-            'food' => ['Emergency Food Pack', 'd3bdf595-1f96-4fa6-a268-64a698064cc6', 'General'],
-            'fidya' => ['Fidya', '8a50340c-e938-4523-a824-35d94d377bad', 'Fidya'],
-            'qurbani' => ['Qurbani 2026', '8da79768-f673-4ec6-8ba5-3d8bb16902b7', 'Qurbani'],
-            'unmapped falls back to the general campaign (type must be one the CRM accepts)' => ['Where Most Needed', '1da40652-0671-44f7-a5a8-6b786d0413f7', 'General'],
+            'zakat' => ['Zakat', 'd721e793-a3f4-441d-b8bd-a28f283a3ea9', 'Zakat'],
+            'sadaqah' => ['Give Sadaqah', '2f1928d6-ec20-4762-b611-bac7124ff8f8', 'Sadaqah'],
+            'zakat ul fitr is not plain zakat' => ['Zakat ul Fitr', '97910e28-d29c-4527-ba85-fa3b194949b0', 'Fitrana'],
+            'water pump' => ['Water Handpump Share', 'db7b1301-2803-4830-a424-22581d92e9cc', 'General'],
+            'binoria beats generic water' => ['Binoria Water Campaign', '19c02215-72ff-4b13-9502-d1f18bc92b1c', 'General'],
+            'food' => ['Emergency Food Pack', '687a7d22-f2eb-46d1-ae3b-fc48105b52a3', 'General'],
+            'fidya' => ['Fidya', 'cbdf5ef5-7124-4f4e-96fb-5e32bce7fdd6', 'Fidya'],
+            'qurbani' => ['Qurbani 2026', '35cd190b-6c09-4a65-8a89-1a605eba8721', 'Qurbani'],
+            'unmapped falls back to the general campaign (type must be one the CRM accepts)' => ['Where Most Needed', '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'General'],
         ];
     }
 
@@ -136,7 +136,7 @@ class CrmDonationsTest extends TestCase
         $this->assertSame(1, $items[2]['interval']);
 
         $this->assertSame($payload['cartReference'].'-1', $items[0]['externalReference']);
-        $this->assertSame('e21d1288-021d-461b-9e87-5cee3e44ac19', $items[0]['campaignId']);
+        $this->assertSame('d721e793-a3f4-441d-b8bd-a28f283a3ea9', $items[0]['campaignId']);
     }
 
     public function test_lines_with_the_same_campaign_and_schedule_are_merged(): void

@@ -84,29 +84,29 @@ return [
     | a fixed list (Zakat, Sadaqah, General, Fidya, Kaffarah, Fitrana, Qurbani,
     | Aqeeqah); anything not listed here is sent as 'General'.
     */
-    'default_campaign' => '1da40652-0671-44f7-a5a8-6b786d0413f7', // Naeem Foundation Donation
+    'default_campaign' => '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', // Naeem Foundation Donation
 
     'campaigns' => [
-        ['match' => ['zakat ul fitr', 'zakat-ul-fitr', 'fitrana', 'fitra', 'eid gift'], 'id' => '285251a7-ffd8-4160-b0a1-edfbd05c562e', 'type' => 'Fitrana'], // Fitrana & Eid Gift
-        ['match' => ['zakat'], 'id' => 'e21d1288-021d-461b-9e87-5cee3e44ac19', 'type' => 'Zakat'],
-        ['match' => ['sadaqah', 'sadaqa'], 'id' => '9b7a5dda-930a-4092-8514-7c13b4ef548b', 'type' => 'Sadaqah'],
-        ['match' => ['kaffarah'], 'id' => '8a50340c-e938-4523-a824-35d94d377bad', 'type' => 'Kaffarah'], // Fidya & Kaffarah
-        ['match' => ['fidya'], 'id' => '8a50340c-e938-4523-a824-35d94d377bad', 'type' => 'Fidya'], // Fidya & Kaffarah
-        ['match' => ['aqeeqah'], 'id' => '8da79768-f673-4ec6-8ba5-3d8bb16902b7', 'type' => 'Aqeeqah'], // Qurbani 2026
-        ['match' => ['qurbani', 'udhiya'], 'id' => '8da79768-f673-4ec6-8ba5-3d8bb16902b7', 'type' => 'Qurbani'], // Qurbani 2026
-        ['match' => ['gaza'], 'id' => '840d8aa0-fe1c-4e9a-9ac0-68ef74cc0862', 'type' => 'General'], // Appeal For Gaza
-        ['match' => ['flood'], 'id' => '1c9858a9-f074-4a45-9da4-9e8e8dc22a3c', 'type' => 'General'], // Flood Donation
-        ['match' => ['cambodia'], 'id' => '954dbaf9-4b07-4149-94e7-48e732da7ce7', 'type' => 'General'], // Cambodia Education
-        ['match' => ['prosthetic', 'limb'], 'id' => 'dcbc292c-9ac0-4b77-8dce-d70dcd1d31dd', 'type' => 'General'], // Prosthetic Limb
-        ['match' => ['binoria'], 'id' => '0c386a0c-262d-4cdc-b5fe-98a9fe38fd59', 'type' => 'General'], // Binoria Water Campaign
-        ['match' => ['water', 'well', 'handpump', 'pump'], 'id' => '51d722b0-78d3-4d89-8847-60fcb93b1bae', 'type' => 'General'], // Water Pump
-        ['match' => ['sehri', 'seher', 'iftar'], 'id' => '008eac0c-4050-4985-87de-62c44e36dbca', 'type' => 'General'], // Seher & Iftar
-        ['match' => ['ration'], 'id' => '5821cb4f-5461-498c-a840-908254298c8d', 'type' => 'General'], // Ration
-        ['match' => ['food', 'meal', 'sustenance', 'feed'], 'id' => 'd3bdf595-1f96-4fa6-a268-64a698064cc6', 'type' => 'General'], // Food & Sustenance
-        ['match' => ['health', 'medical'], 'id' => '43882661-94ba-40bf-81f3-bc4b7da01b33', 'type' => 'General'], // Health Care
-        ['match' => ['education', 'school', 'student'], 'id' => '81deb54d-f635-430e-bb5c-460bada5b7a6', 'type' => 'General'], // Education
-        ['match' => ['community', 'islamic centre', 'masjid'], 'id' => '44db7265-81c8-40e1-8e15-3ac97afb38d9', 'type' => 'General'], // Community & Islamic Centre
-        ['match' => ['friday'], 'id' => '5cd8de44-fd8b-4aa3-9ca8-bb929248fd1a', 'type' => 'General'], // Friday Prayer
-        ['match' => ['ten nights', 'dhul hajj', 'dhul-hijjah', 'dhul hijjah'], 'id' => '6e4d80cc-6a59-48e7-a397-f587ec86e812', 'type' => 'General'], // Naeem Foundation Ten Nights
+        ['match' => ['zakat ul fitr', 'zakat-ul-fitr', 'fitrana', 'fitra', 'eid gift'], 'id' => '97910e28-d29c-4527-ba85-fa3b194949b0', 'type' => 'Fitrana'], // Fitrana & Eid Gift
+        ['match' => ['zakat'], 'id' => 'd721e793-a3f4-441d-b8bd-a28f283a3ea9', 'type' => 'Zakat'],
+        ['match' => ['sadaqah', 'sadaqa'], 'id' => '2f1928d6-ec20-4762-b611-bac7124ff8f8', 'type' => 'Sadaqah'],
+        ['match' => ['kaffarah'], 'id' => 'cbdf5ef5-7124-4f4e-96fb-5e32bce7fdd6', 'type' => 'Kaffarah'], // Fidya & Kaffarah
+        ['match' => ['fidya'], 'id' => 'cbdf5ef5-7124-4f4e-96fb-5e32bce7fdd6', 'type' => 'Fidya'], // Fidya & Kaffarah
+        ['match' => ['aqeeqah'], 'id' => '35cd190b-6c09-4a65-8a89-1a605eba8721', 'type' => 'Aqeeqah'], // Qurbani 2026
+        ['match' => ['qurbani', 'udhiya'], 'id' => '35cd190b-6c09-4a65-8a89-1a605eba8721', 'type' => 'Qurbani'], // Qurbani 2026
+        ['match' => ['gaza'], 'id' => '09727e4f-0b71-4196-9f77-31accc672188', 'type' => 'General'], // Appeal For Gaza
+        ['match' => ['flood'], 'id' => '62079d64-08f9-44f8-9d5f-017734801572', 'type' => 'General'], // Flood Donation
+        ['match' => ['cambodia'], 'id' => '9da36070-f1f8-4b2a-8374-864418e377be', 'type' => 'General'], // Cambodia Education
+        ['match' => ['prosthetic', 'limb'], 'id' => '0831ec80-af8f-4ce2-91bf-2b8a813b252c', 'type' => 'General'], // Prosthetic Limb
+        ['match' => ['binoria'], 'id' => '19c02215-72ff-4b13-9502-d1f18bc92b1c', 'type' => 'General'], // Binoria Water Campaign
+        ['match' => ['water', 'well', 'handpump', 'pump'], 'id' => 'db7b1301-2803-4830-a424-22581d92e9cc', 'type' => 'General'], // Water Pump
+        ['match' => ['sehri', 'seher', 'iftar'], 'id' => '5a1ea858-59d9-4380-81d5-58eb3c70f898', 'type' => 'General'], // Seher & Iftar
+        ['match' => ['ration'], 'id' => '289b643d-f9a7-4cf2-8aa6-08f5d55847e2', 'type' => 'General'], // Ration
+        ['match' => ['food', 'meal', 'sustenance', 'feed'], 'id' => '687a7d22-f2eb-46d1-ae3b-fc48105b52a3', 'type' => 'General'], // Food & Sustenance
+        ['match' => ['health', 'medical'], 'id' => '586c2279-b78c-4fdb-8f81-5b64db6cd1b5', 'type' => 'General'], // Health Care
+        ['match' => ['education', 'school', 'student'], 'id' => 'f8972812-3658-4313-a844-6a5c99dd8046', 'type' => 'General'], // Education
+        ['match' => ['community', 'islamic centre', 'masjid'], 'id' => 'bd402fca-d58b-40c0-be5b-ace13a550345', 'type' => 'General'], // Community & Islamic Centre
+        ['match' => ['friday'], 'id' => '4ba9b343-113e-4d19-b9ba-50098251ed62', 'type' => 'General'], // Friday Prayer
+        ['match' => ['ten nights', 'dhul hajj', 'dhul-hijjah', 'dhul hijjah'], 'id' => 'f9a9ab22-49ce-4812-94a1-a0c90e884b5d', 'type' => 'General'], // Naeem Foundation Ten Nights
     ],
 ];
