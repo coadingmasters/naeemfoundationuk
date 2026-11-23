@@ -32,6 +32,11 @@
 
     RewriteEngine On
 
+    # Security: the only PHP file the web server may run is index.php. Anything
+    # else ending in .php/.phtml/.phar (e.g. a file planted in images/ or
+    # files/cvs/) is refused, never executed.
+    RewriteRule ^(?!index\.php$).*\.(php[0-9]?|phtml|phar)$ - [F,L,NC]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

@@ -28,10 +28,35 @@ trait HandlesImageUploads
      */
     protected function storeUploadedImage(UploadedFile $file, string $dir, string $prefix): string
     {
-        $name = $prefix.'-'.now()->format('YmdHis').'-'.substr(md5(uniqid('', true)), 0, 8).'.'.$file->getClientOriginalExtension();
+        $name = $prefix.'-'.now()->format('YmdHis').'-'.substr(md5(uniqid('', true)), 0, 8).'.'.$this->safeExtension($file);
         $file->move($this->webRoot().'/'.$dir, $name);
 
         return $dir.'/'.$name;
+    }
+
+    /**
+     * The extension to store an upload under. Decided from the file's real
+     * content (never trusted from the visitor's file name), and only ever from
+     * a short allow-list — so an upload can never be saved as .php/.phtml and
+     * run by the web server.
+     */
+    protected function safeExtension(UploadedFile $file): string
+    {
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf', 'doc', 'docx', 'odt', 'rtf', 'txt', 'zip'];
+
+        $guessed = strtolower((string) $file->guessExtension());
+        if (in_array($guessed, $allowed, true)) {
+            return $guessed;
+        }
+
+        // Content sniffing can name a valid .docx as "zip"; accept the visitor's
+        // own extension only if it is also on the allow-list.
+        $client = strtolower($file->getClientOriginalExtension());
+        if (in_array($client, $allowed, true)) {
+            return $client;
+        }
+
+        throw new \RuntimeException('This file type is not allowed.');
     }
 
     /** Remove a previously uploaded image (only ever within its own directory). */
