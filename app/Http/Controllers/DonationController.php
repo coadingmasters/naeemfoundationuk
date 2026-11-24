@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Donation;
 use App\Support\Country;
-use App\Services\CrmDonations;
 use App\Support\DonationCart;
 use App\Support\ProductCart;
 use Illuminate\Http\JsonResponse;
@@ -238,10 +237,6 @@ class DonationController extends Controller
                 ->withErrors(['cart' => 'Your contribution is empty. Please add a donation first.']);
         }
 
-        // CRM flow: the CRM takes the payment (one-off AND recurring lines can share a
-        // basket), so the PayPal-only restrictions and the cover-the-fee box don't apply.
-        $useCrm = app(CrmDonations::class)->enabledForBasket((string) Country::get('currency', 'GBP'), DonationCart::items());
-
         $subtotal = DonationCart::subtotal();
         $feeAmount = DonationCart::fee();
         // Default to covering the fee; preserve the donor's choice across validation errors.
@@ -263,25 +258,17 @@ class DonationController extends Controller
             'recurringPart' => DonationCart::recurringSubtotal(),
             'oneOffPart' => round($subtotal - DonationCart::recurringSubtotal(), 2),
             // Two or more regular gifts on PayPal: each is its own subscription, set up one at a time.
-            'splitLine' => ! $useCrm && DonationCart::splitRecurring() ? DonationCart::nextSplitLine() : null,
+            'splitLine' => DonationCart::splitRecurring() ? DonationCart::nextSplitLine() : null,
             'splitStep' => count((array) session('donation.subscribed_lines', [])) + 1,
             'splitOf' => count(DonationCart::recurringLines()),
             // With one subscription per gift there is no "different schedules" problem any more.
-            'mixedSchedules' => ! $useCrm && ! DonationCart::splitRecurring() && count(DonationCart::recurringFrequencies()) > 1,
-            'useCrm' => $useCrm,
-            // One summary line per schedule, for the CRM wording (e.g. one-time, monthly, weekly).
-            'schedules' => $useCrm ? $this->schedules() : [],
+            'mixedSchedules' => ! DonationCart::splitRecurring() && count(DonationCart::recurringFrequencies()) > 1,
         ]);
     }
 
     /** Final confirmation screen. */
     public function thankYou(Request $request)
     {
-        // Returning from the CRM's hosted checkout (?cart_reference=…&status=…).
-        if ($request->filled('cart_reference')) {
-            return app(CrmDonationController::class)->complete($request);
-        }
-
         $completed = session('donation_completed');
 
         if (! $completed) {
@@ -291,29 +278,4 @@ class DonationController extends Controller
         return view('donate.thank-you', $completed);
     }
 
-    /**
-     * The basket grouped by schedule, for the payment-step wording.
-     *
-     * @return array<int, array{frequency: string, amount: float}>
-     */
-    private function schedules(): array
-    {
-        $totals = [];
-
-        foreach (DonationCart::items() as $item) {
-            $f = $item['frequency'] ?? 'one-off';
-            $totals[$f] = ($totals[$f] ?? 0) + (float) $item['amount'] * (int) $item['qty'];
-        }
-
-        $order = ['one-off', 'daily', 'weekly', 'monthly', 'yearly'];
-        $out = [];
-
-        foreach ($order as $f) {
-            if (isset($totals[$f])) {
-                $out[] = ['frequency' => $f, 'amount' => round($totals[$f], 2)];
-            }
-        }
-
-        return $out;
-    }
 }

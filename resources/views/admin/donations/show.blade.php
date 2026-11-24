@@ -124,6 +124,11 @@
                         @elseif ($donation->payment_id)
                             <p class="mt-1 text-xs text-gray-400">Search this ID in your PayPal dashboard to find the transaction.</p>
                         @endif
+                        @if (! empty($donation->crm_details['recorded_at']))
+                            <p class="mt-1 text-xs text-green-700">Recorded in the CRM on {{ $donation->crm_details['recorded_at'] }}.</p>
+                        @elseif (! empty($donation->crm_details['record_error']))
+                            <p class="mt-1 text-xs text-red-600">Not recorded in the CRM yet: {{ $donation->crm_details['record_error'] }}</p>
+                        @endif
                     </div>
                     <div>
                         <dt class="text-xs font-medium text-gray-400">Paid at</dt>

@@ -119,7 +119,6 @@ class SplitSubscriptionsTest extends TestCase
 
     public function test_payment_step_shows_one_button_for_the_next_gift(): void
     {
-        config(['crm.enabled' => false]);
         $this->mock(PayPal::class, fn (MockInterface $m) => $m->shouldReceive('isConfigured')->andReturn(false)->shouldReceive('clientId')->andReturn(null));
 
         $this->withSession($this->sessionData())->get(route('donate.payment'))

@@ -802,16 +802,16 @@ class PayPalController extends Controller
         try {
             $crm = app(CrmDonations::class);
 
-            if (! $crm->recordingEnabledFor($currency)) {
+            if (! $crm->enabledFor($currency)) {
                 return;
             }
 
-            $payload = $crm->buildRecordPayload(
+            $payload = $crm->buildPayload(
                 $donation['details'] ?? [],
                 $summary['items'],
                 $donation['reference'],
                 (string) Country::get('name', 'United Kingdom'),
-                'PayPal',
+                $currency,
                 $paymentId,
             );
             $crm->recordPaid($currency, $payload);

@@ -41,7 +41,7 @@ class RecordDonationsInCrm extends Command
             ->each(function (Donation $d) use ($crm, $countries, &$sent, &$skipped, &$failed) {
                 $currency = (string) $d->currency;
 
-                if (! empty($d->crm_details['recorded_at']) || ! $crm->recordingEnabledFor($currency)) {
+                if (! empty($d->crm_details['recorded_at']) || ! $crm->enabledFor($currency)) {
                     $skipped++;
 
                     return;
@@ -54,7 +54,7 @@ class RecordDonationsInCrm extends Command
                 }
 
                 try {
-                    $payload = $crm->buildRecordPayload(
+                    $payload = $crm->buildPayload(
                         [
                             'first_name' => $d->first_name, 'last_name' => $d->last_name, 'email' => $d->email,
                             'phone' => $d->phone, 'billing_address' => $d->billing_address, 'city' => $d->city,
@@ -63,8 +63,9 @@ class RecordDonationsInCrm extends Command
                         (array) $d->items,
                         $d->reference,
                         (string) ($countries[$d->region] ?? 'United Kingdom'),
-                        'PayPal',
+                        $currency,
                         (string) ($d->payment_id ?: $d->subscription_id),
+                        $d->paid_at,
                     );
                     $crm->recordPaid($currency, $payload);
                     CrmDonations::saveRecordState($d->reference, ['recorded_at' => now()->toDateTimeString(), 'record_error' => null]);

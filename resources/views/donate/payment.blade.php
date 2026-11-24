@@ -140,12 +140,6 @@
                     <div class="rounded-2xl bg-gray-50 p-6 shadow-sm ring-1 ring-black/5 sm:p-7 lg:p-8">
                         <h2 class="text-lg font-bold text-navy sm:text-xl">Add Payment Details</h2>
 
-                        @if (($useCrm ?? false) && session('crm_preview') && ! config('crm.enabled'))
-                            <div class="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                                <strong>CRM test mode</strong> &mdash; only you can see this. Payments here go through the CRM&rsquo;s test checkout.
-                            </div>
-                        @endif
-
                         @if ($errors->any())
                             <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                                 <ul class="list-inside list-disc space-y-1">
@@ -157,8 +151,7 @@
                         @endif
 
                         <div class="mt-5">
-                            {{-- Cover the transaction fee (PayPal flow only — the CRM has no fee option) --}}
-                            @unless ($useCrm ?? false)
+                            {{-- Cover the transaction fee --}}
                             <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-navy/15 bg-cream/60 p-4">
                                 <input type="checkbox" name="cover_fee" value="1" data-cover-fee @checked($coverFee)
                                        class="mt-0.5 h-5 w-5 shrink-0 rounded border-navy/30 text-brand focus:ring-2 focus:ring-brand/30">
@@ -169,8 +162,6 @@
                                     so that we receive your full donation?
                                 </span>
                             </label>
-                            @endunless
-
 
                             @php
                                 $recurWord = match ($recurFrequency ?? 'monthly') {
@@ -180,33 +171,7 @@
                                     default => 'month',
                                 };
                             @endphp
-                            @if ($useCrm ?? false)
-                                @php
-                                    $schedWord = ['one-off' => 'One-time', 'daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly', 'yearly' => 'Yearly'];
-                                    $schedEvery = ['daily' => 'day', 'weekly' => 'week', 'monthly' => 'month', 'yearly' => 'year'];
-                                @endphp
-                                <div class="mt-5 rounded-xl border border-brand/25 bg-brand/5 p-4 text-sm text-navy-dark">
-                                    <p class="font-semibold">Your gifts</p>
-                                    <ul class="mt-2 space-y-1.5">
-                                        @foreach ($schedules as $row)
-                                            <li class="flex items-start justify-between gap-3">
-                                                <span>{{ $schedWord[$row['frequency']] }}
-                                                    <span class="text-gray-500">
-                                                        @if ($row['frequency'] === 'one-off') &mdash; charged once
-                                                        @else &mdash; repeats every {{ $schedEvery[$row['frequency']] }} until you cancel
-                                                        @endif
-                                                    </span>
-                                                </span>
-                                                <strong>{{ money($row['amount']) }}</strong>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                    <p class="mt-3 text-xs leading-relaxed text-gray-600">
-                                        You&rsquo;ll pay securely on our donation partner&rsquo;s page, then come straight back here.
-                                        You can stop a regular gift at any time by contacting us.
-                                    </p>
-                                </div>
-                            @elseif ($splitLine ?? null)
+                            @if ($splitLine ?? null)
                                 @php
                                     $splitEvery = ['daily' => 'day', 'weekly' => 'week', 'monthly' => 'month', 'yearly' => 'year'][$splitLine['frequency']] ?? 'month';
                                     $splitAmount = \App\Support\DonationCart::lineSubtotal($splitLine);
@@ -246,15 +211,7 @@
                             @endif
 
                             <div class="mt-7">
-                                @if ($useCrm ?? false)
-                                    <form method="POST" action="{{ route('donate.crm.start') }}">
-                                        @csrf
-                                        <button type="submit" class="btn-brand w-full justify-center py-3.5 text-base">
-                                            Donate {{ money($subtotal) }} securely
-                                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </button>
-                                    </form>
-                                @elseif ($splitLine ?? null)
+                                @if ($splitLine ?? null)
                                     <x-paypal-buttons
                                         mode="subscription"
                                         :line="$splitLine['id']"
@@ -291,8 +248,6 @@
 
 @endsection
 
-@unless ($useCrm ?? false)
-    @push('scripts')
-        @include('partials.paypal-sdk', ['paypalSubscription' => $isRecurring])
-    @endpush
-@endunless
+@push('scripts')
+    @include('partials.paypal-sdk', ['paypalSubscription' => $isRecurring])
+@endpush
