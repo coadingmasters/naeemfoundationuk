@@ -41,16 +41,21 @@ return [
     'default_campaign' => '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', // Naeem Foundation Donation
 
     'campaigns' => [
-        ['match' => ['zakat ul fitr', 'zakat-ul-fitr', 'fitrana', 'fitra', 'eid gift'], 'id' => '97910e28-d29c-4527-ba85-fa3b194949b0', 'type' => 'Fitrana'], // Fitrana & Eid Gift
+        // Canada's local projects have no CRM campaign yet — keep them out of 'Community & Islamic Centre'.
+        ['match' => ['youth leadership', 'growth & community'], 'id' => '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'type' => 'General'], // Naeem Foundation Donation
+        ['match' => ['eid gift'], 'id' => '97910e28-d29c-4527-ba85-fa3b194949b0', 'type' => 'EidGifts'], // Fitrana & Eid Gift
+        ['match' => ['zakat ul fitr', 'zakat-ul-fitr', 'fitrana', 'fitra'], 'id' => '97910e28-d29c-4527-ba85-fa3b194949b0', 'type' => 'Fitrana'], // Fitrana & Eid Gift
+        ['match' => ['ramadan food'], 'id' => '687a7d22-f2eb-46d1-ae3b-fc48105b52a3', 'type' => 'RamadanFoodPack'], // Food & Sustenance
+        ['match' => ['lillah'], 'id' => '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'type' => 'Lilah'], // Naeem Foundation Donation
         ['match' => ['zakat'], 'id' => 'd721e793-a3f4-441d-b8bd-a28f283a3ea9', 'type' => 'Zakat'],
         ['match' => ['sadaqah', 'sadaqa'], 'id' => '2f1928d6-ec20-4762-b611-bac7124ff8f8', 'type' => 'Sadaqah'],
         ['match' => ['kaffarah'], 'id' => 'cbdf5ef5-7124-4f4e-96fb-5e32bce7fdd6', 'type' => 'Kaffarah'], // Fidya & Kaffarah
         ['match' => ['fidya'], 'id' => 'cbdf5ef5-7124-4f4e-96fb-5e32bce7fdd6', 'type' => 'Fidya'], // Fidya & Kaffarah
-        ['match' => ['aqeeqah'], 'id' => '35cd190b-6c09-4a65-8a89-1a605eba8721', 'type' => 'Aqeeqah'], // Qurbani 2026
+        ['match' => ['aqeeqah', 'aqiqah', 'aqiqa'], 'id' => '35cd190b-6c09-4a65-8a89-1a605eba8721', 'type' => 'Aqeeqah'], // Qurbani 2026
         ['match' => ['qurbani', 'udhiya'], 'id' => '35cd190b-6c09-4a65-8a89-1a605eba8721', 'type' => 'Qurbani'], // Qurbani 2026
         ['match' => ['gaza'], 'id' => '09727e4f-0b71-4196-9f77-31accc672188', 'type' => 'General'], // Appeal For Gaza
         ['match' => ['flood'], 'id' => '62079d64-08f9-44f8-9d5f-017734801572', 'type' => 'General'], // Flood Donation
-        ['match' => ['cambodia'], 'id' => '9da36070-f1f8-4b2a-8374-864418e377be', 'type' => 'General'], // Cambodia Education
+        ['match' => ['cambodia', 'school meal'], 'id' => '9da36070-f1f8-4b2a-8374-864418e377be', 'type' => 'General'], // Cambodia Education
         ['match' => ['prosthetic', 'limb'], 'id' => '0831ec80-af8f-4ce2-91bf-2b8a813b252c', 'type' => 'General'], // Prosthetic Limb
         ['match' => ['binoria'], 'id' => '19c02215-72ff-4b13-9502-d1f18bc92b1c', 'type' => 'General'], // Binoria Water Campaign
         ['match' => ['water', 'well', 'handpump', 'pump'], 'id' => 'db7b1301-2803-4830-a424-22581d92e9cc', 'type' => 'WaterPump'], // Water Pump

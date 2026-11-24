@@ -151,6 +151,12 @@ class CrmRecordTest extends TestCase
             'qurbani' => ['Qurbani 2026', '35cd190b-6c09-4a65-8a89-1a605eba8721', 'Qurbani'],
             'water' => ['Build a Water Well', 'db7b1301-2803-4830-a424-22581d92e9cc', 'WaterPump'],
             'education' => ['Education for Orphans', 'f8972812-3658-4313-a844-6a5c99dd8046', 'Education'],
+            'aqiqah spelling used on the site' => ['Aqiqah', '35cd190b-6c09-4a65-8a89-1a605eba8721', 'Aqeeqah'],
+            'eid gifts' => ['Eid Gifts', '97910e28-d29c-4527-ba85-fa3b194949b0', 'EidGifts'],
+            'ramadan food packs' => ['Ramadan Food Packs (x3)', '687a7d22-f2eb-46d1-ae3b-fc48105b52a3', 'RamadanFoodPack'],
+            'lillah' => ['Lillah', '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'Lilah'],
+            'cambodia school meals' => ['School Meals', '9da36070-f1f8-4b2a-8374-864418e377be', 'General'],
+            'canada youth project is not the islamic centre' => ['Youth Leadership & Community Development', '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'General'],
             'unknown' => ['Something new', '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'General'],
         ];
     }
