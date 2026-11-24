@@ -82,7 +82,7 @@
                                     <div class="relative">
                                         <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-400">{{ $sym }}</span>
                                         <input type="number" min="0" step="0.01" inputmode="decimal" data-zakat placeholder="0.00"
-                                               class="h-11 w-full rounded-lg border border-gray-300 bg-white pl-9 pr-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
+                                               class="h-11 w-full rounded-lg border border-gray-300 bg-white {{ mb_strlen($sym) > 1 ? 'pl-12' : 'pl-9' }} pr-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
                                     </div>
                                 </div>
                             @endforeach
@@ -108,7 +108,7 @@
                                 <div class="relative">
                                     <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-400">{{ $sym }}</span>
                                     <input type="number" min="0" step="0.01" inputmode="decimal" data-zakat-liability placeholder="0.00"
-                                           class="h-11 w-full rounded-lg border border-gray-300 bg-white pl-9 pr-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
+                                           class="h-11 w-full rounded-lg border border-gray-300 bg-white {{ mb_strlen($sym) > 1 ? 'pl-12' : 'pl-9' }} pr-3 text-sm text-navy-dark outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30">
                                 </div>
                             </div>
                         @endforeach
@@ -135,7 +135,7 @@
                             <div class="relative">
                                 <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-white/50">{{ $sym }}</span>
                                 <input type="number" min="0" step="0.01" data-zakat-nisab value="{{ $nisabDefault }}"
-                                       class="h-10 w-full rounded-lg border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white outline-none transition focus:border-white/40">
+                                       class="h-10 w-full rounded-lg border border-white/15 bg-white/5 {{ mb_strlen($sym) > 1 ? 'pl-12' : 'pl-9' }} pr-3 text-sm text-white outline-none transition focus:border-white/40">
                             </div>
                             <p class="mt-1 text-[11px] text-white/40">Approx. value of 612.36g of silver — update with today’s price.</p>
                         </div>

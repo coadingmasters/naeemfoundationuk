@@ -118,7 +118,7 @@
                             <div class="relative">
                                 <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-bold text-navy/50">{{ region('symbol') }}</span>
                                 <input type="number" min="1" step="1" inputmode="numeric" data-whole-number placeholder="e.g. 75" data-other-input
-                                       class="h-12 w-full rounded-md border border-gray-300 pl-7 pr-3 text-base text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25">
+                                       class="h-12 w-full rounded-md border border-gray-300 {{ mb_strlen(region('symbol')) > 1 ? 'pl-12' : 'pl-7' }} pr-3 text-base text-navy-dark focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25">
                             </div>
                         </div>
                     </div>

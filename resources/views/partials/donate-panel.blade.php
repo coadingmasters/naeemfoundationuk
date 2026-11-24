@@ -82,7 +82,7 @@
         <div class="relative">
             <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-bold text-brand">{{ $sym }}</span>
             <input type="number" min="1" step="1" inputmode="numeric" data-whole-number data-amt-recurring-input value="{{ $recurringValue }}"
-                   class="h-12 w-full rounded-lg border border-brand/40 pl-7 pr-3 text-center text-base font-bold text-brand focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25">
+                   class="h-12 w-full rounded-lg border border-brand/40 {{ mb_strlen($sym) > 1 ? 'pl-12' : 'pl-7' }} pr-3 text-center text-base font-bold text-brand focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25">
         </div>
     </div>
 
