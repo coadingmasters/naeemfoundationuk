@@ -31,6 +31,21 @@ trait BelongsToRegion
                 $model->region = RegionContext::region();
             }
         });
+
+        // The site always writes "Healthcare" as one word, however it is typed in the admin.
+        static::saving(function ($model) {
+            foreach (['title', 'name'] as $field) {
+                $value = $model->getAttribute($field);
+
+                if (is_string($value) && preg_match('/health[ -]care/i', $value)) {
+                    $model->setAttribute($field, preg_replace_callback(
+                        '/(health)[ -](care)/i',
+                        fn ($m) => $m[1].(mb_strtoupper($m[1]) === $m[1] ? $m[2] : strtolower($m[2])),
+                        $value
+                    ));
+                }
+            }
+        });
     }
 
     /** Query across every region regardless of the current scope. */
