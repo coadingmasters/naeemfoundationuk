@@ -4,7 +4,7 @@
 
 @php
     // Suggested recurring amounts (fall back to a sensible default).
-    $monthly = $orphan->monthly_amount ?: (int) region('sponsor_monthly', 53);
+    $monthly = $orphan->monthly_amount ?: (int) region('sponsor_monthly', 35);
 
     $facts = array_filter([
         'DOB' => $orphan->dob,

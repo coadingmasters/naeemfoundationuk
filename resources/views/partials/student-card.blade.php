@@ -1,7 +1,7 @@
 {{-- A sponsorship student's card (from the Binoria API). Expects $orphan, shaped by
      OrphanController::asCards(). Used by the sponsorship grid and the carousel. --}}
 @php
-    $monthly = $orphan->monthly_amount ?: (int) region('sponsor_monthly', 53);
+    $monthly = $orphan->monthly_amount ?: (int) region('sponsor_monthly', 35);
     $facts = collect([$orphan->age, $orphan->gender, 'Students'])->filter()->implode(' | ');
     // Binoria's "Zakat Eligible" reads as a short tag, like the "Zakat" pill on the reference.
     $tag = $orphan->grade === 'Zakat Eligible' ? 'Zakat' : $orphan->grade;

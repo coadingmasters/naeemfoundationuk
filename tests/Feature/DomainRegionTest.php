@@ -185,11 +185,11 @@ class DomainRegionTest extends TestCase
         $this->visit('https://naeemfoundation.ca/');
         $ca = view('education-sponsorships', $args)->render();
         $this->assertStringContainsString('data-monthly="100" data-yearly="1200"', $ca);
-        $this->assertStringNotContainsString('data-monthly="53"', $ca);
+        $this->assertStringNotContainsString('data-monthly="35"', $ca);
 
         $this->visit('https://naeemfoundation.co.uk/');
         $uk = view('education-sponsorships', $args)->render();
-        $this->assertStringContainsString('data-monthly="53" data-yearly="636"', $uk);
+        $this->assertStringContainsString('data-monthly="35" data-yearly="420"', $uk);
     }
 
     public function test_shop_is_not_linked_on_canada(): void

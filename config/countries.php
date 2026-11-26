@@ -61,7 +61,7 @@ return [
             'fundraising_regulator' => true, // UK-only regulator badge.
             'show_vacancy' => true,          // Careers page shows the open role + CV form.
             'show_annual_report' => true,    // Annual Report page + its menu/footer links.
-            'sponsor_monthly' => 53,         // Default monthly student/orphan sponsorship (local currency).
+            'sponsor_monthly' => 35,         // Default monthly student/orphan sponsorship (local currency).
             'show_shop' => true,             // Shop pages, menu and footer link.
             'in_country' => 'the UK',        // "registered charity in ..."
             'postal_label' => 'Postcode',

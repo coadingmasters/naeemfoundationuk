@@ -17,7 +17,7 @@
     // Monthly sponsorship levels (currency follows the visitor's region).
     // Course lengths confirmed by Naeem Foundation. One flat monthly rate covers
     // every level, so the figure lives here once rather than per row.
-    $levelAmount = (int) region('sponsor_monthly', 53);
+    $levelAmount = (int) region('sponsor_monthly', 35);
     $levels = [
         ['label' => 'Hafiz / Hafiza', 'duration' => '2.5-year course', 'note' => 'Sponsor a student memorising the Holy Qur’an.'],
         ['label' => 'Alim / Alima', 'duration' => '8-year course', 'note' => 'Sponsor an Islamic scholar in training.'],
