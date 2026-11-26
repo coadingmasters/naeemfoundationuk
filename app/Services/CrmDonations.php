@@ -68,13 +68,27 @@ class CrmDonations
 
         foreach (config('crm.campaigns', []) as $rule) {
             foreach ($rule['match'] as $word) {
-                if (str_contains($needle, $word)) {
-                    return ['id' => $rule['id'], 'type' => $rule['type'] ?: 'General'];
+                $hit = str_starts_with($word, '/') ? (bool) preg_match($word.'i', $needle) : str_contains($needle, $word);
+
+                if ($hit) {
+                    return ['id' => $rule['id'], 'type' => $rule['type'] ?: $this->scheduledType($needle)];
                 }
             }
         }
 
         return ['id' => config('crm.default_campaign'), 'type' => 'General'];
+    }
+
+    /** Scheduled giving ("Zakat (Every Friday)") keeps the type of the cause that was scheduled. */
+    private function scheduledType(string $needle): string
+    {
+        foreach (config('crm.schedule_types', []) as $word => $type) {
+            if (str_contains($needle, $word)) {
+                return $type;
+            }
+        }
+
+        return 'General';
     }
 
     /**

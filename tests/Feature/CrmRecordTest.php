@@ -128,7 +128,7 @@ class CrmRecordTest extends TestCase
     public function test_more_than_ten_distinct_lines_is_refused(): void
     {
         $items = [];
-        foreach (['zakat', 'sadaqah', 'fitrana', 'kaffarah', 'fidya', 'aqeeqah', 'qurbani', 'gaza', 'flood', 'cambodia', 'prosthetic'] as $cause) {
+        foreach (['zakat', 'sadaqah', 'fitrana', 'kaffarah', 'fidya', 'aqeeqah', 'qurbani', 'hostel', 'widow', 'cambodia', 'prosthetic'] as $cause) {
             $items[] = ['cause' => $cause, 'amount' => 1, 'qty' => 1, 'frequency' => 'one-off'];
         }
 
@@ -145,19 +145,52 @@ class CrmRecordTest extends TestCase
     public static function causes(): array
     {
         return [
-            'zakat' => ['Zakat', 'd721e793-a3f4-441d-b8bd-a28f283a3ea9', 'Zakat'],
-            'sadaqah' => ['Sadaqah Jariyah', '2f1928d6-ec20-4762-b611-bac7124ff8f8', 'Sadaqah'],
-            'fitrana' => ['Zakat ul Fitr', '97910e28-d29c-4527-ba85-fa3b194949b0', 'Fitrana'],
-            'qurbani' => ['Qurbani 2026', '35cd190b-6c09-4a65-8a89-1a605eba8721', 'Qurbani'],
-            'water' => ['Build a Water Well', 'db7b1301-2803-4830-a424-22581d92e9cc', 'WaterPump'],
-            'education' => ['Education for Orphans', 'f8972812-3658-4313-a844-6a5c99dd8046', 'Education'],
-            'aqiqah spelling used on the site' => ['Aqiqah', '35cd190b-6c09-4a65-8a89-1a605eba8721', 'Aqeeqah'],
-            'eid gifts' => ['Eid Gifts', '97910e28-d29c-4527-ba85-fa3b194949b0', 'EidGifts'],
-            'ramadan food packs' => ['Ramadan Food Packs (x3)', '687a7d22-f2eb-46d1-ae3b-fc48105b52a3', 'RamadanFoodPack'],
-            'lillah' => ['Lillah', '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'Lilah'],
-            'cambodia school meals' => ['School Meals', '9da36070-f1f8-4b2a-8374-864418e377be', 'General'],
-            'canada youth project is not the islamic centre' => ['Youth Leadership & Community Development', '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'General'],
-            'unknown' => ['Something new', '44eaa5a7-b1d9-4aa0-9d54-ed8a11862c79', 'General'],
+            'Education Sponsorships' => ['Education Sponsorships', '71369324-566b-42b7-89ce-552d76537367', 'Education'],
+            'Food & Sustenance' => ['Food & Sustenance', 'f2e2fc87-4ac0-436a-951d-0ce8ec9785fb', 'General'],
+            'Hostel for Students / Orphans' => ['Hostel for Students / Orphans', 'd9e4a723-fe95-4289-9854-73cbb4b35514', 'General'],
+            'Prosthetic Limb' => ['Prosthetic Limb', 'a23b59cc-e7f9-4455-a50b-966dd708ba7f', 'General'],
+            'Clean Water' => ['Clean Water', 'e82047eb-c1e5-4dc9-9687-a693c3c72f1b', 'WaterPump'],
+            'Orphans Sponsorships' => ['Orphans Sponsorships', '88c7887f-e1b3-453f-a8eb-08e8e96dd863', 'General'],
+            'Cambodia Education & Welfare' => ['Cambodia Education & Welfare', '876082d6-1ea5-46e8-b351-7ec02537ff96', 'General'],
+            'Food Appeal' => ['Food Appeal', '45dd7eec-d65a-4de3-8378-8aec026ed8be', 'General'],
+            'Healthcare' => ['Healthcare', 'cab69d92-4908-4e4d-b76b-76d4c5020866', 'General'],
+            'Widows' => ['Widows', '67d407be-9e57-4f33-a8b2-474b43913bd2', 'General'],
+            'Sustainable Livelihood' => ['Sustainable Livelihood', 'c47c0f54-e2aa-4043-b647-fb4b316ec520', 'General'],
+            'Sadaqah' => ['Sadaqah', '9f4793cc-9ed1-4f62-bf4b-c33f022d57c1', 'Sadaqah'],
+            'Zakat' => ['Zakat', 'e1f07166-59f6-4797-9bd1-0d597b0aff74', 'Zakat'],
+            'Sadaqah Jariyah' => ['Sadaqah Jariyah', '1afb59b9-be22-4063-a6a3-b136ee15e0c1', 'Sadaqah'],
+            'Lillah' => ['Lillah', '6d50093d-7d09-4490-9ab6-8c6d5a13e4a4', 'Lilah'],
+            'Aqiqah' => ['Aqiqah', 'd62dccf2-bf70-488b-a39f-73852aadeea8', 'Aqeeqah'],
+            'Kaffarah' => ['Kaffarah', '247c2c21-72a2-4354-8c3c-8345264d5f3d', 'Kaffarah'],
+            'Ramadan Calendar' => ['Ramadan Calendar', '647d7f7a-0536-4022-9d04-60e84ac73d6f', 'General'],
+            'Ramadan Food Bags' => ['Ramadan Food Bags', 'e7618f81-853f-40d3-b0c1-fb377e107ffe', 'RamadanFoodPack'],
+            'Ramadan Food Packs (x3)' => ['Ramadan Food Packs (x3)', 'e7618f81-853f-40d3-b0c1-fb377e107ffe', 'RamadanFoodPack'],
+            'Seher & Iftar' => ['Seher & Iftar', '1f5776f6-8c19-4406-915f-aced73b5728b', 'SehrIftar'],
+            'Fidya' => ['Fidya', '7252a505-4c3b-46e5-9c87-b214af9348e9', 'Fidya'],
+            'Zakat ul Fitr' => ['Zakat ul Fitr', 'b40569dc-f697-4842-b8a9-f2fd245b449a', 'Fitrana'],
+            'Eid Gifts' => ['Eid Gifts', '3ff3de40-d9c7-4845-8865-aec974a934c8', 'EidGifts'],
+            'Zakat Calculator' => ['Zakat Calculator', '89bb2a73-4696-4047-b78a-25a81a26457b', 'Zakat'],
+            'Qurbani' => ['Qurbani', '79ef0e31-b511-4092-93ac-55d049171ae3', 'Qurbani'],
+            'Dhul Hajj' => ['Dhul Hajj', '9cffd318-5f82-430e-9e54-49bdfb813edd', 'General'],
+            'Dhul Hajj Giving' => ['Dhul Hajj Giving', '1b3d41d6-764a-40ed-90b6-88e2a20cef62', 'General'],
+            'Hajj 2027' => ['Hajj 2027', 'dfb57345-235f-41aa-ad5e-6bdf9eb8852c', 'General'],
+            'Where Most Needed' => ['Where Most Needed', 'fedd5b15-da2b-4b96-b5ff-91c8257293f0', 'General'],
+            'Zakat (Every Friday)' => ['Zakat (Every Friday)', '264563b6-6e0b-4a7f-b5e3-5ea7526766e3', 'Zakat'],
+            'Sadaqah (Friday Giving)' => ['Sadaqah (Friday Giving)', '264563b6-6e0b-4a7f-b5e3-5ea7526766e3', 'Sadaqah'],
+            'Education (Every Day)' => ['Education (Every Day)', '41ee9588-df9e-4d18-8770-76513400d842', 'Education'],
+            'Orphans (Daily Giving)' => ['Orphans (Daily Giving)', '41ee9588-df9e-4d18-8770-76513400d842', 'General'],
+            'Zakat (Every Month)' => ['Zakat (Every Month)', 'dfb26e6e-87b6-4c31-9ab2-7f6a02ed7091', 'Zakat'],
+            'Sadaqah (Ramadan 30 Nights)' => ['Sadaqah (Ramadan 30 Nights)', 'c8e39cde-52b9-4f57-a7a9-7c5636a2828d', 'Sadaqah'],
+            'Clothes for an Orphan' => ['Clothes for an Orphan', '88c7887f-e1b3-453f-a8eb-08e8e96dd863', 'General'],
+            'Three Meals for an Orphan' => ['Three Meals for an Orphan', '88c7887f-e1b3-453f-a8eb-08e8e96dd863', 'General'],
+            'Help Buy School Shoes for an Orphan' => ['Help Buy School Shoes for an Orphan', '88c7887f-e1b3-453f-a8eb-08e8e96dd863', 'General'],
+            'Winter Blanket for a Widow or an Orphan' => ['Winter Blanket for a Widow or an Orphan', '67d407be-9e57-4f33-a8b2-474b43913bd2', 'General'],
+            'Eid Gift for a Child or a Widow' => ['Eid Gift for a Child or a Widow', '3ff3de40-d9c7-4845-8865-aec974a934c8', 'EidGifts'],
+            'Support a Widow' => ['Support a Widow', '67d407be-9e57-4f33-a8b2-474b43913bd2', 'General'],
+            'Food Bag for a Family in Need' => ['Food Bag for a Family in Need', 'f2e2fc87-4ac0-436a-951d-0ce8ec9785fb', 'General'],
+            'School Meals' => ['School Meals', '876082d6-1ea5-46e8-b351-7ec02537ff96', 'General'],
+            'Youth Leadership & Community Development' => ['Youth Leadership & Community Development', 'fedd5b15-da2b-4b96-b5ff-91c8257293f0', 'General'],
+            'Something new' => ['Something new', 'fedd5b15-da2b-4b96-b5ff-91c8257293f0', 'General'],
         ];
     }
 
