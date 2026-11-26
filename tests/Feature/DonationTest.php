@@ -238,7 +238,7 @@ class DonationTest extends TestCase
             ->assertOk()
             ->assertSee('cover the transaction fee', false)
             ->assertSee('Want to add these', false)
-            ->assertSee('Orphan Cloth');
+            ->assertSee('Clothes for an Orphan');
     }
 
     public function test_a_payment_page_add_on_returns_to_the_payment_page(): void
@@ -246,13 +246,13 @@ class DonationTest extends TestCase
         $this->reachPaymentStep();
 
         $this->post(route('donate.add'), [
-            'cause' => 'Family Meal',
-            'amount' => 10,
+            'cause' => 'Food Bag for a Family in Need',
+            'amount' => 20,
             'frequency' => 'one-off',
             'redirect' => 'payment',
         ])->assertRedirect(route('donate.payment'));
 
-        $this->assertSame(260.0, DonationCart::subtotal()); // 250 + 10
+        $this->assertSame(270.0, DonationCart::subtotal()); // 250 + 20
     }
 
     public function test_payment_page_redirects_without_a_reference(): void

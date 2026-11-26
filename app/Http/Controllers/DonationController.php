@@ -17,17 +17,18 @@ class DonationController extends Controller
 {
     /** Optional extras offered on the checkout page. */
     public const ADDONS = [
-        ['cause' => 'Orphan Cloth', 'amount' => 5],
-        ['cause' => 'Family Meal', 'amount' => 10],
-        ['cause' => 'Hot Meals for 10 People', 'amount' => 20],
-        ['cause' => 'Clean Water for a Family', 'amount' => 25],
-        ['cause' => 'Emergency Food Pack', 'amount' => 35],
-        ['cause' => 'Gaza Emergency Relief', 'amount' => 50],
-        ['cause' => 'Orphan Sponsorship (1 Month)', 'amount' => 75],
-        ['cause' => 'Water Handpump Share', 'amount' => 100],
-        ['cause' => 'Ramadan Food Packs (x3)', 'amount' => 150],
-        ['cause' => 'Feed a Village (50 People)', 'amount' => 250],
-        ['cause' => 'Build a Well (Share)', 'amount' => 500],
+        ['cause' => 'Clothes for an Orphan', 'amount' => 5],
+        ['cause' => 'Three Meals for an Orphan', 'amount' => 5],
+        ['cause' => 'Books for an Orphan', 'amount' => 5],
+        ['cause' => 'Stationery for an Orphan', 'amount' => 5],
+        ['cause' => 'Help Buy School Shoes for an Orphan', 'amount' => 5],
+        ['cause' => 'School Bag for an Orphan', 'amount' => 5],
+        ['cause' => 'Winter Blanket for a Widow or an Orphan', 'amount' => 10],
+        ['cause' => 'Eid Gift for a Child or a Widow', 'amount' => 10],
+        ['cause' => 'Support a Widow', 'amount' => 5],
+        ['cause' => 'Food Bag for a Family in Need', 'amount' => 20],
+        ['cause' => 'Sadaqah', 'amount' => 5],
+        ['cause' => 'Lillah', 'amount' => 5],
     ];
 
     /**
