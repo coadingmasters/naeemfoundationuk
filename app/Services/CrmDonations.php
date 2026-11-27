@@ -237,6 +237,100 @@ class CrmDonations
      */
     public function recordPaid(string $currency, array $payload): array
     {
+        return $this->post($currency, (string) config('crm.record.url'), $payload, $payload['items'][0]['meta']['donationReference'] ?? null);
+    }
+
+    /**
+     * Tell the CRM a recurring gift has ended on our side (cancelled, suspended
+     * or expired). The CRM only marks it cancelled; past payments stay recorded.
+     * 200 = cancelled, also when it already was (a retry is safe).
+     *
+     * @return array<string, mixed>
+     *
+     * @throws CrmException
+     */
+    public function cancelSubscription(string $currency, string $subscriptionReference): array
+    {
+        return $this->post(
+            $currency,
+            rtrim((string) config('crm.record.url'), '/').'/subscriptions/cancel',
+            ['subscriptionReference' => $subscriptionReference],
+            $subscriptionReference,
+            [200],
+        );
+    }
+
+    /**
+     * The subscriptionReference(s) a donation's recurring lines were recorded with:
+     * the PayPal subscription id, with a "-n" suffix when one subscription covers
+     * several recurring lines (same rule as buildPayload()).
+     *
+     * @param  array<int, array<string, mixed>>  $items  DonationCart items.
+     * @return array<int, string>
+     */
+    public function subscriptionReferences(array $items, string $subscriptionId): array
+    {
+        try {
+            $lines = array_values($this->mergeLines($items));
+        } catch (CrmException) {
+            return [];
+        }
+
+        $recurring = count(array_filter($lines, fn ($l) => $l['frequency'] !== 'OneTime'));
+        $refs = [];
+
+        for ($n = 1; $n <= $recurring; $n++) {
+            $refs[] = $recurring > 1 ? $subscriptionId.'-'.$n : $subscriptionId;
+        }
+
+        return $refs;
+    }
+
+    /**
+     * Report that a donation's subscription ended. Never throws; the result is
+     * kept on the donation row (crm_details) so the admin can see it and a
+     * duplicate webhook does not send it twice.
+     */
+    public function reportSubscriptionEnded(Donation $donation): void
+    {
+        try {
+            $details = (array) $donation->crm_details;
+            $currency = (string) $donation->currency;
+
+            // Never told the CRM about the gift, or already told it it ended.
+            if (empty($donation->subscription_id) || ! empty($details['subscription_ended_at']) || ! $this->enabledFor($currency)) {
+                return;
+            }
+
+            $refs = $this->subscriptionReferences((array) $donation->items, (string) $donation->subscription_id);
+
+            if ($refs === []) {
+                $refs = [(string) $donation->subscription_id];
+            }
+
+            foreach ($refs as $ref) {
+                $this->cancelSubscription($currency, $ref);
+            }
+
+            self::saveRecordState($donation->reference, ['subscription_ended_at' => now()->toDateTimeString(), 'subscription_end_error' => null]);
+        } catch (Throwable $e) {
+            Log::error('CRM subscription end not reported', ['reference' => $donation->reference, 'error' => $e->getMessage()]);
+
+            self::saveRecordState($donation->reference, ['subscription_end_error' => mb_substr($e->getMessage(), 0, 300), 'subscription_end_failed_at' => now()->toDateTimeString()]);
+        }
+    }
+
+    /**
+     * Signed POST to the CRM.
+     *
+     * @param  array<string, mixed>  $payload
+     * @param  array<int, int>  $ok  Status codes that mean success.
+     * @return array<string, mixed>
+     *
+     * @throws CrmException
+     */
+    private function post(string $currency, string $url, array $payload, ?string $logRef, array $ok = [200, 201]): array
+    {
         $credentials = $this->credentials($currency)
             ?? throw new CrmException('The CRM donation API is not configured for '.strtoupper($currency).'.');
         $body = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
@@ -246,22 +340,23 @@ class CrmDonations
                 ->withBody($body, 'application/json')
                 ->timeout((int) config('crm.record.timeout', 10))
                 ->retry(2, 300, fn ($e) => $e instanceof ConnectionException, throw: false)
-                ->post(config('crm.record.url'));
+                ->post($url);
         } catch (ConnectionException $e) {
             throw new CrmException('Could not reach the CRM.', 0, $e);
         }
 
-        if (! in_array($response->status(), [200, 201], true)) {
+        if (! in_array($response->status(), $ok, true)) {
             // The body never contains our secrets — safe to log for diagnosis.
-            Log::error('CRM record rejected', [
-                'donation' => $payload['items'][0]['meta']['donationReference'] ?? null,
+            Log::error('CRM request rejected', [
+                'reference' => $logRef,
+                'url' => $url,
                 'status' => $response->status(),
                 'body' => mb_substr($response->body(), 0, 1000),
             ]);
 
             $reason = trim((string) $response->json('message', ''));
 
-            throw new CrmException('The CRM did not accept the donation (HTTP '.$response->status().')'.($reason !== '' ? ': '.mb_substr($reason, 0, 300) : '.'));
+            throw new CrmException('The CRM did not accept the request (HTTP '.$response->status().')'.($reason !== '' ? ': '.mb_substr($reason, 0, 300) : '.'));
         }
 
         return (array) $response->json();

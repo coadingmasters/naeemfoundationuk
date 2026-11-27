@@ -247,4 +247,40 @@ class CrmRecordTest extends TestCase
         config(['crm.record.enabled' => false]);
         $this->assertFalse($crm->enabledFor('GBP'));
     }
+
+    public function test_cancelling_a_subscription_posts_the_reference_to_the_cancel_endpoint(): void
+    {
+        Http::fake([self::URL.'/subscriptions/cancel' => Http::response(['status' => 'cancelled'], 200)]);
+
+        (new CrmDonations)->cancelSubscription('GBP', 'I-SUB999');
+
+        Http::assertSent(function (HttpRequest $r) {
+            $ts = $r->header('X-Timestamp')[0];
+
+            return $r->url() === self::URL.'/subscriptions/cancel'
+                && $r['subscriptionReference'] === 'I-SUB999'
+                && $r->header('X-Api-Key')[0] === 'drk_test_key'
+                && $r->header('X-Signature')[0] === 'sha256='.hash_hmac('sha256', $ts.'.'.$r->body(), 'drsec_test_secret');
+        });
+    }
+
+    public function test_cancel_that_the_crm_does_not_know_is_an_error(): void
+    {
+        Http::fake([self::URL.'/subscriptions/cancel' => Http::response(['message' => 'No subscription with that reference'], 404)]);
+
+        $this->expectException(CrmException::class);
+        $this->expectExceptionMessage('HTTP 404');
+        (new CrmDonations)->cancelSubscription('GBP', 'I-NOPE');
+    }
+
+    public function test_subscription_references_follow_the_payload_rule(): void
+    {
+        $crm = new CrmDonations;
+        $one = [['cause' => 'Sadaqah', 'amount' => 5, 'qty' => 1, 'frequency' => 'monthly']];
+        $two = [...$one, ['cause' => 'Zakat', 'amount' => 5, 'qty' => 1, 'frequency' => 'monthly'], ['cause' => 'Zakat', 'amount' => 5, 'qty' => 1, 'frequency' => 'one-off']];
+
+        $this->assertSame(['I-SUB1'], $crm->subscriptionReferences($one, 'I-SUB1'));
+        $this->assertSame(['I-SUB1-1', 'I-SUB1-2'], $crm->subscriptionReferences($two, 'I-SUB1'));
+        $this->assertSame([], $crm->subscriptionReferences([['cause' => 'Zakat', 'amount' => 5, 'qty' => 1, 'frequency' => 'one-off']], 'I-SUB1'));
+    }
 }

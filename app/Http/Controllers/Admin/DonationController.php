@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
+use App\Services\CrmDonations;
+use App\Services\PayPal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -63,7 +65,7 @@ class DonationController extends Controller
     /**
      * Sum a donation query per currency.
      *
-     * @return array<string, float>  e.g. ['GBP' => 1240.00, 'USD' => 310.00]
+     * @return array<string, float> e.g. ['GBP' => 1240.00, 'USD' => 310.00]
      */
     private function totalsByCurrency($query): array
     {
@@ -86,13 +88,14 @@ class DonationController extends Controller
             return back()->with('error', 'This donation is not a recurring subscription.');
         }
 
-        $ok = app(\App\Services\PayPal::class)->cancelSubscription($donation->subscription_id, 'Cancelled by the charity admin.');
+        $ok = app(PayPal::class)->cancelSubscription($donation->subscription_id, 'Cancelled by the charity admin.');
 
         if (! $ok) {
             return back()->with('error', 'PayPal could not cancel this subscription. Please try again.');
         }
 
         $donation->update(['subscription_status' => 'CANCELLED', 'status' => 'cancelled']);
+        app(CrmDonations::class)->reportSubscriptionEnded($donation->fresh());
 
         return back()->with('success', 'Subscription cancelled. No further payments will be taken.');
     }

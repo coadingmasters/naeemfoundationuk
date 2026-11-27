@@ -715,12 +715,19 @@ class PayPalController extends Controller
             $donation = Donation::withoutGlobalScope('region')->where('subscription_id', $subscriptionId)->first();
 
             if ($donation) {
+                $ended = in_array($status, ['CANCELLED', 'EXPIRED', 'SUSPENDED'], true);
+
                 $donation->fill([
                     'subscription_status' => $status ?: $donation->subscription_status,
                     // A cancelled/expired subscription is no longer an active gift.
                     'status' => in_array($status, ['CANCELLED', 'EXPIRED', 'SUSPENDED'], true) ? 'cancelled' : $donation->status,
                     'next_billing_at' => $nextBilling ? Carbon::parse($nextBilling) : $donation->next_billing_at,
                 ])->save();
+
+                // Let the CRM know the recurring gift has ended (it never controls the billing).
+                if ($ended) {
+                    app(CrmDonations::class)->reportSubscriptionEnded($donation->fresh());
+                }
             }
         } catch (Throwable $e) {
             Log::error('PayPal subscription webhook update failed', ['subscription' => $subscriptionId, 'error' => $e->getMessage()]);

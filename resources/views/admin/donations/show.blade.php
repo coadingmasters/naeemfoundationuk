@@ -129,6 +129,11 @@
                         @elseif (! empty($donation->crm_details['record_error']))
                             <p class="mt-1 text-xs text-red-600">Not recorded in the CRM yet: {{ $donation->crm_details['record_error'] }}</p>
                         @endif
+                        @if (! empty($donation->crm_details['subscription_ended_at']))
+                            <p class="mt-1 text-xs text-green-700">CRM told this recurring gift ended on {{ $donation->crm_details['subscription_ended_at'] }}.</p>
+                        @elseif (! empty($donation->crm_details['subscription_end_error']))
+                            <p class="mt-1 text-xs text-red-600">CRM not told the recurring gift ended: {{ $donation->crm_details['subscription_end_error'] }}</p>
+                        @endif
                     </div>
                     <div>
                         <dt class="text-xs font-medium text-gray-400">Paid at</dt>
